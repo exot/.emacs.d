@@ -293,7 +293,7 @@ If FILE is not given, prompt for one."
 (defun db/helm-shortcuts ()
   "Open helm completion on common locations."
   (interactive)
-  (helm :sources `(db/helm-frequently-used-features
+  (helm :sources '(db/helm-frequently-used-features
                    db/helm-frequently-visited-locations)))
 
 
