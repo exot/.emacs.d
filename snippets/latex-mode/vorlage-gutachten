@@ -1,0 +1,53 @@
+# -*- mode: snippet -*-
+# name: gutachten-bachelorarbeit
+# key: gutachten-bachelorarbeit
+# --
+\documentclass[german]{tudletter}
+
+\usepackage[utf8]{inputenc}
+
+\usepackage{csquotes}
+\usepackage[hidelinks]{hyperref}
+%\renewcommand{\UrlFont}{\ttfamily\footnotesize}
+\usepackage{textcomp}
+\usepackage{ragged2e}
+\usepackage{mathtools}
+
+\einrichtung{Fakultät Informatik}
+\institut{Institut für Theoretische Informatik}
+\professur{Professur für Automatentheorie}
+
+\bearbeiter{Daniel Borchmann}
+\telefon{38351}
+\telefax{37959}
+\email{daniel.borchmann@tu-dresden.de}
+
+\besucheradrA{Sekretariat: Zi.~3021}
+\besucheradrB{Nöthnitzer Straße 46}
+\besucheradrC{01178 Dresden}
+%\rollstuhladresse{N\"othnitzer Stra\ss{}e 46}
+%\rollstuhlanmerkungen{Aufzug}
+%\internet{http://lat.inf.tu-dresden.de/{\raise.2ex\hbox{$\scriptscriptstyle\sim$}}borch}
+\internet{http://lat.inf.tu-dresden.de/\texttildelow{}borch}
+
+\signature{Daniel Borchmann}
+
+\subject{${1:Gutachten für Bachelorarbeit ...}}
+
+\begin{document}
+
+\makeatletter
+\renewcommand{\@contact}{Gutachter:}
+\makeatother
+
+\justifying{}
+
+\begin{letter}{}
+
+  \opening{}
+
+  $0
+
+\end{letter}
+
+\end{document}
