@@ -766,7 +766,6 @@ _h_   _l_   _o_k        _y_ank
   :commands (helm-command-prefix
              helm-show-kill-ring)
   :ensure helm
-  :pin "melpa-stable"
   :diminish helm-mode
   :defines (helm-command-prefix-key
             helm-command-prefix
