@@ -1,0 +1,2 @@
+My personal Emacs Configuration, containing bits of code collected from around
+the web.  Have fun with it!
