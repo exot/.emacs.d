@@ -815,8 +815,13 @@ _h_   _l_   _o_k        _y_ank
   :commands (ivy-mode
              ivy-resume)
   :diminish ivy-mode
-  :config (setq ivy-use-virtual-buffers t
-                enable-recursive-minibuffers t))
+  :config (progn
+            (setq ivy-use-virtual-buffers t
+                  enable-recursive-minibuffers t)
+            (setq ivy-initial-inputs-alist '((counsel-describe-function . "^")
+                                             (counsel-describe-variable . "^")
+                                             (man . "^")
+                                             (woman . "^")))))
 
 (use-package counsel
   :commands (counsel-org-goto-all
