@@ -807,9 +807,7 @@ _h_   _l_   _o_k        _y_ank
                                               db/helm-frequently-visited-locations
                                               helm-source-buffer-not-found
                                               helm-source-bookmarks
-                                              helm-source-bookmark-set))
-
-            ))
+                                              helm-source-bookmark-set))))
 
 (use-package ivy
   :commands (ivy-mode
