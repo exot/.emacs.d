@@ -595,11 +595,20 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
              (file db/org-default-refile-file)
              "* GOTO %^{What} :DATE:\n%^{When}t\n%a"
              :immediate-finish t)
-        ("i" "interruption"
-             entry
-             (file db/org-default-refile-file)
-             "* DONE %^{What}\n\n%a\n%?"
-             :clock-in t :clock-resume t)
+        ("i" "Interruptions")
+        ("in" "Interruption now"
+              entry
+              (file db/org-default-refile-file)
+              "* DONE %^{What}\n\n%a\n%?"
+              :clock-in t :clock-resume t)
+        ("ip" "Interruption previously" ; bad English vs mnemonics
+              entry
+              (file db/org-default-refile-file)
+              ,(concat "* DONE %^{What}\n"
+                       ":LOGBOOK:\n"
+                       "%(db/read-clockline)\n" ; evaluated before above prompt?
+                       ":END:\n\n"
+                       "%?"))
         ("j" "journal entry"
              plain
              (file+datetree db/org-default-pensieve-file)
@@ -648,6 +657,32 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
              "* Weekly Review\n\n%?")))
 
 (setq org-capture-use-agenda-date nil)
+(defun db/org-timestamp-difference (stamp-1 stamp-2)
+  "Returns time difference between two given org-mode timestamps."
+  ;; Things copied from `org-clock-update-time-maybe’
+  (let* ((s (-
+             (float-time
+              (apply #'encode-time (org-parse-time-string stamp-2 nil t)))
+             (float-time
+              (apply #'encode-time (org-parse-time-string stamp-1 nil t)))))
+         (neg (< s 0))
+         (s (abs s))
+         (h (floor (/ s 3600)))
+         (m (floor (/ (- s (* 3600 h)) 60))))
+    (format (if neg "-%d:%02d" "%2d:%02d") h m)))
+
+(defun db/read-clockline ()
+  "Read starting and ending time from user and return org mode
+  clock line."
+  (let* ((now      (format-time-string "%H:%M"))
+         (starting (format "[%s]" (org-read-date t nil nil "Started: "
+                                                 (current-time)
+                                                 now)))
+         (ending   (format "[%s]" (org-read-date t nil nil "Ended: "
+                                                 (current-time)
+                                                 now)))
+         (difference (db/org-timestamp-difference starting ending)))
+    (format "CLOCK: %s--%s => %s" starting ending difference)))
 
 ;; (add-to-list 'display-buffer-alist
 ;;              `(,(rx bos "*Capture*" eos)
