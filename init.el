@@ -1011,10 +1011,12 @@ _RET_: ?RET?    _M_: ?M?
 
 (use-package helm-emms
   :commands (helm-emms)
-  :config (setq helm-emms-default-sources
-                '(helm-source-emms-streams
-                  helm-source-emms-dired
-                  helm-source-emms-files)))
+  :config (progn
+            (require 'helm-adaptive)
+            (setq helm-emms-default-sources
+                  '(helm-source-emms-streams
+                    helm-source-emms-dired
+                    helm-source-emms-files))))
 
 
 ;; * Shells and such
