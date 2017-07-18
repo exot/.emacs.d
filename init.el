@@ -644,7 +644,9 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package nsm
   :config (progn (setq network-security-level 'medium
-                       nsm-save-host-names t)))
+                       nsm-save-host-names t
+                       nsm-settings-file (expand-file-name "private/network-security.data"
+                                                           emacs-d))))
 
 (use-package gnutls
   :config (progn
