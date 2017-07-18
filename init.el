@@ -219,7 +219,7 @@
 (setq user-full-name "Daniel Borchmann"
       user-mail-address db/personal-mail-address)
 
-(setq custom-file (expand-file-name "custom.el" emacs-d))
+(setq custom-file (expand-file-name "private/custom.el" emacs-d))
 (load-file custom-file)
 
 (use-package cl-lib)
@@ -620,7 +620,8 @@ _h_   _l_   _o_k        _y_ank
                   bbdb-mua-auto-update-p 'query
                   bbdb-default-country "Germany"
                   bbdb-user-mail-address-re (regexp-opt (list db/personal-mail-address
-                                                              db/work-mail-address)))
+                                                              db/work-mail-address))
+                  bbdb-file (expand-file-name "private/bbdb" emacs-d))
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)))
 
