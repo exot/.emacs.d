@@ -117,7 +117,7 @@
   (bind-key "<f8>" #'counsel-locate)
   (bind-key "<f9>" #'counsel-org-goto-all)
   (bind-key "<f10>" #'magit-status)
-  (bind-key "<f11>" nil)
+  (bind-key "<f11>" #'org-capture)
   (bind-key "<f12>" #'db/helm-shortcuts)
   (bind-key "C-<" #'mc/mark-previous-like-this)
   (bind-key "C->" #'mc/mark-next-like-this)
@@ -141,6 +141,7 @@
   (bind-key "C-c l" #'org-store-link)
   (bind-key "C-c m" #'emms-control/body)
   (bind-key "C-c o" #'hydra-org-clock/body)
+  (bind-key "C-c r" #'ivy-recentf)
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
@@ -811,7 +812,8 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package ivy
   :commands (ivy-mode
-             ivy-resume)
+             ivy-resume
+             ivy-recentf)
   :diminish ivy-mode
   :config (progn
             (setq ivy-use-virtual-buffers t
