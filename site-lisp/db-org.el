@@ -577,20 +577,22 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (eval-after-load 'helm-mode
   '(add-to-list 'helm-completing-read-handlers-alist '(org-capture . nil)))
 
+(setq org-capture-use-agenda-date nil)
+
 (setq org-capture-templates
-      `(("t" "todo"
+      `(("t" "Todo"
              entry
              (file db/org-default-refile-file)
              ,(concat "* TODO %^{What}\n"
                       "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                       ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                       "\n%?"))
-        ("n" "note"
+        ("n" "Note"
              entry
              (file+olp db/org-default-notes-file "Notes")
              "* %^{About} :NOTE:\n%T\n\n%?"
              :clock-in t :clock-resume t)
-        ("d" "date"
+        ("d" "Date"
              entry
              (file db/org-default-refile-file)
              "* GOTO %^{What} :DATE:\n%^{When}t\n%a"
@@ -656,7 +658,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
              (file+datetree db/org-default-pensieve-file)
              "* Weekly Review\n\n%?")))
 
-(setq org-capture-use-agenda-date nil)
 (defun db/org-timestamp-difference (stamp-1 stamp-2)
   "Returns time difference between two given org-mode timestamps."
   ;; Things copied from `org-clock-update-time-maybe’
