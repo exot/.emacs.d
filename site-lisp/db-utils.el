@@ -266,6 +266,8 @@ If FILE is not given, prompt for one."
                    ("Gnus"      . (lambda ()
                                     (interactive)
                                     (find-file gnus-init-file)))
+                   ("Shell"     . shell)
+                   ("EShell"    . eshell)
                    ("scratch"   . db/scratch)))
     (action . (("Open" . funcall)))
     (filtered-candidate-transformer . helm-adaptive-sort))

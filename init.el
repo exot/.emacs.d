@@ -841,7 +841,7 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
-  :init (setq recentf-max-saved-items 20))
+  :init (setq recentf-max-saved-items 1000))
 
 (use-package company
   :commands (company-mode global-company-mode))
