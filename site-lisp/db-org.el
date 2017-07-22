@@ -614,7 +614,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("j" "journal entry"
              plain
              (file+datetree db/org-default-pensieve-file)
-             "\n%i%U\n\n%?\n\n")
+             "\n%i%U\n\n%?\n")
         ("r" "respond"
              entry
              (file db/org-default-refile-file)
