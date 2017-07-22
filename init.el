@@ -713,7 +713,8 @@ _h_   _l_   _o_k        _y_ank
             (unbind-key "C-M-o" dired-mode-map)
 
             (require 'dired+)
-            (setq diredp-hide-details-initially-flag nil)
+            (custom-set-variables
+             '(diredp-hide-details-initially-flag nil))
 
             ;; disable exaggerated fontification of dired+
             (require 'font-lock)
