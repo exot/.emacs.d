@@ -222,7 +222,7 @@ If FILE is not given, prompt for one."
   "Jump to first non-trivial line in dired."
   (interactive)
   (beginning-of-buffer)
-  (dired-next-line 4))
+  (dired-next-line 2))
 
 (defun dired-jump-to-bottom ()
   "Jump to last non-trivial line in dired."
