@@ -83,6 +83,8 @@
 
   (global-auto-revert-mode -1)
 
+  (global-visual-line-mode +1)
+
   (projectile-mode +1)
   (which-function-mode +1)
   ;; (semantic-mode +1)
