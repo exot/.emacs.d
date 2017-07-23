@@ -157,6 +157,7 @@
   (bind-key "C-x C-d" #'dired)
   (bind-key "C-x C-f" #'counsel-find-file)
   (bind-key "C-x C-r" #'revert-buffer)
+  (bind-key "C-x g" #'db/helm-shortcuts)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
   (bind-key "C-x o" #'ace-window)
   (bind-key "C-x r v" #'list-registers)
