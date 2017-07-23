@@ -696,7 +696,7 @@ _h_   _l_   _o_k        _y_ank
             ;; omitting files
             (add-hook 'dired-mode-hook #'dired-omit-mode)
             (setq dired-omit-files
-                  (concat dired-omit-files "^\\...+$"))
+                  (concat dired-omit-files "\\|^\\...+$"))
 
             (setq dired-guess-shell-alist-user
                   '(("\\.pdf\\'" "evince")
