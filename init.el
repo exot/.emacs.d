@@ -92,7 +92,9 @@
 
   ;; setting this in `custom-file’ does not work, so we set it here
   (custom-set-variables
-   '(custom-enabled-themes (quote (exot-main solarized-dark smart-mode-line-dark))))
+   '(custom-enabled-themes (quote (exot-main
+                                   solarized-dark
+                                   smart-mode-line-dark))))
 
   ;; Hooks
 
@@ -520,7 +522,11 @@ Current Task: %`org-clock-current-task; "
   :load-path "site-lisp/")
 
 (use-package hydra
-  :commands (defhydra hydra-toggle/body hydra-zoom/body hydra-rectangle/body hydra-ispell/body)
+  :commands (hydra-toggle/body
+             hydra-zoom/body
+             hydra-rectangle/body
+             hydra-ispell/body
+             defhydra)
   :config (progn
             (defhydra hydra-toggle (:color blue)
               "toggle"
@@ -621,8 +627,9 @@ _h_   _l_   _o_k        _y_ank
                   bbdb-complete-mail-allow-cycling t
                   bbdb-mua-auto-update-p 'query
                   bbdb-default-country "Germany"
-                  bbdb-user-mail-address-re (regexp-opt (list db/personal-mail-address
-                                                              db/work-mail-address))
+                  bbdb-user-mail-address-re (regexp-opt
+                                             (list db/personal-mail-address
+                                                   db/work-mail-address))
                   bbdb-file (expand-file-name "private/bbdb" emacs-d))
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)))
@@ -639,7 +646,8 @@ _h_   _l_   _o_k        _y_ank
                   gnus-directory (expand-file-name "~/Mail/news/")
                   gnus-kill-files-directory gnus-directory
                   gnus-startup-file (expand-file-name "~/Mail/gnus-newsrc")
-                  gnus-cache-directory (expand-file-name "cache/" gnus-directory))))
+                  gnus-cache-directory (expand-file-name
+                                        "cache/" gnus-directory))))
 
 
 ;; * Crypto
@@ -647,8 +655,9 @@ _h_   _l_   _o_k        _y_ank
 (use-package nsm
   :config (progn (setq network-security-level 'medium
                        nsm-save-host-names t
-                       nsm-settings-file (expand-file-name "private/network-security.data"
-                                                           emacs-d))))
+                       nsm-settings-file (expand-file-name
+                                          "private/network-security.data"
+                                          emacs-d))))
 
 (use-package gnutls
   :config (progn
