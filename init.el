@@ -692,11 +692,11 @@ _h_   _l_   _o_k        _y_ank
             (require 'gnus-dired)
 
             (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
-            (add-hook 'dired-mode-hook #'dired-omit-mode)
 
-            (setq dired-omit-files "^\\...+$"
-                  dired-omit-verbose nil
-                  dired-omit-extensions nil)
+            ;; omitting files
+            (add-hook 'dired-mode-hook #'dired-omit-mode)
+            (setq dired-omit-files
+                  (concat dired-omit-files "^\\...+$"))
 
             (setq dired-guess-shell-alist-user
                   '(("\\.pdf\\'" "evince")
