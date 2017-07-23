@@ -684,13 +684,13 @@ _h_   _l_   _o_k        _y_ank
             (put 'dired-find-alternate-file 'disabled nil)
             (setq dired-listing-switches "-alLh")
             (setq dired-hide-details-hide-information-lines nil)
-
             (setq dired-recursive-copies 'top)
             (setq dired-recursive-deletes 'top)
 
             (require 'dired-x)
-            (require 'gnus-dired)
 
+            ;; Gnus support in dired
+            (require 'gnus-dired)
             (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
 
             ;; omitting files
