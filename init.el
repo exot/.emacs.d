@@ -713,7 +713,7 @@ _h_   _l_   _o_k        _y_ank
             (unbind-key "C-M-o" dired-mode-map)
 
             (require 'dired+)
-            (custom-set-variables
+            (custom-set-variables       ; needs to be set with custom
              '(diredp-hide-details-initially-flag nil))
 
             ;; disable exaggerated fontification of dired+
@@ -722,7 +722,6 @@ _h_   _l_   _o_k        _y_ank
             (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))
 
             ;; https://oremacs.com/2017/03/18/dired-ediff/
-
             (defun ora-ediff-files ()
               (interactive)
               (lexical-let ((files (dired-get-marked-files))
@@ -753,9 +752,7 @@ _h_   _l_   _o_k        _y_ank
             (bind-key "z" 'dired-get-size dired-mode-map)
             (unbind-key "s" dired-mode-map)
             (unbind-key "<f1>" dired-mode-map)
-            (bind-key "e" #'ora-ediff-files dired-mode-map)
-
-            ))
+            (bind-key "e" #'ora-ediff-files dired-mode-map)))
 
 (use-package find-dired
   :commands (find-dired)
