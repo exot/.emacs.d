@@ -26,7 +26,7 @@
 (setq org-todo-state-tags-triggers
       '(("WAIT" ("WAIT" . t))
         ("HOLD" ("HOLD" . t))
-        (done ("HOLD") ("WAIT") ("NO_EXPORT" . t))
+        (done ("HOLD") ("WAIT") ("DATE") ("NO_EXPORT" . t))
         ("TODO" ("HOLD") ("WAIT") ("NO_EXPORT"))
         ("READ" ("READ" . t) ("HOLD") ("WAIT"))
         ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
