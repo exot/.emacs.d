@@ -739,13 +739,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 ;;; Other Packages
 
-(eval-after-load 'org-agenda
-  '(use-package org-habit
-    :config (progn
-              (setq org-habit-graph-column 73)
-              (setq org-habit-show-habits-only-for-today nil)
-              (setq org-habit-following-days 7))))
-
 (require 'org-checklist)
 
 
