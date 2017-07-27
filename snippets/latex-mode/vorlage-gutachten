@@ -25,9 +25,6 @@
 \besucheradrA{Sekretariat: Zi.~3021}
 \besucheradrB{Nöthnitzer Straße 46}
 \besucheradrC{01187 Dresden}
-%\rollstuhladresse{N\"othnitzer Stra\ss{}e 46}
-%\rollstuhlanmerkungen{Aufzug}
-%\internet{http://lat.inf.tu-dresden.de/{\raise.2ex\hbox{$\scriptscriptstyle\sim$}}borch}
 \internet{http://lat.inf.tu-dresden.de/\texttildelow{}borch}
 
 \signature{Daniel Borchmann}
@@ -45,6 +42,14 @@
 \begin{letter}{}
 
   \opening{}
+
+  % Kurzbeschreibung der Aufgabenstellung
+
+  % Kurzzusammenfassung der Arbeit
+
+  % Bewertung der Arbeit
+
+  % Note
 
   $0
 
