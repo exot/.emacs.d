@@ -590,7 +590,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("n" "Note"
              entry
              (file+olp db/org-default-notes-file "Notes")
-             "* %^{About} :NOTE:\n%T\n\n%?"
+             "* %^{About} :NOTE:\n%T\n%?"
              :clock-in t :clock-resume t)
         ("d" "Date"
              entry
@@ -601,7 +601,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("in" "Interruption now"
               entry
               (file db/org-default-refile-file)
-              "* DONE %^{What}\n\n%a\n%?"
+              "* DONE %^{What}\n\n%?"
               :clock-in t :clock-resume t)
         ("ip" "Interruption previously" ; bad English vs mnemonics
               entry
@@ -609,7 +609,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
               ,(concat "* DONE %^{What}\n"
                        ":LOGBOOK:\n"
                        "%(db/read-clockline)\n" ; evaluated before above prompt?
-                       ":END:\n\n"
+                       ":END:\n"
                        "%?"))
         ("j" "journal entry"
              plain

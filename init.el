@@ -83,8 +83,6 @@
 
   (global-auto-revert-mode -1)
 
-  (global-visual-line-mode +1)
-
   (projectile-mode +1)
   (which-function-mode +1)
   ;; (semantic-mode +1)
@@ -276,6 +274,8 @@
       apropos-sort-by-scores 'verbose)
 
 (setq-default cursor-type 'bar)
+
+(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 ;; don't let the cursor go into minibuffer prompt
 (setq minibuffer-prompt-properties '(read-only t
