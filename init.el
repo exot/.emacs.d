@@ -1490,6 +1490,16 @@ _RET_: ?RET?    _M_: ?M?
 ;; These are packages that are not essential, but still nice to have.  They
 ;; provide optional functionality and may redefine builtin commands.
 
+(use-package cperl-mode
+  :commands (cperl-mode)
+  :mode (("\\.pl\\'"  . cperl-mode)
+         ("\\.pm\\'"  . cperl-mode)
+         ("\\.plx\\’" . cperl-mode))
+  :config (progn
+            (add-hook 'cperl-mode-hook 'flycheck-mode)
+            (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
+            (setq cperl-hairy nil)))
+
 (use-package define-word
   :commands (define-word-at-point define-word))
 
@@ -1586,15 +1596,6 @@ _RET_: ?RET?    _M_: ?M?
 (use-package pdf-tools
   :pin "melpa-stable"
   :config (pdf-tools-install))
-
-(use-package perl-mode
-  :commands (perl-mode)
-  :mode (("\\.pl\\'" . perl-mode)
-         ("\\.pm\\'" . perl-mode))
-  :config (progn
-            (add-hook 'perl-mode-hook 'flycheck-mode)
-            (add-hook 'perl-mode-hook 'prettify-symbols-mode)
-            (setq perl-indent-level 2)))
 
 (use-package pp
   :commands (db/eval-last-sexp-or-region
