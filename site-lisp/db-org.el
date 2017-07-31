@@ -586,7 +586,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
              ,(concat "* TODO %^{What}\n"
                       "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                       ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%?"))
+                      "%?"))
         ("n" "Note"
              entry
              (file+olp db/org-default-notes-file "Notes")
@@ -635,7 +635,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
              entry
              (file db/org-default-refile-file)
              ,(concat "* READ %^{Description} :READ:\n"
-                      "DEADLINE: <%(org-read-date nil nil \"+1m\")>\n"
                       ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                       "\n%(current-kill 0)")
              :immediate-finish t)
