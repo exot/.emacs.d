@@ -85,8 +85,6 @@
 
   (projectile-mode +1)
   (which-function-mode +1)
-  ;; (semantic-mode +1)
-  (persp-mode +1)
 
   ;; setting this in `custom-file’ does not work, so we set it here
   (custom-set-variables
@@ -614,8 +612,6 @@ _h_   _l_   _o_k        _y_ank
                   projectile-completion-system 'ivy))
   :diminish projectile-mode)
 
-(use-package perspective
-  :commands (persp-mode))
 (use-package exec-path-from-shell
   :ensure exec-path-from-shell
   :commands (exec-path-from-shell-copy-envs))
