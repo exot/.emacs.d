@@ -192,17 +192,14 @@
 
   ;; Environment Variables
 
-  (setenv "SSH_AUTH_SOCK" "/run/user/1000/ssh-agent.socket")
-  (setenv "SSH_AGENT_PID"
-          (substring (shell-command-to-string "systemctl show --user ssh-agent.service -p MainPID --value")
-                     0 -1))
-  (setenv "PATH" (concat (concat (getenv "HOME") "/.local/bin")
-                         ":"
-                         (getenv "PATH")))
-  (setq exec-path (append (list (concat (getenv "HOME") "/.local/bin"))
-                          exec-path))
-  (setenv "TEXMFHOME" (expand-file-name "~/Documents/texmf"))
-
+  (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
+                                    "SSH_AGENT_PID"
+                                    "PATH"
+                                    "TEXMFHOME"
+                                    "PERL5LIB"
+                                    "PERL_LOCAL_LIB_ROOT"
+                                    "PERL_MB_OPT"
+                                    "PERL_MM_OPT"))
   t)
 
 (add-hook 'after-init-hook #'db/run-init)
@@ -221,6 +218,9 @@
 
 (setq user-full-name "Daniel Borchmann"
       user-mail-address db/personal-mail-address)
+
+(setq explicit-shell-file-name "/usr/bin/zsh"
+      shell-file-name "/usr/bin/zsh")
 
 (setq custom-file (expand-file-name "private/custom.el" emacs-d))
 (load-file custom-file)
@@ -616,6 +616,9 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package perspective
   :commands (persp-mode))
+(use-package exec-path-from-shell
+  :ensure exec-path-from-shell
+  :commands (exec-path-from-shell-copy-envs))
 
 
 ;; * Mail
@@ -1081,7 +1084,6 @@ _RET_: ?RET?    _M_: ?M?
             (add-hook 'compilation-filter-hook #'endless/colorize-compilation)))
 
 (use-package shell
-  :init   (setq explicit-shell-file-name "/usr/bin/zsh")
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
