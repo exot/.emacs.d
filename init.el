@@ -1492,9 +1492,14 @@ _RET_: ?RET?    _M_: ?M?
 
 (use-package cperl-mode
   :commands (cperl-mode)
-  :mode (("\\.pl\\'"  . cperl-mode)
-         ("\\.pm\\'"  . cperl-mode)
-         ("\\.plx\\’" . cperl-mode))
+  :mode (("\\.plx\\’" . cperl-mode))
+  :init (progn
+          ;; exchange perl-mode with cperl-mode
+          (mapc
+           (lambda (pair)
+             (if (eq (cdr pair) 'perl-mode)
+                 (setcdr pair 'cperl-mode)))
+           (append auto-mode-alist interpreter-mode-alist)))
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
