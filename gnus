@@ -561,14 +561,12 @@ If found, imports the certificate via gpgsm."
 
 ;;; Archiving
 
-;; FIXME: this is obsolete
-(setq gnus-message-archive-method
-      `(nnfolder "archive"
-        (nnfolder-inhibit-expiry t)
-        (nnfolder-active-file ,(expand-file-name "archive/active" gnus-directory))
-        (nnfolder-directory ,(expand-file-name "archive/" gnus-directory)))
+;; We store messages in the current group, so there is no need to use Gnus’
+;; archiving method
+
+(setq gnus-message-archive-method nil
       gnus-update-message-archive-method t
-      gnus-message-archive-group "archive"
+      gnus-message-archive-group nil
       gnus-gcc-mark-as-read t)
 
 
