@@ -1494,7 +1494,7 @@ _RET_: ?RET?    _M_: ?M?
   :commands (cperl-mode)
   :mode (("\\.plx\\’" . cperl-mode))
   :init (progn
-          ;; exchange perl-mode with cperl-mode
+          ;; replace perl-mode with cperl-mode
           (mapc
            (lambda (pair)
              (if (eq (cdr pair) 'perl-mode)
