@@ -141,7 +141,7 @@
   (bind-key "C-c l" #'org-store-link)
   (bind-key "C-c m" #'emms-control/body)
   (bind-key "C-c o" #'hydra-org-clock/body)
-  (bind-key "C-c r" #'ivy-recentf)
+  (bind-key "C-c r" #'counsel-recentf)
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
