@@ -234,16 +234,16 @@ forces clocking in of the default task."
   "~/Documents/uni/admin/misc/work.org")
 
 (defvar db/org-default-home-file
-  "~/Documents/home/home.org")
+  "~/Documents/home/admin/home.org")
 
 (defvar db/org-default-notes-file
-  "~/Documents/home/notes.org")
+  "~/Documents/home/misc/notes.org")
 
 (defvar db/org-default-refile-file
   "~/Desktop/refile.org")
 
 (defvar db/org-default-pensieve-file
-  "~/Documents/home/pensieve.org.gpg")
+  "~/Documents/home/misc/pensieve.org.gpg")
 
 (setq org-agenda-files (list db/org-default-home-file
                              db/org-default-work-file
