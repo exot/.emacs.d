@@ -594,6 +594,7 @@ _h_   _l_   _o_k        _y_ank
 
             (add-to-list 'magit-no-confirm 'stage-all-changes)
 
+            (require 'projectile)
             (setq magit-repository-directories
                   (mapcar
                    (lambda (dir)
@@ -602,11 +603,11 @@ _h_   _l_   _o_k        _y_ank
                     (lambda (project)
                       (unless (file-remote-p project)
                         (file-exists-p (concat project "/.git"))))
-                    (projectile-relevant-known-projects))))))
+                    projectile-known-projects)))))
 
 (use-package projectile
   :ensure projectile
-  :commands (projectile-relevant-known-projects projectile-mode)
+  :commands (projectile-mode)
   :config (progn
             (setq projectile-switch-project-action 'projectile-dired
                   projectile-completion-system 'ivy
