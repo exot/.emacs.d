@@ -1246,6 +1246,7 @@ _RET_: ?RET?    _M_: ?M?
             (add-hook 'cider-repl-mode-hook #'subword-mode)
             (add-hook 'cider-repl-mode-hook #'lispy-mode)
             (add-hook 'cider-repl-mode-hook #'cider-repl-toggle-pretty-printing)
+            (add-hook 'cider-repl-mode-hook #'company-mode)
             (add-hook 'cider-mode-hook #'eldoc-mode)
 
             (setq cider-cljs-lein-repl "(cemerick.piggieback/cljs-repl (cljs.repl.rhino/repl-env))")))
@@ -1258,7 +1259,8 @@ _RET_: ?RET?    _M_: ?M?
                    (dopar 'defun))
                  (add-hook 'clojure-mode-hook #'lispy-mode)
                  (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-                 (add-hook 'clojure-mode-hook #'yas-minor-mode)))
+                 (add-hook 'clojure-mode-hook #'yas-minor-mode)
+                 (add-hook 'clojure-mode-hook #'company-mode)))
 
 (use-package clj-refactor
   :commands (clj-refactor-mode)
