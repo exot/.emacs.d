@@ -609,7 +609,9 @@ _h_   _l_   _o_k        _y_ank
   :commands (projectile-relevant-known-projects projectile-mode)
   :config (progn
             (setq projectile-switch-project-action 'projectile-dired
-                  projectile-completion-system 'ivy))
+                  projectile-completion-system 'ivy
+                  projectile-ignored-project-function #'file-remote-p)
+            (projectile-cleanup-known-projects))
   :diminish projectile-mode)
 
 (use-package counsel-projectile
