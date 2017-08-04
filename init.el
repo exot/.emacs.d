@@ -612,6 +612,9 @@ _h_   _l_   _o_k        _y_ank
                   projectile-completion-system 'ivy))
   :diminish projectile-mode)
 
+(use-package counsel-projectile
+  :commands counsel-projectile)
+
 (use-package exec-path-from-shell
   :ensure exec-path-from-shell
   :commands (exec-path-from-shell-copy-envs))
