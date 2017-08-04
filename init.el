@@ -92,7 +92,7 @@
                                    solarized-dark
                                    smart-mode-line-dark))))
 
-  ;; Hooks
+  ;; Hooks (non mode-specific)
 
   (add-hook 'minibuffer-setup-hook #'conditionally-enable-lispy)
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
@@ -104,7 +104,7 @@
     (add-hook 'prog-mode-hook #'electric-indent-local-mode))
   (add-hook 'lisp-mode-hook #'lispy-mode)
 
-  ;; Keybindings
+  ;; Top-Level Keybindings
 
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
