@@ -282,7 +282,7 @@ If FILE is not given, prompt for one."
                    ("db-private" . "~/.emacs.d/site-lisp/db-private.el")
                    ("notes"    . "~/Documents/home/notes.org")
                    ("pensieve" . "~/Documents/home/pensieve.org.gpg")
-                   ("things (home)" . "~/Documents/home/misc/things.gpg")
+                   ("things (home)" . "~/Documents/home/admin/things.gpg")
                    ("things (work)" . "~/Documents/uni/admin/misc/things.gpg")
                    ("research ideas" . "~/Documents/uni/research/ideas.org")
                    ("teaching ideas" . "~/Documents/uni/lehre/ideas.org")))
