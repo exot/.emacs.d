@@ -1,0 +1,185 @@
+#+TITLE: Notes on “Babel: Introduction”
+#+AUTHOR: Daniel
+#+DATE: 2016-06-26
+
+Tutorial from http://orgmode.org/worg/org-contrib/babel/intro.html
+
+* Source Code Execution
+
+#+begin_src hy
+  (print "Hello, There!")
+#+end_src
+
+#+RESULTS:
+: Hello, There!
+
+#+begin_src sh
+  echo "This file takes up `du -h emacs-org-babel-tutorial.org | sed 's/\([0-9k]*\)[ ]*emacs-org-babel-tutorial.org/\1/'`"
+#+end_src
+
+#+RESULTS:
+: This file takes up 4.0K
+
+#+begin_src R :colnames yes
+  words <- tolower(scan("emacs-org-babel-tutorial.org", what="", na.strings=c("|",":")))
+  t(sort(table(words[nchar(words) > 3]), decreasing=TRUE)[1:10])
+#+end_src
+
+#+RESULTS:
+| #+begin_src | #+end_src | #+results: | date | plus | today's | :results | hello, | import | is") |
+|-------------+-----------+------------+------+------+---------+----------+--------+--------+------|
+|           5 |         5 |          4 |    3 |    3 |       3 |        2 |      2 |      2 |    2 |
+
+** Capturing the Results of Code Evaluation
+
+#+begin_src python :results value
+  import time
+  print("Hello, today's date is %s" % time.ctime())
+  print("Two plus two is")
+  return 2 + 2
+#+end_src
+
+#+RESULTS:
+: 4
+
+#+begin_src python :results output
+  import time
+  print("Hello, today's date is %s" % time.ctime())
+  print("Two plus two is")
+  2 + 2
+#+end_src
+
+#+RESULTS:
+: Hello, today's date is Sun Jun 26 16:04:36 2016
+: Two plus two is
+
+** Session-based Evaluation
+
+Have a look into /Emacs Speaks Statistics/
+
+** Arguments to Code Blocks
+
+#+name: square
+#+header: :var x = 0
+#+begin_src python
+  return x*x
+#+end_src
+
+#+call: square(x=6)
+
+#+RESULTS:
+: 36
+
+#+tblname: fibonacci-inputs
+| 1 | 2 | 3 | 4 |  5 |  6 |  7 |  8 |  9 | 10 |
+| 2 | 4 | 6 | 8 | 10 | 12 | 14 | 16 | 18 | 20 |
+
+#+name: fibonacci-seq
+#+begin_src emacs-lisp :var fib-inputs=fibonacci-inputs
+  (defun fibonacci (n)
+    (if (or (= n 0) (= n 1))
+        n
+      (+ (fibonacci (- n 1))
+         (fibonacci (- n 2)))))
+
+  (mapcar (lambda (row)
+            (mapcar #'fibonacci row))
+          fib-inputs)
+#+end_src
+
+#+RESULTS: fibonacci-seq
+| 1 | 1 | 2 |  3 |  5 |   8 |  13 |  21 |   34 |   55 |
+| 1 | 3 | 8 | 21 | 55 | 144 | 377 | 987 | 2584 | 6765 |
+
+** In-line Code Blocks
+
+In-line code can be call without header arguments (like so: src_sh{date}) or
+with header arguments (like so: src_python[:results value]{return 10 + 10}).
+
+** Code Block Body Expansion
+
+Preview: =C-c C-v v=, bound to =org-babel-expand-src-block=
+
+#+tblname: data
+| username | john-doe |
+| password | abc123   |
+
+#+begin_src emacs-lisp :var data=data
+(setq my-special-username (first (first data)))
+(setq my-special-password (first (second data)))
+#+end_src
+
+** A Meta-programming Language for Org-mode
+
+#+name: directories
+#+begin_src sh :results replace
+  cd ~ && du -sc * | grep -v total
+#+end_src
+
+#+RESULTS: directories
+|   538604 | Desktop   |
+| 77332656 | Documents |
+|  1206668 | Mail      |
+|        8 | News      |
+
+#+name: directory-pie-chart
+#+begin_src R :session R-pie-example :var dirs=directories
+  pie(dirs[,1], labels = dirs[,2])
+#+end_src
+
+#+RESULTS: directory-pie-chart
+
+Note: the syntax =#+name: directory-pie-chart(dirs=directories)= did not work.
+
+** Using Code Blocks in Org Tables
+
+*** Example 1: Data Summaries Using R
+
+#+name: tbl-example-data
+#+begin_src R
+  runif(n=5, min=0, max=1)
+#+end_src
+
+#+name: R-mean
+#+begin_src R :var x=""
+  colMeans(x)
+#+end_src
+
+#+tblname: summaries
+|              mean |
+|-------------------|
+| 0.574235895462334 |
+#+TBLFM: @2$1='(org-sbe "R-mean" (x "tbl-example-data()"))
+
+*** Example 2: Babel Test Suite
+
+/No notes/
+
+* The Library of Babel
+
+#+lob: square(x=6)
+
+Does not do what I expected …
+
+* Literate Programming
+
+#+name: hello-world-prefix
+#+begin_src sh :exports none
+  echo "/-----------------------------------------------------------\\"
+#+end_src
+
+#+name: hello-world-postfix
+#+begin_src sh :exports none
+  echo "\-----------------------------------------------------------/"
+#+end_src
+
+#+name: hello-world
+#+begin_src sh :tangle hello.sh :exports none :noweb yes
+  <<hello-world-prefix>>
+  echo "|                       hello world                         |"
+  <<hello-world-postfix>>
+#+end_src
+
+Tangling with =C-c C-v t=.
+
+* Reproducible Research
