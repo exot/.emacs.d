@@ -455,37 +455,7 @@
             ;; opening them manually
             (mapc #'find-file-noselect org-agenda-files)
 
-            (org-clock-persistence-insinuate)
-
-            (require 'hydra)
-
-            (defhydra hydra-org-clock (:color blue)
-              "
-Current Task: %`org-clock-current-task; "
-              ("w" (lambda ()
-                     (interactive)
-                     (clock-in-task-by-id org-working-task-id)))
-              ("h" (lambda ()
-                     (interactive)
-                     (clock-in-task-by-id org-home-task-id)))
-              ("b" (lambda ()
-                     (interactive)
-                     (clock-in-task-by-id org-break-task-id)))
-              ("i" (lambda ()
-                     (interactive)
-                     (org-clock-in '(4))))
-              ("a" counsel-org-goto-all)
-              ("o" org-clock-out)
-              ("l" db/org-clock-in-last-task)
-              ("p" db/play-playlist)
-              ("d" (lambda ()
-                     (interactive)
-                     (when (org-clock-is-active)
-                       (save-window-excursion
-                         (org-clock-goto)
-                         (let ((org-inhibit-logging 'note))
-                           (org-todo 'done)
-                           (org-save-all-org-buffers)))))))))
+            (org-clock-persistence-insinuate)))
 
 (use-package org-ref
   :config (progn
