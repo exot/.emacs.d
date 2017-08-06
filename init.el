@@ -35,6 +35,8 @@
 (use-package auto-compile
   :ensure t)
 
+(add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
+
 
 ;; * Mode activation
 
@@ -206,7 +208,6 @@
 ;; * Builtin Variables
 
 (use-package db-private
-  :load-path "site-lisp"
   :defines (db/personal-mail-address
             db/work-mail-address
             db/jabber-id
@@ -448,8 +449,7 @@
   :config (progn
             (bind-key [remap org-return] 'org-return-indent org-mode-map)
 
-            (use-package db-org
-              :load-path "site-lisp")
+            (use-package db-org)
 
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
@@ -506,7 +506,6 @@ Current Task: %`org-clock-current-task; "
              crux-cleanup-buffer-or-region))
 
 (use-package db-utils
-  :load-path "site-lisp/"
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
              db/go-dark
@@ -517,8 +516,7 @@ Current Task: %`org-clock-current-task; "
              db/run-or-hide-ansi-term
              db/helm-shortcuts))
 
-(use-package db-emacsclient
-  :load-path "site-lisp/")
+(use-package db-emacsclient)
 
 (use-package hydra
   :commands (hydra-toggle/body
