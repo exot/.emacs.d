@@ -102,7 +102,7 @@
   (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'text-mode-hook #'turn-on-auto-fill)
   (add-hook 'before-save-hook #'db/delete-trailing-whitespace-maybe)
-  (add-hook 'prog-mode-hook #'turn-on-page-break-lines-mode)
+  (add-hook 'prog-mode-hook #'page-break-lines-mode)
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook #'electric-indent-local-mode))
   (add-hook 'lisp-mode-hook #'lispy-mode)
@@ -1346,7 +1346,7 @@ _h_   _l_   _o_k        _y_ank
          ("\\.xml\\'"  . nxml-mode)))
 
 (use-package page-break-lines
-  :commands (turn-on-page-break-lines-mode)
+  :commands (page-break-lines-mode)
   :diminish page-break-lines-mode)
 
 (use-package pdf-tools
