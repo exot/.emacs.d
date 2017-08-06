@@ -1078,7 +1078,9 @@ _h_   _l_   _o_k        _y_ank
   :init (add-hook 'latex-mode-hook 'turn-on-reftex)  ; with Emacs latex mode
   :config (progn
             (eval-after-load 'helm-mode
-              '(add-to-list 'helm-completing-read-handlers-alist '(reftex-citation . nil)))
+              '(add-to-list
+                'helm-completing-read-handlers-alist
+                '(reftex-citation . nil)))
             (setq reftex-plug-into-AUCTeX t)
             (setq reftex-default-bibliography
                   '("~/Documents/uni/research/references.bib"))))
