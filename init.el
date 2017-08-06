@@ -84,6 +84,7 @@
   (winner-mode 1)
 
   (global-auto-revert-mode -1)
+  (diminish 'auto-revert-mode)
 
   (projectile-mode +1)
   (which-function-mode +1)
