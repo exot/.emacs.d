@@ -683,6 +683,8 @@ _h_   _l_   _o_k        _y_ank
             (add-hook 'dired-mode-hook #'dired-omit-mode)
             (setq dired-omit-files
                   (concat dired-omit-files "\\|^\\...+$"))
+            (dolist (extension '(".out" ".synctex.gz" ".thm"))
+              (add-to-list 'dired-latex-unclean-extensions extension))
 
             (setq dired-guess-shell-alist-user
                   '(("\\.pdf\\'" "evince")
@@ -1084,9 +1086,6 @@ _h_   _l_   _o_k        _y_ank
 (use-package tex
   :ensure auctex
   :mode   ("\\.tex\\'" . TeX-mode)
-  :init   (progn
-            (dolist (extension '(".out" ".synctex.gz" ".thm"))
-              (add-to-list 'completion-ignored-extensions extension)))
   :config (progn
             (require 'latex)
             (require 'tex-buf)
