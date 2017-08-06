@@ -4,6 +4,30 @@
 
 ;;; Code:
 
+(declare-function emms-shuffle "emms")
+(declare-function emms-mode-line "emms-mode-line")
+(declare-function emms-playlist-new "emms")
+(declare-function emms-stop "emms")
+(declare-function emms-playlist-set-playlist-buffer "emms")
+(declare-function emms-playlist-current-clear "emms")
+(declare-function emms-playlist-current-insert-source "emms")
+(declare-function emms-playlist-select-first "emms")
+(declare-function emms-start "emms")
+(declare-function emms-track-get "emms")
+(declare-function emms-track-simple-description "emms")
+(declare-function emms-playlist-ensure-playlist-buffer "emms")
+(declare-function emms-propertize "emms-compat")
+(declare-function emms-track-force-description "emms")
+(declare-function emms-playlist-selected-track-at-p "emms")
+(declare-function emms-playlist-mode-overlay-selected "emms-playlist-mode")
+(declare-function emms-track-description "emms")
+(declare-function emms-playlist-current-selected-track "emms")
+(declare-function emms-next "emms")
+(declare-function emms-previous "emms")
+(declare-function emms-pause "emms")
+(declare-function emms-show "emms")
+(declare-function emms "emms-playlist-mode")
+
 
 ;; Setup
 
@@ -21,8 +45,7 @@
 
 (setq emms-source-file-default-directory "~/Documents/media/audio/")
 
-(defadvice emms-tag-editor-submit (after delete-window activate)
-  (delete-window))
+(advice-add 'emms-tag-editor-submit :after #'delete-window)
 
 (bind-key "S s" #'emms-shuffle emms-playlist-mode-map)
 
@@ -38,6 +61,7 @@
 ;; Custom playlist
 
 (defun db/play-playlist ()
+  "Play `db/personal-playlist’ in dedicated EMMS buffer."
   (interactive)
   (save-window-excursion
     (let ((music-buffer-name "*EMMS Playlist* -- Misc"))
@@ -61,8 +85,8 @@
 
 (defun db/emms-source-file-directory-tree-find (dir regex)
   "Return a list of all files under DIR that match REGEX.
-This function uses the external find utility. The name for GNU find
-may be supplied using `emms-source-file-gnu-find'.
+This function uses the external find utility.  The name for GNU
+find may be supplied using `emms-source-file-gnu-find'.
 
 Difference to original `emms-source-file-directory-tree-find’ is
 that we also follow symbolic links."
@@ -86,6 +110,8 @@ that we also follow symbolic links."
 ;; Track description
 
 (defun db/emms-track-description (track)
+  "Return custom description of TRACK.
+This function can be used as a value for `emms-track-description-function’."
   (require 'seq)
   (let* ((artist    (propertize (emms-track-get track 'info-artist "")
                                 'face 'emms-browser-artist-face))
@@ -145,14 +171,15 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
 (require 'emms-stream-info)
 (setq emms-stream-default-action "play")
 
+
+;; Hydra
+
 (defun db/emms-track-status ()
+  "Return string displaying status of currently played track."
   (if emms-player-playing-p
       (format "%s" (emms-track-description
                     (emms-playlist-current-selected-track)))
     "«nothing»"))
-
-
-;; Hydra
 
 (defhydra emms-control (:color red :hint none)
   "
