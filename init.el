@@ -930,7 +930,8 @@ _h_   _l_   _o_k        _y_ank
                     (emms-playlist-current-clear)
                     (emms-playlist-current-insert-source
                      'emms-insert-playlist
-                     "~/Documents/home/misc/playlist-daniel.pls")
+                     (expand-file-name "private/playlist-daniel.pls"
+                                       emacs-d))
                     (beginning-of-buffer)
                     (emms-shuffle)
                     ;; (emms-playlist-sort-by-play-count)
