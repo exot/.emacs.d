@@ -893,11 +893,14 @@ _h_   _l_   _o_k        _y_ank
              db/play-playlist
              emms-cache-save
              emms-play-directory-tree
-             emms-control/body))
+             emms-control/body)
+  :config (setq db/personal-playlist
+                (expand-file-name "private/playlist-daniel.pls" emacs-d)))
 
 (use-package helm-emms
   :commands (helm-emms)
   :config (progn
+            (require 'db-emms)
             (require 'helm-adaptive)
             (setq helm-emms-default-sources
                   '(helm-source-emms-streams

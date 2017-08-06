@@ -16,6 +16,9 @@
 
 ;; Basic configuration
 
+(defvar db/personal-playlist nil
+  "Personal playlist.")
+
 (setq emms-source-file-default-directory "~/Documents/media/audio/")
 
 (defadvice emms-tag-editor-submit (after delete-window activate)
@@ -46,9 +49,8 @@
         (emms-playlist-current-clear)
         (emms-playlist-current-insert-source
          'emms-insert-playlist
-         (expand-file-name "private/playlist-daniel.pls"
-                           emacs-d))
-        (beginning-of-buffer)
+         db/personal-playlist)
+        (goto-char (point-min))
         (emms-shuffle)
         ;; (emms-playlist-sort-by-play-count)
         (emms-playlist-select-first)
