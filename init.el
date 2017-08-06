@@ -905,6 +905,29 @@ _h_   _l_   _o_k        _y_ank
 
             (setq emms-source-file-default-directory "~/Documents/media/audio/")
 
+            (defun db/emms-source-file-directory-tree-find (dir regex)
+              "Return a list of all files under DIR that match REGEX.
+This function uses the external find utility. The name for GNU find
+may be supplied using `emms-source-file-gnu-find'.
+
+Difference to original `emms-source-file-directory-tree-find’ is
+that we also follow symbolic links."
+              (with-temp-buffer
+                (call-process emms-source-file-gnu-find
+                              nil t nil
+                              "-L"
+                              (expand-file-name dir)
+                              "-type" "f"
+                              "-iregex" (concat ".*\\(" regex "\\).*"))
+                (delete ""
+                        (split-string (buffer-substring (point-min)
+                                                        (point-max))
+                                      "\n"))))
+
+            (unless (memq system-type '(windows-nt ms-dos))
+              (setq emms-source-file-directory-tree-function
+                    #'db/emms-source-file-directory-tree-find))
+
             (defadvice emms-tag-editor-submit (after delete-window activate)
               (delete-window))
 
