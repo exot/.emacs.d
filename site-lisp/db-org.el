@@ -454,8 +454,7 @@ are equal return nil."
                      ((org-agenda-overriding-header "Stuck Tasks")))))
         ("S" "Somewhen"
              ((tags "SOMEWHEN/-CANC-DONE"
-                    ((org-agenda-overriding-header "Things to do somewhen")
-                     (org-use-tag-inheritance nil)))
+                    ((org-agenda-overriding-header "Things to do somewhen")))
               (tags-todo "/HOLD"
                          ((org-agenda-overriding-header "Tasks on Hold")))))
         ("W" "Weekly Review"
