@@ -785,7 +785,7 @@ the resulting org mode file, respectively."
     (let ((tmp-file (make-temp-file "/tmp/emacs-ical-")))
       (url-copy-file ical-file-name tmp-file t)
       (setq ical-file-name tmp-file)))
-  (unless (zerop (call-process "ical2org.pl"
+  (unless (zerop (call-process "ical2org"
                                ical-file-name
                                `(:file ,org-file-name)
                                nil
