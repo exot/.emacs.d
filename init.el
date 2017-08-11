@@ -219,9 +219,6 @@
 (setq user-full-name "Daniel Borchmann"
       user-mail-address db/personal-mail-address)
 
-(setq explicit-shell-file-name "/usr/bin/zsh"
-      shell-file-name "/usr/bin/zsh")
-
 (setq custom-file (expand-file-name "private/custom.el" emacs-d))
 (load-file custom-file)
 
@@ -270,8 +267,7 @@
       delete-by-moving-to-trash t
       delete-trailing-lines nil
       x-underline-at-descent-line t
-      search-whitespace-regexp "[ \t\r\n]+"
-      apropos-sort-by-scores 'verbose)
+      search-whitespace-regexp "[ \t\r\n]+")
 
 (setq-default cursor-type 'bar)
 
@@ -577,6 +573,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package projectile
   :ensure projectile
   :commands (projectile-mode)
+  :defines (projectile-known-projects)
   :config (progn
             (setq projectile-switch-project-action 'projectile-dired
                   projectile-completion-system 'ivy
@@ -647,8 +644,7 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package epg
   :config (progn
-            (setq epg-program "/usr/bin/gpg2"
-                  epg-debug t)))
+            (setq epg-debug t)))
 
 
 ;; * Appearance
@@ -728,7 +724,7 @@ _h_   _l_   _o_k        _y_ank
                                 (lambda ()
                                   (setq ediff-after-quit-hook-internal nil)
                                   (set-window-configuration wnd))))
-                  (error "no more than 2 files should be marked"))))
+                  (error "No more than 2 files should be marked"))))
 
             (require 'dired-quick-sort)
             (dired-quick-sort-setup)
@@ -764,8 +760,6 @@ _h_   _l_   _o_k        _y_ank
   :init   (require 'helm-config)
   :config (progn
             (setq helm-input-idle-delay 0.0
-                  helm-M-x-fuzzy-match t
-                  helm-M-x-requires-pattern nil
                   helm-buffers-fuzzy-matching t
                   helm-recentf-fuzzy-match t
                   helm-mode-fuzzy-match t
@@ -801,8 +795,7 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package ivy
   :commands (ivy-mode
-             ivy-resume
-             ivy-recentf)
+             ivy-resume)
   :diminish ivy-mode
   :config (progn
             (setq ivy-use-virtual-buffers t
@@ -820,7 +813,8 @@ _h_   _l_   _o_k        _y_ank
              counsel-info-lookup-symbol
              counsel-unicode-char
              counsel-describe-variable
-             counsel-describe-function))
+             counsel-describe-function
+             counsel-recentf))
 
 (use-package swiper
   :commands (swiper))
@@ -893,6 +887,9 @@ _h_   _l_   _o_k        _y_ank
 (use-package term
   :commands (term-send-string)
   :config (progn
+            (setq explicit-shell-file-name "/usr/bin/zsh"
+                  shell-file-name "/usr/bin/zsh")
+
             (add-hook 'term-exec-hook   ; oremacs.com
                       (lambda ()
                         (let* ((buff (current-buffer))
@@ -981,7 +978,7 @@ _h_   _l_   _o_k        _y_ank
                   cider-auto-select-error-buffer t
                   cider-stacktrace-default-filters '(tooling dup)
                   cider-stacktrace-fill-column 80
-                  cider-prompt-save-file-on-load nil
+                  cider-save-file-on-load nil
                   cider-repl-result-prefix ";; => "
                   cider-repl-use-clojure-font-lock t
                   cider-repl-wrap-history t
