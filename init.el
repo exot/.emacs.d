@@ -866,9 +866,7 @@ _h_   _l_   _o_k        _y_ank
              db/play-playlist
              emms-cache-save
              emms-play-directory-tree
-             emms-control/body)
-  :config (setq db/personal-playlist
-                (expand-file-name "private/playlist-daniel.pls" emacs-d)))
+             emms-control/body))
 
 (use-package helm-emms
   :commands (helm-emms)

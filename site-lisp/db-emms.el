@@ -40,12 +40,12 @@
 
 ;; Basic configuration
 
-(defvar db/personal-playlist nil
-  "Personal playlist.")
-
 (setq emms-source-file-default-directory "~/Documents/media/audio/")
 
-(advice-add 'emms-tag-editor-submit :after #'delete-window)
+(advice-add 'emms-tag-editor-submit
+            :after (lambda (&rest r)
+                     (declare (ignore r))
+                     (delete-window)))
 
 (bind-key "S s" #'emms-shuffle emms-playlist-mode-map)
 
@@ -72,8 +72,8 @@
         (emms-playlist-set-playlist-buffer)
         (emms-playlist-current-clear)
         (emms-playlist-current-insert-source
-         'emms-insert-playlist
-         db/personal-playlist)
+         'emms-insert-directory-tree
+         (expand-file-name "songs/" emms-source-file-default-directory))
         (goto-char (point-min))
         (emms-shuffle)
         ;; (emms-playlist-sort-by-play-count)
