@@ -1083,8 +1083,8 @@ _h_   _l_   _o_k        _y_ank
             (setq reftex-default-bibliography
                   '("~/Documents/uni/research/references.bib"))))
 
-(use-package db-latex
-  :mode ("\\.tex\\'" . TeX-mode))
+(eval-after-load 'tex-mode
+  '(require 'db-latex))
 
 (use-package ebib
   :commands (ebib))
