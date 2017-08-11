@@ -35,6 +35,7 @@
 (add-hook 'LaTeX-mode-hook #'outline-minor-mode)
 (add-hook 'LaTeX-mode-hook #'page-break-lines-mode)
 (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+(add-hook 'LaTeX-mode-hook #'electric-pair-mode)
 
 (put 'TeX-narrow-to-group 'disabled nil)
 (put 'LaTeX-narrow-to-environment 'disabled nil)
