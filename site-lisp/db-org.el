@@ -561,14 +561,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (eval-after-load 'org-agenda
   '(bind-key "v" #'hydra-org-agenda-view/body org-agenda-mode-map))
 
-(defun db/org-agenda-to-appt ()
-  ;; doc.norang.ca/org-mode.html
-  "Rebuild reminders for today from the agenda."
-  (interactive)
-  (org-agenda-to-appt t))
-
-(add-hook 'org-agenda-finalize-hook 'db/org-agenda-to-appt 'append)
-
 
 ;;; Capturing
 

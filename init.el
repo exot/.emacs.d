@@ -189,7 +189,6 @@
   (run-with-timer 0 3600 #'bbdb-save)
   (run-with-timer 0 3600 #'emms-cache-save)
   (run-with-idle-timer 1200 t #'db/export-diary)
-  (run-at-time "00:01" 86400 #'db/org-agenda-to-appt)
 
   ;; Environment Variables
 
@@ -447,7 +446,6 @@
 
 (use-package db-org
   :commands (db/export-diary
-             db/org-agenda-to-appt
              hydra-org-clock/body)
   :config (progn
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
