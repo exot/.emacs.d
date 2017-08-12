@@ -684,7 +684,7 @@ _h_   _l_   _o_k        _y_ank
                   '(("\\.pdf\\'" "evince")
                     ("\\.ps\\'" "evince")
                     ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
-                    ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "geeqie")
+                    ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
                     ("\\.\\(?:xcf\\)\\'" "gimp")
                     ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
                      "vlc")
