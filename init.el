@@ -201,6 +201,7 @@
                                     "PERL_LOCAL_LIB_ROOT"
                                     "PERL_MB_OPT"
                                     "PERL_MM_OPT"))
+
   t)
 
 (add-hook 'after-init-hook #'db/run-init)
@@ -939,7 +940,6 @@ _h_   _l_   _o_k        _y_ank
 ;; General Stuff first
 
 (use-package lispy
-  ;; note: this will load org-mode
   :commands (lispy-mode conditionally-enable-lispy)
   :diminish lispy-mode
   :config (progn
