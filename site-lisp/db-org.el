@@ -735,9 +735,18 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
       org-src-preserve-indentation t)
 
 
-;;; Other Packages
+;;; Reset checklists
 
-(require 'org-checklist)
+;; from `org-checklist’ by James TD Smith (@ ahktenzero (. mohorovi cc)),
+;; version: 1.0
+
+(defun org-reset-checkbox-state-maybe ()
+  "Reset all checkboxes in an entry if the `RESET_CHECK_BOXES' property is set"
+  (interactive "*")
+  (if (org-entry-get (point) "RESET_CHECK_BOXES")
+      (org-reset-checkbox-state-subtree)))
+
+(add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
 
 
 ;;; Calendar
