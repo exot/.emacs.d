@@ -34,7 +34,11 @@
 (put 'use-package 'common-lisp-indent-function 1)
 
 (use-package auto-compile
-  :ensure t)
+  :ensure t
+  :demand t
+  :config (progn
+            (auto-compile-on-load-mode)
+            (auto-compile-on-save-mode)))
 
 (add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
 
