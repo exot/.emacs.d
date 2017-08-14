@@ -438,16 +438,12 @@
   :commands (org-agenda
              org-capture
              org-store-link
-             org-clock-save)
-  :config (progn
-            (require 'db-org)
-            (bind-key [remap org-return] 'org-return-indent org-mode-map)
-            (org-clock-persistence-insinuate)))
-
-(use-package db-org
-  :commands (db/export-diary
+             org-clock-save
+             db/export-diary
              hydra-org-clock/body)
   :config (progn
+            (require 'db-org)
+
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
             (mapc #'find-file-noselect org-agenda-files)))

@@ -7,6 +7,8 @@
 
 ;;; Basic Setup
 
+(require 'org)
+
 (setq org-deadline-warning-days 14
       org-read-date-popup-calendar t
       org-insert-heading-respect-content t
@@ -15,7 +17,13 @@
       org-edit-timestamp-down-means-later t
       org-archive-location "%s_archive.gpg::"
       org-image-actual-width nil
-      org-footnote-section nil)
+      org-footnote-section nil
+      org-log-into-drawer "LOGBOOK"
+      org-log-reschedule 'time
+      org-clone-delete-id t
+      org-catch-invisible-edits 'error)
+
+(bind-key [remap org-return] 'org-return-indent org-mode-map)
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "CONT(n!)" "|" "DONE(d@)")
@@ -83,14 +91,11 @@
       org-clock-in-resume t
       org-clock-into-drawer t
       org-clock-idle-time nil
-      org-log-into-drawer "LOGBOOK"
-      org-log-reschedule 'time
       org-clock-out-remove-zero-time-clocks t
       org-clock-out-when-done '("DONE" "CANC" "WAIT" "HOLD")
-      org-clock-persist t
-      org-clock-persist-query-resume nil
       org-clock-auto-clock-resolution 'when-no-clock-is-running
       org-clock-mode-line-total 'auto
+      ;; org-clock-report-include-clocking-task t
       org-clock-in-switch-to-state (lambda (kw)
                                      (when (and (not
                                                  (and (boundp 'org-capture-mode)
@@ -101,16 +106,18 @@
                                           "CONT")
                                          ((member (org-get-todo-state)
                                                   (list "GOTO"))
-                                          "ATTN"))))
-      org-clock-continuously t
-      org-time-stamp-rounding-minutes '(1 1)
-      org-clock-report-include-clocking-task t
-      org-time-clocksum-format '(:hours "%d"
+                                          "ATTN")))))
+
+(org-clock-persistence-insinuate)
+
+(setq org-clock-persist t
+      org-clock-persist-query-resume nil)
+
+(setq org-time-clocksum-format '(:hours "%d"
                                  :require-hours t
                                  :minutes ":%02d"
                                  :require-minutes t)
-      org-catch-invisible-edits 'error
-      org-clone-delete-id t)
+      org-time-stamp-rounding-minutes '(1 1))
 
 ;; Default Tasks for Working, Home, Breaks
 
