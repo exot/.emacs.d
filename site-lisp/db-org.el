@@ -593,8 +593,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("d" "Date"
              entry
              (file db/org-default-refile-file)
-             "* GOTO %^{What} :DATE:\n%^{When}t\n%a"
-             :immediate-finish t)
+             "* GOTO %^{What} :DATE:\n%^{When}t\n%a")
         ("i" "Interruptions")
         ("in" "Interruption now"
               entry
@@ -627,15 +626,13 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
              ,(concat "* READ %:subject :READ:\n"
                       ;; "DEADLINE: <%(org-read-date nil nil \"+1m\")>\n"
                       ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%a")
-             :immediate-finish t)
+                      "\n%a"))
         ("U" "Read current content of clipboard"
              entry
              (file db/org-default-refile-file)
              ,(concat "* READ %^{Description} :READ:\n"
                       ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%(current-kill 0)")
-             :immediate-finish t)
+                      "\n%(current-kill 0)"))
         ("m" "Meeting"
              entry
              (file db/org-default-refile-file)
