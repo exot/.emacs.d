@@ -57,6 +57,9 @@
 (setq emms-player-list
       '(emms-player-mplayer emms-player-mplayer-playlist))
 
+(when (require 'emms-info-mediainfo nil 'no-error)
+  (setq emms-info-functions '(emms-info-mediainfo)))
+
 
 ;; Custom playlist
 
