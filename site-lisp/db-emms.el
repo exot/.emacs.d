@@ -138,8 +138,10 @@ This function can be used as a value for `emms-track-description-function’."
                                              performer)))
                                   ((not (seq-empty-p artist))
                                    (format "“%s” by %s" title artist))
-                                  (t title))
-                              (emms-track-simple-description track)))
+                                  (t
+                                   title))
+                              (string-remove-prefix (expand-file-name emms-source-file-default-directory)
+                                                    (emms-track-simple-description track))))
           (note             (if (seq-empty-p note)
                                 ""
                               (concat " [" note "]"))))
