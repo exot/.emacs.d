@@ -869,7 +869,8 @@ _h_   _l_   _o_k        _y_ank
             (setq helm-emms-default-sources
                   '(helm-source-emms-streams
                     helm-source-emms-dired
-                    helm-source-emms-files))))
+                    helm-source-emms-files))
+            (setq helm-emms-use-track-description-function t)))
 
 
 ;; * Shells and such
