@@ -146,7 +146,7 @@
 
 ;;; Appearence
 
-(setq gnus-group-line-format "%S%p%P%5y(%2i):%B%(%g%)\n"
+(setq gnus-group-line-format "%S%p%P%5y(%2i):%B%(%s:%G%)\n"
       gnus-auto-select-first nil
       gnus-auto-select-next nil)
 
