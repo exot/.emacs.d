@@ -40,11 +40,7 @@
 
 (setq gnus-select-method '(nnnil "")
       gnus-secondary-select-methods
-      `((nntp "dfn"
-              (nntp-open-connection-function nntp-open-tls-stream)
-              (nntp-port-number 563)
-              (nntp-address "news.cis.dfn.de"))
-        (nntp "gmane"
+      `((nntp "gmane"
               (nntp-open-connection-function nntp-open-tls-stream)
               (nntp-port-number 563)
               (nntp-address "news.gmane.org"))
