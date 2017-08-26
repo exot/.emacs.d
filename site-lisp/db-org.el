@@ -303,9 +303,6 @@ forces clocking in of the default task."
         :overlap-face nil :gap-face nil :no-end-time-face nil
         :long-face nil :short-face nil))
 
-(eval-after-load 'org-agenda
-  '(bind-key "i" 'org-agenda-clock-in org-agenda-mode-map))
-
 (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)
 
 (setq org-agenda-clockreport-parameter-plist
@@ -487,24 +484,40 @@ are equal return nil."
               (org-agenda-prefix-format '((tags . "  ")))))))
 
 (defun db/org-add-clocking-time ()
+  "Add \"CLOCK:\" line to the task under point in the current org-mode file.
+
+Start and end time will be queried interactively."
+  (interactive)
+  ;; FIXME: make this function to take two optional arguments
+  (if (not (eq major-mode 'org-mode))
+      (user-error "Must be in org mode")
+    (let* ((starting-time (org-read-date 4 'totime nil
+                                         "Start:" (current-time) nil t))
+           (ending-time (org-read-date 4 'totime nil
+                                       "End:" (current-time) nil t)))
+      (save-mark-and-excursion
+       (org-clock-find-position nil)
+       (open-line 1)
+       (indent-according-to-mode)
+       (insert "CLOCK: ")
+       (org-insert-time-stamp starting-time t t)
+       (insert "--")
+       (org-insert-time-stamp ending-time t t)
+       (org-clock-update-time-maybe)))))
+
+(bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
+
+(defun db/org-agenda-add-clocking-time ()
   "Add \"CLOCK:\" line to the task under point in the agenda.
 
 Start and end time will be queried interactively."
   (interactive)
   ;; FIXME: make this function to take two optional arguments
-  ;; FIXME: check that we are in org-agenda-mode
-  (let* ((starting-time (org-read-date 4 'totime nil "Start:" (current-time) nil t))
-         (ending-time   (org-read-date 4 'totime nil "End:" (current-time) nil t)))
+  (if (not (eq major-mode 'org-agenda-mode))
+      (user-error "Must be in org agenda mode")
     (save-window-excursion
       (org-agenda-switch-to)
-      (org-clock-find-position nil)
-      (open-line 1)
-      (indent-according-to-mode)
-      (insert "CLOCK: ")
-      (org-insert-time-stamp starting-time t t)
-      (insert "--")
-      (org-insert-time-stamp ending-time t t)
-      (org-clock-update-time-maybe))))
+      (db/org-add-clocking-time))))
 
 (eval-after-load 'org-agenda
   '(bind-key "V u" #'db/org-add-clocking-time org-agenda-mode-map))
