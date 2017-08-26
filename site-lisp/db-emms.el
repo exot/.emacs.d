@@ -123,29 +123,24 @@ This function can be used as a value for `emms-track-description-function’."
          (performer (propertize (emms-track-get track 'info-performer "")
                                 'face 'emms-browser-performer-face))
          (title     (propertize (emms-track-get track 'info-title "")
-                                'face 'emms-browser-track-face))
-         (note      (emms-track-get track 'info-note "")))
-    (let ((main-description (if (not (seq-empty-p title))
-                                (cond
-                                  ((and (not (seq-empty-p composer))
-                                        (not (seq-empty-p performer)))
-                                   (if (string= composer performer)
-                                       (format "“%s” by %s"
-                                               title composer)
-                                     (format "“%s” by %s, performed by %s"
-                                             title
-                                             composer
-                                             performer)))
-                                  ((not (seq-empty-p artist))
-                                   (format "“%s” by %s" title artist))
-                                  (t
-                                   title))
-                              (string-remove-prefix (expand-file-name emms-source-file-default-directory)
-                                                    (emms-track-simple-description track))))
-          (note             (if (seq-empty-p note)
-                                ""
-                              (concat " [" note "]"))))
-      (concat main-description note))))
+                                'face 'emms-browser-track-face)))
+    (if (not (seq-empty-p title))
+        (cond
+          ((and (not (seq-empty-p composer))
+                (not (seq-empty-p performer)))
+           (if (string= composer performer)
+               (format "“%s” by %s"
+                       title composer)
+             (format "“%s” by %s, performed by %s"
+                     title
+                     composer
+                     performer)))
+          ((not (seq-empty-p artist))
+           (format "“%s” by %s" title artist))
+          (t
+           title))
+      (string-remove-prefix (expand-file-name emms-source-file-default-directory)
+                            (emms-track-simple-description track)))))
 
 (setq emms-track-description-function
       'db/emms-track-description)
