@@ -218,7 +218,6 @@
             db/work-mail-address
             db/jabber-id
             db/smtp-accounts
-            db/work-gnus-filter-rules
             db/personal-gnus-filter-rules))
 
 (setq user-full-name "Daniel Borchmann"

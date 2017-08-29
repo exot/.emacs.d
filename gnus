@@ -54,8 +54,7 @@
                 (nnimap-stream shell)
                 (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/zih")
                 (nnimap-inbox "INBOX")
-                (nnimap-split-methods nnimap-split-fancy)
-                (nnimap-split-fancy ,db/work-gnus-filter-rules))
+                (nnimap-split-methods nnimap-split-fancy))
         (nnimap "algebra20"
                 (nnimap-stream shell)
                 (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/algebra20")
