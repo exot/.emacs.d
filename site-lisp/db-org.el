@@ -521,7 +521,7 @@ Start and end time will be queried interactively."
       (db/org-add-clocking-time))))
 
 (eval-after-load 'org-agenda
-  '(bind-key "V u" #'db/org-add-clocking-time org-agenda-mode-map))
+  '(bind-key "V u" #'db/org-agenda-add-clocking-time org-agenda-mode-map))
 
 ;; A Hydra for changing agenda appearance
 ;; http://oremacs.com/2016/04/04/hydra-doc-syntax/
