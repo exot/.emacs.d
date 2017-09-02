@@ -254,10 +254,8 @@
       gnus-registry-max-entries 40000
       gnus-registry-track-extra '(sender subject recipient)
       gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
-                                                 emacs-d))
-
-(setq gnus-refer-article-method
-      '(current (nnregistry)))
+                                                 emacs-d)
+      gnus-refer-article-method 'current)
 
 (gnus-registry-initialize)
 
