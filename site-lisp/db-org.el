@@ -95,7 +95,7 @@
       org-clock-out-when-done '("DONE" "CANC" "WAIT" "HOLD")
       org-clock-auto-clock-resolution 'when-no-clock-is-running
       org-clock-mode-line-total 'auto
-      ;; org-clock-report-include-clocking-task t
+      org-clock-report-include-clocking-task t
       org-clock-in-switch-to-state (lambda (kw)
                                      (when (and (not
                                                  (and (boundp 'org-capture-mode)
