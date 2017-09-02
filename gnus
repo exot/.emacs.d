@@ -61,7 +61,7 @@
                 (nnimap-split-methods nnimap-split-fancy)
                 (nnimap-inbox "INBOX")
                 (nnimap-split-fancy ,db/personal-gnus-filter-rules))
-        (nnml ""
+        (nnml "local"
               (nnmail-split-methods nnmail-split-fancy)
               (nnmail-split-fancy
                (| ("subject" ".*Tiger Auditing Report for.*" "mail.tiger")
