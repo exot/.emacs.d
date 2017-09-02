@@ -121,12 +121,9 @@
 
 ;; Default Tasks for Working, Home, Breaks
 
-(defvar org-working-task-id
-  "e56f201f-64a7-4f4a-8c3c-4151e3fdf880")
-(defvar org-break-task-id
-  "c921affd-91f0-4ba9-8462-6c50dc1ed34e")
-(defvar org-home-task-id
-  "ade37344-ccd9-4c93-aa15-406886a86627")
+(defvar org-working-task-id nil)
+(defvar org-break-task-id nil)
+(defvar org-home-task-id nil)
 
 (add-hook 'org-clock-in-hook            ; mark current default task
           (lambda ()

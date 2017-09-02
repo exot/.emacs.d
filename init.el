@@ -448,6 +448,8 @@
   :config (progn
             (require 'db-org)
 
+            (setq org-home-task-id "ade37344-ccd9-4c93-aa15-406886a86627")
+
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
             (mapc #'find-file-noselect org-agenda-files)))
