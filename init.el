@@ -1128,12 +1128,18 @@ _h_   _l_   _o_k        _y_ank
   :commands (electric-quote-mode))
 
 (use-package elec-pair
-  :commands (electric-pair-mode)
+  :commands (electric-pair-mode
+             db/turn-off-local-electric-pair-mode)
   :config   (progn
               (add-to-list 'electric-pair-pairs '(?“ . ?”))
               (add-to-list 'electric-pair-text-pairs '(?“ . ?”))
               (add-to-list 'electric-pair-pairs '(?„ . ?“))
-              (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
+              (add-to-list 'electric-pair-text-pairs '(?„ . ?“))
+
+              (defun db/turn-off-local-electric-pair-mode ()
+                "Turn off `electric-pair-mode’ locally."
+                (interactive)
+                (electric-pair-local-mode -1))))
 
 (use-package expand-region
   :commands (er/expand-region))
