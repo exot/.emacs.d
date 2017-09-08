@@ -122,7 +122,6 @@
 ;; Default Tasks for Working, Home, Breaks
 
 (defvar org-working-task-id nil)
-(defvar org-break-task-id nil)
 (defvar org-home-task-id nil)
 
 (add-hook 'org-clock-in-hook            ; mark current default task
@@ -886,9 +885,6 @@ Current Task: %`org-clock-current-task; "
   ("h" (lambda ()
          (interactive)
          (clock-in-task-by-id org-home-task-id)))
-  ("b" (lambda ()
-         (interactive)
-         (clock-in-task-by-id org-break-task-id)))
   ("i" (lambda ()
          (interactive)
          (org-clock-in '(4))))
