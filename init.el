@@ -448,7 +448,8 @@
   :config (progn
             (require 'db-org)
 
-            (setq org-home-task-id "ade37344-ccd9-4c93-aa15-406886a86627")
+            (setq org-home-task-id "ade37344-ccd9-4c93-aa15-406886a86627"
+                  org-working-task-id "a686ba96-116e-457b-94c1-5dbc42f9c051")
 
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
