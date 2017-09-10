@@ -1219,6 +1219,7 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package pdf-tools
   :pin "melpa-stable"
+  :defer t
   :config (pdf-tools-install))
 
 (use-package pp
