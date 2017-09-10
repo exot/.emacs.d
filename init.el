@@ -935,7 +935,9 @@ _h_   _l_   _o_k        _y_ank
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
 
-(use-package db-eshell)
+(use-package eshell
+  :commands (eshell)
+  :config (use-package db-eshell))
 
 
 ;; * Lisp
