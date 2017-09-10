@@ -32,6 +32,8 @@
   (require package))
 
 (put 'use-package 'common-lisp-indent-function 1)
+(setq use-package-verbose t
+      use-package-minimum-reported-time 0.01)
 
 (use-package auto-compile
   :ensure t
