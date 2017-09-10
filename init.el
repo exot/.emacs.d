@@ -189,14 +189,6 @@
   (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
   (bind-key [remap open-line] #'crux-smart-open-line-above)
 
-  ;; Timers
-
-  (run-with-timer 0 3600 #'org-clock-save)
-  (run-with-timer 0 3600 #'recentf-save-list)
-  (run-with-timer 0 3600 #'bbdb-save)
-  (run-with-timer 0 3600 #'emms-cache-save)
-  (run-with-idle-timer 1200 t #'db/export-diary)
-
   ;; Environment Variables
 
   (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
@@ -455,7 +447,10 @@
 
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
-            (mapc #'find-file-noselect org-agenda-files)))
+            (mapc #'find-file-noselect org-agenda-files)
+
+            (run-with-timer 0 3600 #'org-clock-save)
+            (run-with-idle-timer 1200 t #'db/export-diary)))
 
 (use-package org-ref
   :config (progn
@@ -607,7 +602,8 @@ _h_   _l_   _o_k        _y_ank
                                                    db/work-mail-address))
                   bbdb-file (expand-file-name "private/bbdb" emacs-d))
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
-            (add-hook 'mail-setup-hook 'bbdb-mail-aliases)))
+            (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
+            (run-with-timer 0 3600 #'bbdb-save)))
 
 (use-package gnus
   :defines (gnus-init-file)
@@ -824,7 +820,8 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
-  :init (setq recentf-max-saved-items 1000))
+  :init (setq recentf-max-saved-items 1000)
+  :config (run-with-timer 0 3600 #'recentf-save-list))
 
 (use-package company
   :commands (company-mode global-company-mode))
@@ -863,7 +860,8 @@ _h_   _l_   _o_k        _y_ank
              db/play-playlist
              emms-cache-save
              emms-play-directory-tree
-             emms-control/body))
+             emms-control/body)
+  :config (run-with-timer 0 3600 #'emms-cache-save))
 
 (use-package helm-emms
   :commands (helm-emms)
