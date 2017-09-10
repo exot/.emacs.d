@@ -1200,6 +1200,7 @@ _h_   _l_   _o_k        _y_ank
   :mode (("\\.md\\'" . markdown-mode)))
 
 (use-package mastodon
+  :commands (mastodon)
   :config (progn
             (setq mastodon-instance-url "https://mastodon.blue/")))
 
