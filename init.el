@@ -453,6 +453,7 @@
             (run-with-idle-timer 1200 t #'db/export-diary)))
 
 (use-package org-ref
+  :defer t
   :config (progn
             (require 'org-ref-pdf)
             (require 'org-ref-url-utils)
