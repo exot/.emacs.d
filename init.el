@@ -1085,7 +1085,7 @@ _h_   _l_   _o_k        _y_ank
                   '("~/Documents/uni/research/references.bib"))))
 
 (eval-after-load 'tex-mode
-  '(require 'db-latex))
+  '(use-package db-latex))
 
 (use-package ebib
   :commands (ebib))
