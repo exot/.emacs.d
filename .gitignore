@@ -11,6 +11,11 @@
 !/elpa/diminish-20*
 !/elpa/bind-key-20*
 !/elpa/use-package-20*
+!/elpa/dash-20*
+!/elpa/hydra-20*
+!/elpa/page-break-lines-20*
+!/elpa/multiple-cursors-20*
+!/elpa/exec-path-from-shell-20*
 /emms/
 /eshell/history
 /eshell/lastdir
