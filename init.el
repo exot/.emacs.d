@@ -200,6 +200,12 @@
                                     "PERL_MB_OPT"
                                     "PERL_MM_OPT"))
 
+  ;; Fixes
+
+  (eval-after-load "enriched"
+    '(defun enriched-decode-display-prop (start end &optional param)
+       (list start end)))
+
   t)
 
 (add-hook 'after-init-hook #'db/run-init)
