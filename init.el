@@ -343,6 +343,10 @@
 
 (setq lisp-indent-function 'common-lisp-indent-function)
 
+(setq shell-file-name (if (eq system-type 'windows-nt)
+                          "C:/Programme/cygwin64/bin/bash.exe"
+                          "/usr/bin/zsh"))
+
 
 ;; * Basic Builtin Packages
 
@@ -896,8 +900,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package term
   :commands (term-send-string)
   :config (progn
-            (setq explicit-shell-file-name "/usr/bin/zsh"
-                  shell-file-name "/usr/bin/zsh")
+            (setq explicit-shell-file-name shell-file-name)
 
             (add-hook 'term-exec-hook   ; oremacs.com
                       (lambda ()
