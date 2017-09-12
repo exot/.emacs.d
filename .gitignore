@@ -1,3 +1,4 @@
+*.elc
 /.cider-history
 /.mc-lists.el
 /.org-id-locations
@@ -6,7 +7,10 @@
 /eautosave/
 /ebackup/
 /el-get/
-/elpa/
+/elpa/*
+!/elpa/diminish-20*
+!/elpa/bind-key-20*
+!/elpa/use-package-20*
 /emms/
 /eshell/history
 /eshell/lastdir
