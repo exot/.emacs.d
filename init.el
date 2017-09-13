@@ -108,7 +108,6 @@
 
   ;; Hooks (non mode-specific)
 
-  (add-hook 'minibuffer-setup-hook #'conditionally-enable-lispy)
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'text-mode-hook #'turn-on-auto-fill)
