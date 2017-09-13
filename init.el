@@ -246,7 +246,6 @@
 
 (setq inhibit-startup-message t
       initial-scratch-message nil
-      initial-major-mode 'org-mode
       ring-bell-function #'ignore
       garbage-collection-messages nil
       load-prefer-newer nil)            ; t breaks `org-reload'
