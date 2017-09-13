@@ -50,7 +50,8 @@
 (defun db/run-init ()
   "Run main initialization after everything is set up."
 
-  ;; Activate modes
+  ;; Activate modes (builtin)
+
   (show-paren-mode 1)
   (transient-mark-mode 1)
   (global-font-lock-mode 1)
@@ -74,29 +75,32 @@
 
   (quietly-read-abbrev-file)
 
-  (global-undo-tree-mode 1)
-  (ace-window-display-mode +1)
-  (electric-pair-mode +1)
-  (electric-quote-mode +1)
-  (key-chord-mode +1)
-
   (size-indication-mode 1)
   (display-battery-mode -1)
-  (sml/setup)
 
-  (ivy-mode +1)
+  (electric-pair-mode +1)
+  (electric-quote-mode +1)
 
   (recentf-mode t)
-  (which-key-mode 1)
   (winner-mode 1)
-
   (global-auto-revert-mode -1)
-  (diminish 'auto-revert-mode)
-
-  (projectile-mode +1)
   (which-function-mode +1)
 
+  ;; Activate modes (packages)
+
+  (dolist (mode '(global-undo-tree-mode
+                  ace-window-display-mode
+                  key-chord-mode
+                  sml/setup
+                  ivy-mode
+                  which-key-mode
+                  projectile-mode))
+    (ignore-errors                      ; don’t barf if mode cannot be loaded
+      (funcall mode +1)))
+
+  ;; Color Theme
   ;; setting this in `custom-file’ does not work, so we set it here
+
   (custom-set-variables
    '(custom-enabled-themes (quote (exot-main
                                    solarized-dark
@@ -191,14 +195,15 @@
 
   ;; Environment Variables
 
-  (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
-                                    "SSH_AGENT_PID"
-                                    "PATH"
-                                    "TEXMFHOME"
-                                    "PERL5LIB"
-                                    "PERL_LOCAL_LIB_ROOT"
-                                    "PERL_MB_OPT"
-                                    "PERL_MM_OPT"))
+  (ignore-errors
+    (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
+                                      "SSH_AGENT_PID"
+                                      "PATH"
+                                      "TEXMFHOME"
+                                      "PERL5LIB"
+                                      "PERL_LOCAL_LIB_ROOT"
+                                      "PERL_MB_OPT"
+                                      "PERL_MM_OPT")))
 
   ;; Fixes
 
