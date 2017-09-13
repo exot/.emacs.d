@@ -227,6 +227,7 @@
 (load-file custom-file)
 
 (use-package cl-lib)
+(use-package subr-x)
 
 (use-package warnings
   :config (cl-pushnew '(undo discard-info) warning-suppress-types
