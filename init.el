@@ -208,7 +208,7 @@
 
   (eval-after-load "enriched"
     '(defun enriched-decode-display-prop (start end &optional param)
-       (list start end)))
+      (list start end)))
 
   t)
 
