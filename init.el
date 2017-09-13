@@ -760,8 +760,7 @@ _h_   _l_   _o_k        _y_ank
   :commands (hippie-expand))
 
 (use-package helm
-  :commands (helm-command-prefix
-             helm-show-kill-ring)
+  :commands (helm-show-kill-ring)
   :ensure helm
   :diminish helm-mode
   :defines (helm-command-prefix-key
