@@ -36,8 +36,6 @@
       use-package-minimum-reported-time 0.01)
 
 (use-package auto-compile
-  :ensure t
-  :demand t
   :config (progn
             (auto-compile-on-load-mode)
             (auto-compile-on-save-mode)))
@@ -564,7 +562,6 @@ _h_   _l_   _o_k        _y_ank
                    "english"))))
 
 (use-package magit
-  :ensure magit
   :commands (magit-status)
   :config (progn
             (setq magit-diff-refine-hunk t
@@ -585,7 +582,6 @@ _h_   _l_   _o_k        _y_ank
                     projectile-known-projects)))))
 
 (use-package projectile
-  :ensure projectile
   :commands (projectile-mode)
   :defines (projectile-known-projects)
   :config (progn
@@ -599,14 +595,12 @@ _h_   _l_   _o_k        _y_ank
   :commands counsel-projectile)
 
 (use-package exec-path-from-shell
-  :ensure exec-path-from-shell
   :commands (exec-path-from-shell-copy-envs))
 
 
 ;; * Mail
 
 (use-package bbdb
-  :ensure bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
   :config (progn
             (setq bbdb-completion-display-record nil
@@ -765,7 +759,6 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package helm
   :commands (helm-show-kill-ring)
-  :ensure helm
   :diminish helm-mode
   :defines (helm-command-prefix-key
             helm-command-prefix
@@ -845,7 +838,6 @@ _h_   _l_   _o_k        _y_ank
 ;; * Navigation
 
 (use-package ace-window
-  :ensure t
   :commands (ace-window ace-window-display-mode)
   :demand t
   :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
