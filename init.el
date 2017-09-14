@@ -145,28 +145,20 @@
   (bind-key "C-c c" #'org-capture)
   (bind-key "C-c d" #'define-word-at-point)
   (bind-key "C-c e" #'crux-eval-and-replace)
-  (bind-key "C-c h" #'helm-command-prefix)
-  (bind-key "C-c h #" #'helm-emms)
   (bind-key "C-c i" #'hydra-ispell/body)
   (bind-key "C-c j" #'avy-goto-char-timer)
   (bind-key "C-c l" #'org-store-link)
   (bind-key "C-c m" #'emms-control/body)
   (bind-key "C-c o" #'hydra-org-clock/body)
-  (bind-key "C-c r" #'counsel-recentf)
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
-  (bind-key "C-h f" #'counsel-describe-function)
-  (bind-key "C-h v" #'counsel-describe-variable)
   (bind-key "C-s" #'isearch-forward)
-  (bind-key "C-S-s" #'counsel-grep-or-swiper)
   (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
   (bind-key "C-x C-d" #'dired)
-  (bind-key "C-x C-f" #'counsel-find-file)
   (bind-key "C-x C-r" #'revert-buffer)
   (bind-key "C-x g" #'db/helm-shortcuts)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
-  (bind-key "C-x o" #'ace-window)
   (bind-key "C-x r v" #'list-registers)
   (bind-key "C-x t" #'hydra-toggle/body)
   (bind-key "C-z" #'undo)
@@ -181,14 +173,32 @@
   (bind-key "M-g j g" #'dumb-jump-go)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
   (bind-key "M-o" nil)
-  (bind-key "M-x" #'counsel-M-x)        ; gets nicer sorting with smex installed
-  (bind-key "M-y" #'helm-show-kill-ring)
   (bind-key "M-z" #'zap-up-to-char)
   (bind-key [insert] nil)
   (bind-key [kp-insert] nil)
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
-  (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
-  (bind-key [remap open-line] #'crux-smart-open-line-above)
+
+  ;; Overwrite certain keybindings only if packages are avilable
+
+  (when (package-installed-p 'counsel)
+    (bind-key "M-x" #'counsel-M-x)        ; gets nicer sorting with smex installed
+    (bind-key "C-c r" #'counsel-recentf)
+    (bind-key "C-x C-f" #'counsel-find-file)
+    (bind-key "C-h f" #'counsel-describe-function)
+    (bind-key "C-h v" #'counsel-describe-variable)
+    (bind-key "C-S-s" #'counsel-grep-or-swiper))
+
+  (when (package-installed-p 'helm)
+    (bind-key "M-y" #'helm-show-kill-ring)
+    (bind-key "C-c h" #'helm-command-prefix)
+    (bind-key "C-c h #" #'helm-emms))
+
+  (when (package-installed-p 'crux)
+    (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
+    (bind-key [remap open-line] #'crux-smart-open-line-above))
+
+  (when (package-installed-p 'ace-window)
+    (bind-key "C-x o" #'ace-window))
 
   ;; Environment Variables
 
