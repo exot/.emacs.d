@@ -231,10 +231,9 @@
             db/work-mail-address
             db/jabber-id
             db/smtp-accounts
-            db/personal-gnus-filter-rules))
-
-(setq user-full-name "Daniel Borchmann"
-      user-mail-address db/personal-mail-address)
+            db/personal-gnus-filter-rules)
+  :config  (setq user-full-name "Daniel Borchmann"
+                 user-mail-address db/personal-mail-address))
 
 (setq custom-file (expand-file-name "custom.el" emacs-d))
 (load-file custom-file)
