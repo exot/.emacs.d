@@ -226,7 +226,7 @@
 (setq user-full-name "Daniel Borchmann"
       user-mail-address db/personal-mail-address)
 
-(setq custom-file (expand-file-name "private/custom.el" emacs-d))
+(setq custom-file (expand-file-name "custom.el" emacs-d))
 (load-file custom-file)
 
 (use-package cl-lib)
