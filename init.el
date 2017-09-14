@@ -218,6 +218,7 @@
 ;; * Builtin Variables
 
 (use-package db-private
+  :load-path "private"
   :defines (db/personal-mail-address
             db/work-mail-address
             db/jabber-id
