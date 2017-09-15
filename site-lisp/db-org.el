@@ -233,20 +233,11 @@ forces clocking in of the default task."
 
 ;;; Agenda Customization
 
-(defvar db/org-default-work-file
-  "~/Documents/uni/admin/misc/work.org")
-
-(defvar db/org-default-home-file
-  "~/Documents/home/admin/home.org")
-
-(defvar db/org-default-notes-file
-  "~/Documents/home/misc/notes.org")
-
-(defvar db/org-default-refile-file
-  "~/Desktop/refile.org")
-
-(defvar db/org-default-pensieve-file
-  "~/Documents/home/misc/pensieve.org.gpg")
+(defvar db/org-default-work-file nil)
+(defvar db/org-default-home-file nil)
+(defvar db/org-default-notes-file nil)
+(defvar db/org-default-refile-file nil)
+(defvar db/org-default-pensieve-file nil)
 
 (setq org-agenda-files (remove-duplicates
                         (cl-remove-if #'null
