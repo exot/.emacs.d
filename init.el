@@ -104,7 +104,7 @@
                                    solarized-dark
                                    smart-mode-line-dark))))
 
-  ;; Hooks (non mode-specific)
+  ;; Global Hooks
 
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
   (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
