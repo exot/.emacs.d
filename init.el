@@ -114,6 +114,8 @@
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook #'electric-indent-local-mode))
   (add-hook 'lisp-mode-hook #'lispy-mode)
+  (unless (eq system-type 'windows-nt)
+    (add-hook 'text-mode-hook #'turn-on-flyspell))
 
   ;; Hydras
 
@@ -1186,7 +1188,6 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package flyspell
   :commands (flyspell-mode turn-on-flyspell)
-  :init   (add-hook 'text-mode-hook #'turn-on-flyspell)
   :config (progn
             (unbind-key "C-M-i" flyspell-mode-map)
             (unbind-key "C-c $" flyspell-mode-map)))
