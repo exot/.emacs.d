@@ -218,6 +218,11 @@
     '(defun enriched-decode-display-prop (start end &optional param)
       (list start end)))
 
+  ;; Start Server when on Windows
+
+  (when (eq system-type 'windows-nt)
+    (server-start))
+
   t)
 
 (add-hook 'after-init-hook #'db/run-init)
