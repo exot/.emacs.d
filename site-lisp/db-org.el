@@ -248,10 +248,13 @@ forces clocking in of the default task."
 (defvar db/org-default-pensieve-file
   "~/Documents/home/misc/pensieve.org.gpg")
 
-(setq org-agenda-files (list db/org-default-home-file
-                             db/org-default-work-file
-                             db/org-default-refile-file
-                             db/org-default-notes-file))
+(setq org-agenda-files (remove-duplicates
+                        (cl-remove-if #'null
+                                      (list db/org-default-home-file
+                                            db/org-default-work-file
+                                            db/org-default-refile-file
+                                            db/org-default-notes-file))
+                        :test #'equalp))
 
 (setq org-agenda-include-diary nil
       org-agenda-span 1
