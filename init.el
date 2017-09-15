@@ -181,7 +181,7 @@
   ;; Overwrite certain keybindings only if packages are avilable
 
   (when (package-installed-p 'counsel)
-    (bind-key "M-x" #'counsel-M-x)        ; gets nicer sorting with smex installed
+    (bind-key "M-x" #'counsel-M-x)      ; gets nicer sorting with smex installed
     (bind-key "C-c r" #'counsel-recentf)
     (bind-key "C-x C-f" #'counsel-find-file)
     (bind-key "C-h f" #'counsel-describe-function)
