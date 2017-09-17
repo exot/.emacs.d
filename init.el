@@ -470,7 +470,7 @@
             (setq org-home-task-id "ade37344-ccd9-4c93-aa15-406886a86627"
                   org-working-task-id "a686ba96-116e-457b-94c1-5dbc42f9c051")
 
-            (setq db/org-default-work-file "~/Documents/uni/admin/misc/work.org"
+            (setq db/org-default-work-file nil
                   db/org-default-home-file "~/Documents/home/admin/home.org"
                   db/org-default-notes-file "~/Documents/home/misc/notes.org"
                   db/org-default-refile-file "~/Desktop/refile.org"
