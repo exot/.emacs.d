@@ -450,6 +450,7 @@ _h_   _l_   _o_k        _y_ank
   :config (setq appt-display-mode-line nil))
 
 (use-package ediff
+  :defer t
   :config (progn
             (setq ediff-diff-options "-w"
                   ediff-window-setup-function 'ediff-setup-windows-plain
@@ -469,6 +470,7 @@ _h_   _l_   _o_k        _y_ank
                 ispell-really-hunspell t)))
 
 (use-package mailcap
+  :defer t
   :config (progn
             ;;Remove doc-view so pdf will open with ocular
             (setcdr
@@ -656,6 +658,7 @@ _h_   _l_   _o_k        _y_ank
 ;; * Crypto
 
 (use-package nsm
+  :defer t
   :config (progn (setq network-security-level 'medium
                        nsm-save-host-names t
                        nsm-settings-file (expand-file-name
@@ -663,6 +666,7 @@ _h_   _l_   _o_k        _y_ank
                                           emacs-d))))
 
 (use-package gnutls
+  :defer t
   :config (progn
             (setq gnutls-log-level 0
                   gnutls-min-prime-bits 1024
@@ -674,6 +678,7 @@ _h_   _l_   _o_k        _y_ank
               (add-to-list 'gnutls-trustfiles cert-file))))
 
 (use-package epg
+  :defer t
   :config (progn
             (setq epg-debug t)))
 
@@ -681,17 +686,20 @@ _h_   _l_   _o_k        _y_ank
 ;; * Appearance
 
 (use-package solarized-theme
+  :defer t
   :init (setq solarized-use-less-bold t
               solarized-emphasize-indicators t
               solarized-use-variable-pitch nil))
 
 (use-package smart-mode-line
+  :commands (sml/setup)
   :init (setq sml/use-projectile-p t))
 
 
 ;; * Dired
 
 (use-package dired
+  :defer t
   :config (progn
             (setq dired-dwim-target t)
             (put 'dired-find-alternate-file 'disabled nil)
@@ -861,7 +869,6 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package ace-window
   :commands (ace-window ace-window-display-mode)
-  :demand t
   :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
                 aw-background nil
                 aw-leading-char-style 'char
@@ -907,6 +914,7 @@ _h_   _l_   _o_k        _y_ank
 ;; * Shells and such
 
 (use-package comint
+  :defer t
   :config (progn
             (setq comint-scroll-to-bottom-on-input t)
             (setq comint-scroll-to-bottom-on-output nil)
@@ -958,6 +966,7 @@ _h_   _l_   _o_k        _y_ank
             (add-hook 'compilation-filter-hook #'endless/colorize-compilation)))
 
 (use-package shell
+  :defer t
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
@@ -987,6 +996,7 @@ _h_   _l_   _o_k        _y_ank
 ;; Lisp Dialects
 
 (use-package elisp-mode
+  :defer t
   :config (progn (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
 
                  (defun db/add-use-package-to-imenu ()
@@ -1263,6 +1273,7 @@ _h_   _l_   _o_k        _y_ank
                   (pp-eval-last-sexp prefix)))))
 
 (use-package python
+  :defer t
   :config (progn
             (setq python-indent-offset 4
                   python-shell-interpreter "/usr/bin/python")
