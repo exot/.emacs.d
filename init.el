@@ -580,11 +580,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package db-emacsclient)
 
 (use-package hydra
-  :commands (hydra-toggle/body
-             hydra-zoom/body
-             hydra-rectangle/body
-             hydra-ispell/body
-             defhydra))
+  :commands (defhydra))
 
 (use-package magit
   :commands (magit-status)
