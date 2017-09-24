@@ -318,6 +318,7 @@ _h_   _l_   _o_k        _y_ank
 
 (setq inhibit-startup-message t
       initial-scratch-message nil
+      initial-major-mode 'fundamental-mode
       ring-bell-function #'ignore
       garbage-collection-messages nil
       load-prefer-newer nil)            ; t breaks `org-reload'
