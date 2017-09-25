@@ -593,8 +593,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("n" "Note"
              entry
              (file+olp db/org-default-notes-file "Notes")
-             "* %^{About} :NOTE:\n%T\n%?"
-             :clock-in t :clock-resume t)
+             "* %^{About} :NOTE:\n%T\n%?")
         ("d" "Date"
              entry
              (file db/org-default-refile-file)
