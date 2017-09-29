@@ -1253,11 +1253,6 @@ _h_   _l_   _o_k        _y_ank
   :commands (page-break-lines-mode)
   :diminish page-break-lines-mode)
 
-(use-package pdf-tools
-  :pin "melpa-stable"
-  :defer t
-  :config (pdf-tools-install))
-
 (use-package pp
   :commands (db/eval-last-sexp-or-region
              pp-eval-expression)
