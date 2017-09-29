@@ -1222,7 +1222,7 @@ _h_   _l_   _o_k        _y_ank
   :commands highlight-indentation-mode)
 
 (use-package iedit
-  :commands (iedit-mode))
+  :commands (iedit-mode))               ; TODO: set to C-;
 
 (use-package key-chord
   :commands (key-chord-mode)
