@@ -191,6 +191,7 @@ _h_   _l_   _o_k        _y_ank
   (bind-key "<f10>" #'magit-status)
   (bind-key "<f11>" #'org-capture)
   (bind-key "<f12>" #'db/helm-shortcuts)
+  (bind-key "C-;" #'iedit-mode)
   (bind-key "C-<" #'mc/mark-previous-like-this)
   (bind-key "C->" #'mc/mark-next-like-this)
   (bind-key "C-@" #'er/expand-region)
@@ -1222,7 +1223,7 @@ _h_   _l_   _o_k        _y_ank
   :commands highlight-indentation-mode)
 
 (use-package iedit
-  :commands (iedit-mode))               ; TODO: set to C-;
+  :commands (iedit-mode))
 
 (use-package key-chord
   :commands (key-chord-mode)
