@@ -61,8 +61,12 @@
                              (TeX-fold-mode 1)))
 
 
-;; Use pdf-tools when available
+;; PDF Viewer
 
+(add-to-list 'TeX-view-program-selection
+             '(output-pdf "Evince"))
+
+;; use pdf-tools when loaded
 (eval-after-load 'pdf-tools
   `(progn
      (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))
