@@ -553,21 +553,17 @@ If found, imports the certificate via gpgsm."
 
 ;;; Mail Formatting
 
-(setq gnus-posting-styles
+(setq gnus-posting-styles               ; needs to be cleaned up somewhen
       `((".*"
          (name ,user-full-name)
-         (address ,db/work-mail-address)
+         (address ,db/personal-mail-address)
          (signature-file "~/.signature-minimal")
          ("X-Jabber-ID" ,db/jabber-id))
         (message-mail-p
          (signature-file "~/.signature"))
         ("algebra20:.*"
          (address ,db/personal-mail-address)
-         (signature-file "~/.signature"))
-        ("tu:.*"
-         (name ,user-full-name)
-         (address ,db/work-mail-address)
-         (signature-file "~/.signature-official"))))
+         (signature-file "~/.signature"))))
 
 ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
 (defun db/mml-attach-file--go-to-eob (orig-fun &rest args)
