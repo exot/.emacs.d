@@ -50,11 +50,6 @@
               (nntp-open-connection-function nntp-open-tls-stream)
               (nntp-port-number 563)
               (nntp-address "news.gmane.org"))
-        (nnimap "tu"
-                (nnimap-stream shell)
-                (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/zih")
-                (nnimap-inbox "INBOX")
-                (nnimap-split-methods nnimap-split-fancy))
         (nnimap "algebra20"
                 (nnimap-stream shell)
                 (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/algebra20")
