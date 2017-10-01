@@ -217,12 +217,8 @@ forces clocking in of the default task."
   (with-temp-file db/org-clock-current-task-file
     (let ((clock-buffer (marker-buffer org-clock-marker)))
       (if (null clock-buffer)
-          (insert "No running clock"))
-      (let ((current-task org-clock-heading)
-            (current-file (file-name-sans-extension
-                           (file-name-nondirectory
-                            (buffer-file-name clock-buffer)))))
-        (insert current-file "/" current-task)))))
+          (insert "No running clock")
+        (insert org-clock-heading)))))
 
 (add-hook 'org-clock-in-hook #'db/org-current-task)
 
