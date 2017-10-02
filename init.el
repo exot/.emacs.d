@@ -447,7 +447,7 @@ _h_   _l_   _o_k        _y_ank
   :commands (winner-mode winner-undo winner-redo))
 
 (use-package abbrev
-  :commands (quitely-read-abbrev-file)
+  :commands (quietly-read-abbrev-file)
   :config   (progn
               (setq-default abbrev-mode t)
               (setq save-abbrevs 'silently))
