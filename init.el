@@ -429,6 +429,8 @@ _h_   _l_   _o_k        _y_ank
                           "C:/Programme/cygwin64/bin/bash.exe"
                           "/usr/bin/zsh"))
 
+(setq custom-theme-directory (expand-file-name "themes/" emacs-d))
+
 
 ;; * Basic Builtin Packages
 
