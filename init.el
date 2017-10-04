@@ -785,6 +785,8 @@ _h_   _l_   _o_k        _y_ank
                   (error "No more than 2 files should be marked"))))
 
             (require 'dired-quick-sort)
+            (when (eq system-type 'windows-nt)
+              (setq ls-lisp-use-insert-directory-program t))
             (dired-quick-sort-setup)
 
             (bind-key [remap beginning-of-buffer]
