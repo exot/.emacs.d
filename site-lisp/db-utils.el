@@ -295,7 +295,7 @@ If FILE is not given, prompt for one."
 (defun db/helm-shortcuts ()
   "Open helm completion on common locations."
   (interactive)
-  (require 'helm-x-files)
+  (require 'helm-files)
   (helm :sources '(db/helm-frequently-used-features
                    db/helm-frequently-visited-locations)))
 
