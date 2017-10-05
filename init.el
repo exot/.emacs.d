@@ -1305,6 +1305,10 @@ _h_   _l_   _o_k        _y_ank
                 synonyms-cache-file "~/.emacs.d/mthesaur.txt.cache")
   :commands (synonyms))
 
+(use-package typing
+  :commands (typing-of-emacs)
+  :config (setq toe-highscore-file nil))
+
 (use-package undo-tree
   :commands (global-undo-tree-mode
              undo
