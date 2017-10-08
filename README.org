@@ -22,8 +22,8 @@ windows.
 
 * Compatibility
 
-This configuration is known to work with ≥ Emacs 25.2 on Debian GNU/Linux and
-Windows 10 (sigh).
+This configuration is known to work with Emacs 25.2 (and later) on
+Debian GNU/Linux and Windows 10 (sigh).
 
 * License
 
