@@ -774,7 +774,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
       (message "Exporting diary ...")
       ;; open files manually to avoid polluting `org-agenda-new-buffers’; we don’t
       ;; want these buffers to be closed after exporting
-      (mapc #'find-file-noselect org-agenda-files)
+      (mapc #'find-file-noselect (cl-remove-if #'null org-agenda-files))
       ;; actual export; calls `org-release-buffers’ and may thus close buffers
       ;; we want to keep around … which is why we set `org-agenda-new-buffers’
       ;; to nil
