@@ -1,2 +1,18 @@
+#+title: Daniel’s Emacs Configuration
+
 My personal Emacs Configuration, containing bits of code collected from around
 the web.  Have fun with it!
+
+* Structure
+
+The main configuration is available in the usual [[init.el]] file, with additional
+functionality distributed over files in the [[site-lisp]] directory.  Some private
+data is outsources into a separate submodule named [[private]], and is not included
+in this repository.  The configuration should work nevertheless, even without
+these private files.
+
+* License
+
+ⓒ 2017 Daniel Borchmann
+
+This configuration is available under the MIT license, see [[LICENSE]] for details.
