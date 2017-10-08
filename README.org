@@ -7,9 +7,23 @@ the web.  Have fun with it!
 
 The main configuration is available in the usual [[init.el]] file, with additional
 functionality distributed over files in the [[site-lisp]] directory.  Some private
-data is outsources into a separate submodule named [[private]], and is not included
+data is outsources into a separate submodule named =private=, and is not included
 in this repository.  The configuration should work nevertheless, even without
 these private files.
+
+The main =init.el= file consists mostly of variable assignments, =use-package=
+declarations, and initializing the =package= subsystem.  The main lifting is
+done by the =db/run-init= function, which is attached to the =after-init-hook=
+in =init.el=.  This way, all necessary hooks and autoloads are set up by
+init.el, and the =db/run-init= functions sets up the (minimal?) configurations
+for every session, including modes, keybindings, hydras, and hooks.  It also
+imports some environment variables and starts the server when running under
+windows.
+
+* Compatibility
+
+This configuration is known to work with ≥ Emacs 25.2 on Debian GNU/Linux and
+Windows 10 (sigh).
 
 * License
 
