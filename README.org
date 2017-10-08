@@ -14,11 +14,12 @@ these private files.
 The main =init.el= file consists mostly of variable assignments, =use-package=
 declarations, and initializing the =package= subsystem.  The main lifting is
 done by the =db/run-init= function, which is attached to the =after-init-hook=
-in =init.el=.  This way, all necessary hooks and autoloads are set up by
-init.el, and the =db/run-init= functions sets up the (minimal?) configurations
-for every session, including modes, keybindings, hydras, and hooks.  It also
-imports some environment variables and starts the server when running under
-windows.
+in =init.el=.  This way, all necessary local hooks and autoloads are set up by
+=init.el=, and the =db/run-init= functions only activates a (minimal?)
+configurations needed for every session, including modes, keybindings, hydras,
+and global hooks.  It also imports some environment variables and starts the
+server when running under windows.  Any additional packages are only loaded when
+required.
 
 * Compatibility
 
