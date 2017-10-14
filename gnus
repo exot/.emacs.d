@@ -41,10 +41,8 @@
 (setq gnus-select-method '(nnnil "")
       gnus-secondary-select-methods
       `((nntp "etsep"
-              ;; TLS connection works, but credentials do not seem to be
-              ;; transferred correctly: the list of groups is not complete
-              ;; (nntp-open-connection-function nntp-open-tls-stream)
-              ;; (nntp-port-number 563)
+              (nntp-open-connection-function nntp-open-tls-stream)
+              (nntp-port-number 563)
               (nntp-address "news.eternal-september.org"))
         (nntp "gmane"
               (nntp-open-connection-function nntp-open-tls-stream)
