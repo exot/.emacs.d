@@ -113,10 +113,7 @@
 (setq org-clock-persist t
       org-clock-persist-query-resume nil)
 
-(setq org-time-clocksum-format '(:hours "%d"
-                                 :require-hours t
-                                 :minutes ":%02d"
-                                 :require-minutes t)
+(setq org-duration-format 'h:mm
       org-time-stamp-rounding-minutes '(1 1))
 
 ;; Default Tasks for Working, Home, Breaks
