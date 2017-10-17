@@ -311,7 +311,8 @@ _h_   _l_   _o_k        _y_ank
   :tag "Personal settings")
 
 (setq custom-file (expand-file-name "custom.el" emacs-d))
-(load-file custom-file)
+(when (file-exists-p custom-file)
+  (load-file custom-file))
 
 (use-package cl-lib)
 (use-package subr-x)
