@@ -423,13 +423,6 @@ _h_   _l_   _o_k        _y_ank
 (require 'tramp)
 (setq tramp-save-ad-hoc-proxies t)
 
-(require 'bookmark)
-(setq bookmark-default-file (concat user-emacs-directory "bookmarks"))
-
-(require 'browse-url)
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "start-tor-browser")
-
 (require 're-builder)
 (setq reb-re-syntax 'string)
 
