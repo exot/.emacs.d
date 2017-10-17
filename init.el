@@ -450,8 +450,6 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package abbrev
   :commands (quietly-read-abbrev-file)
-  :init     (setq abbrev-file-name
-                  (expand-file-name "private/abbrev_defs" emacs-d))
   :config   (progn
               (setq-default abbrev-mode t)
               (setq save-abbrevs 'silently))
