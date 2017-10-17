@@ -292,7 +292,7 @@ _h_   _l_   _o_k        _y_ank
 (add-hook 'after-init-hook #'db/run-init)
 
 
-;; * Builtin Variables
+;; * Personal customization
 
 (use-package db-private
   :load-path "private"
@@ -309,6 +309,9 @@ _h_   _l_   _o_k        _y_ank
   :group 'convenience
   :group 'help
   :tag "Personal settings")
+
+
+;; * Builtin Variables
 
 (setq custom-file (expand-file-name "custom.el" emacs-d))
 (when (file-exists-p custom-file)
