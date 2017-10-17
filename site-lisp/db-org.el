@@ -118,9 +118,20 @@
 
 ;; Default Tasks for Working, Home, Breaks
 
-(defvar org-working-task-id nil)
-(defvar org-break-task-id nil)
-(defvar org-home-task-id nil)
+(defcustom org-working-task-id ""
+  "Task ID of default working task."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom org-break-task-id ""
+  "Task ID of default break task."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom org-home-task-id ""
+  "Task ID of default home task."
+  :group 'personal-settings
+  :type 'string)
 
 (add-hook 'org-clock-in-hook            ; mark current default task
           (lambda ()
@@ -227,12 +238,32 @@ forces clocking in of the default task."
 
 ;;; Agenda Customization
 
-(defvar db/org-default-work-file nil)
-(defvar db/org-default-home-file nil)
-(defvar db/org-default-notes-file nil)
-(defvar db/org-default-refile-file nil)
-(defvar db/org-default-pensieve-file nil)
+(defcustom db/org-default-work-file ""
+  "Path to default org-mode file at work."
+  :group 'personal-settings
+  :type 'string)
 
+(defcustom db/org-default-home-file ""
+  "Path to default org-mode file at home."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/org-default-notes-file ""
+  "Path to default org-mode file for notes."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/org-default-refile-file ""
+  "Path to default org-mode file for capturing."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/org-default-pensieve-file ""
+  "Path to default org-mode file for private notes."
+  :group 'personal-settings
+  :type 'string)
+
+;; TODO: reset `org-agenda-files’ if one of the following variables gets changed
 (setq org-agenda-files (remove-duplicates
                         (cl-remove-if #'null
                                       (list db/org-default-home-file

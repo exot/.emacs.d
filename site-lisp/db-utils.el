@@ -8,13 +8,6 @@
 
 ;;; Code:
 
-(defgroup personal-settings nil
-  "A bunch of functions and variables for personalizing emacs."
-  :prefix "db/"
-  :group 'convenience
-  :group 'help
-  :tag "Personal settings")
-
 
 ;;; application shortcuts
 

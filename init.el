@@ -301,8 +301,14 @@ _h_   _l_   _o_k        _y_ank
             db/jabber-id
             db/smtp-accounts
             db/personal-gnus-filter-rules)
-  :config  (setq user-full-name "Daniel Borchmann"
-                 user-mail-address db/personal-mail-address))
+  :demand t)
+
+(defgroup personal-settings nil
+  "A bunch of functions and variables for personalizing emacs."
+  :prefix "db/"
+  :group 'convenience
+  :group 'help
+  :tag "Personal settings")
 
 (setq custom-file (expand-file-name "custom.el" emacs-d))
 (load-file custom-file)
@@ -425,10 +431,6 @@ _h_   _l_   _o_k        _y_ank
 
 (setq lisp-indent-function 'common-lisp-indent-function)
 
-(setq shell-file-name (if (eq system-type 'windows-nt)
-                          "C:/Programme/cygwin64/bin/bash.exe"
-                          "/usr/bin/zsh"))
-
 (setq custom-theme-directory (expand-file-name "themes/" emacs-d))
 
 
@@ -550,15 +552,6 @@ _h_   _l_   _o_k        _y_ank
              db/export-diary
              hydra-org-clock/body)
   :config (progn
-            (setq org-home-task-id "ade37344-ccd9-4c93-aa15-406886a86627"
-                  org-working-task-id "a686ba96-116e-457b-94c1-5dbc42f9c051")
-
-            (setq db/org-default-work-file nil
-                  db/org-default-home-file "~/Documents/home/admin/home.org"
-                  db/org-default-notes-file "~/Documents/home/misc/notes.org"
-                  db/org-default-refile-file "~/Desktop/refile.org"
-                  db/org-default-pensieve-file "~/Documents/home/misc/pensieve.org.gpg")
-
             (require 'db-org)
 
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
@@ -573,11 +566,7 @@ _h_   _l_   _o_k        _y_ank
   :defer t
   :config (progn
             (require 'org-ref-pdf)
-            (require 'org-ref-url-utils)
-
-            (setq org-ref-default-bibliography '("~/Documents/uni/research/references.bib")
-                  org-ref-pdf-directory "~/Documents/library/.bibtex-pdfs/"
-                  org-ref-bibliography-notes "~/Documents/uni/research/references.org")))
+            (require 'org-ref-url-utils)))
 
 
 ;; * Some essential packages
@@ -652,8 +641,7 @@ _h_   _l_   _o_k        _y_ank
                   bbdb-default-country "Germany"
                   bbdb-user-mail-address-re (regexp-opt
                                              (list db/personal-mail-address
-                                                   db/work-mail-address))
-                  bbdb-file (expand-file-name "private/bbdb" emacs-d))
+                                                   db/work-mail-address)))
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
             (run-with-timer 0 3600 #'bbdb-save)))
@@ -679,10 +667,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package nsm
   :defer t
   :config (progn (setq network-security-level 'medium
-                       nsm-save-host-names t
-                       nsm-settings-file (expand-file-name
-                                          "private/network-security.data"
-                                          emacs-d))))
+                       nsm-save-host-names t)))
 
 (use-package gnutls
   :defer t
@@ -1139,9 +1124,7 @@ _h_   _l_   _o_k        _y_ank
               '(add-to-list
                 'helm-completing-read-handlers-alist
                 '(reftex-citation . nil)))
-            (setq reftex-plug-into-AUCTeX t)
-            (setq reftex-default-bibliography
-                  '("~/Documents/uni/research/references.bib"))))
+            (setq reftex-plug-into-AUCTeX t)))
 
 (eval-after-load 'tex-mode
   '(use-package db-latex))
@@ -1150,11 +1133,7 @@ _h_   _l_   _o_k        _y_ank
   :commands (ebib))
 
 (use-package helm-bibtex
-  :commands (helm-bibtex)
-  :config (progn
-            (setq bibtex-completion-bibliography "~/Documents/uni/research/references.bib"
-                  bibtex-completion-library-path "~/Documents/library/.bibtex-pdfs/"
-                  bibtex-completion-notes-path "~/Documents/uni/research/references.org")))
+  :commands (helm-bibtex))
 
 
 ;; * Various Mode Configurations
@@ -1258,9 +1237,7 @@ _h_   _l_   _o_k        _y_ank
   :mode (("\\.md\\'" . markdown-mode)))
 
 (use-package mastodon
-  :commands (mastodon)
-  :config (progn
-            (setq mastodon-instance-url "https://mastodon.blue/")))
+  :commands (mastodon))
 
 (use-package multiple-cursors
   :commands (mc/edit-lines
@@ -1304,8 +1281,6 @@ _h_   _l_   _o_k        _y_ank
                  use-package))))
 
 (use-package synonyms
-  :config (setq synonyms-file "~/.local/share/thesaurus/mthesaur.txt"
-                synonyms-cache-file "~/.emacs.d/mthesaur.txt.cache")
   :commands (synonyms))
 
 (use-package typing
