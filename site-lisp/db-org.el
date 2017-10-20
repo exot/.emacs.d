@@ -59,6 +59,9 @@
 (setq org-columns-default-format
       "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
 
+;; open directory links in emacs itself
+(add-to-list 'org-file-apps '(directory . emacs))
+
 
 ;;; Faces
 
