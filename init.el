@@ -537,7 +537,7 @@ _h_   _l_   _o_k        _y_ank
                       #'db/add-symbols-to-TeX-input-method)))
 
 
-;; * Org Mode
+;; * Some essential packages
 
 (use-package org
   :commands (org-agenda
@@ -555,21 +555,6 @@ _h_   _l_   _o_k        _y_ank
 
             (run-with-timer 0 3600 #'org-clock-save)
             (run-with-idle-timer 1200 t #'db/export-diary)))
-
-(use-package org-ref
-  :defer t
-  :config (progn
-            (require 'org-ref-pdf)
-            (require 'org-ref-url-utils)))
-
-
-;; * Some essential packages
-
-(use-package crux
-  :commands (crux-eval-and-replace
-             crux-smart-open-line-above
-             crux-kill-whole-line
-             crux-cleanup-buffer-or-region))
 
 (use-package db-utils
   :commands (endless/fill-or-unfill
@@ -1150,6 +1135,12 @@ _h_   _l_   _o_k        _y_ank
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
             (setq cperl-hairy nil)))
 
+(use-package crux
+  :commands (crux-eval-and-replace
+             crux-smart-open-line-above
+             crux-kill-whole-line
+             crux-cleanup-buffer-or-region))
+
 (use-package define-word
   :commands (define-word-at-point define-word))
 
@@ -1242,6 +1233,12 @@ _h_   _l_   _o_k        _y_ank
 (use-package nxml
   :mode (("\\.html\\'" . nxml-mode)
          ("\\.xml\\'"  . nxml-mode)))
+
+(use-package org-ref
+  :defer t
+  :config (progn
+            (require 'org-ref-pdf)
+            (require 'org-ref-url-utils)))
 
 (use-package page-break-lines
   :commands (page-break-lines-mode)
