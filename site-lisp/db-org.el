@@ -786,31 +786,34 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
                     org-icalendar-use-deadline nil
                     org-icalendar-use-scheduled nil
                     org-icalendar-include-todo nil
-                    org-icalendar-exclude-tags '("NO_EXPORT")
-                    org-icalendar-combined-agenda-file "~/Public/daniel.ics")))
+                    org-icalendar-exclude-tags '("NO_EXPORT"))))
 
 (defun db/export-diary ()
-  "Export diary.org as ics file to ~/Public."
+  "Export diary.org as ics file to the current value of `org-icalendar-combined-agenda-file’.
+This is done only if the value of this variable is not null."
   (interactive)
-  (require 'ox-icalendar)
-  (org-save-all-org-buffers)
-  (let ((org-agenda-files (list db/org-default-home-file
-                                db/org-default-work-file))
-        (org-agenda-new-buffers nil))
-    ;; check whether we need to do something
-    (when (some (lambda (org-file)
-                  (file-newer-than-file-p org-file
-                                          org-icalendar-combined-agenda-file))
-                org-agenda-files)
-      (message "Exporting diary ...")
-      ;; open files manually to avoid polluting `org-agenda-new-buffers’; we don’t
-      ;; want these buffers to be closed after exporting
-      (mapc #'find-file-noselect (cl-remove-if #'null org-agenda-files))
-      ;; actual export; calls `org-release-buffers’ and may thus close buffers
-      ;; we want to keep around … which is why we set `org-agenda-new-buffers’
-      ;; to nil
-      (org-icalendar-combine-agenda-files)
-      (message "Exporting diary ... done."))))
+  (if (null org-icalendar-combined-agenda-file)
+      (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary.")
+      (progn
+        (require 'ox-icalendar)
+        (org-save-all-org-buffers)
+        (let ((org-agenda-files (list db/org-default-home-file
+                                      db/org-default-work-file))
+              (org-agenda-new-buffers nil))
+          ;; check whether we need to do something
+          (when (some (lambda (org-file)
+                        (file-newer-than-file-p org-file
+                                                org-icalendar-combined-agenda-file))
+                      org-agenda-files)
+            (message "Exporting diary ...")
+            ;; open files manually to avoid polluting `org-agenda-new-buffers’; we don’t
+            ;; want these buffers to be closed after exporting
+            (mapc #'find-file-noselect (cl-remove-if #'null org-agenda-files))
+            ;; actual export; calls `org-release-buffers’ and may thus close buffers
+            ;; we want to keep around … which is why we set `org-agenda-new-buffers’
+            ;; to nil
+            (org-icalendar-combine-agenda-files)
+            (message "Exporting diary ... done."))))))
 
 (defun db/ical-to-org (ical-file-name org-file-name category filetags)
   "Convert ICAL-FILE-NAME to ORG-FILE-NAME using ical2org.

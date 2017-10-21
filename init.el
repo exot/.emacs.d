@@ -554,8 +554,7 @@ _h_   _l_   _o_k        _y_ank
             (mapc #'find-file-noselect org-agenda-files)
 
             (run-with-timer 0 3600 #'org-clock-save)
-            (unless (eq system-type 'windows-nt)
-              (run-with-idle-timer 1200 t #'db/export-diary))))
+            (run-with-idle-timer 1200 t #'db/export-diary)))
 
 (use-package org-ref
   :defer t
