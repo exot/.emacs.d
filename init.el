@@ -48,6 +48,11 @@
 (defun db/run-init ()
   "Run main initialization after everything is set up."
 
+  ;; Load customizations
+
+  (when (file-exists-p custom-file)
+    (load-file custom-file))
+
   ;; Activate modes (builtin)
 
   (show-paren-mode 1)
@@ -94,15 +99,7 @@
                   which-key-mode
                   projectile-mode))
     (ignore-errors                      ; don’t barf if mode cannot be loaded
-      (funcall mode +1)))
-
-  ;; Color Theme
-  ;; setting this in `custom-file’ does not work, so we set it here
-
-  (custom-set-variables
-   '(custom-enabled-themes (quote (exot-main
-                                   solarized-dark
-                                   smart-mode-line-dark))))
+     (funcall mode +1)))
 
   ;; Global Hooks
 
@@ -314,8 +311,6 @@ _h_   _l_   _o_k        _y_ank
 ;; * Builtin Variables
 
 (setq custom-file (expand-file-name "custom.el" emacs-d))
-(when (file-exists-p custom-file)
-  (load-file custom-file))
 
 (use-package cl-lib)
 (use-package subr-x)
