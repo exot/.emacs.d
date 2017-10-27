@@ -265,7 +265,7 @@ If FILE is not given, prompt for one."
   :group 'personal-settings
   :type  '(alist :key-type string :value-type sexp))
 
-(defvar db/helm-frequently-used-features-source
+(defvar db/helm-source-frequently-used-features
   '((name . "Frequently Used")
     (candidates . db/helm-frequently-used-features)
     (action . (("Open" . funcall)))
@@ -284,7 +284,7 @@ If FILE is not given, prompt for one."
   :group 'personal-settings
   :type  '(alist :key-type string :value-type sexp))
 
-(defvar db/helm-frequently-visited-locations-source
+(defvar db/helm-source-frequently-visited-locations
   '((name . "Locations")
     (candidates . db/helm-frequently-visited-locations)
     (action . (("Open" . find-file)))
@@ -330,24 +330,22 @@ path."
     ((windows-nt cygwin) (w32-shell-execute "open" path))
     ((gnu/linux) (start-process "" nil "xdg-open" path))))
 
-(defcustom db/helm-important-documents-source
-  `((name . "Important files")
+(defvar db/helm-source-important-documents
+  '((name . "Important files")
     (candidates . db/important-documents)
     (action . (("Open externally" . db/system-open)
                ("Find file" . find-file))))
-  "Helm source for important documents."
-  :group 'personal-settings
-  :type '(alist :key-type symbol :value-type sexp))
+  "Helm source for important documents.")
 
 (defun db/helm-shortcuts ()
   "Open helm completion on common locations."
   (interactive)
   (require 'helm-files)
   (require 'helm-bookmark)
-  (helm :sources `(db/helm-frequently-used-features-source
-                   db/helm-frequently-visited-locations-source
+  (helm :sources `(db/helm-source-frequently-used-features
+                   db/helm-source-frequently-visited-locations
                    ,(when (file-directory-p db/important-documents-path)
-                      'db/helm-important-documents-source)
+                      'db/helm-source-important-documents)
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
 
