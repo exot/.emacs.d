@@ -308,7 +308,7 @@ If FILE is not given, prompt for one."
     ((gnu/linux) (start-process "" nil "xdg-open" path))))
 
 (defcustom db/helm-important-documents
-  `((name . ,db/important-documents-path)
+  `((name . "Important files")
     (candidates . db/important-documents)
     (action . (("Open" . db/system-open))))
   "Helm source for important documents."
