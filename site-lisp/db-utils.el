@@ -327,7 +327,8 @@ path."
 (defcustom db/helm-important-documents
   `((name . "Important files")
     (candidates . db/important-documents)
-    (action . (("Open" . db/system-open))))
+    (action . (("Open externally" . db/system-open)
+               ("Find file" . find-file))))
   "Helm source for important documents."
   :group 'personal-settings
   :type '(alist :key-type symbol :value-type sexp))
