@@ -318,7 +318,9 @@ If FILE is not given, prompt for one."
   (require 'helm-files)
   (helm :sources '(db/helm-frequently-used-features
                    db/helm-frequently-visited-locations
-                   db/helm-important-documents)))
+                   db/helm-important-documents
+                   helm-source-bookmarks
+                   helm-source-bookmark-set)))
 
 (defun db/helm-shortcuts ()
   "Open helm completion on common locations."
