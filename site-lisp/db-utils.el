@@ -342,6 +342,7 @@ path."
   "Open helm completion on common locations."
   (interactive)
   (require 'helm-files)
+  (require 'helm-bookmark)
   (helm :sources `(db/helm-frequently-used-features-source
                    db/helm-frequently-visited-locations-source
                    ,(when (file-directory-p db/important-documents-path)
