@@ -290,7 +290,7 @@ If FILE is not given, prompt for one."
     (action . (("Open" . find-file)))
     (filtered-candidate-transformer . helm-adaptive-sort)))
 
-(defcustom db/important-documents-path "..." ; invalid directory as default
+(defcustom db/important-documents-path "~/Documents/library/"
   "Path of important documents."
   :group 'personal-settings
   :type 'string)
