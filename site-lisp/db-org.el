@@ -241,39 +241,48 @@ forces clocking in of the default task."
 
 ;;; Agenda Customization
 
+(defun db/update-org-agenda-files (symbol value)
+  "Set SYMBOL to VALUE and update `org-agenda-files’ afterwards."
+  (set-default symbol value)
+  (setq org-agenda-files (remove-duplicates
+                          (cl-remove-if #'string-empty-p
+                                        (list db/org-default-home-file
+                                              db/org-default-work-file
+                                              db/org-default-refile-file
+                                              db/org-default-notes-file))
+                          :test #'equalp)))
+
 (defcustom db/org-default-work-file ""
   "Path to default org-mode file at work."
   :group 'personal-settings
-  :type 'string)
+  :type 'string
+  :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-home-file ""
   "Path to default org-mode file at home."
   :group 'personal-settings
-  :type 'string)
+  :type 'string
+  :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-notes-file ""
   "Path to default org-mode file for notes."
   :group 'personal-settings
-  :type 'string)
+  :type 'string
+  :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-refile-file ""
   "Path to default org-mode file for capturing."
   :group 'personal-settings
-  :type 'string)
+  :type 'string
+  :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-pensieve-file ""
   "Path to default org-mode file for private notes."
   :group 'personal-settings
-  :type 'string)
+  :type 'string
+  :set #'db/update-org-agenda-files)
 
-;; TODO: reset `org-agenda-files’ if one of the following variables gets changed
-(setq org-agenda-files (remove-duplicates
-                        (cl-remove-if #'null
-                                      (list db/org-default-home-file
-                                            db/org-default-work-file
-                                            db/org-default-refile-file
-                                            db/org-default-notes-file))
-                        :test #'equalp))
+
 
 (setq org-agenda-include-diary nil
       org-agenda-span 1
