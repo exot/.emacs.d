@@ -293,10 +293,13 @@ If FILE is not given, prompt for one."
 (defun db/important-documents ()
   "Recursively return paths of all important documents found in `db/important-documents-path’."
   (when (file-directory-p db/important-documents-path)
-    (mapcar (lambda (path)
-              (cons (string-remove-prefix db/important-documents-path path)
-                    path))
-            (directory-files-recursively db/important-documents-path ""))))
+    (delete-if                          ; FIXME: dump, make better
+     (lambda (spec)
+       (eq ?. (elt (car spec) 0)))
+     (mapcar (lambda (path)
+               (cons (string-remove-prefix db/important-documents-path path)
+                     path))
+             (directory-files-recursively db/important-documents-path "")))))
 
 (defun db/system-open (path)
   "Open PATH with default program as defined by the underlying system."
