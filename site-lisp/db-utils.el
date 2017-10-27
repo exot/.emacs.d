@@ -285,12 +285,49 @@ If FILE is not given, prompt for one."
   :group 'personal-settings
   :type  '(alist :key-type symbol :value-type sexp))
 
+(defcustom db/important-documents-path "..." ; invalid directory as default
+  "Path of important documents."
+  :group 'personal-settings
+  :type 'string)
+
+(defun db/important-documents ()
+  "Recursively return paths of all important documents found in `db/important-documents-path’."
+  (when (file-directory-p db/important-documents-path)
+    (mapcar (lambda (path)
+              (cons (string-remove-prefix db/important-documents-path path)
+                    path))
+            (directory-files-recursively db/important-documents-path ""))))
+
+(defun db/system-open (path)
+  "Open PATH with default program as defined by the underlying system."
+  (ecase system-type
+    ((windows-nt cygwin) (w32-shell-execute "open" path))
+    ((gnu/linux) (start-process "" nil "xdg-open" path))))
+
+(defcustom db/helm-important-documents
+  `((name . ,db/important-documents-path)
+    (candidates . db/important-documents)
+    (action . (("Open" . db/system-open))))
+  "Helm source for important documents."
+  :group 'personal-settings
+  :type '(alist :key-type symbol :value-type sexp))
+
 (defun db/helm-shortcuts ()
   "Open helm completion on common locations."
   (interactive)
   (require 'helm-files)
   (helm :sources '(db/helm-frequently-used-features
-                   db/helm-frequently-visited-locations)))
+                   db/helm-frequently-visited-locations
+                   db/helm-important-documents)))
+
+(defun db/helm-shortcuts ()
+  "Open helm completion on common locations."
+  (interactive)
+  (require 'helm-files)
+  (helm :sources `(db/helm-frequently-used-features
+                   db/helm-frequently-visited-locations
+                   ,(when (file-directory-p db/important-documents-path)
+                      'db/helm-important-documents))))
 
 
 ;;; Other Utilities
