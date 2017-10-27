@@ -251,39 +251,44 @@ If FILE is not given, prompt for one."
 ;;; helm configuration
 
 (defcustom db/helm-frequently-used-features
-  '((name . "Frequently Used")
-    (candidates . (("Mail"      . db/gnus)
-                   ("Agenda"    . db/org-agenda)
-                   ("Init File" . db/find-user-init-file)
-                   ("EMMS"      . emms)
-                   ("Gnus"      . (lambda ()
-                                    (interactive)
-                                    (find-file gnus-init-file)))
-                   ("Shell"     . shell)
-                   ("EShell"    . eshell)
-                   ("scratch"   . db/scratch)))
-    (action . (("Open" . funcall)))
-    (filtered-candidate-transformer . helm-adaptive-sort))
+  '(("Mail"      . db/gnus)
+    ("Agenda"    . db/org-agenda)
+    ("Init File" . db/find-user-init-file)
+    ("EMMS"      . emms)
+    ("Gnus"      . (lambda ()
+                     (interactive)
+                     (find-file gnus-init-file)))
+    ("Shell"     . shell)
+    ("EShell"    . eshell)
+    ("scratch"   . db/scratch))
   "Helm shortcuts for frequently used features."
   :group 'personal-settings
-  :type  '(alist :key-type symbol :value-type sexp))
+  :type  '(alist :key-type string :value-type sexp))
+
+(defvar db/helm-frequently-used-features-source
+  '((name . "Frequently Used")
+    (candidates . db/helm-frequently-used-features)
+    (action . (("Open" . funcall)))
+    (filtered-candidate-transformer . helm-adaptive-sort))
+  "Helm source for `db/helm-frequently-used-features’.")
 
 (defcustom db/helm-frequently-visited-locations
-  '((name . "Locations")
-    (candidates . (("db-utils" . "~/.emacs.d/site-lisp/db-utils.el")
-                   ("db-org"   . "~/.emacs.d/site-lisp/db-org.el")
-                   ("db-private" . "~/.emacs.d/site-lisp/db-private.el")
-                   ("notes"    . "~/Documents/home/notes.org")
-                   ("pensieve" . "~/Documents/home/pensieve.org.gpg")
-                   ("things (home)" . "~/Documents/home/admin/things.gpg")
-                   ("things (work)" . "~/Documents/uni/admin/misc/things.gpg")
-                   ("research ideas" . "~/Documents/uni/research/ideas.org")
-                   ("teaching ideas" . "~/Documents/uni/lehre/ideas.org")))
-    (action . (("Open" . find-file)))
-    (filtered-candidate-transformer . helm-adaptive-sort))
+  '(("db-utils" . "~/.emacs.d/site-lisp/db-utils.el")
+    ("db-org" . "~/.emacs.d/site-lisp/db-org.el")
+    ("db-private" . "~/.emacs.d/site-lisp/db-private.el")
+    ("notes" . "~/Documents/home/notes.org")
+    ("pensieve" . "~/Documents/home/pensieve.org.gpg")
+    ("things (home)" . "~/Documents/home/admin/things.gpg")
+    ("things (work)" . "~/Documents/uni/admin/misc/things.gpg"))
   "Helm shortcuts to frequentely visited locations"
   :group 'personal-settings
-  :type  '(alist :key-type symbol :value-type sexp))
+  :type  '(alist :key-type string :value-type sexp))
+
+(defvar db/helm-frequently-visited-locations-source
+  '((name . "Locations")
+    (candidates . db/helm-frequently-visited-locations)
+    (action . (("Open" . find-file)))
+    (filtered-candidate-transformer . helm-adaptive-sort)))
 
 (defcustom db/important-documents-path "..." ; invalid directory as default
   "Path of important documents."
@@ -324,7 +329,7 @@ path."
     ((windows-nt cygwin) (w32-shell-execute "open" path))
     ((gnu/linux) (start-process "" nil "xdg-open" path))))
 
-(defcustom db/helm-important-documents
+(defcustom db/helm-important-documents-source
   `((name . "Important files")
     (candidates . db/important-documents)
     (action . (("Open externally" . db/system-open)
@@ -337,10 +342,10 @@ path."
   "Open helm completion on common locations."
   (interactive)
   (require 'helm-files)
-  (helm :sources `(db/helm-frequently-used-features
-                   db/helm-frequently-visited-locations
+  (helm :sources `(db/helm-frequently-used-features-source
+                   db/helm-frequently-visited-locations-source
                    ,(when (file-directory-p db/important-documents-path)
-                      'db/helm-important-documents)
+                      'db/helm-important-documents-source)
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
 
