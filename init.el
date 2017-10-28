@@ -572,7 +572,8 @@ _h_   _l_   _o_k        _y_ank
   :config (progn
             (setq magit-diff-refine-hunk t
                   magit-commit-show-diff nil
-                  magit-popup-use-prefix-argument 'default)
+                  magit-popup-use-prefix-argument 'default
+                  magit-completing-read-function 'ivy-completing-read)
 
             (add-to-list 'magit-no-confirm 'stage-all-changes)
 
