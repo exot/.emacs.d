@@ -99,7 +99,11 @@
                   which-key-mode
                   projectile-mode))
     (ignore-errors                      ; don’t barf if mode cannot be loaded
-     (funcall mode +1)))
+      (funcall mode +1)))
+
+  ;; Theming (workaround, as this does not seem to be loaded from custom.el …)
+
+  (load-theme 'smart-mode-line-dark)
 
   ;; Global Hooks
 
