@@ -575,8 +575,6 @@ _h_   _l_   _o_k        _y_ank
                   magit-popup-use-prefix-argument 'default
                   magit-completing-read-function 'ivy-completing-read)
 
-            (add-to-list 'magit-no-confirm 'stage-all-changes)
-
             (require 'projectile)
             (setq magit-repository-directories
                   (mapcar
