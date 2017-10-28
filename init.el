@@ -649,10 +649,22 @@ _h_   _l_   _o_k        _y_ank
                   gnutls-min-prime-bits 1024
                   gnutls-verify-error t)
 
-            ;; add own trustfiles
-            (dolist (cert-file
-                      (directory-files "~/.local/etc/certs" t "\.crt$"))
-              (add-to-list 'gnutls-trustfiles cert-file))))
+            (defun db/update-cert-file-directory (symbol new-value)
+              "Set SYMBOL to NEW-VALUE and, assuming that NEW-VALUE points
+to a directory, add all certificate files in it to
+`gnutls-trustfiles’.
+
+Certificates are assumed to be of the form *.crt."
+              (set symbol new-value)
+              (when (file-directory-p new-value)
+                (dolist (cert-file (directory-files new-value))
+                  (add-to-list 'gnutls-trustfiles cert-file))))
+
+            (defcustom db/cert-file-directory "~/.local/etc/certs"
+              "Local directory with additional certificates."
+              :group 'personal-settings
+              :type 'string
+              :set #'db/update-cert-file-directory)))
 
 (use-package epg
   :defer t
