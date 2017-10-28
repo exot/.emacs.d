@@ -99,7 +99,7 @@
                   which-key-mode
                   projectile-mode))
     (ignore-errors                      ; don’t barf if mode cannot be loaded
-     (funcall mode +1)))
+      (funcall mode +1)))
 
   ;; Global Hooks
 
