@@ -817,7 +817,8 @@ _h_   _l_   _o_k        _y_ank
   :config (progn
             (setq ivy-use-virtual-buffers t
                   enable-recursive-minibuffers t
-                  ivy-magic-tilde nil)
+                  ivy-magic-tilde nil
+                  ivy-count-format "(%d/%d) ")
             (setq ivy-initial-inputs-alist '((counsel-describe-function . "^")
                                              (counsel-describe-variable . "^")
                                              (man . "^")
