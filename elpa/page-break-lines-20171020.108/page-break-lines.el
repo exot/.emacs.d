@@ -4,8 +4,9 @@
 
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; URL: https://github.com/purcell/page-break-lines
-;; Package-Version: 20170829.157
+;; Package-Version: 20171020.108
 ;; Package-X-Original-Version: 0
+;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: convenience, faces
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -127,12 +128,12 @@ its display table will be modified as necessary."
             (let ((default-height (face-attribute 'default :height nil 'default)))
               (set-face-attribute 'page-break-lines nil :height default-height)
               (let* ((cwidth (char-width page-break-lines-char))
-                     (wwidth (- (window-width)
-                                (if (bound-and-true-p display-line-numbers)
-                                    (+ (line-number-display-width) 2)
-                                  0)
-                                (if (display-graphic-p) 0 1)))
-                     (width (/ wwidth cwidth))
+                     (wwidth-pix (- (window-width nil t)
+                                    (if (bound-and-true-p display-line-numbers)
+                                        (line-number-display-width t)
+                                      0)))
+                     (width (- (/ wwidth-pix (frame-char-width) cwidth)
+                               (if (display-graphic-p) 0 1)))
                      (glyph (make-glyph-code page-break-lines-char 'page-break-lines))
                      (new-display-entry (vconcat (make-list width glyph))))
                 (unless (equal new-display-entry (elt buffer-display-table ?\^L))
