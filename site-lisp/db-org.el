@@ -87,6 +87,10 @@
         (?B . (:foreground "firebrick"))
         (?C . (:foreground "tomato"))))
 
+(org-link-set-parameters
+ "file"
+ :face (lambda (path) (if (file-exists-p path) 'org-link 'org-warning)))
+
 
 ;;; Clocking
 
