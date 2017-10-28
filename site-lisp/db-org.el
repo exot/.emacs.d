@@ -455,9 +455,7 @@ are equal return nil."
              ((agenda
                ""
                ((org-agenda-entry-types '(:timestamp :sexp :scheduled :deadline))
-                (org-deadline-warning-days 0)
-                (org-agenda-files (append org-agenda-files
-                                          (mapcar #'second db/ical-org-links)))))
+                (org-deadline-warning-days 0)))
               (db/org-agenda-list-deadlines
                ""
                ((org-agenda-overriding-header "Deadlines")
