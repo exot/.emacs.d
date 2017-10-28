@@ -639,8 +639,8 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package nsm
   :defer t
-  :config (progn (setq network-security-level 'medium
-                       nsm-save-host-names t)))
+  :config (setq network-security-level 'medium
+                nsm-save-host-names t))
 
 (use-package gnutls
   :defer t
@@ -668,8 +668,7 @@ Certificates are assumed to be of the form *.crt."
 
 (use-package epg
   :defer t
-  :config (progn
-            (setq epg-debug t)))
+  :config (setq epg-debug t))
 
 
 ;; * Appearance
