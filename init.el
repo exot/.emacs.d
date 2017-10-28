@@ -660,7 +660,7 @@ Certificates are assumed to be of the form *.crt."
                 (dolist (cert-file (directory-files new-value t "*.crt$"))
                   (add-to-list 'gnutls-trustfiles cert-file))))
 
-            (defcustom db/cert-file-directory "~/.local/etc/certs"
+            (defcustom db/cert-file-directory "~/.local/etc/certs/"
               "Local directory with additional certificates."
               :group 'personal-settings
               :type 'string
