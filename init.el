@@ -657,7 +657,7 @@ to a directory, add all certificate files in it to
 Certificates are assumed to be of the form *.crt."
               (set symbol new-value)
               (when (file-directory-p new-value)
-                (dolist (cert-file (directory-files new-value))
+                (dolist (cert-file (directory-files new-value t "*.crt$"))
                   (add-to-list 'gnutls-trustfiles cert-file))))
 
             (defcustom db/cert-file-directory "~/.local/etc/certs"
