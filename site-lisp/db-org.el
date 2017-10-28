@@ -246,10 +246,13 @@ forces clocking in of the default task."
   (set-default symbol value)
   (setq org-agenda-files (remove-duplicates
                           (cl-remove-if #'string-empty-p
-                                        (list db/org-default-home-file
-                                              db/org-default-work-file
-                                              db/org-default-refile-file
-                                              db/org-default-notes-file))
+                                        (mapcar (lambda (symbol)
+                                                  (when (boundp symbol)
+                                                    (symbol-value symbol)))
+                                                '(db/org-default-home-file
+                                                  db/org-default-work-file
+                                                  db/org-default-refile-file
+                                                  db/org-default-notes-file)))
                           :test #'equalp)))
 
 (defcustom db/org-default-work-file ""
@@ -281,8 +284,6 @@ forces clocking in of the default task."
   :group 'personal-settings
   :type 'string
   :set #'db/update-org-agenda-files)
-
-
 
 (setq org-agenda-include-diary nil
       org-agenda-span 1
