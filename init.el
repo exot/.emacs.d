@@ -1145,7 +1145,8 @@ Certificates are assumed to be of the form *.crt."
   :commands (crux-eval-and-replace
              crux-smart-open-line-above
              crux-kill-whole-line
-             crux-cleanup-buffer-or-region))
+             crux-cleanup-buffer-or-region
+             crux-delete-buffer-and-file))
 
 (use-package define-word
   :commands (define-word-at-point define-word))
