@@ -113,8 +113,7 @@
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook #'electric-indent-local-mode))
   (add-hook 'lisp-mode-hook #'lispy-mode)
-  (unless (eq system-type 'windows-nt)
-    (add-hook 'text-mode-hook #'turn-on-flyspell))
+  (add-hook 'text-mode-hook #'turn-on-flyspell)
 
   ;; Hydras
 
