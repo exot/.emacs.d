@@ -287,7 +287,10 @@ If FILE is not given, prompt for one."
 (defvar db/helm-source-frequently-visited-locations
   '((name . "Locations")
     (candidates . db/helm-frequently-visited-locations)
-    (action . (("Open" . find-file)))
+    (action . (("Open" . (lambda (entry)
+                           (if (consp entry)
+                               (funcall (car entry) (cdr entry))
+                             (find-file entry))))))
     (filtered-candidate-transformer . helm-adaptive-sort)))
 
 (defcustom db/important-documents-path "~/Documents/library/"
