@@ -331,7 +331,7 @@ forces clocking in of the default task."
       org-agenda-search-headline-for-time nil)
 
 (setq org-agenda-clock-consistency-checks
-      '(:max-duration 999999999
+      '(:max-duration 9999999
         :min-duration 0
         :max-gap 0
         :gap-ok-around nil
