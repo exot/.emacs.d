@@ -262,15 +262,16 @@ _h_   _l_   _o_k        _y_ank
 
   ;; Environment Variables
 
-  (ignore-errors
-    (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
-                                      "SSH_AGENT_PID"
-                                      "PATH"
-                                      "TEXMFHOME"
-                                      "PERL5LIB"
-                                      "PERL_LOCAL_LIB_ROOT"
-                                      "PERL_MB_OPT"
-                                      "PERL_MM_OPT")))
+  (when (memq system-type '(windows-nt cygwin))
+    (ignore-errors
+      (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
+                                        "SSH_AGENT_PID"
+                                        "PATH"
+                                        "TEXMFHOME"
+                                        "PERL5LIB"
+                                        "PERL_LOCAL_LIB_ROOT"
+                                        "PERL_MB_OPT"
+                                        "PERL_MM_OPT"))))
 
   ;; Fixes
 
