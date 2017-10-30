@@ -709,17 +709,20 @@ Certificates are assumed to be of the form *.crt."
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))
 
-            (setq dired-guess-shell-alist-user
-                  '(("\\.pdf\\'" "evince")
-                    ("\\.ps\\'" "evince")
-                    ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
-                    ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
-                    ("\\.\\(?:xcf\\)\\'" "gimp")
-                    ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
-                     "vlc")
-                    ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
-                    ("\\.html?\\'" "firefox")
-                    ("\\.docx?\\'" "loffice")))
+            (if (eq system-type 'windows-nt)
+                (setq dired-guess-shell-alist-user
+                      '(("\\.pdf\\'" "firefox")))
+                (setq dired-guess-shell-alist-user
+                      '(("\\.pdf\\'" "evince")
+                        ("\\.ps\\'" "evince")
+                        ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                        ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
+                        ("\\.\\(?:xcf\\)\\'" "gimp")
+                        ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
+                         "vlc")
+                        ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
+                        ("\\.html?\\'" "firefox")
+                        ("\\.docx?\\'" "loffice"))))
 
             (unbind-key "C-M-o" dired-mode-map)
 
