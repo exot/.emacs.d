@@ -281,7 +281,7 @@ _h_   _l_   _o_k        _y_ank
 
   ;; Start Server when on Windows
 
-  (when (eq system-type 'windows-nt)
+  (when (memq system-type '(windows-nt cygwin))
     (server-start))
 
   t)
@@ -709,7 +709,7 @@ Certificates are assumed to be of the form *.crt."
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))
 
-            (if (eq system-type 'windows-nt)
+            (if (memq system-type '(windows-nt cygwin))
                 (setq dired-guess-shell-alist-user
                       '(("\\.pdf\\'" "firefox")))
                 (setq dired-guess-shell-alist-user
