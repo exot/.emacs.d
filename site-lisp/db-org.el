@@ -944,6 +944,16 @@ Current Task: %`org-clock-current-task; "
                (org-todo 'done)
                (org-save-all-org-buffers)))))))
 
+
+
+;;; Custom links for Windows
+
+(org-add-link-type "onenote" 'org-onenote-open)
+
+(defun db/org-onenote-open (path)
+  "Visit OneNote document on PATH."
+  (w32-shell-execute "open" path))
+
 
 ;;; End
 
