@@ -262,7 +262,7 @@ _h_   _l_   _o_k        _y_ank
 
   ;; Environment Variables
 
-  (when (memq system-type '(windows-nt cygwin))
+  (unless (memq system-type '(windows-nt cygwin))
     (ignore-errors
       (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
                                         "SSH_AGENT_PID"
