@@ -711,7 +711,11 @@ Certificates are assumed to be of the form *.crt."
 
             (if (memq system-type '(windows-nt cygwin))
                 (setq dired-guess-shell-alist-user
-                      '(("\\.pdf\\'" "firefox")))
+                      '(("\\.pdf\\'" "cmd /c")
+                        ("\\.docx\\'" "cmd /c")
+                        ("\\.pptx\\'" "cmd /c")
+                        ("\\.xlsx\\'" "cmd /c")
+                        ("\\.one\\'" "cmd /c")))
                 (setq dired-guess-shell-alist-user
                       '(("\\.pdf\\'" "evince")
                         ("\\.ps\\'" "evince")
