@@ -697,7 +697,14 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("w" "Weekly Summary"
              entry
              (file+datetree db/org-default-pensieve-file)
-             "* Weekly Review\n\n%?")))
+             "* Weekly Review\n\n%?")
+        ("a" "Abkürzung"
+             entry
+             (file+olp db/org-default-notes-file "Abkürzungen")
+             ,(concat "* %^{Abkürzung}\n"
+                      ":PROPERTIES:\n"
+                      ":FULL_NAME: %^{Full Name}\n"
+                      ":END:\n\n"))))
 
 (defun db/org-timestamp-difference (stamp-1 stamp-2)
   "Returns time difference between two given org-mode timestamps."
