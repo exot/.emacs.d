@@ -350,13 +350,6 @@ forces clocking in of the default task."
         ("DATE" "NOP" "HOLD")
         ""))
 
-(setq org-agenda-prefix-format
-      '((agenda . " %11s%-4c %4e %?-12t")
-        (timeline . "% s")
-        (todo . " %-4c ")
-        (tags . " %-4c ")
-        (search . " %-4c ")))
-
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
   "Prepare agenda view that only lists upcoming deadlines.
