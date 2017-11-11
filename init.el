@@ -921,12 +921,15 @@ Certificates are assumed to be of the form *.crt."
 
 ;; * Media
 
+(dolist (package '(emms-source-file
+                   emms-streams
+                   emms-playlist-mode
+                   emms-cache))
+  (eval-after-load package
+    '(require 'db-emms)))
+
 (use-package db-emms
-  :commands (emms
-             emms-stream-init
-             db/play-playlist
-             emms-cache-save
-             emms-play-directory-tree
+  :commands (db/play-playlist
              emms-control/body)
   :config (run-with-timer 0 3600 #'emms-cache-save))
 
