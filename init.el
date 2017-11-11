@@ -360,6 +360,11 @@ _h_   _l_   _o_k        _y_ank
       x-underline-at-descent-line t
       search-whitespace-regexp "[ \t\r\n]+")
 
+(when (memq system-type '(windows-nt cygwin))
+  ;; treat memory for display time ...  but hey, this is Windows, memory doesn’t
+  ;; matter!
+  (setq inhibit-compacting-font-caches t))
+
 (setq-default cursor-type 'bar)
 
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
