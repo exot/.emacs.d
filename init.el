@@ -132,6 +132,7 @@
     (add-hook 'prog-mode-hook #'electric-indent-local-mode))
   (add-hook 'lisp-mode-hook #'lispy-mode)
   (add-hook 'text-mode-hook #'turn-on-flyspell)
+  (add-hook 'text-mode-hook #'yas-minor-mode-on)
 
   ;; Hydras
 
@@ -1332,7 +1333,6 @@ Certificates are assumed to be of the form *.crt."
 (use-package yasnippet
   :commands (yas-minor-mode-on yas-minor-mode)
   :diminish yas-minor-mode
-  :init   (add-hook 'text-mode-hook #'yas-minor-mode-on)
   :config (progn
             (add-hook 'term-mode-hook (lambda () (yas-minor-mode -1)))
             (yas-reload-all)))
