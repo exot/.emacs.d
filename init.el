@@ -497,7 +497,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package mailcap
   :defer t
   :config (progn
-            ;;Remove doc-view so pdf will open with ocular
+            ;;Remove doc-view so pdf will open with default viewer
             (setcdr
              (assoc "application" mailcap-mime-data)
              (remove '("pdf"
