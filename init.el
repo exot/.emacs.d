@@ -417,9 +417,6 @@ _h_   _l_   _o_k        _y_ank
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(require 'time)
-(require 'calendar)
-
 (setq display-time-24hr-format t
       calendar-date-style 'iso
       calendar-view-diary-initially-flag t
@@ -438,10 +435,8 @@ _h_   _l_   _o_k        _y_ank
 (setq-default font-lock-maximum-decoration '((t . t)))
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
 
-(require 'tramp)
 (setq tramp-save-ad-hoc-proxies t)
 
-(require 're-builder)
 (setq reb-re-syntax 'string)
 
 (setq lisp-indent-function 'common-lisp-indent-function)
