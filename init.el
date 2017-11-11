@@ -17,11 +17,17 @@
 ;;; Code:
 
 
-;; * Packages
+;; * Constants
 
 (defconst emacs-d (file-name-directory
                    (file-chase-links load-file-name))
   "The giant turtle on which the world rests.")
+
+(defconst on-windows (memq system-type '(windows-nt cygwin))
+  "Non-nil if and only if this instance of Emacs runs on Windows.")
+
+
+;; * Packages
 
 (require 'package)
 
@@ -318,9 +324,6 @@ _h_   _l_   _o_k        _y_ank
   :group 'convenience
   :group 'help
   :tag "Personal settings")
-
-(defconst on-windows (memq system-type '(windows-nt cygwin))
-  "Non-nil if and only if this instance of Emacs runs on Windows.")
 
 
 ;; * Builtin Variables
