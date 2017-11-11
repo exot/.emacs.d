@@ -653,7 +653,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package gnutls
   :defer t
   :config (progn
-            (setq gnutls-log-level 0
+            (setq gnutls-log-level 1
                   gnutls-min-prime-bits 1024
                   gnutls-verify-error t)
 
