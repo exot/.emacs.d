@@ -1229,12 +1229,12 @@ Certificates are assumed to be of the form *.crt."
             (setq haskell-program-name "ghci")
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-            (add-hook 'haskell-mode-hook 'company-mode)
             (add-hook 'haskell-mode-hook
                       (lambda ()
                         (set (make-local-variable 'company-backends)
                              (append '((company-capf company-dabbrev-code))
                                      company-backends))))
+            (add-hook 'haskell-mode-hook 'company-mode)
             (add-hook 'haskell-mode-hook 'flycheck-mode)
 
             (require 'haskell-indentation)
