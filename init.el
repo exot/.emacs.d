@@ -647,7 +647,7 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package nsm
   :defer t
-  :config (setq network-security-level 'medium
+  :config (setq network-security-level 'high
                 nsm-save-host-names t))
 
 (use-package gnutls
