@@ -134,6 +134,19 @@
   (add-hook 'text-mode-hook #'turn-on-flyspell)
   (add-hook 'text-mode-hook #'yas-minor-mode-on)
 
+  ;; Auto-Modes
+
+  (dolist (mode-spec '(("\\.clj\\'" . clojure-mode)
+                       ("\\.cl\\'" . lisp-mode)
+                       ("\\.lisp\\'" . lisp-mode)
+                       ("\\.plx\\’" . cperl-mode)
+                       ("\\.hs\\'" . haskell-mode)
+                       ("\\.lhs\\'" . haskell-mode)
+                       ("\\.md\\'" . markdown-mode)
+                       ("\\.html\\'" . nxml-mode)
+                       ("\\.xml\\'" . nxml-mode)))
+    (add-to-list 'auto-mode-alist mode-spec))
+
   ;; Hydras
 
   (defhydra hydra-toggle (:color blue)
@@ -1056,7 +1069,7 @@ Certificates are assumed to be of the form *.crt."
             (setq cider-cljs-lein-repl "(cemerick.piggieback/cljs-repl (cljs.repl.rhino/repl-env))")))
 
 (use-package clojure-mode
-  :mode (("\\.clj\\'" . clojure-mode))
+  :defer t
   :config (progn (define-clojure-indent
                      (forall 'defun)
                      (exists 'defun)
@@ -1075,8 +1088,6 @@ Certificates are assumed to be of the form *.crt."
 
 (use-package slime
   :commands (slime slime-mode slime-connect)
-  :mode     (("\\.cl\\'" . lisp-mode)
-             ("\\.lisp\\'" . lisp-mode))
   :init     (progn
               (setq inferior-lisp-program "sbcl --noinform --no-linedit")
               (add-hook 'lisp-mode-hook '(lambda () (slime-mode +1)) t))
@@ -1154,7 +1165,6 @@ Certificates are assumed to be of the form *.crt."
 
 (use-package cperl-mode
   :commands (cperl-mode)
-  :mode (("\\.plx\\’" . cperl-mode))
   :init (progn
           ;; replace perl-mode with cperl-mode
           (mapc
@@ -1213,8 +1223,7 @@ Certificates are assumed to be of the form *.crt."
             (unbind-key "C-c $" flyspell-mode-map)))
 
 (use-package haskell-mode
-  :mode (("\\.hs\\'" . haskell-mode)
-         ("\\.lhs\\'" . haskell-mode))
+  :defer t
   :defines (haskell-program-name)
   :config (progn
             (setq haskell-program-name "ghci")
@@ -1252,7 +1261,7 @@ Certificates are assumed to be of the form *.crt."
             (key-chord-define-global ",," "„")))
 
 (use-package markdown-mode
-  :mode (("\\.md\\'" . markdown-mode)))
+  :defer t)
 
 (use-package mastodon
   :commands (mastodon))
@@ -1264,8 +1273,7 @@ Certificates are assumed to be of the form *.crt."
              mc/mark-all-like-this))
 
 (use-package nxml
-  :mode (("\\.html\\'" . nxml-mode)
-         ("\\.xml\\'"  . nxml-mode)))
+  :defer t)
 
 (use-package org-ref
   :defer t
@@ -1283,9 +1291,6 @@ Certificates are assumed to be of the form *.crt."
             (setq python-indent-offset 4
                   python-shell-interpreter "/usr/bin/python")
             (add-hook 'python-mode-hook #'highlight-indentation-mode)))
-
-(use-package scala-mode
-  :mode (("\\.scala\\'" . scala-mode)))
 
 (use-package semantic
   :commands (semantic-mode)
