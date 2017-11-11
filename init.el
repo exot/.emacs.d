@@ -262,7 +262,7 @@ _h_   _l_   _o_k        _y_ank
 
   ;; Environment Variables
 
-  (unless (memq system-type '(windows-nt cygwin))
+  (unless on-windows
     (ignore-errors
       (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
                                         "SSH_AGENT_PID"
@@ -281,7 +281,7 @@ _h_   _l_   _o_k        _y_ank
 
   ;; Start Server when on Windows
 
-  (when (memq system-type '(windows-nt cygwin))
+  (when on-windows
     (server-start))
 
   t)
@@ -306,6 +306,9 @@ _h_   _l_   _o_k        _y_ank
   :group 'convenience
   :group 'help
   :tag "Personal settings")
+
+(defconst on-windows (memq system-type '(windows-nt cygwin))
+  "Non-nil if and only if this instance of Emacs runs on Windows.")
 
 
 ;; * Builtin Variables
@@ -360,7 +363,7 @@ _h_   _l_   _o_k        _y_ank
       x-underline-at-descent-line t
       search-whitespace-regexp "[ \t\r\n]+")
 
-(when (memq system-type '(windows-nt cygwin))
+(when on-windows
   ;; treat memory for display time ...  but hey, this is Windows, memory doesn’t
   ;; matter!
   (setq inhibit-compacting-font-caches t))
@@ -714,7 +717,7 @@ Certificates are assumed to be of the form *.crt."
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))
 
-            (if (memq system-type '(windows-nt cygwin))
+            (if on-windows
                 (setq dired-guess-shell-alist-user
                       '(("\\.pdf\\'" "cmd /c")
                         ("\\.docx\\'" "cmd /c")
@@ -766,7 +769,7 @@ Certificates are assumed to be of the form *.crt."
                   (error "No more than 2 files should be marked"))))
 
             (require 'dired-quick-sort)
-            (when (eq system-type 'windows-nt)
+            (when on-windows
               (setq ls-lisp-use-insert-directory-program t))
             (dired-quick-sort-setup)
 

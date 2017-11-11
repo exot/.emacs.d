@@ -105,7 +105,7 @@ that we also follow symbolic links."
                                             (point-max))
                           "\n"))))
 
-(unless (memq system-type '(windows-nt ms-dos))
+(unless on-windows
   (setq emms-source-file-directory-tree-function
         #'db/emms-source-file-directory-tree-find))
 
