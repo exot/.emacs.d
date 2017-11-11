@@ -814,8 +814,9 @@ This is done only if the value of this variable is not null."
       (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary.")
     (progn
       (org-save-all-org-buffers)
-      (let ((org-agenda-files (list db/org-default-home-file
-                                    db/org-default-work-file))
+      (let ((org-agenda-files (cl-remove-if #'string-empty-p
+                                            (list db/org-default-home-file
+                                                  db/org-default-work-file)))
             (org-agenda-new-buffers nil))
         ;; check whether we need to do something
         (when (some (lambda (org-file)
@@ -825,7 +826,7 @@ This is done only if the value of this variable is not null."
           (message "Exporting diary ...")
           ;; open files manually to avoid polluting `org-agenda-new-buffers’; we don’t
           ;; want these buffers to be closed after exporting
-          (mapc #'find-file-noselect (cl-remove-if #'null org-agenda-files))
+          (mapc #'find-file-noselect org-agenda-files)
           ;; actual export; calls `org-release-buffers’ and may thus close buffers
           ;; we want to keep around … which is why we set `org-agenda-new-buffers’
           ;; to nil
