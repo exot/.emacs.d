@@ -506,7 +506,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package mailcap
   :defer t
   :config (progn
-            ;;Remove doc-view so pdf will open with default viewer
+            ;; Remove doc-view so pdf will open with default viewer
             (setcdr
              (assoc "application" mailcap-mime-data)
              (remove '("pdf"
@@ -904,6 +904,7 @@ Certificates are assumed to be of the form *.crt."
                 aw-background nil
                 aw-leading-char-style 'char
                 aw-scope 'frame))
+
 (use-package avy
   :commands (avy-goto-char-timer
              avy-goto-word-or-subword-1
