@@ -824,12 +824,12 @@ This is done only if the value of this variable is not null."
                                               org-icalendar-combined-agenda-file))
                     org-agenda-files)
           (message "Exporting diary ...")
-          ;; open files manually to avoid polluting `org-agenda-new-buffers’; we don’t
-          ;; want these buffers to be closed after exporting
+          ;; open files manually to avoid polluting `org-agenda-new-buffers’; we
+          ;; don’t want these buffers to be closed after exporting
           (mapc #'find-file-noselect org-agenda-files)
-          ;; actual export; calls `org-release-buffers’ and may thus close buffers
-          ;; we want to keep around … which is why we set `org-agenda-new-buffers’
-          ;; to nil
+          ;; actual export; calls `org-release-buffers’ and may thus close
+          ;; buffers we want to keep around … which is why we set
+          ;; `org-agenda-new-buffers’ to nil
           (org-icalendar-combine-agenda-files)
           (message "Exporting diary ... done."))))))
 
