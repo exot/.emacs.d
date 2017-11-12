@@ -134,7 +134,10 @@
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook #'electric-indent-local-mode))
   (add-hook 'lisp-mode-hook #'lispy-mode)
-  (add-hook 'text-mode-hook #'turn-on-flyspell)
+  (unless on-windows
+    ;; flyspell doesn’t work on windows right now, need to further investigate
+    ;; what is happening here
+    (add-hook 'text-mode-hook #'turn-on-flyspell))
   (add-hook 'text-mode-hook #'yas-minor-mode-on)
 
   ;; Auto-Modes
