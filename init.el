@@ -1241,10 +1241,10 @@ Certificates are assumed to be of the form *.crt."
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
             (add-hook 'haskell-mode-hook
                       (lambda ()
+                        (company-mode +1)
                         (set (make-local-variable 'company-backends)
                              (append '((company-capf company-dabbrev-code))
                                      company-backends))))
-            (add-hook 'haskell-mode-hook 'company-mode)
             (add-hook 'haskell-mode-hook 'flycheck-mode)
 
             (require 'haskell-indentation)
