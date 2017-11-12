@@ -13,6 +13,9 @@
 ;;   configuration hooks are installed (using `use-package’); this way a user
 ;;   can choose in `db/run-init’ which configruation to activate without
 ;;   changing much of the rest of the file.
+;; * this file also introduces a new customization group `personal-settings’
+;;   containing variables (mostly file paths) that must be set to enable some
+;;   of the provied functionality.
 
 ;;; Code:
 
