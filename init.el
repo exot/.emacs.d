@@ -329,15 +329,6 @@ _h_   _l_   _o_k        _y_ank
 
 ;; * Personal customization
 
-(use-package db-private
-  :load-path "private"
-  :defines (db/personal-mail-address
-            db/work-mail-address
-            db/jabber-id
-            db/smtp-accounts
-            db/personal-gnus-filter-rules)
-  :demand t)
-
 (defgroup personal-settings nil
   "A bunch of functions and variables for personalizing emacs."
   :prefix "db/"
@@ -646,6 +637,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
   :config (progn
+            (require 'db-private)
             (setq bbdb-completion-display-record nil
                   bbdb-complete-mail-allow-cycling t
                   bbdb-mua-auto-update-p 'query
