@@ -21,7 +21,8 @@
       org-log-into-drawer "LOGBOOK"
       org-log-reschedule 'time
       org-clone-delete-id t
-      org-catch-invisible-edits 'error)
+      org-catch-invisible-edits 'error
+      org-M-RET-may-split-line '((default . nil)))
 
 (bind-key [remap org-return] 'org-return-indent org-mode-map)
 
