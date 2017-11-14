@@ -31,9 +31,6 @@
 
 ;; Setup
 
-(use-package emms-setup
-  :ensure emms)
-
 (emms-all)
 (emms-default-players)
 
@@ -168,7 +165,6 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
 
 ;; Streams
 
-(require 'emms-stream-info)
 (setq emms-stream-default-action "play")
 
 

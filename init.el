@@ -935,7 +935,6 @@ Certificates are assumed to be of the form *.crt."
 (use-package helm-emms
   :commands (helm-emms)
   :config (progn
-            (require 'db-emms)
             (require 'helm-adaptive)
             (setq helm-emms-default-sources
                   '(helm-source-emms-streams
