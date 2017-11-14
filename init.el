@@ -354,7 +354,9 @@ _h_   _l_   _o_k        _y_ank
 
 ;; * Builtin Variables
 
-(setq custom-file (expand-file-name "custom.el" emacs-d))
+(setq custom-file
+      (expand-file-name (concat "private/custom." system-name ".el")
+                        emacs-d))
 
 (use-package cl-lib)
 (use-package subr-x)
