@@ -674,7 +674,6 @@ SMTP user."
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
   :config (progn
-            (require 'db-private)
             (setq bbdb-completion-display-record nil
                   bbdb-complete-mail-allow-cycling t
                   bbdb-mua-auto-update-p 'query

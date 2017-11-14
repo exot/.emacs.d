@@ -27,7 +27,6 @@
 (require 'gnus-agent)
 (require 'nnml)
 (require 'gnus-async)
-(require 'db-private)
 
 ;; Debugging
 
