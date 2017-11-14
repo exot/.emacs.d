@@ -115,25 +115,6 @@ If already in `*ansi-term*' buffer, bury it."
         (insert output)
         (search-backward "ERROR!")))))
 
-(defun db/get-mail (arg)
-  "Use offlineimap to get emails from remote accounts.
-With optional ARG, fetch only personal email addresses."
-  (interactive "P")
-  (if arg
-      (message "Receiving Mail... (personal only)")
-    (message "Receiving Mail..."))
-  (let ((process (apply #'start-process
-                        "offlineimap"
-                        " *offlineimap*"
-                        "systemctl"
-                        `("--user" "start" ,(format  "offlineimap@%s" (getenv "DISPLAY"))))))
-    (set-process-sentinel process
-                          (lambda (process event)
-                            (if (string= event "finished\n")
-                                (progn (gnus-group-get-new-news 2)
-                                       (message "Receiving Mail... done"))
-                              (error "Receiving Mail... failed"))))))
-
 (defun db/isearch-forward-symbol-with-prefix (p)
   ;; http://endlessparentheses.com/quickly-search-for-occurrences-of-the-symbol-at-point.html
   "Like `isearch-forward', unless prefix argument is provided.
@@ -359,11 +340,7 @@ path."
   (interactive)
   (goto-char (point-min))
   (kill-line 8)
-  (replace-regexp "^\"" "| ")
-  (goto-char (point-min))
-  (replace-regexp "\"$" " |")
-  (goto-char (point-min))
-  (replace-regexp "\";\"" " | ")
+  (replace-regexp "^\"\\|\"$\\|\";\"" "|")
   (goto-char (point-min))
   (org-mode)
   (org-table-align)
