@@ -931,21 +931,21 @@ Certificates are assumed to be of the form *.crt."
 
 ;; * Media
 
-(dolist (package '(emms-source-file
-                   emms-streams
-                   emms-playlist-mode
-                   emms-cache))
-  (eval-after-load package
-    '(require 'db-emms)))
-
-(use-package db-emms
+(use-package emms-setup
   :commands (db/play-playlist
+             emms-streams
+             emms-play-dired
+             emms-play-file
+             emms-play-directory
              emms-control/body)
-  :config (run-with-timer 0 3600 #'emms-cache-save))
+  :config (progn
+            (require 'db-emms)
+            (run-with-timer 0 3600 #'emms-cache-save)))
 
 (use-package helm-emms
   :commands (helm-emms)
   :config (progn
+            (require 'emms-setup)
             (require 'helm-adaptive)
             (setq helm-emms-default-sources
                   '(helm-source-emms-streams
