@@ -30,7 +30,7 @@ SMTP user."
            (choice :tag "SMTP Stream Type"
             (const nil) (const starttls) (const plain) (const ssl))
            (integer :tag "SMTP Service Port")
-           (string :tag "SMTP Login  Name"))))
+           (string :tag "SMTP Login Name"))))
 
 (defcustom db/personal-gnus-filter-rules nil
   "Default filter rules as used by Gnus for `user-mail-address’."
