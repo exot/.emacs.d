@@ -346,6 +346,11 @@ _h_   _l_   _o_k        _y_ank
   :group 'personal-settings
   :type 'string)
 
+(defcustom db/jabber-id ""
+  "Personal XMPP ID."
+  :group 'personal-settings
+  :type 'string)
+
 
 ;; * Builtin Variables
 

@@ -15,11 +15,6 @@
 
 ;; Customization
 
-(defcustom db/jabber-id ""
-  "Personal XMPP ID."
-  :group 'personal-settings
-  :type 'string)
-
 (defcustom db/smtp-accounts nil
   "Configuration for sending mail as used by `db/set-smtp-server-from-header’, which see.
 This is a list of lists, where each such list specifies the SMTP
