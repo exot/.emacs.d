@@ -33,7 +33,7 @@ SMTP user."
            (string :tag "SMTP Login  Name"))))
 
 (defcustom db/personal-gnus-filter-rules nil
-  "Default filter rules as used by Gnus for `db/personal-mail-address’."
+  "Default filter rules as used by Gnus for `user-mail-address’."
   :group 'personal-settings
   :type 'sexp)
 
@@ -59,7 +59,7 @@ SMTP user."
 ;; Accounts
 
 (setq-default message-dont-reply-to-names
-              (regexp-opt (list db/personal-mail-address db/work-mail-address)
+              (regexp-opt (cons user-mail-address db/additional-mail-addresses)
                           'words))
 
 (setq gnus-select-method '(nnnil "")
@@ -570,17 +570,12 @@ If found, imports the certificate via gpgsm."
 
 ;;; Mail Formatting
 
-(setq gnus-posting-styles               ; needs to be cleaned up somewhen
+(setq gnus-posting-styles
       `((".*"
          (name ,user-full-name)
-         (address ,db/personal-mail-address)
-         (signature-file "~/.signature-minimal")
-         ("X-Jabber-ID" ,db/jabber-id))
-        (message-mail-p
-         (signature-file "~/.signature"))
-        ("algebra20:.*"
-         (address ,db/personal-mail-address)
-         (signature-file "~/.signature"))))
+         (address ,user-mail-address)
+         (signature-file "~/.signature")
+         ("X-Jabber-ID" ,db/jabber-id))))
 
 ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
 (defun db/mml-attach-file--go-to-eob (orig-fun &rest args)

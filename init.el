@@ -336,15 +336,10 @@ _h_   _l_   _o_k        _y_ank
   :group 'help
   :tag "Personal settings")
 
-(defcustom db/personal-mail-address ""
-  "Primary email address used for personal communication."
+(defcustom db/additional-mail-addresses nil
+  "List of additional email addresses (apart from `user-mail-address’)."
   :group 'personal-settings
-  :type 'string)
-
-(defcustom db/work-mail-address ""
-  "Primary email address used for email communication at work."
-  :group 'personal-settings
-  :type 'string)
+  :type '(repeat string))
 
 (defcustom db/jabber-id ""
   "Personal XMPP ID."
@@ -659,8 +654,8 @@ _h_   _l_   _o_k        _y_ank
                   bbdb-mua-auto-update-p 'query
                   bbdb-default-country "Germany"
                   bbdb-user-mail-address-re (regexp-opt
-                                             (list db/personal-mail-address
-                                                   db/work-mail-address)))
+                                             (cons user-mail-address
+                                                   db/additional-mail-addresses)))
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
             (run-with-timer 0 3600 #'bbdb-save)))
