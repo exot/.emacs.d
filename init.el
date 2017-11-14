@@ -336,6 +336,43 @@ _h_   _l_   _o_k        _y_ank
   :group 'help
   :tag "Personal settings")
 
+(defcustom db/personal-mail-address ""
+  "Primary email address used for personal communication."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/work-mail-address ""
+  "Primary email address used for email communication at work."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/jabber-id ""
+  "Personal XMPP ID."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/smtp-accounts nil
+  "Configuration for sending mail as used by `db/set-smtp-server-from-header’, which see.
+This is a list of lists, where each such list specifies the SMTP
+parameters for one particular email address.  This specification
+consists of the mail address, the address of the mail server, the
+stream type (e.g. `starttls’), the SMTP service port, and the
+SMTP user."
+  :group 'personal-settings
+  :type '(repeat
+          (list
+           (string :tag "EMail Address")
+           (string :tag "SMTP Server Address")
+           (choice :tag "SMTP Stream Type"
+            (const nil) (const starttls) (const plain) (const ssl))
+           (integer :tag "SMTP Service Port")
+           (string :tag "SMTP Login  Name"))))
+
+(defcustom db/personal-gnus-filter-rules nil
+  "Default filter rules as used by Gnus for `db/personal-mail-address’."
+  :group 'personal-settings
+  :type 'sexp)
+
 
 ;; * Builtin Variables
 
