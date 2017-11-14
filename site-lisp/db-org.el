@@ -902,6 +902,8 @@ Resulting org mode file will have CATEGORY and FILETAGS set."
 
 ;;; Exporting
 
+(setq org-export-use-babel nil)
+
 (eval-after-load 'ox
   '(progn
     (add-to-list 'org-latex-classes
