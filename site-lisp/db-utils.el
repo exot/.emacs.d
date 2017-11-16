@@ -8,6 +8,8 @@
 
 ;;; Code:
 
+(require 'dash)
+
 
 ;;; application shortcuts
 
@@ -189,6 +191,14 @@ If FILE is not given, prompt for one."
   (interactive)
   (message org-clock-current-task))
 
+(defun db/hex-to-ascii (hex-string)
+  "Convert HEX-STRING to its ASCII equivalent."
+  ;; https://stackoverflow.com/questions/12003231/how-do-i-convert-a-string-of-hex-into-ascii-using-elisp
+  (->> (string-to-list hex-string)
+       (-partition 2)
+       (--map (string-to-number (concat it) 16))
+       concat))
+
 
 ;;; dired
 
@@ -334,7 +344,7 @@ path."
                    helm-source-bookmark-set)))
 
 
-;;; Other Utilities
+;;; Org Utilities
 
 (defun db/bank-csv-to-org-table ()
   (interactive)

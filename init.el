@@ -601,7 +601,8 @@ _h_   _l_   _o_k        _y_ank
              db/run-or-hide-shell
              db/run-or-hide-eshell
              db/run-or-hide-ansi-term
-             db/helm-shortcuts))
+             db/helm-shortcuts
+             db/hex-to-ascii))
 
 (use-package db-emacsclient)
 
