@@ -758,17 +758,17 @@ Certificates are assumed to be of the form *.crt."
                         ("\\.pptx\\'" "cmd /c")
                         ("\\.xlsx\\'" "cmd /c")
                         ("\\.one\\'" "cmd /c")))
-                (setq dired-guess-shell-alist-user
-                      '(("\\.pdf\\'" "evince")
-                        ("\\.ps\\'" "evince")
-                        ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
-                        ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
-                        ("\\.\\(?:xcf\\)\\'" "gimp")
-                        ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
-                         "vlc")
-                        ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
-                        ("\\.html?\\'" "firefox")
-                        ("\\.docx?\\'" "loffice"))))
+              (setq dired-guess-shell-alist-user
+                    '(("\\.pdf\\'" "evince")
+                      ("\\.ps\\'" "evince")
+                      ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                      ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
+                      ("\\.\\(?:xcf\\)\\'" "gimp")
+                      ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
+                       "vlc")
+                      ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
+                      ("\\.html?\\'" "firefox")
+                      ("\\.docx?\\'" "loffice"))))
 
             (unbind-key "C-M-o" dired-mode-map)
 
