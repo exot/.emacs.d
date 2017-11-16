@@ -802,6 +802,9 @@ Certificates are assumed to be of the form *.crt."
                                   (set-window-configuration wnd))))
                   (error "No more than 2 files should be marked"))))
 
+            (when on-windows
+              (setq dired-free-space-program nil))
+
             (require 'dired-quick-sort)
             (when on-windows
               (setq ls-lisp-use-insert-directory-program t))
