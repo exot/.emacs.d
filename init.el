@@ -1207,7 +1207,8 @@ Certificates are assumed to be of the form *.crt."
   :commands (define-word-at-point define-word))
 
 (use-package dictcc
-  :commands (dictcc))
+  :commands (dictcc)
+  :config (require 'gnutls))
 
 (use-package edit-list
   :commands edit-list)
