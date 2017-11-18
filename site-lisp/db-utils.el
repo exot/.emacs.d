@@ -177,6 +177,17 @@ major mode MODE."
        (--map (string-to-number (concat it) 16))
        concat))
 
+(defun db/ntp-to-time (high low &optional format-string)
+  "Format NTP time given by HIGH and LOW (both integer) to time as given by FORMAT-STRING.
+If not given, FORMAT-STRING defaults to some ISO 8601-like format."
+  (let* ((high-seconds (- high 2208992400)) ; subtract seconds between 1900-01-01 and the epoch
+         (l (% high-seconds 65536))
+         (h (lsh high-seconds -16))
+         (u (floor (* (/ low 4294967296.0) 1e6)))
+         (p (- low (floor (/ (* u 4294967296) 1e6)))))
+    (format-time-string (or format-string "%Y-%m-%dT%H:%M:%S.%9NZ")
+                        (list h l u p))))
+
 
 ;;; dired
 
