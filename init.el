@@ -122,6 +122,9 @@
     (ignore-errors                      ; don’t barf if mode cannot be loaded
       (funcall mode +1)))
 
+  (unless on-windows
+    (pdf-tools-install))
+
   ;; Global Hooks
 
   (when (package-installed-p 'lispy)
