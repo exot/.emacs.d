@@ -83,7 +83,7 @@ If already in `*ansi-term*' buffer, bury it."
     (shell)))
 
 
-;;; helpers
+;;; general utilities
 
 (defun db/get-url-from-link ()
   "Copy url of link under point into clipboard."
@@ -163,28 +163,6 @@ major mode MODE."
                 (with-current-buffer (window-buffer window)
                   (eq major-mode mode)))
               (window-list-1)))
-
-(defun db/ssh-keys ()
-  "Return list of private ssh keys available on the system."
-  (cl-flet ((file-ssh-key-p (file)
-              (string-suffix-p ": PEM RSA private key\n"
-                               (shell-command-to-string (format "file %s" file)))))
-    (cl-remove-if-not #'file-ssh-key-p (directory-files "~/.ssh/" t))))
-
-(defun db/add-to-keyring (&optional file)
-  "Add FILE to local keyring.
-If FILE is not given, prompt for one."
-  (interactive)
-  (if file
-      (let ((return-value (call-process "ssh-add" nil nil nil "-t" "86400" (expand-file-name file))))
-        (unless (zerop return-value)
-          (error "Aborted: %s" return-value)))
-    (let ((ssh-keys `((name . "SSH Keys")
-                      (candidates . ,(mapcar (lambda (file)
-                                               (cons (file-name-nondirectory file) file))
-                                             (db/ssh-keys)))
-                      (action . (("Add to keyring" . db/add-to-keyring))))))
-      (helm :sources (list ssh-keys)))))
 
 (defun db/show-current-org-task ()
   "Show title of currently clock in task in modeline."
