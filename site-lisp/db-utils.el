@@ -172,21 +172,27 @@ major mode MODE."
 (defun db/hex-to-ascii (hex-string)
   "Convert HEX-STRING to its ASCII equivalent."
   ;; https://stackoverflow.com/questions/12003231/how-do-i-convert-a-string-of-hex-into-ascii-using-elisp
+  (interactive "sString (hex): ")
   (->> (string-to-list hex-string)
        (-partition 2)
        (--map (string-to-number (concat it) 16))
-       concat))
+       concat
+       message))
 
 (defun db/ntp-to-time (high low &optional format-string)
   "Format NTP time given by HIGH and LOW (both integer) to time as given by FORMAT-STRING.
 If not given, FORMAT-STRING defaults to some ISO 8601-like format."
+  (interactive
+   (list (string-to-number (read-string "High (hex): ") 16)
+         (string-to-number (read-string "Log (hex): ") 16)))
   (let* ((high-seconds (- high 2208992400)) ; subtract seconds between 1900-01-01 and the epoch
          (l (% high-seconds 65536))
          (h (lsh high-seconds -16))
          (u (floor (* (/ low 4294967296.0) 1e6)))
          (p (- low (floor (/ (* u 4294967296) 1e6)))))
-    (format-time-string (or format-string "%Y-%m-%dT%H:%M:%S.%9NZ")
-                        (list h l u p))))
+    (message
+     (format-time-string (or format-string "%Y-%m-%dT%H:%M:%S.%9NZ")
+                         (list h l u p)))))
 
 
 ;;; dired
