@@ -182,8 +182,7 @@ major mode MODE."
 (defun db/ascii-to-hex (ascii-string)
   "Convert ASCII-STRING to its hexadecimal representation."
   (interactive "sString (ascii): ")
-  (->> (string-to-list ascii-string)    ; redundant
-       (--map (format "%2X" it))
+  (->> (--map (format "%2X" it) ascii-string)
        (apply #'concat)
        message))
 
