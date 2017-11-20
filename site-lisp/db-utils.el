@@ -179,6 +179,14 @@ major mode MODE."
        concat
        message))
 
+(defun db/ascii-to-hex (ascii-string)
+  "Convert ASCII-STRING to its hexadecimal representation."
+  (interactive "sString (ascii): ")
+  (->> (string-to-list ascii-string)    ; redundant
+       (--map (format "%2X" it))
+       (apply #'concat)
+       message))
+
 (defun db/ntp-to-time (high low &optional format-string)
   "Format NTP time given by HIGH and LOW (both integer) to time as given by FORMAT-STRING.
 If not given, FORMAT-STRING defaults to some ISO 8601-like format."
