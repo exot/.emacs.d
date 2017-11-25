@@ -333,14 +333,15 @@ path."
                ("Find file" . find-file))))
   "Helm source for important documents.")
 
-(defun db/helm-shortcuts ()
+(defun db/helm-shortcuts (arg)
   "Open helm completion on common locations."
-  (interactive)
+  (interactive "p")
   (require 'helm-files)
   (require 'helm-bookmark)
   (helm :sources `(db/helm-source-frequently-used-features
                    db/helm-source-frequently-visited-locations
-                   ,(when (file-directory-p db/important-documents-path)
+                   ,(when (and (= arg 4)
+                               (file-directory-p db/important-documents-path))
                       'db/helm-source-important-documents)
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
