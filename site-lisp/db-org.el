@@ -1067,7 +1067,7 @@ When not given, FILES defaults to `org-agenda-files’."
         (insert "|--|\n")
         (dolist (entry timeline)
           (cl-destructuring-bind (start end marker) entry
-           (insert (format "| %s | %s | %s min | %s |\n"
+           (insert (format "| %s | %s | %s | %s |\n"
                            (org-entry-get marker "CATEGORY")
                            (format-time-string "%Y-%m-%d %H:%m" start)
                            (format-time-string "%Y-%m-%d %H:%m" end)
@@ -1076,7 +1076,7 @@ When not given, FILES defaults to `org-agenda-files’."
                                              (with-current-buffer (marker-buffer marker)
                                                (goto-char (marker-position marker))
                                                (thing-at-point 'line t)))))
-                              (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z]+:\\)+\\)?$"
+                              (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z_]+:\\)+\\)?$"
                                                     (regexp-opt org-todo-keywords-1)
                                                     org-priority-regexp)
                                             heading)
