@@ -1002,12 +1002,12 @@ limits, provided that TSTART ≤ END or START ≤ TEND."
                          (apply #'encode-time
                                 (save-match-data
                                   (org-parse-time-string
-                                   (match-string 2) nil t)))))
+                                   (match-string 2))))))
                     (te (float-time
                          (apply #'encode-time
                                 (save-match-data
                                   (org-parse-time-string
-                                   (match-string 3) nil t)))))
+                                   (match-string 3))))))
                     (dt (- (if tend (min te tend) te)
                            (if tstart (max ts tstart) ts))))
                (when (> dt 0)
@@ -1021,7 +1021,7 @@ limits, provided that TSTART ≤ END or START ≤ TEND."
                         tend
                         (>= (float-time org-clock-start-time) tstart)
                         (<= (float-time org-clock-start-time) tend))
-               (push (cons (float-time) (float-time org-clock-start-time))
+               (push (cons (float-time org-clock-start-time) (float-time))
                      times))
              (when (not (null times))
                (push (cons (point-marker) times) task-clock-times)
@@ -1069,8 +1069,8 @@ When not given, FILES defaults to `org-agenda-files’."
           (cl-destructuring-bind (start end marker) entry
            (insert (format "| %s | %s | %s | %s |\n"
                            (org-entry-get marker "CATEGORY")
-                           (format-time-string "%Y-%m-%d %H:%m" start)
-                           (format-time-string "%Y-%m-%d %H:%m" end)
+                           (format-time-string "%Y-%m-%d %H:%M" start)
+                           (format-time-string "%Y-%m-%d %H:%M" end)
                            (save-match-data
                             (let* ((heading (save-mark-and-excursion
                                              (with-current-buffer (marker-buffer marker)
