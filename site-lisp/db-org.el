@@ -1063,14 +1063,14 @@ When not given, FILES defaults to `org-agenda-files’."
         (erase-buffer)
         (org-mode)
         (insert "|--|\n")
-        (insert "| Start | End | Duration | Task |\n")
+        (insert "| Category | Start | End | Task |\n")
         (insert "|--|\n")
         (dolist (entry timeline)
           (cl-destructuring-bind (start end marker) entry
            (insert (format "| %s | %s | %s min | %s |\n"
+                           (org-entry-get marker "CATEGORY")
                            (format-time-string "%Y-%m-%d %H:%m" start)
                            (format-time-string "%Y-%m-%d %H:%m" end)
-                           (floor (/ (- end start) 60))
                            (save-match-data
                             (let* ((heading (save-mark-and-excursion
                                              (with-current-buffer (marker-buffer marker)
