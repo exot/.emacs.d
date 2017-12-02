@@ -1,8 +1,10 @@
-(deftheme exot-main
-  "Created 2017-03-17.")
+(deftheme db-dark
+    "Created 2017-12-02.")
+
+(load-theme 'solarized-dark)
 
 (custom-theme-set-faces
- 'exot-main
+ 'db-dark
  '(aw-leading-char-face ((t (:foreground "red" :height 1.0))))
  '(cursor ((t (:background "red" :foreground "#002b36" :inverse-video t :weight ultra-bold))))
  '(emms-browser-artist-face ((t (:foreground "RoyalBlue1"))))
@@ -12,6 +14,7 @@
  '(emms-playlist-selected-face ((t (:foreground "medium sea green"))))
  '(org-agenda-date ((t (:background "#002b36" :foreground "#586e75" :inverse-video nil :box (:line-width 2 :color "#002b36") :overline nil :slant normal :weight bold :height 1.2))))
  '(org-agenda-dimmed-todo-face ((t nil)))
+ '(org-agenda-done ((t (:foreground "light gray" :slant normal))))
  '(org-agenda-structure ((t (:foreground "#93a1a1" :inverse-video nil :box (:line-width 2 :color "#002b36") :underline nil :slant normal :weight bold :height 1.1))))
  '(org-clock-overlay ((t (:background "black"))))
  '(org-column ((t (:strike-through nil :underline nil :slant normal :weight normal :height 110 :family "DejaVu Sans Mono"))))
@@ -35,4 +38,4 @@
  '(gnus-summary-low-unread ((t (:foreground "dim gray"))))
  '(default ((t (:height 108)))))
 
-(provide-theme 'exot-main)
+(provide-theme 'db-dark)

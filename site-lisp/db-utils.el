@@ -128,18 +128,6 @@ With a prefix argument P, isearch for the symbol at point."
          #'isearch-forward-symbol-at-point
          #'isearch-forward))))
 
-(defun db/go-dark ()
-  "Enable dark themes."
-  (interactive)
-  (load-theme 'solarized-dark)
-  (load-theme 'smart-mode-line-dark))
-
-(defun db/go-light ()
-  "Enable light themes."
-  (interactive)
-  (load-theme 'solarized-light)
-  (load-theme 'smart-mode-line-light))
-
 (defun endless/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
   ;; http://endlessparentheses.com/fill-and-unfill-paragraphs-with-a-single-key.html
