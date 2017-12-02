@@ -980,7 +980,7 @@ heading and CLOCK-TIMES consists of cons cells of the form (START
 a clock line for this task.  START and END are times as returned
 by FLOAT-TIME, which see.  No truncation with respect to TSTART
 and TEND is done, i.e., START or END may lie outside of these
-limits, provided that TSTART ≤ END or START ≤ TEND."
+limits, but it is always true that TSTART ≤ END or START ≤ TEND."
   ;; adapted from `org-clock-sum’
   (when (eq major-mode 'org-mode)
     (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
