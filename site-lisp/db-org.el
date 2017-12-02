@@ -960,6 +960,105 @@ Current Task: %`org-clock-current-task; "
   (w32-shell-execute "open" path))
 
 
+;;; Reporting
+
+(require 'dash)
+
+(defun db/org-clocking-time-in-range (tstart tend)
+  "Return list of all tasks in the current buffer with their
+clocking times attached, provied they lie between TSTART and
+TEND.  The resulting list conists of elements of the form
+
+  (HEADLINE . CLOCK-TIMES)
+
+where HEADLINE is the headline of the corresponding task and
+CLOCK-TIMES consists of cons cells of the form (START . END),
+where START and END are the starting and ending times of a clock
+line for this task.  START and END are times as returned by
+FLOAT-TIME, which see.  No truncation with respect to TSTART and
+TEND is done, i.e., START or END may lie outside of these
+limits, provided that TSTART ≤ END or START ≤ TEND."
+  ;; adapted from `org-clock-sum’
+  (when (eq major-mode 'org-mode)
+    (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
+                       org-clock-string
+                       "[ \t]*\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)"))
+           (level 0)
+           (tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart t))
+                         ((consp tstart) (float-time tstart))
+                         (t tstart)))
+           (tend (cond ((stringp tend) (org-time-string-to-seconds tend t))
+                       ((consp tend) (float-time tend))
+                       (t tend)))
+           (t1 0)
+           task-clock-times headline times)
+      (save-excursion
+        (goto-char (point-max))
+        (while (re-search-backward re nil t)
+          (cond
+            ((match-end 2)
+             ;; Two time stamps.
+             (let* ((ts (float-time
+                         (apply #'encode-time
+                                (save-match-data
+                                  (org-parse-time-string
+                                   (match-string 2) nil t)))))
+                    (te (float-time
+                         (apply #'encode-time
+                                (save-match-data
+                                  (org-parse-time-string
+                                   (match-string 3) nil t)))))
+                    (dt (- (if tend (min te tend) te)
+                           (if tstart (max ts tstart) ts))))
+               (when (> dt 0)
+                 (push (cons ts te) times))))
+            (t
+             ;; A headline
+             (when (and org-clock-report-include-clocking-task
+                        (eq (org-clocking-buffer) (current-buffer))
+                        (eq (marker-position org-clock-hd-marker) (point))
+                        tstart
+                        tend
+                        (>= (float-time org-clock-start-time) tstart)
+                        (<= (float-time org-clock-start-time) tend))
+               (push (cons (float-time) (float-time org-clock-start-time))
+                     times))
+             (when (not (null times))
+               (setq headline
+                     (save-match-data
+                       (let ((heading (thing-at-point 'line t)))
+                         (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z]+:\\)+\\)?$"
+                                               (regexp-opt org-todo-keywords-1)
+                                               org-priority-regexp)
+                                       heading)
+                         (match-string 4 heading))))
+               (push (cons headline times) task-clock-times)
+               (setq times nil))))))
+      task-clock-times)))
+
+(defun db/org-timeline-in-range (tstart tend &optional files)
+  "Return list of clocked times from FILES between TSTART and TEND.  Each element in this list is of the form
+
+  (START END HEADLINE),
+
+where START, END, HEADLINE are as return from
+`db/org-clocking-time-in-range’, which see.  Entries in the resulting list are sorted by START, ascending."
+  (or files (setq files org-agenda-files))
+  (let ((task-clock-times (cl-loop for file in files
+                             when (file-exists-p file)
+                             append (with-current-buffer (or (get-file-buffer file)
+                                                             (find-file-noselect file))
+                                      (db/org-clocking-time-in-range tstart tend))))
+        timeline)
+    (cl-dolist (headline task-clock-times)
+      (cl-dolist (clock-time (cdr headline))
+        (push (list (car clock-time) (cdr clock-time) (car headline))
+              timeline)))
+    (setq timeline
+          (cl-sort timeline (lambda (entry-1 entry-2)
+                              (< (car entry-1) (car entry-2)))))
+    timeline))
+
 ;;; End
 
 (provide 'db-org)
