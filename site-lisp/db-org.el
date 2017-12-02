@@ -1087,6 +1087,17 @@ When not given, FILES defaults to `org-agenda-files’."
       (display-buffer target-buffer)
       t)))
 
+(defun db/org-format-timeline-of-day (date &optional files)
+  "Format timeline of given DATE.
+DATE should be a string of the form %Y-%m-%d.  The timeline will
+be formatted for this day, starting at 00:00 and ending at
+23:59 (sorry, no leap seconds supported yet).  When not given,
+FILES defaults to `org-agenda-files’."
+  (interactive "sDate: ")
+  (db/org-format-timeline (concat date " 00:00")
+                          (concat date " 23:59")
+                          files))
+
 
 ;;; End
 
