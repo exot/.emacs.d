@@ -962,6 +962,9 @@ Current Task: %`org-clock-current-task; "
 
 ;;; Reporting
 
+;; All of what follows should be available in org-mode somewhere, but doing it
+;; myself was faster and also more fun :),
+
 (require 'dash)
 
 (defun db/org-clocking-time-in-range (tstart tend)
