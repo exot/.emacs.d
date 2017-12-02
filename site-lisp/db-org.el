@@ -969,14 +969,14 @@ Current Task: %`org-clock-current-task; "
 clocking times attached, provied they lie between TSTART and
 TEND.  The resulting list conists of elements of the form
 
-  (HEADLINE . CLOCK-TIMES)
+  (MARKER . CLOCK-TIMES)
 
-where HEADLINE is the headline of the corresponding task and
-CLOCK-TIMES consists of cons cells of the form (START . END),
-where START and END are the starting and ending times of a clock
-line for this task.  START and END are times as returned by
-FLOAT-TIME, which see.  No truncation with respect to TSTART and
-TEND is done, i.e., START or END may lie outside of these
+where MARKER is a marker to the begnning of the corresponding
+heading and CLOCK-TIMES consists of cons cells of the form (START
+. END), where START and END are the starting and ending times of
+a clock line for this task.  START and END are times as returned
+by FLOAT-TIME, which see.  No truncation with respect to TSTART
+and TEND is done, i.e., START or END may lie outside of these
 limits, provided that TSTART ≤ END or START ≤ TEND."
   ;; adapted from `org-clock-sum’
   (when (eq major-mode 'org-mode)
@@ -1024,25 +1024,19 @@ limits, provided that TSTART ≤ END or START ≤ TEND."
                (push (cons (float-time) (float-time org-clock-start-time))
                      times))
              (when (not (null times))
-               (setq headline
-                     (save-match-data
-                       (let ((heading (thing-at-point 'line t)))
-                         (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z]+:\\)+\\)?$"
-                                               (regexp-opt org-todo-keywords-1)
-                                               org-priority-regexp)
-                                       heading)
-                         (match-string 4 heading))))
-               (push (cons headline times) task-clock-times)
+               (push (cons (point-marker) times) task-clock-times)
                (setq times nil))))))
       task-clock-times)))
 
 (defun db/org-timeline-in-range (tstart tend &optional files)
-  "Return list of clocked times from FILES between TSTART and TEND.  Each element in this list is of the form
+  "Return list of clocked times from FILES between TSTART and
+TEND.  Each element in this list is of the form
 
-  (START END HEADLINE),
+  (START END MARKER),
 
-where START, END, HEADLINE are as return from
-`db/org-clocking-time-in-range’, which see.  Entries in the resulting list are sorted by START, ascending."
+where START, END, MARKER are as return from
+`db/org-clocking-time-in-range’, which see.  Entries in the
+resulting list are sorted by START, ascending."
   (or files (setq files org-agenda-files))
   (let ((task-clock-times (cl-loop for file in files
                              when (file-exists-p file)
@@ -1050,8 +1044,8 @@ where START, END, HEADLINE are as return from
                                                              (find-file-noselect file))
                                       (db/org-clocking-time-in-range tstart tend))))
         timeline)
-    (cl-dolist (headline task-clock-times)
-      (cl-dolist (clock-time (cdr headline))
+    (dolist (headline task-clock-times)
+      (dolist (clock-time (cdr headline))
         (push (list (car clock-time) (cdr clock-time) (car headline))
               timeline)))
     (setq timeline
@@ -1071,12 +1065,22 @@ When not given, FILES defaults to `org-agenda-files’."
         (insert "|--|\n")
         (insert "| Start | End | Duration | Task |\n")
         (insert "|--|\n")
-        (cl-dolist (entry timeline)
-          (insert (format "| %s | %s | %s min | %s |\n"
-                          (format-time-string "%Y-%m-%d %H:%m" (elt entry 0))
-                          (format-time-string "%Y-%m-%d %H:%m" (elt entry 1))
-                          (floor (/ (- (elt entry 1) (elt entry 0)) 60))
-                          (elt entry 2))))
+        (dolist (entry timeline)
+          (cl-destructuring-bind (start end marker) entry
+           (insert (format "| %s | %s | %s min | %s |\n"
+                           (format-time-string "%Y-%m-%d %H:%m" start)
+                           (format-time-string "%Y-%m-%d %H:%m" end)
+                           (floor (/ (- end start) 60))
+                           (save-match-data
+                            (let* ((heading (save-mark-and-excursion
+                                             (with-current-buffer (marker-buffer marker)
+                                               (goto-char (marker-position marker))
+                                               (thing-at-point 'line t)))))
+                              (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z]+:\\)+\\)?$"
+                                                    (regexp-opt org-todo-keywords-1)
+                                                    org-priority-regexp)
+                                            heading)
+                              (match-string 4 heading)))))))
         (insert "|--|\n")
         (goto-char (point-min))
         (org-table-align))
