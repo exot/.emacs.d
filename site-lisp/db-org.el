@@ -963,7 +963,7 @@ Current Task: %`org-clock-current-task; "
 ;;; Reporting
 
 ;; All of what follows should be available in org-mode somewhere, but doing it
-;; myself was faster and also more fun :),
+;; myself was faster and also more fun :)
 
 (require 'dash)
 
