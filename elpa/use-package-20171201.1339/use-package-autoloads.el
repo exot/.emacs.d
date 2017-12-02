@@ -3,21 +3,21 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "use-package" "use-package.el" (23028 47880
-;;;;;;  842290 450000))
+;;;### (autoloads nil "use-package" "use-package.el" (23074 63646
+;;;;;;  149414 588000))
 ;;; Generated autoloads from use-package.el
 
 (autoload 'use-package-autoload-keymap "use-package" "\
 Loads PACKAGE and then binds the key sequence used to invoke
-this function to KEYMAP-SYMBOL.  It then simulates pressing the
-same key sequence a again, so that the next key pressed is routed
-to the newly loaded keymap.
+  this function to KEYMAP-SYMBOL.  It then simulates pressing the
+  same key sequence a again, so that the next key pressed is routed
+  to the newly loaded keymap.
 
-This function supports use-package's :bind-keymap keyword.  It
-works by binding the given key sequence to an invocation of this
-function for a particular keymap.  The keymap is expected to be
-defined by the package.  In this way, loading the package is
-deferred until the prefix key sequence is pressed.
+  This function supports use-package's :bind-keymap keyword.  It
+  works by binding the given key sequence to an invocation of this
+  function for a particular keymap.  The keymap is expected to be
+  defined by the package.  In this way, loading the package is
+  deferred until the prefix key sequence is pressed.
 
 \(fn KEYMAP-SYMBOL PACKAGE OVERRIDE)" nil nil)
 
@@ -41,7 +41,6 @@ this file.  Usage:
 :mode            Form to be added to `auto-mode-alist'.
 :magic           Form to be added to `magic-mode-alist'.
 :magic-fallback  Form to be added to `magic-fallback-mode-alist'.
-:mode            Form to be added to `auto-mode-alist'.
 :interpreter     Form to be added to `interpreter-mode-alist'.
 
 :commands        Define autoloads for commands that will be defined by the
@@ -61,10 +60,8 @@ this file.  Usage:
                  `:magic-fallback', or `:interpreter'.  This can be an integer,
                  to force loading after N seconds of idle time, if the package
                  has not already been loaded.
-
 :after           Defer loading of a package until after any of the named
                  features are loaded.
-
 :demand          Prevent deferred loading in all cases.
 
 :if EXPR         Initialize and load only if EXPR evaluates to a non-nil value.
@@ -74,6 +71,8 @@ this file.  Usage:
 :load-path       Add to the `load-path' before attempting to load the package.
 :diminish        Support for diminish.el (if installed).
 :delight         Support for delight.el (if installed).
+:custom          Call `customize-set-variable' with each variable definition.
+:custom-face     Call `customize-set-faces' with each face definition.
 :ensure          Loads the package using package.el if necessary.
 :pin             Pin the package to an archive.
 
