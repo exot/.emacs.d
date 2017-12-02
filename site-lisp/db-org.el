@@ -1093,14 +1093,13 @@ When not given, FILES defaults to `org-agenda-files’."
 (defun db/org-format-timeline-of-day (date &optional files)
   "Format timeline of given DATE.
 DATE should be a string of the form %Y-%m-%d.  The timeline will
-be formatted for this day, starting at 00:00 and ending at
-23:59 (sorry, no leap seconds supported yet).  When not given,
-FILES defaults to `org-agenda-files’."
+be formatted for this day, starting at 00:00 and ending at 23:61.
+When not given, FILES defaults to `org-agenda-files’."
   (interactive "sDate (default today): ")
   (when (string-empty-p date)
     (setq date (format-time-string "%Y-%m-%d")))
   (db/org-format-timeline (concat date " 00:00")
-                          (concat date " 23:59")
+                          (concat date " 23:61")
                           files))
 
 
