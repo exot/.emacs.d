@@ -1059,6 +1059,31 @@ where START, END, HEADLINE are as return from
                               (< (car entry-1) (car entry-2)))))
     timeline))
 
+(defun db/org-format-timeline (tstart tend &optional files)
+  "Display timeline of tasks in FILES between TSTART and TEND.
+When not given, FILES defaults to `org-agenda-files’."
+  (interactive "sStart: \nsEnd: ")
+  (let ((timeline (db/org-timeline-in-range tstart tend files)))
+    (let ((target-buffer (get-buffer-create " *Org Timeline*")))
+      (with-current-buffer target-buffer
+        (erase-buffer)
+        (org-mode)
+        (insert "|--|\n")
+        (insert "| Start | End | Duration | Task |\n")
+        (insert "|--|\n")
+        (cl-dolist (entry timeline)
+          (insert (format "| %s | %s | %s min | %s |\n"
+                          (format-time-string "%Y-%m-%d %H:%m" (elt entry 0))
+                          (format-time-string "%Y-%m-%d %H:%m" (elt entry 1))
+                          (floor (/ (- (elt entry 1) (elt entry 0)) 60))
+                          (elt entry 2))))
+        (insert "|--|\n")
+        (goto-char (point-min))
+        (org-table-align))
+      (display-buffer target-buffer)
+      t)))
+
+
 ;;; End
 
 (provide 'db-org)
