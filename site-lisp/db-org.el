@@ -1037,21 +1037,21 @@ TEND.  Each element in this list is of the form
 where START, END, MARKER are as return from
 `db/org-clocking-time-in-range’, which see.  Entries in the
 resulting list are sorted by START, ascending."
-  (or files (setq files org-agenda-files))
-  (let ((task-clock-times (cl-loop for file in files
-                             when (file-exists-p file)
-                             append (with-current-buffer (or (get-file-buffer file)
-                                                             (find-file-noselect file))
-                                      (db/org-clocking-time-in-range tstart tend))))
-        timeline)
-    (dolist (headline task-clock-times)
-      (dolist (clock-time (cdr headline))
-        (push (list (car clock-time) (cdr clock-time) (car headline))
-              timeline)))
-    (setq timeline
+  (->> (or files org-agenda-files)
+       (cl-remove-if-not #'file-exists-p)
+       (cl-mapcan #'(lambda (file)
+                      (with-current-buffer (or (get-file-buffer file)
+                                               (find-file-noselect file))
+                        (db/org-clocking-time-in-range tstart tend))))
+       (cl-mapcan #'(lambda (task)
+                      (mapcar #'(lambda (clock-time)
+                                  (list (car clock-time)
+                                        (cdr clock-time)
+                                        (car task)))
+                              (cdr task))))
+       ((lambda (timeline)              ; narf
           (cl-sort timeline (lambda (entry-1 entry-2)
-                              (< (car entry-1) (car entry-2)))))
-    timeline))
+                              (< (car entry-1) (car entry-2))))))))
 
 (defun db/org-format-timeline (tstart tend &optional files)
   "Display timeline of tasks in FILES between TSTART and TEND.
