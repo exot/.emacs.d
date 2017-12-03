@@ -1053,9 +1053,9 @@ resulting list are sorted by START, ascending."
       (dolist (clock-time (cdr entry))
         (push (list (car clock-time) (cdr clock-time) (car entry))
               turned-around-timeline)))
-    (cl-sort turned-around-timeline
-             (lambda (entry-1 entry-2)
-               (< (car entry-1) (car entry-2))))))
+    (sort turned-around-timeline
+          (lambda (entry-1 entry-2)
+            (< (car entry-1) (car entry-2))))))
 
 (defun db/org-format-timeline (tstart tend &optional files)
   "Display timeline of tasks in FILES between TSTART and TEND.
