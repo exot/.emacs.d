@@ -968,20 +968,20 @@ Current Task: %`org-clock-current-task; "
 (require 'dash)
 
 (defun db/org-clocking-time-in-range (tstart tend)
-  "Return list of all tasks in the current buffer with their
-clocking times attached, provied they lie between TSTART and
-TEND.  The resulting list conists of elements of the form
+  "Return list of all tasks in the current buffer together with
+their clocking times that are between TSTART and TEND.  The
+resulting list conists of elements of the form
 
   (MARKER . CLOCK-TIMES)
 
-where MARKER is a marker to the begnning of the corresponding
-heading and CLOCK-TIMES consists of cons cells of the form (START
-. END), where START and END are the starting and ending times of
-a clock line for this task.  START and END are times as returned
-by FLOAT-TIME, which see.  No truncation with respect to TSTART
-and TEND is done, i.e., START or END may lie outside of these
-limits, but it is always true that TSTART ≤ END ≤ TEND or
-TSTART ≤ START ≤ TEND."
+where MARKER is a marker to the beginning of the corresponding
+heading and CLOCK-TIMES is a list of cons cells of the
+form (START . END), where START and END are the starting and
+ending times of a clock line for this task.  START and END are
+given as seconds since the epoch, as a floating point number.  No
+truncation with respect to TSTART and TEND is done, i.e., START
+or END may occassionally lie outside of these limits, but it is
+always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
   ;; adapted from `org-clock-sum’
   (when (eq major-mode 'org-mode)
     (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
@@ -1038,7 +1038,7 @@ TEND.  Each element in this list is of the form
 
   (START END MARKER),
 
-where START, END, MARKER are as return from
+where START, END, MARKER are as returned by
 `db/org-clocking-time-in-range’, which see.  Entries in the
 resulting list are sorted by START, ascending."
   (let (timeline-of-files turned-around-timeline)
@@ -1059,7 +1059,9 @@ resulting list are sorted by START, ascending."
 
 (defun db/org-format-timeline (tstart tend &optional files)
   "Display timeline of tasks in FILES between TSTART and TEND.
-When not given, FILES defaults to `org-agenda-files’."
+When not given, FILES defaults to `org-agenda-files’.  When
+called interactively, START and END are queried with
+`org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
   (let ((timeline (db/org-timeline-in-range tstart tend files)))
@@ -1097,8 +1099,8 @@ When not given, FILES defaults to `org-agenda-files’."
   "Format timeline of given DATE.
 DATE should be a string of the form %Y-%m-%d.  When called
 interactively, this date will be queried with `org-read-date’.
-The timeline will be formatted for this day, starting at 00:00
-and ending at 23:61.  When not given, FILES defaults to
+The timeline will be formatted for DATE starting at 00:00 and
+ending at 23:61.  When not given, FILES defaults to
 `org-agenda-files’."
   (interactive (list (org-read-date nil nil)))
   (db/org-format-timeline (concat date " 00:00")
