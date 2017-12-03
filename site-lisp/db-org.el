@@ -1042,14 +1042,14 @@ where START, END, MARKER are as return from
 `db/org-clocking-time-in-range’, which see.  Entries in the
 resulting list are sorted by START, ascending."
   (let (timeline-of-files turned-around-timeline)
-    (setq timeline
+    (setq timeline-of-files
           (->> (or files org-agenda-files)
                (cl-remove-if-not #'file-exists-p)
                (cl-mapcan #'(lambda (file)
                               (with-current-buffer (or (get-file-buffer file)
                                                        (find-file-noselect file))
                                 (db/org-clocking-time-in-range tstart tend))))))
-    (dolist (entry timeline)
+    (dolist (entry timeline-of-files)
       (dolist (clock-time (cdr entry))
         (push (list (car clock-time) (cdr clock-time) (car entry))
               turned-around-timeline)))
