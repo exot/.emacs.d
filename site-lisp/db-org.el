@@ -1020,10 +1020,10 @@ limits, but it is always true that TSTART ≤ END or START ≤ TEND."
              (when (and org-clock-report-include-clocking-task
                         (eq (org-clocking-buffer) (current-buffer))
                         (eq (marker-position org-clock-hd-marker) (point))
-                        tstart
-                        tend
-                        (>= (float-time org-clock-start-time) tstart)
-                        (<= (float-time org-clock-start-time) tend))
+                        (or (and tstart
+                                 (<= tstart (float-time org-clock-start-time)))
+                            (and tend
+                                 (<= (float-time) tend))))
                (push (cons (float-time org-clock-start-time) (float-time))
                      times))
              (when (not (null times))
