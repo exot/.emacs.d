@@ -1,4 +1,4 @@
-;;; db-emms.el -- EMMS configuration
+;;; db-emms.el -- EMMS configuration -*- lexical-binding: t -*-
 
 ;;; Commentary:
 

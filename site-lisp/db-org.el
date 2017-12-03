@@ -1,4 +1,4 @@
-;;; org.el -- Daniel's org mode configuration
+;;; org.el -- Daniel's org mode configuration -*- lexical-binding: t -*-
 
 ;;; Commentary:
 

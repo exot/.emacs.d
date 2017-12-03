@@ -1,4 +1,4 @@
-;;; db-eshell --- Configuration for eshell
+;;; db-eshell --- Configuration for eshell -*- lexical-binding: t -*-
 
 ;;; Commentary:
 

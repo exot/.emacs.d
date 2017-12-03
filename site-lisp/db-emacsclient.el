@@ -1,4 +1,4 @@
-;;; db-emacsclient.el --- Execute functions called from emacsclient
+;;; db-emacsclient.el --- Execute functions called from emacsclient -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;;

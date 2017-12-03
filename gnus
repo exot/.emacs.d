@@ -1,4 +1,4 @@
-;;; gnus --- Daniel's Gnus Configuration
+;;; gnus --- Daniel's Gnus Configuration -*- lexical-binding: t -*-
 
 ;;; Commentary:
 

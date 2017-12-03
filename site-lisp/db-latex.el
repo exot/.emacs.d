@@ -1,4 +1,4 @@
-;;; db-latex --- TeX and LaTeX specific configuration
+;;; db-latex --- TeX and LaTeX specific configuration -*- lexical-binding: t -*-
 
 ;;; Commentary:
 

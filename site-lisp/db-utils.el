@@ -1,4 +1,4 @@
-;;; db-utils.el --- Utility Functions for Daniel's Emacs Configuration
+;;; db-utils.el --- Utility Functions for Daniel's Emacs Configuration -*- lexical-binding: t -*-
 
 ;;; Commentary:
 ;;

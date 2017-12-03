@@ -1,4 +1,4 @@
-;;; Init.el --- Daniel's Emacs Configuration
+;;; Init.el --- Daniel's Emacs Configuration -*- lexical-binding: t -*-
 
 ;;; Commentary:
 
