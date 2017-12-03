@@ -953,7 +953,7 @@ Current Task: %`org-clock-current-task; "
 
 ;;; Custom links for Windows
 
-(org-add-link-type "onenote" 'org-onenote-open)
+(org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
 
 (defun db/org-onenote-open (path)
   "Visit OneNote document on PATH."
