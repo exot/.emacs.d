@@ -1060,7 +1060,8 @@ resulting list are sorted by START, ascending."
 (defun db/org-format-timeline (tstart tend &optional files)
   "Display timeline of tasks in FILES between TSTART and TEND.
 When not given, FILES defaults to `org-agenda-files’."
-  (interactive "sStart: \nsEnd: ")
+  (interactive (list (org-read-date nil nil nil "Start time: ")
+                     (org-read-date nil nil nil "End time: ")))
   (let ((timeline (db/org-timeline-in-range tstart tend files)))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
@@ -1094,12 +1095,12 @@ When not given, FILES defaults to `org-agenda-files’."
 
 (defun db/org-format-timeline-of-day (date &optional files)
   "Format timeline of given DATE.
-DATE should be a string of the form %Y-%m-%d.  The timeline will
-be formatted for this day, starting at 00:00 and ending at 23:61.
-When not given, FILES defaults to `org-agenda-files’."
-  (interactive "sDate (default today): ")
-  (when (string-empty-p date)
-    (setq date (format-time-string "%Y-%m-%d")))
+DATE should be a string of the form %Y-%m-%d.  When called
+interactively, this date will be queried with `org-read-date’.
+The timeline will be formatted for this day, starting at 00:00
+and ending at 23:61.  When not given, FILES defaults to
+`org-agenda-files’."
+  (interactive (list (org-read-date nil nil)))
   (db/org-format-timeline (concat date " 00:00")
                           (concat date " 23:61")
                           files))
