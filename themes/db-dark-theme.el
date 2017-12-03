@@ -14,7 +14,6 @@
  '(emms-playlist-selected-face ((t (:foreground "medium sea green"))))
  '(org-agenda-date ((t (:background "#002b36" :foreground "#586e75" :inverse-video nil :box (:line-width 2 :color "#002b36") :overline nil :slant normal :weight bold :height 1.2))))
  '(org-agenda-dimmed-todo-face ((t nil)))
- '(org-agenda-done ((t (:foreground "dark gray" :slant normal))))
  '(org-agenda-structure ((t (:foreground "#93a1a1" :inverse-video nil :box (:line-width 2 :color "#002b36") :underline nil :slant normal :weight bold :height 1.1))))
  '(org-clock-overlay ((t (:background "black"))))
  '(org-column ((t (:strike-through nil :underline nil :slant normal :weight normal :height 110 :family "DejaVu Sans Mono"))))
