@@ -445,7 +445,7 @@ _h_   _l_   _o_k        _y_ank
 
 (setq display-time-24hr-format t
       calendar-date-style 'iso
-      calendar-view-diary-initially-flag t
+      calendar-view-diary-initially-flag nil
       diary-show-holidays-flag nil
       holiday-hebrew-holidays nil
       holiday-islamic-holidays nil
