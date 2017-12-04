@@ -988,10 +988,10 @@ always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
                        org-clock-string
                        "[ \t]*\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)"))
            (level 0)
-           (tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart t))
+           (tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart))
                          ((consp tstart) (float-time tstart))
                          (t tstart)))
-           (tend (cond ((stringp tend) (org-time-string-to-seconds tend t))
+           (tend (cond ((stringp tend) (org-time-string-to-seconds tend))
                        ((consp tend) (float-time tend))
                        (t tend)))
            (t1 0)
