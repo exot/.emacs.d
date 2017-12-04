@@ -377,7 +377,7 @@ METHOD specifies the encrypt method used.  Can be either
       (when from
         (let ((methods (if (string-match "@tu-dresden\.de>" from)
                            (list "smime" "pgpmime")
-                         (list "pgpmime" "smime")))
+                         (list "pgpmime")))
               (recipients (db/message-recipients)))
 
           ;; if there is no recipient, encrypt with default method
