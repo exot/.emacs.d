@@ -52,7 +52,7 @@
     (package-install package))
   (require package))
 
-(put 'use-package 'common-lisp-indent-function 1)
+(put 'use-package 'lisp-indent-function 1)
 (setq use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
@@ -465,7 +465,7 @@ _h_   _l_   _o_k        _y_ank
 
 (setq reb-re-syntax 'string)
 
-(setq lisp-indent-function 'common-lisp-indent-function)
+(setq lisp-indent-function #'lisp-indent-function)
 
 (setq custom-theme-directory (expand-file-name "themes/" emacs-d))
 
