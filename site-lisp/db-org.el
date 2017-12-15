@@ -533,21 +533,6 @@ are equal return nil."
 
 (bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
 
-(defun db/org-agenda-add-clocking-time ()
-  "Add \"CLOCK:\" line to the task under point in the agenda.
-
-Start and end time will be queried interactively."
-  (interactive)
-  ;; FIXME: make this function to take two optional arguments
-  (if (not (eq major-mode 'org-agenda-mode))
-      (user-error "Must be in org agenda mode")
-    (save-window-excursion
-      (org-agenda-switch-to)
-      (db/org-add-clocking-time))))
-
-(eval-after-load 'org-agenda
-  '(bind-key "V u" #'db/org-agenda-add-clocking-time org-agenda-mode-map))
-
 ;; A Hydra for changing agenda appearance
 ;; http://oremacs.com/2016/04/04/hydra-doc-syntax/
 
