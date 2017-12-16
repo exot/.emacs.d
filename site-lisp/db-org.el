@@ -939,10 +939,32 @@ Current Task: %`org-clock-current-task; "
 
 (require 'dash)
 
+(defun db/org-map-clock-lines-and-entries (clockline-fn headline-fn)
+  "Iterate point over all clocklines and headlines of the current buffer.
+For each clockline, call CLOCKLINE-FN with the starting and
+ending time as arguments and point on the beginning of the line.
+For each headline, call HEADLINE-FN with no arguments and point
+on the start of the headline.  Traversal will be done from the
+end of the file upwards."
+  (when (eq major-mode 'org-mode)
+    (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
+                       org-clock-string
+                       "[ \t]*\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)")))
+      (save-excursion
+        (goto-char (point-max))
+        (while (re-search-backward re nil t)
+          (cond
+           ((match-end 2)
+            ;; Two time stamps.
+            (funcall clockline-fn (match-string 2) (match-string 3)))
+           (t
+            ;; A headline
+            (funcall headline-fn))))))))
+
 (defun db/org-clocking-time-in-range (tstart tend)
   "Return list of all tasks in the current buffer together with
 their clocking times that are between TSTART and TEND.  The
-resulting list conists of elements of the form
+resulting list consists of elements of the form
 
   (MARKER . CLOCK-TIMES)
 
@@ -956,52 +978,38 @@ or END may occassionally lie outside of these limits, but it is
 always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
   ;; adapted from `org-clock-sum’
   (when (eq major-mode 'org-mode)
-    (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
-                       org-clock-string
-                       "[ \t]*\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)"))
-           (level 0)
-           (tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart))
+    (let* ((tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart))
                          ((consp tstart) (float-time tstart))
                          (t tstart)))
            (tend (cond ((stringp tend) (org-time-string-to-seconds tend))
                        ((consp tend) (float-time tend))
                        (t tend)))
-           (t1 0)
            task-clock-times headline times)
-      (save-excursion
-        (goto-char (point-max))
-        (while (re-search-backward re nil t)
-          (cond
-            ((match-end 2)
-             ;; Two time stamps.
-             (let* ((ts (float-time
-                         (apply #'encode-time
-                                (save-match-data
-                                  (org-parse-time-string
-                                   (match-string 2))))))
-                    (te (float-time
-                         (apply #'encode-time
-                                (save-match-data
-                                  (org-parse-time-string
-                                   (match-string 3))))))
-                    (dt (- (if tend (min te tend) te)
-                           (if tstart (max ts tstart) ts))))
-               (when (> dt 0)
-                 (push (cons ts te) times))))
-            (t
-             ;; A headline
-             (when (and org-clock-report-include-clocking-task
-                        (eq (org-clocking-buffer) (current-buffer))
-                        (eq (marker-position org-clock-hd-marker) (point))
-                        (or (and tstart
-                                 (<= tstart (float-time org-clock-start-time) tend))
-                            (and tend
-                                 (<= tstart (float-time) tend))))
-               (push (cons (float-time org-clock-start-time) (float-time))
-                     times))
-             (when (not (null times))
-               (push (cons (point-marker) times) task-clock-times)
-               (setq times nil))))))
+      (db/org-map-clock-lines-and-entries
+       ;; when on clock line, collect times
+       #'(lambda (start end)
+           (let* ((ts (float-time
+                       (apply #'encode-time (org-parse-time-string start))))
+                  (te (float-time
+                       (apply #'encode-time (org-parse-time-string end))))
+                  (dt (- (if tend (min te tend) te)
+                         (if tstart (max ts tstart) ts))))
+             (when (> dt 0)
+               (push (cons ts te) times))))
+       ;; when on headlines, store away collected clocklines
+       #'(lambda ()
+           (when (and org-clock-report-include-clocking-task
+                      (eq (org-clocking-buffer) (current-buffer))
+                      (eq (marker-position org-clock-hd-marker) (point))
+                      (or (and tstart
+                               (<= tstart (float-time org-clock-start-time) tend))
+                          (and tend
+                               (<= tstart (float-time) tend))))
+             (push (cons (float-time org-clock-start-time) (float-time))
+                   times))
+           (when (not (null times))
+             (push (cons (point-marker) times) task-clock-times)
+             (setq times nil))))
       task-clock-times)))
 
 (defun db/org-timeline-in-range (tstart tend &optional files)
