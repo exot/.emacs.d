@@ -710,16 +710,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
          (difference (db/org-timestamp-difference starting ending)))
     (format "CLOCK: %s--%s => %s" starting ending difference)))
 
-;; (add-to-list 'display-buffer-alist
-;;              `(,(rx bos "*Capture*" eos)
-;;                 (display-buffer-in-side-display . window-buffer-reuse-window)
-;;                 (reusable-frames . visible)
-;;                 (side            . bottom)
-;;                 (window-height   . 0.4)))
-
-;; TODO: bind pop-to-buffer-same-window to pop-to-buffer in
-;; org-capture-place-template
-
 
 ;;; Refiling
 
