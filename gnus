@@ -294,7 +294,8 @@ SMTP user."
       message-forward-as-mime t
       gnus-inhibit-mime-unbuttonizing nil
       gnus-buttonized-mime-types '("multipart/signed" "multipart/encrypted")
-      gnus-inhibit-images t)
+      gnus-inhibit-images t
+      gnus-blocked-images ".")
 
 (setq message-citation-line-function
       (lambda ()
