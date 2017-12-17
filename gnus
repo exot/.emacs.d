@@ -300,7 +300,7 @@ SMTP user."
 (setq message-citation-line-function
       (lambda ()
         (when message-reply-headers
-          (insert "ghItlhpu' "(mail-header-from message-reply-headers) ":")
+          (insert "ghItlhpu' " (mail-header-from message-reply-headers) ":")
           (newline))))
 
 (use-package mm-decode
