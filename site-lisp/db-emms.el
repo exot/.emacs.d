@@ -123,15 +123,16 @@ This function can be used as a value for `emms-track-description-function’."
                                 'face 'emms-browser-track-face)))
     (if (not (seq-empty-p title))
         (cond
-          ((and (not (seq-empty-p composer))
-                (not (seq-empty-p performer)))
-           (if (string= composer performer)
-               (format "“%s” by %s"
-                       title composer)
-             (format "“%s” by %s, performed by %s"
-                     title
-                     composer
-                     performer)))
+         ((not (seq-empty-p composer))
+          (if (seq-empty-p performer)
+              (format "“%s” by %s" title composer)
+            (if (string= composer performer)
+                (format "“%s” by %s"
+                        title composer)
+              (format "“%s” by %s, performed by %s"
+                      title
+                      composer
+                      performer))))
           ((not (seq-empty-p artist))
            (format "“%s” by %s" title artist))
           (t
