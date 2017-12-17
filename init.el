@@ -592,8 +592,12 @@ _h_   _l_   _o_k        _y_ank
             ;; opening them manually
             (mapc #'find-file-noselect org-agenda-files)
 
-            (run-with-timer 0 3600 #'org-clock-save)
-            (run-with-idle-timer 20 t #'db/export-diary)))
+            (unless (memq #'org-clock-save
+                          (mapcar #'timer--function timer-list))
+              (run-with-timer 0 3600 #'org-clock-save))
+            (unless (memq #'db/export-diary
+                          (mapcar #'timer--function timer-idle-list))
+             (run-with-idle-timer 20 t #'db/export-diary))))
 
 (use-package db-utils
   :commands (endless/fill-or-unfill
