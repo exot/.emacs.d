@@ -485,9 +485,10 @@ are equal return nil."
               (stuck ""
                      ((org-agenda-overriding-header "Stuck Tasks")))))
         ("S" "Somewhen"
-             ((tags "SOMEWHEN/-CANC-DONE"
-                    ((org-agenda-overriding-header "Things to do somewhen")
-                     (org-tags-match-list-sublevels nil)))
+             ((tags-todo "SOMEWHEN/-CANC-DONE"
+                         ((org-agenda-overriding-header "Things to do somewhen")
+                          (org-agenda-todo-ignore-with-date t)
+                          (org-tags-match-list-sublevels nil)))
               (tags-todo "/HOLD"
                          ((org-agenda-overriding-header "Tasks on Hold")))))
         ("W" "Weekly Review"
