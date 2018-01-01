@@ -1088,6 +1088,25 @@ ending at 23:61.  When not given, FILES defaults to
                           (concat date " 23:61")
                           files))
 
+(defun db/org-add-clock-line-to-file (id start end)
+  "Add clock line with START and END time to task identified by ID."
+  (warn "This function is untested, don’t use it for anything serious.")
+  ;; First insert clock line at task
+  (let ((location (org-id-find id)))
+    (when (null location)
+      (user-error "ID %s cannot be found" id))
+    (org-with-point-at location
+      (db/org-add-clocking-time start end)))
+  ;; Now find other clocklines and update them: change starting and ending time
+  ;; accordingly, and if the time is completely within the given bounds, delete
+  ;; it.
+  (let ((start-sec (org-time-string-to-seconds start))
+        (end-sec (org-time-string-to-seconds end)))
+    (db/org-map-clock-lines-and-entries
+     (lambda (line-start line-end)
+       (error "Not yet implemented."))
+     (lambda ()))))
+
 
 ;;; End
 
