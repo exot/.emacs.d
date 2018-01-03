@@ -927,7 +927,7 @@ Current Task: %`org-clock-current-task; "
 
   (defun db/org-onenote-open (path)
     "Visit OneNote document on PATH."
-    (w32-shell-execute "open" path)))
+    (start-process "OneNote" nil "OneNote" "/hyperlink" path)))
 
 
 ;;; End
