@@ -1051,6 +1051,36 @@ Markers to org mode tasks are combined into a list."
                     (mapcar #'third cluster)))
             new-timeline)))
 
+(defun db/org-skip-short-entries-in-timeline (threshold timeline)
+  "Skip short entries in TIMELINE.
+A slot is short if it is not longer than THRESHOLD seconds.
+Resulting gaps are distributed evenly among adjacent slots."
+  (let ((start (first (first timeline)))
+        (end (second (car (last timeline)))))
+    ;; remove all slots that are too short
+    (setq new-timeline
+          (remove-if (lambda (entry)
+                       (<= (- (second entry) (first entry))
+                           threshold))
+                     timeline))
+
+    ;; reset start and end times
+    (setf (first (first new-timeline)) start)
+    (setf (second (car (last new-timeline))) end)
+
+    ;; distribute gaps evenly among adjacent slots
+    (do ((sub-timeline new-timeline (cdr sub-timeline)))
+        ((null (cdr sub-timeline)))
+      (let* ((entry-1 (first sub-timeline))
+             (entry-2 (second sub-timeline))
+             (end-1 (second entry-1))
+             (start-2 (first entry-2)))
+        (when (not (= end-1 start-2))
+          (let ((middle (/ (+ end-1 start-2) 2)))
+            (setf (second entry-1) middle)
+            (setf (first entry-2) middle)))))
+    new-timeline))
+
 (defun db/org-get-headline (marker)
   "Get headline of task at MARKER."
   (assert (markerp marker))
@@ -1072,9 +1102,9 @@ called interactively, START and END are queried with
 `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let ((timeline (-> (db/org-timeline-in-range tstart tend files)
-                      ;; TODO: add function that skips short tasks
-                      db/org-cluster-timeline-same-category)))
+  (let ((timeline (->> (db/org-timeline-in-range tstart tend files)
+                       (db/org-skip-short-entries-in-timeline 300)
+                       db/org-cluster-timeline-same-category)))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
         (erase-buffer)
