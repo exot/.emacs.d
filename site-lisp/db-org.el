@@ -1106,8 +1106,9 @@ Resulting gaps are distributed evenly among adjacent slots."
 
 (defun db/org-format-timeline (tstart tend &optional files)
   "Display timeline of tasks in FILES between TSTART and TEND.
-When not given, FILES defaults to `org-agenda-files’.  When
-called interactively, START and END are queried with
+When not given, FILES defaults to `org-agenda-files’.  Short
+slots are removed, and afterwards slots are clusted by category.
+When called interactively, START and END are queried with
 `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
