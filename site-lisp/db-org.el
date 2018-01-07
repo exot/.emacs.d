@@ -1110,7 +1110,7 @@ called interactively, START and END are queried with
         (erase-buffer)
         (org-mode)
         (insert "|--|\n")
-        (insert "| Category | Start |   End | Duration |  Task |\n")
+        (insert "| Category | Start | End | Duration | Task |\n")
         (insert "|--|\n")
         (dolist (cluster timeline)
           (cl-destructuring-bind (start end markers) cluster
@@ -1119,6 +1119,7 @@ called interactively, START and END are queried with
                             (format-time-string "%Y-%m-%d %H:%M" start)
                             (format-time-string "%Y-%m-%d %H:%M" end)
                             (floor (/ (- end start) 60))))
+            ;; insert headline line by line, but only once
             (dolist (headline (->> (mapcar #'db/org-get-headline markers)
                                    -uniq
                                    (-interpose "|\n |||||")))
