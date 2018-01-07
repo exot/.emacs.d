@@ -938,6 +938,10 @@ Current Task: %`org-clock-current-task; "
 ;; All of what follows should be available in org-mode somewhere, but doing it
 ;; myself was faster and also more fun :)
 
+(defgroup timeline-reporting nil
+  "Functionality for formatting timelines."
+  :tag "Formatting timelines")
+
 (require 'dash)
 
 (defun db/org-map-clock-lines-and-entries (clockline-fn headline-fn)
@@ -1095,6 +1099,11 @@ Resulting gaps are distributed evenly among adjacent slots."
                     heading)
       (match-string 4 heading))))
 
+(defcustom timeline-short-task-threshold 300
+  "Duration of task to be considered as short."
+  :group 'timeline-reporting
+  :type 'integer)
+
 (defun db/org-format-timeline (tstart tend &optional files)
   "Display timeline of tasks in FILES between TSTART and TEND.
 When not given, FILES defaults to `org-agenda-files’.  When
@@ -1103,7 +1112,8 @@ called interactively, START and END are queried with
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
   (let ((timeline (->> (db/org-timeline-in-range tstart tend files)
-                       (db/org-skip-short-entries-in-timeline 300)
+                       (db/org-skip-short-entries-in-timeline
+                        timeline-short-task-threshold)
                        db/org-cluster-timeline-same-category)))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
