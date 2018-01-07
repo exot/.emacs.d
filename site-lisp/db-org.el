@@ -1038,6 +1038,33 @@ resulting list are sorted by START, ascending."
           (lambda (entry-1 entry-2)
             (< (car entry-1) (car entry-2))))))
 
+(defun db/org-cluster-timeline-same-category (timeline)
+  "Cluster TIMELINE into consecutive entries with equal category.
+Markers to org mode tasks are combined into a list."
+  (let ((new-timeline (-partition-by (lambda (entry)
+                                       (let ((marker (third entry)))
+                                         (org-entry-get marker "CATEGORY")))
+                                     timeline)))
+    (mapcar (lambda (cluster)
+              (list (first (first cluster))       ; start of first entry
+                    (second (car (last cluster))) ; end of last entry
+                    (mapcar #'third cluster)))
+            new-timeline)))
+
+(defun db/org-get-headline (marker)
+  "Get headline of task at MARKER."
+  (assert (markerp marker))
+  (save-match-data
+    (let* ((heading (save-mark-and-excursion
+                     (with-current-buffer (marker-buffer marker)
+                       (goto-char (marker-position marker))
+                       (thing-at-point 'line t)))))
+      (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z_]+:\\)+\\)?$"
+                            (regexp-opt org-todo-keywords-1)
+                            org-priority-regexp)
+                    heading)
+      (match-string 4 heading))))
+
 (defun db/org-format-timeline (tstart tend &optional files)
   "Display timeline of tasks in FILES between TSTART and TEND.
 When not given, FILES defaults to `org-agenda-files’.  When
@@ -1045,31 +1072,28 @@ called interactively, START and END are queried with
 `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let ((timeline (db/org-timeline-in-range tstart tend files)))
+  (let ((timeline (-> (db/org-timeline-in-range tstart tend files)
+                      ;; TODO: add function that skips short tasks
+                      db/org-cluster-timeline-same-category)))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
         (erase-buffer)
         (org-mode)
         (insert "|--|\n")
-        (insert "| Category | Start | End | Duration | Task |\n")
+        (insert "| Category | Start |   End | Duration |  Task |\n")
         (insert "|--|\n")
-        (dolist (entry timeline)
-          (cl-destructuring-bind (start end marker) entry
-           (insert (format "| %s | %s | %s | %s min | %s | \n"
-                           (org-entry-get marker "CATEGORY")
-                           (format-time-string "%Y-%m-%d %H:%M" start)
-                           (format-time-string "%Y-%m-%d %H:%M" end)
-                           (floor (/ (- end start) 60))
-                           (save-match-data
-                            (let* ((heading (save-mark-and-excursion
-                                             (with-current-buffer (marker-buffer marker)
-                                               (goto-char (marker-position marker))
-                                               (thing-at-point 'line t)))))
-                              (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z_]+:\\)+\\)?$"
-                                                    (regexp-opt org-todo-keywords-1)
-                                                    org-priority-regexp)
-                                            heading)
-                              (match-string 4 heading)))))))
+        (dolist (cluster timeline)
+          (cl-destructuring-bind (start end markers) cluster
+            (insert (format "| %s | %s | %s | %s min | "
+                            (org-entry-get (first markers) "CATEGORY")
+                            (format-time-string "%Y-%m-%d %H:%M" start)
+                            (format-time-string "%Y-%m-%d %H:%M" end)
+                            (floor (/ (- end start) 60))))
+            (dolist (headline (->> (mapcar #'db/org-get-headline markers)
+                                   -uniq
+                                   (-interpose "|\n |||||")))
+              (insert headline))
+            (insert "\n")))
         (insert "|--|\n")
         (goto-char (point-min))
         (org-table-align))
