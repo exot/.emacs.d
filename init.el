@@ -118,7 +118,8 @@
                   sml/setup
                   ivy-mode
                   which-key-mode
-                  projectile-mode))
+                  projectile-mode
+                  eyebrowse-mode))
     (ignore-errors                      ; don’t barf if mode cannot be loaded
       (funcall mode +1)))
 
@@ -941,6 +942,13 @@ Certificates are assumed to be of the form *.crt."
              dumb-jump-go-prefer-external
              dumb-jump-go-prefer-external-other-window)
   :config (setq dumb-jump-selector 'helm))
+
+(use-package eyebrowse
+  :commands (eyebrowse-mode)
+  :config
+  (setq eyebrowse-mode-line-separator " "
+        eyebrowse-new-workspace t))
+
 
 
 ;; * Media
