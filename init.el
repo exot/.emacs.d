@@ -320,9 +320,9 @@ _h_   _l_   _o_k        _y_ank
     '(defun enriched-decode-display-prop (start end &optional param)
       (list start end)))
 
-  ;; Start Server when on Windows
+  ;; Start Server when not running already
 
-  (when on-windows
+  (unless (server-running-p)
     (server-start))
 
   t)
@@ -574,6 +574,9 @@ _h_   _l_   _o_k        _y_ank
                    ("\\mathfrakP" ?𝔓)))))
             (add-hook 'input-method-activate-hook
                       #'db/add-symbols-to-TeX-input-method)))
+
+(use-package server
+  :commands (server-running-p server-start))
 
 
 ;; * Some essential packages
