@@ -1069,6 +1069,22 @@ ending at 23:61.  When not given, FILES defaults to
                           (concat date " 23:61")
                           files))
 
+
+;;; Manipulating Clock Lines
+
+(defun db/org-insert-clockline (time-1 time-2)
+  "Insert new clock line from TIME-1 to TIME-2 at the beginning
+  of the current line.  TIME-1 and TIME-2 must be given in a
+  format understandable by `format-time-string’, which see."
+  (let ((timestamp-format (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")))
+    (beginning-of-line)
+    (indent-according-to-mode)
+    (insert "CLOCK: ")
+    (insert (format-time-string timestamp-format time-1))
+    (insert "--")
+    (insert (format-time-string timestamp-format time-2))
+    (org-clock-update-time-maybe)))
+
 (defun db/org-add-clocking-time (starting-time ending-time)
   "Add \"CLOCK:\" line to the task under point in the current org-mode file."
   (interactive
@@ -1081,26 +1097,20 @@ ending at 23:61.  When not given, FILES defaults to
     (save-mark-and-excursion
      (org-clock-find-position nil)
      (open-line 1)
-     (indent-according-to-mode)
-     (insert "CLOCK: ")
-     (org-insert-time-stamp starting-time t t)
-     (insert "--")
-     (org-insert-time-stamp ending-time t t)
-     (org-clock-update-time-maybe))))
+     (db/org-insert-clockline starting-time ending-time))))
 
 (bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
 
 (defun db/org-add-clock-line-to-file (id start end)
   "Add clock line with START and END time to task identified by ID.
-TODO: specify time format"
+START and END must be given as org-mode timestamp strings."
   (let ((location (org-id-find id t)))
     (when (null location)
       (user-error "ID %s cannot be found" id))
     ;; Update existing clock lines
     (let ((new-start (org-time-string-to-seconds start))
-          (new-end   (org-time-string-to-seconds end))
-          (timestamp-format (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")))
-      (org-with-point-at location
+          (new-end   (org-time-string-to-seconds end)))
+      (with-current-buffer (marker-buffer location)
         (db/org-map-clock-lines-and-entries
          (lambda (timestamp-1 timestamp-2)
            (let ((current-start (float-time
@@ -1108,7 +1118,9 @@ TODO: specify time format"
                                         (org-parse-time-string timestamp-1))))
                  (current-end   (float-time
                                  (apply #'encode-time
-                                        (org-parse-time-string timestamp-2)))))
+                                        (org-parse-time-string timestamp-2))))
+                 (kill-whole-line nil)  ; don’t delete newlines if not asked to
+                 )
              (cond
               ;; if the current clock line is completely contained within the
               ;; given period, delete it
@@ -1116,50 +1128,27 @@ TODO: specify time format"
                (kill-whole-line))
               ;; if the current clock line completely contains the given one,
               ;; split it
-              ((and (<= current-start new-start)
-                    (<= new-end current-end))
+              ((and (<= current-start new-start new-end current-end))
                (beginning-of-line)
-               (let ((kill-whole-line nil))
-                 (kill-line))
-               (indent-according-to-mode)
-               (insert "CLOCK: ")
-               (insert (format-time-string timestamp-format current-start))
-               (insert "--")
-               (insert (format-time-string timestamp-format new-start))
-               (org-clock-update-time-maybe)
+               (kill-line)
+               (db/org-insert-clockline current-start new-start)
                (beginning-of-line)
                (open-line 1)
-               (indent-according-to-mode)
-               (insert "CLOCK: ")
-               (insert (format-time-string timestamp-format new-end))
-               (insert "--")
-               (insert (format-time-string timestamp-format current-end))
-               (org-clock-update-time-maybe))
+               (db/org-insert-clockline new-end current-end))
               ;; New interval overlaps beginning of current line
               ((<= new-start current-start new-end current-end)
                (beginning-of-line)
-               (let ((kill-whole-line nil))
-                 (kill-line))
-               (indent-according-to-mode)
-               (insert "CLOCK: ")
-               (insert (format-time-string timestamp-format new-end))
-               (insert "--")
-               (insert (format-time-string timestamp-format current-end))
-               (org-clock-update-time-maybe))
+               (kill-line)
+               (db/org-insert-clockline new-end current-end))
               ;; New interval overlaps at end of current line
               ((<= current-start new-start current-end new-end)
                (beginning-of-line)
-               (let ((kill-whole-line nil))
-                 (kill-line))
-               (indent-according-to-mode)
-               (insert "CLOCK: ")
-               (insert (format-time-string timestamp-format current-start))
-               (insert "--")
-               (insert (format-time-string timestamp-format new-start))
-               (org-clock-update-time-maybe)))))
-         (lambda ()
-           ;; keep headline as they are, i.e., do nothing
-           ))))
+               (kill-line)
+               (db/org-insert-clockline current-start new-start)))))
+
+         ;; keep headline as they are, i.e., do nothing
+         (lambda ()))))
+
     ;; Finally add the new clock line
     (org-with-point-at location
       (db/org-add-clocking-time (apply #'encode-time (org-parse-time-string start))
