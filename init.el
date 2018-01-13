@@ -694,8 +694,18 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package nsm
   :defer t
-  :config (setq network-security-level 'high
-                nsm-save-host-names t))
+  :config (progn
+            (setq network-security-level 'high
+                  nsm-save-host-names t)
+
+            (defun db/sort-nsm-permanent-settings ()
+              (setq nsm-permanent-host-settings
+                    (cl-sort nsm-permanent-host-settings
+                             #'string<
+                             :key #'second)))
+
+            (advice-add 'nsm-write-settings
+                        :before #'db/sort-nsm-permanent-settings)))
 
 (use-package gnutls
   :defer t
