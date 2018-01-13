@@ -613,7 +613,8 @@ _h_   _l_   _o_k        _y_ank
              db/run-or-hide-eshell
              db/run-or-hide-ansi-term
              db/helm-shortcuts
-             db/hex-to-ascii))
+             db/hex-to-ascii
+             conditionally-enable-lispy))
 
 (use-package db-emacsclient)
 
@@ -1046,13 +1047,8 @@ Certificates are assumed to be of the form *.crt."
 ;; General Stuff first
 
 (use-package lispy
-  :commands (lispy-mode conditionally-enable-lispy)
-  :diminish lispy-mode
-  :config (progn
-            (defun conditionally-enable-lispy ()
-              (when (or (eq this-command 'eval-expression)
-                        (eq this-command 'pp-eval-expression))
-                (lispy-mode 1)))))
+  :commands (lispy-mode)
+  :diminish lispy-mode)
 
 (use-package eldoc
   :commands (eldoc-mode)
