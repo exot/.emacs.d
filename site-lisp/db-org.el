@@ -1147,8 +1147,8 @@ START and END must be given as org-mode timestamp strings."
                (kill-line)
                (db/org-insert-clockline current-start new-start)))))
 
-         ;; keep headline as they are, i.e., do nothing
-         (lambda ()))))
+         ;; Keep headline as they are, i.e., do nothing
+         (lambda ())))
 
     ;; Finally add the new clock line
     (org-with-point-at location
