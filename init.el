@@ -528,18 +528,6 @@ _h_   _l_   _o_k        _y_ank
                        (test eq window-system 'x))
                      (cdr (assoc "application" mailcap-mime-data))))))
 
-(use-package pp
-  :commands (db/eval-last-sexp-or-region
-             pp-eval-expression)
-  :config   (progn
-              (defun db/eval-last-sexp-or-region (prefix)
-                ;; http://pages.sachachua.com/.emacs.d/Sacha.html#orgheadline140
-                "Eval region from BEG to END if active, otherwise the last sexp."
-                (interactive "P")
-                (if (and (mark) (use-region-p))
-                    (eval-region (min (point) (mark)) (max (point) (mark)))
-                  (pp-eval-last-sexp prefix)))))
-
 (use-package quail
   :defer t
   :config (progn
