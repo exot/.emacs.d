@@ -957,10 +957,12 @@ end of the file upwards."
           (cond
            ((match-end 2)
             ;; Two time stamps.
-            (funcall clockline-fn (match-string 2) (match-string 3)))
+            (save-mark-and-excursion
+             (funcall clockline-fn (match-string 2) (match-string 3))))
            (t
             ;; A headline
-            (funcall headline-fn))))))))
+            (save-mark-and-excursion
+             (funcall headline-fn)))))))))
 
 (defun db/org-clocking-time-in-range (tstart tend)
   "Return list of all tasks in the current buffer together with
