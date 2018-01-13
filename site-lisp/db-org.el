@@ -513,27 +513,6 @@ are equal return nil."
               (org-use-tag-inheritance nil)
               (org-agenda-prefix-format '((tags . "  ")))))))
 
-(defun db/org-add-clocking-time (starting-time ending-time)
-  "Add \"CLOCK:\" line to the task under point in the current org-mode file."
-  (interactive
-   (list (starting-time (org-read-date 4 'totime nil
-                                       "Start:" (current-time) nil t))
-         (ending-time (org-read-date 4 'totime nil
-                                     "End:" (current-time) nil t))))
-  (if (not (eq major-mode 'org-mode))
-      (user-error "Must be in org mode")
-    (save-mark-and-excursion
-     (org-clock-find-position nil)
-     (open-line 1)
-     (indent-according-to-mode)
-     (insert "CLOCK: ")
-     (org-insert-time-stamp starting-time t t)
-     (insert "--")
-     (org-insert-time-stamp ending-time t t)
-     (org-clock-update-time-maybe))))
-
-(bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
-
 ;; A Hydra for changing agenda appearance
 ;; http://oremacs.com/2016/04/04/hydra-doc-syntax/
 
@@ -1089,6 +1068,27 @@ ending at 23:61.  When not given, FILES defaults to
   (db/org-format-timeline (concat date " 00:00")
                           (concat date " 23:61")
                           files))
+
+(defun db/org-add-clocking-time (starting-time ending-time)
+  "Add \"CLOCK:\" line to the task under point in the current org-mode file."
+  (interactive
+   (list (starting-time (org-read-date 4 'totime nil
+                                       "Start:" (current-time) nil t))
+         (ending-time (org-read-date 4 'totime nil
+                                     "End:" (current-time) nil t))))
+  (if (not (eq major-mode 'org-mode))
+      (user-error "Must be in org mode")
+    (save-mark-and-excursion
+     (org-clock-find-position nil)
+     (open-line 1)
+     (indent-according-to-mode)
+     (insert "CLOCK: ")
+     (org-insert-time-stamp starting-time t t)
+     (insert "--")
+     (org-insert-time-stamp ending-time t t)
+     (org-clock-update-time-maybe))))
+
+(bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
 
 (defun db/org-add-clock-line-to-file (id start end)
   "Add clock line with START and END time to task identified by ID."
