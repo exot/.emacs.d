@@ -925,7 +925,8 @@ For each clockline, call CLOCKLINE-FN with the starting and
 ending time as arguments and point on the beginning of the line.
 For each headline, call HEADLINE-FN with no arguments and point
 on the start of the headline.  Traversal will be done from the
-end of the file upwards."
+end of the file upwards.  If the buffer is narrowed, only this
+region will be traversed."
   (when (eq major-mode 'org-mode)
     (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
                        org-clock-string
