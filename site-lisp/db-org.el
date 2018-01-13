@@ -1150,10 +1150,9 @@ START and END must be given as org-mode timestamp strings."
          ;; Keep headline as they are, i.e., do nothing
          (lambda ())))
 
-    ;; Finally add the new clock line
-    (org-with-point-at location
-      (db/org-add-clocking-time (apply #'encode-time (org-parse-time-string start))
-                                (apply #'encode-time (org-parse-time-string end))))))
+      ;; Finally add the new clock line
+      (org-with-point-at location
+        (db/org-add-clocking-time new-start new-end)))))
 
 
 ;;; End
