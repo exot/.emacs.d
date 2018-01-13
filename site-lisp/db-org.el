@@ -1075,15 +1075,17 @@ ending at 23:61.  When not given, FILES defaults to
 (defun db/org-insert-clockline (time-1 time-2)
   "Insert new clock line from TIME-1 to TIME-2 at the beginning
   of the current line.  TIME-1 and TIME-2 must be given in a
-  format understandable by `format-time-string’, which see."
+  format understandable by `format-time-string’, which see.
+  Saves mark and point."
   (let ((timestamp-format (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")))
-    (beginning-of-line)
-    (indent-according-to-mode)
-    (insert "CLOCK: ")
-    (insert (format-time-string timestamp-format time-1))
-    (insert "--")
-    (insert (format-time-string timestamp-format time-2))
-    (org-clock-update-time-maybe)))
+    (save-mark-and-excursion
+     (beginning-of-line)
+     (indent-according-to-mode)
+     (insert "CLOCK: ")
+     (insert (format-time-string timestamp-format time-1))
+     (insert "--")
+     (insert (format-time-string timestamp-format time-2))
+     (org-clock-update-time-maybe))))
 
 (defun db/org-add-clocking-time (starting-time ending-time)
   "Add \"CLOCK:\" line to the task under point in the current org-mode file."
@@ -1132,7 +1134,6 @@ START and END must be given as org-mode timestamp strings."
                (beginning-of-line)
                (kill-line)
                (db/org-insert-clockline current-start new-start)
-               (beginning-of-line)
                (open-line 1)
                (db/org-insert-clockline new-end current-end))
               ;; New interval overlaps beginning of current line
