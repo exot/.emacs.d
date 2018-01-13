@@ -368,7 +368,7 @@ path."
        (org-clock-update-time-maybe)))))
 
 
-;;;
+;;; End
 
 (provide 'db-utils)
 
