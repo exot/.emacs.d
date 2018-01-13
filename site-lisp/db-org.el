@@ -1106,13 +1106,15 @@ ending at 23:61.  When not given, FILES defaults to
 
 (defun db/org-add-clock-line-to-file (id start end)
   "Add clock line with START and END time to task identified by ID.
-START and END must be given as org-mode timestamp strings."
+START and END must be given as time objects as returned by
+`encode-time’, or as an integer or float denoting seconds since
+1970-01-01."
   (let ((location (org-id-find id t)))
     (when (null location)
       (user-error "ID %s cannot be found" id))
     ;; Update existing clock lines
-    (let ((new-start (org-time-string-to-seconds start))
-          (new-end   (org-time-string-to-seconds end)))
+    (let ((new-start (float-time start))
+          (new-end   (float-time end)))
       (with-current-buffer (marker-buffer location)
         (db/org-map-clock-lines-and-entries
          (lambda (timestamp-1 timestamp-2)
