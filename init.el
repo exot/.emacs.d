@@ -118,13 +118,14 @@
                   sml/setup
                   ivy-mode
                   which-key-mode
-                  projectile-mode
                   eyebrowse-mode))
     (ignore-errors                      ; don’t barf if mode cannot be loaded
       (funcall mode +1)))
 
   (unless on-windows
-    (pdf-tools-install))
+    (ignore-errors
+      (projectile-mode +1)
+      (pdf-tools-install)))
 
   ;; Global Hooks
 
