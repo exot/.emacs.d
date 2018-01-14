@@ -51,10 +51,6 @@
       "^→ ")
 
 (add-hook 'eshell-mode-hook
-          (lambda ()
-            (add-hook 'eshell-output-filter-functions 'eshell-truncate-buffer)))
-
-(add-hook 'eshell-mode-hook
           'with-editor-export-editor)
 
 
