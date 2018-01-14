@@ -302,6 +302,12 @@ _h_   _l_   _o_k        _y_ank
   (when (package-installed-p 'ace-window)
     (bind-key "C-x o" #'ace-window))
 
+  (when (package-installed-p 'eyebrowse)
+    (dotimes (i 10)
+      (unbind-key (format "M-%d" i))
+      (bind-key (format "M-%d" i)
+                (intern (format "eyebrowse-switch-to-window-config-%d" i)))))
+
   ;; Environment Variables
 
   (unless on-windows
