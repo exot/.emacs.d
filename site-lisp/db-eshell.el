@@ -54,6 +54,9 @@
           (lambda ()
             (add-hook 'eshell-output-filter-functions 'eshell-truncate-buffer)))
 
+(add-hook 'eshell-mode-hook
+          'with-editor-export-editor)
+
 
 ;; Git Completion
 ;; https://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/

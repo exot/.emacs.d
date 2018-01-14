@@ -1030,14 +1030,18 @@ Certificates are assumed to be of the form *.crt."
             (add-hook 'compilation-filter-hook #'endless/colorize-compilation)))
 
 (use-package shell
-  :defer t
+  :commands (shell)
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-            (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)))
+            (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
+            (add-hook 'shell-mode-hook 'with-editor-export-editor)))
 
 (use-package eshell
   :commands (eshell)
   :config (use-package db-eshell))
+
+(use-package with-editor
+  :commands (with-editor-export-editor))
 
 
 ;; * Lisp
