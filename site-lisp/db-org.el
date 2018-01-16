@@ -299,7 +299,6 @@ forces clocking in of the default task."
       org-agenda-diary-file db/org-default-refile-file
       org-agenda-insert-diary-strategy 'top-level
       org-catch-invisible-edits 'show
-      org-ellipsis "⤵"
       org-agenda-sorting-strategy '((agenda time-up habit-up priority-down)
                                     (todo category-keep)
                                     (tags category-keep)
