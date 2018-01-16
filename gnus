@@ -39,6 +39,7 @@ SMTP user."
 
 ;; Requires
 
+(require 'dash)
 (require 'gnus)
 (require 'message)
 (require 'gnus-util)
@@ -329,8 +330,7 @@ SMTP user."
       gnus-message-replysign t
       gnus-message-replyencrypt t
       gnus-message-replysignencrypted t
-      mml-secure-cache-passphrase nil
-      mml-smime-cache-passphrase nil)
+      mml-secure-cache-passphrase nil)
 
 ;; Automatic encryption if all necessary keys are present
 
@@ -357,9 +357,9 @@ ADDRESS is a string containing exactly one email address."
 
 METHOD specifies the encrypt method used.  Can be either
 \"smime\" or \"pgpmime\"."
-  (every (lambda (recipient)
-           (not (null (db/public-key recipient method))))
-         recipients))
+  (cl-every (lambda (recipient)
+              (not (null (db/public-key recipient method))))
+            recipients))
 
 (defun db/message-recipients ()
   "Return all recipients of the email in the current buffer."
@@ -403,6 +403,7 @@ METHOD specifies the encrypt method used.  Can be either
 ;; inspired by https://www.emacswiki.org/emacs/ExtendSMIME
 
 (use-package ldap
+  :commands (ldap-search)
   :config (progn
             (setq ldap-default-host "")
             (setq ldap-default-base "O=DFN-Verein,C=DE"
@@ -440,20 +441,20 @@ If found, imports the certificate via gpgsm."
             (insert-buffer-substring (mm-handle-buffer handle))
             (setq verified (epg-verify-string (epg-make-context 'CMS)
                                               (base64-decode-string (buffer-string)))))
-          ;; FIXME: insert valid signature
-          ;; use openssl
-          (progn
-            (insert "MIME-Version: 1.0\n")
-            (mm-insert-headers "application/pkcs7-mime" "base64" "smime.p7m")
-            (insert-buffer-substring (mm-handle-buffer handle))
-            (setq verified (smime-verify-region (point-min) (point-max))))))
+        ;; FIXME: insert valid signature
+        ;; use openssl
+        (progn
+          (insert "MIME-Version: 1.0\n")
+          (mm-insert-headers "application/pkcs7-mime" "base64" "smime.p7m")
+          (insert-buffer-substring (mm-handle-buffer handle))
+          (setq verified (smime-verify-region (point-min) (point-max))))))
     (goto-char (point-min))
     (mm-insert-part handle)
     (if (search-forward "Content-Type: " nil t)
-	(delete-region (point-min) (match-beginning 0)))
+        (delete-region (point-min) (match-beginning 0)))
     (goto-char (point-max))
     (if (re-search-backward "--\r?\n?" nil t)
-	(delete-region (match-end 0) (point-max)))
+        (delete-region (match-end 0) (point-max)))
     (unless verified
       (insert-buffer-substring smime-details-buffer)))
   (goto-char (point-min))

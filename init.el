@@ -324,8 +324,9 @@ _h_   _l_   _o_k        _y_ank
   ;; Fixes
 
   (eval-after-load "enriched"
-    '(defun enriched-decode-display-prop (start end &optional param)
-      (list start end)))
+    '(defun enriched-decode-display-prop (start end &optional params)
+       (ignore params)
+       (list start end)))
 
   ;; Start Server when not running already
 
@@ -360,7 +361,7 @@ _h_   _l_   _o_k        _y_ank
 ;; * Builtin Variables
 
 (setq custom-file
-      (expand-file-name (concat "private/custom." system-name ".el")
+      (expand-file-name (concat "private/custom." (system-name) ".el")
                         emacs-d))
 
 (use-package cl-lib)
@@ -863,7 +864,7 @@ Certificates are assumed to be of the form *.crt."
                   helm-ff-file-name-history-use-recentf t
                   helm-ff-search-library-in-sexp t
                   helm-ff-skip-boring-files nil
-                  helm-split-window-in-side-p t
+                  helm-split-window-inside-p t
                   helm-move-to-line-cycle-in-source nil
                   helm-scroll-amount nil
                   helm-locate-command nil
@@ -1164,13 +1165,14 @@ Certificates are assumed to be of the form *.crt."
 
             (defun org-babel-execute:hy (body params)
               ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
+              (ignore params)
               (let* ((temporary-file-directory ".")
                      (tempfile (make-temp-file "hy-")))
                 (with-temp-file tempfile
                   (insert body))
                 (unwind-protect
-                     (shell-command-to-string
-                      (format "hy %s" tempfile))
+                    (shell-command-to-string
+                     (format "hy %s" tempfile))
                   (delete-file tempfile))))))
 
 
@@ -1311,9 +1313,6 @@ Certificates are assumed to be of the form *.crt."
              mc/mark-previous-like-this
              mc/mark-all-like-this))
 
-(use-package nxml
-  :defer t)
-
 (use-package org-ref
   :defer t
   :config (progn
@@ -1345,6 +1344,7 @@ Certificates are assumed to be of the form *.crt."
             (eval-after-load 'semantic/bovine/el
               `(semantic-elisp-setup-form-parser
                    ,(lambda (form start end)
+                      (ignore start end)
                       (semantic-tag-new-include (symbol-name (nth 1 form)) nil))
                  use-package))))
 

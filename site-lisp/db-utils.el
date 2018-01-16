@@ -61,7 +61,7 @@ If already in `*ansi-term*' buffer, bury it."
     (if-let ((eshell-window (db/find-window-by-buffer-mode 'eshell-mode)))
         (select-window eshell-window)
       ;; open eshell
-      (let ((current-dir (expand-file-name (dired-default-directory)))
+      (let ((current-dir (expand-file-name default-directory))
             (height      (/ (window-total-height) 3)))
         (split-window-vertically (- height))
         (other-window 1)
@@ -72,10 +72,10 @@ If already in `*ansi-term*' buffer, bury it."
           (insert (format "cd %s" current-dir))
           (eshell-send-input))))))
 
-(defun db/run-or-hide-shell (arg)
+(defun db/run-or-hide-shell ()
   "Opens an shell buffer if not already in one, and otherwise
   returns to where we have been before."
-  (interactive "P")
+  (interactive "")
   (if (string= "shell-mode" major-mode)
       (progn
         (bury-buffer)
@@ -205,13 +205,13 @@ lispy."
 (defun dired-back-to-top ()
   "Jump to first non-trivial line in dired."
   (interactive)
-  (beginning-of-buffer)
+  (goto-char (point-min))
   (dired-next-line 2))
 
 (defun dired-jump-to-bottom ()
   "Jump to last non-trivial line in dired."
   (interactive)
-  (end-of-buffer)
+  (goto-char (point-max))
   (dired-next-line -1))
 
 (defun dired-get-size ()                ; from emacswiki, via oremacs
