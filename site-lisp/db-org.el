@@ -597,7 +597,10 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 ;; disable usage of helm for `org-capture'
 (eval-after-load 'helm-mode
-  '(add-to-list 'helm-completing-read-handlers-alist '(org-capture . nil)))
+  '(progn
+     (defvar helm-completing-read-handlers-alist) ; for the byte compiler
+     (add-to-list 'helm-completing-read-handlers-alist
+                  '(org-capture . nil))))
 
 (setq org-capture-use-agenda-date nil)
 
