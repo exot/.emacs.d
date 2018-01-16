@@ -675,7 +675,7 @@ _h_   _l_   _o_k        _y_ank
   :config (progn
             (bbdb-initialize 'gnus 'message)
             (bbdb-mua-auto-update-init 'message)
-            (setq gnus-init-file (expand-file-name "gnus" emacs-d)
+            (setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
                   gnus-home-directory (expand-file-name "~/Mail/news/")
                   gnus-directory (expand-file-name "~/Mail/news/")
                   gnus-kill-files-directory gnus-directory
