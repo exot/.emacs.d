@@ -108,17 +108,17 @@
       org-clock-auto-clock-resolution 'when-no-clock-is-running
       org-clock-mode-line-total 'auto
       org-clock-report-include-clocking-task t
-      org-clock-in-switch-to-state (lambda (kw)
+      org-clock-in-switch-to-state (lambda (_)
                                      (when (and (not
                                                  (and (boundp 'org-capture-mode)
                                                       org-capture-mode)))
                                        (cond
-                                         ((member (org-get-todo-state)
-                                                  (list "TODO" "READ"))
-                                          "CONT")
-                                         ((member (org-get-todo-state)
-                                                  (list "GOTO"))
-                                          "ATTN")))))
+                                        ((member (org-get-todo-state)
+                                                 (list "TODO" "READ"))
+                                         "CONT")
+                                        ((member (org-get-todo-state)
+                                                 (list "GOTO"))
+                                         "ATTN")))))
 
 (org-clock-persistence-insinuate)
 
@@ -253,7 +253,7 @@ forces clocking in of the default task."
 (defun db/update-org-agenda-files (symbol value)
   "Set SYMBOL to VALUE and update `org-agenda-files’ afterwards."
   (set-default symbol value)
-  (setq org-agenda-files (remove-duplicates
+  (setq org-agenda-files (cl-remove-duplicates
                           (cl-remove-if #'string-empty-p
                                         (mapcar (lambda (symbol)
                                                   (when (boundp symbol)
@@ -364,7 +364,7 @@ Ignores MATCH."
     (let* ((today (org-today))
 	   (thefiles (org-agenda-files nil 'ifmode))
 	   (inhibit-redisplay (not debug-on-error))
-	   s rtn rtnall file files date start-pos end-pos)
+	   s rtn rtnall file files date start-pos)
 
       ;; headline
       (unless org-agenda-compact-blocks
@@ -445,7 +445,7 @@ are equal return nil."
                (b-date (or (org-entry-get b-pos prop)
                            (format "<%s>" (org-read-date t nil "now"))))
                (cmp (compare-strings a-date nil nil b-date nil nil)))
-          (if (eq cmp t) nil (signum cmp))))))
+          (if (eq cmp t) nil (cl-signum cmp))))))
 
 (setq org-agenda-custom-commands
       `(("A" "Main List"
@@ -515,10 +515,10 @@ are equal return nil."
 (defun db/org-add-clocking-time (starting-time ending-time)
   "Add \"CLOCK:\" line to the task under point in the current org-mode file."
   (interactive
-   (list (starting-time (org-read-date 4 'totime nil
-                                       "Start:" (current-time) nil t))
-         (ending-time (org-read-date 4 'totime nil
-                                     "End:" (current-time) nil t))))
+   (list (org-read-date 4 'totime nil
+                        "Start:" (current-time) nil t)
+         (org-read-date 4 'totime nil
+                        "End:" (current-time) nil t)))
   (if (not (eq major-mode 'org-mode))
       (user-error "Must be in org mode")
     (save-mark-and-excursion
@@ -688,9 +688,9 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   ;; Things copied from `org-clock-update-time-maybe’
   (let* ((s (-
              (float-time
-              (apply #'encode-time (org-parse-time-string stamp-2 nil t)))
+              (apply #'encode-time (org-parse-time-string stamp-2 t)))
              (float-time
-              (apply #'encode-time (org-parse-time-string stamp-1 nil t)))))
+              (apply #'encode-time (org-parse-time-string stamp-1 t)))))
          (neg (< s 0))
          (s (abs s))
          (h (floor (/ s 3600)))
@@ -792,10 +792,10 @@ This is done only if the value of this variable is not null."
                                                   db/org-default-work-file)))
             (org-agenda-new-buffers nil))
         ;; check whether we need to do something
-        (when (some (lambda (org-file)
-                      (file-newer-than-file-p org-file
-                                              org-icalendar-combined-agenda-file))
-                    org-agenda-files)
+        (when (cl-some (lambda (org-file)
+                         (file-newer-than-file-p org-file
+                                                 org-icalendar-combined-agenda-file))
+                       org-agenda-files)
           (message "Exporting diary ...")
           ;; open files manually to avoid polluting `org-agenda-new-buffers’; we
           ;; don’t want these buffers to be closed after exporting
@@ -925,11 +925,12 @@ Current Task: %`org-clock-current-task; "
 
 ;;; Custom links for Windows
 
-(org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
+(when (eq system-type 'windows-nt)
+  (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
 
-(defun db/org-onenote-open (path)
-  "Visit OneNote document on PATH."
-  (w32-shell-execute "open" path))
+  (defun db/org-onenote-open (path)
+    "Visit OneNote document on PATH."
+    (w32-shell-execute "open" path)))
 
 
 ;;; Reporting
@@ -939,7 +940,8 @@ Current Task: %`org-clock-current-task; "
 
 (defgroup timeline-reporting nil
   "Functionality for formatting timelines."
-  :tag "Formatting timelines")
+  :tag "Timeline Formatter"
+  :group 'applications)
 
 (require 'dash)
 
@@ -988,7 +990,7 @@ always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
            (tend (cond ((stringp tend) (org-time-string-to-seconds tend))
                        ((consp tend) (float-time tend))
                        (t tend)))
-           task-clock-times headline times)
+           task-clock-times times)
       (db/org-map-clock-lines-and-entries
        ;; when on clock line, collect times
        #'(lambda (start end)
@@ -1059,13 +1061,14 @@ Markers to org mode tasks are combined into a list."
 A slot is short if it is not longer than THRESHOLD seconds.
 Resulting gaps are distributed evenly among adjacent slots."
   (let ((start (first (first timeline)))
-        (end (second (car (last timeline)))))
+        (end (second (car (last timeline))))
+        new-timeline)
     ;; remove all slots that are too short
     (setq new-timeline
-          (remove-if (lambda (entry)
-                       (<= (- (second entry) (first entry))
-                           threshold))
-                     timeline))
+          (cl-remove-if (lambda (entry)
+                          (<= (- (second entry) (first entry))
+                              threshold))
+                        timeline))
 
     ;; reset start and end times
     (setf (first (first new-timeline)) start)
@@ -1160,7 +1163,8 @@ ending at 23:61.  When not given, FILES defaults to
   (interactive)
   (goto-char (point-min))
   (kill-line 8)
-  (replace-regexp "^\"\\|\"$\\|\";\"" "|")
+  (while (re-search-forward "^\"\\|\"$\\|\";\"")
+    (replace-match "|"))
   (goto-char (point-min))
   (org-mode)
   (org-table-align)
@@ -1171,7 +1175,7 @@ ending at 23:61.  When not given, FILES defaults to
                            ("Buchungsdetails" . 3))
    do (progn (goto-char (point-min))
              (search-forward word)
-             (dotimes (i count)
+             (dotimes (_ count)
                (org-table-move-column-right))))
   (goto-char (point-min)))
 
