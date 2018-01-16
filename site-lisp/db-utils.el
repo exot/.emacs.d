@@ -281,9 +281,13 @@ path."
 
 (defun db/system-open (path)
   "Open PATH with default program as defined by the underlying system."
-  (if on-windows
-      (w32-shell-execute "open" path)
-    (start-process "" nil "xdg-open" path)))
+  (cond
+   ((eq system-type 'windows-nt)
+    (w32-shell-execute "open" path))
+   ((eq system-type 'cygwin)
+    (start-process "" nil "cygstart" path))
+   (t
+    (start-process "" nil "xdg-open" path))))
 
 (defvar db/helm-source-important-documents
   '((name . "Important files")
