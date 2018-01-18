@@ -946,9 +946,10 @@ Certificates are assumed to be of the form *.crt."
 
 (use-package eyebrowse
   :commands (eyebrowse-mode)
-  :init (setq eyebrowse-keymap-prefix (kbd "C-c w"))
-  :config (setq eyebrowse-mode-line-separator " "
-                eyebrowse-new-workspace t))
+  :config (progn (setq eyebrowse-mode-line-separator " "
+                       eyebrowse-new-workspace t)
+                 (unbind-key eyebrowse-keymap-prefix
+                             eyebrowse-mode-map)))
 
 
 
