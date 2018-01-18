@@ -56,11 +56,6 @@
 (setq use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
-(use-package auto-compile
-  :config (progn
-            (auto-compile-on-load-mode)
-            (auto-compile-on-save-mode)))
-
 (add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
 
 
