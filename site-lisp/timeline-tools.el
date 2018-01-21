@@ -2,8 +2,9 @@
 
 ;;; Commentary:
 
-;; TODO: give brief overview, explain nomenclature (timelines, clock-lines,
+;; XXX: give brief overview, explain nomenclature (timelines, clock-lines,
 ;; ...), then list main functionality
+;; XXX: This needs some tests
 
 ;;; Code:
 
@@ -82,6 +83,29 @@ TIME-1 and TIME-2 must be given in a format understandable by
      (insert "--")
      (insert (format-time-string timestamp-format time-2))
      (org-clock-update-time-maybe))))
+
+(defun timeline-tools-clocklines-of-task (marker)
+  "Return list of all clock lines of task under MARKER.
+
+Each clock line is represented as a cons cell (START . END),
+where both START and END are the starting and ending times of the
+corresponding clock lines, encoded as a float denoting the
+seconds since the epoch.  Includes clock lines of all subtrees as
+well.  The order of the entries in the resulting list will be
+reversed of what it is in the subtree of MARKER."
+  (when (not (markerp marker))
+    (user-error "Marker not valid"))
+  (let ((clock-lines nil))
+    (save-mark-and-excursion
+     (org-with-point-at marker
+       (org-narrow-to-subtree)
+       (timeline-tools-map-clocklines
+        (lambda (start end)
+          (push (cons (org-time-string-to-seconds start)
+                      (org-time-string-to-seconds end))
+                clock-lines))
+        (lambda ()))))
+    clock-lines))
 
 
 ;; Reporting
@@ -221,6 +245,8 @@ When called interactively, START and END are queried with
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
   (let ((timeline (->> (timeline-tools-timeline tstart tend files)
+                       ;; XXX: make these modifiers customizable
+                       timeline-tools-cluster-same-category
                        (timeline-tools-skip-short-entries
                         timeline-tools-short-task-threshold)
                        timeline-tools-cluster-same-category)))
@@ -265,7 +291,7 @@ ending at 23:61.  When not given, FILES defaults to
                                   files))
 
 
-;;; Manipulating Clock Lines
+;;; Manipulating Clocklines
 
 (defun timeline-tools-add-clockline-to-marker (target-marker start end)
   "Add clock line to task under TARGET-MARKER from START to END.
@@ -321,29 +347,6 @@ the clock line is to be added to."
       (org-clock-find-position nil)
       (open-line 1)
       (timeline-tools-insert-clockline new-start new-end))))
-
-(defun timeline-tools-clocklines-of-task (marker)
-  "Return list of all clock lines of task under MARKER.
-
-Each clock line is represented as a cons cell (START . END),
-where both START and END are the starting and ending times of the
-corresponding clock lines, encoded as a float denoting the
-seconds since the epoch.  Includes clock lines of all subtrees as
-well.  The order of the entries in the resulting list will be
-reversed of what it is in the subtree of MARKER."
-  (when (not (markerp marker))
-    (user-error "Marker not valid"))
-  (let ((clock-lines nil))
-    (save-mark-and-excursion
-     (org-with-point-at marker
-       (org-narrow-to-subtree)
-       (timeline-tools-map-clocklines
-        (lambda (start end)
-          (push (cons (org-time-string-to-seconds start)
-                      (org-time-string-to-seconds end))
-                clock-lines))
-        (lambda ()))))
-    clock-lines))
 
 (defun timeline-tools-copy-clocklines (source-id target-id)
   "Copy clock lines from SOURCE-ID to TARGET-ID.
