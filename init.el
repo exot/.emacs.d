@@ -745,12 +745,14 @@ Certificates are assumed to be of the form *.crt."
   :config (progn
             (setq dired-dwim-target t)
             (put 'dired-find-alternate-file 'disabled nil)
-            (setq dired-listing-switches "-alLh")
-            (setq dired-hide-details-hide-information-lines nil)
+            (setq dired-listing-switches "-alh")
+            (setq dired-hide-details-hide-information-lines t
+                  dired-hide-details-hide-symlink-targets t)
             (setq dired-recursive-copies 'top)
             (setq dired-recursive-deletes 'top)
 
             (require 'dired-x)
+            (require 'dired+)
 
             ;; Gnus support in dired
             (require 'gnus-dired)
@@ -776,17 +778,13 @@ Certificates are assumed to be of the form *.crt."
                       ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
                       ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
                       ("\\.\\(?:xcf\\)\\'" "gimp")
-                      ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\)\\(?:\\.part\\)?\\'"
+                      ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
                        "vlc")
                       ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
                       ("\\.html?\\'" "firefox")
                       ("\\.docx?\\'" "loffice"))))
 
             (unbind-key "C-M-o" dired-mode-map)
-
-            (require 'dired+)
-            (custom-set-variables       ; needs to be set with custom
-             '(diredp-hide-details-initially-flag nil))
 
             ;; disable exaggerated fontification of dired+
             (require 'font-lock)
