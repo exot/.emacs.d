@@ -2,7 +2,8 @@
 
 ;;; Commentary:
 
-;; TODO: explain nomenclature (clock-lines, ...)
+;; TODO: give brief overview, explain nomenclature (timelines, clock-lines,
+;; ...), then list main functionality
 
 ;;; Code:
 
