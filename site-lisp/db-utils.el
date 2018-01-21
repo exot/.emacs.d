@@ -345,7 +345,43 @@ path."
                    helm-source-bookmark-set)))
 
 
-;;;
+;;; Org Utilities
+
+(defun db/bank-csv-to-org-table ()
+  (interactive)
+  (goto-char (point-min))
+  (kill-line 8)
+  (while (re-search-forward "^\"\\|\"$\\|\";\"" nil :no-error)
+    (replace-match "|"))
+  (goto-char (point-min))
+  (org-mode)
+  (org-table-align)
+  ;; move columns around
+  (cl-loop
+   for (word . count) in '(("Wertstellung" . 6)
+                           ("Umsatzart" . 6)
+                           ("Buchungsdetails" . 3))
+   do (progn (goto-char (point-min))
+             (search-forward word)
+             (dotimes (_ count)
+               (org-table-move-column-right))))
+  (goto-char (point-min)))
+
+(defun db/org-cleanup-continuous-clocks ()
+  "Join continuous clock lines in the current buffer."
+  (interactive)
+  (let* ((inactive-timestamp (org-re-timestamp 'inactive))
+         (clock-line (concat "\\(^ *\\)CLOCK: " inactive-timestamp "--" inactive-timestamp " => .*"
+                             "\n"
+                             " *CLOCK: " inactive-timestamp "--\\[\\2\\] => .*$")))
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward-regexp clock-line nil t)
+       (replace-match "\\1CLOCK: [\\4]--[\\3]")
+       (org-clock-update-time-maybe)))))
+
+
+;;; End
 
 (provide 'db-utils)
 

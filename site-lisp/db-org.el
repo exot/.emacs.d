@@ -513,27 +513,6 @@ are equal return nil."
               (org-use-tag-inheritance nil)
               (org-agenda-prefix-format '((tags . "  ")))))))
 
-(defun db/org-add-clocking-time (starting-time ending-time)
-  "Add \"CLOCK:\" line to the task under point in the current org-mode file."
-  (interactive
-   (list (org-read-date 4 'totime nil
-                        "Start:" (current-time) nil t)
-         (org-read-date 4 'totime nil
-                        "End:" (current-time) nil t)))
-  (if (not (eq major-mode 'org-mode))
-      (user-error "Must be in org mode")
-    (save-mark-and-excursion
-     (org-clock-find-position nil)
-     (open-line 1)
-     (indent-according-to-mode)
-     (insert "CLOCK: ")
-     (org-insert-time-stamp starting-time t t)
-     (insert "--")
-     (org-insert-time-stamp ending-time t t)
-     (org-clock-update-time-maybe))))
-
-(bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
-
 ;; A Hydra for changing agenda appearance
 ;; http://oremacs.com/2016/04/04/hydra-doc-syntax/
 
@@ -955,7 +934,8 @@ For each clockline, call CLOCKLINE-FN with the starting and
 ending time as arguments and point on the beginning of the line.
 For each headline, call HEADLINE-FN with no arguments and point
 on the start of the headline.  Traversal will be done from the
-end of the file upwards."
+end of the file upwards.  If the buffer is narrowed, only this
+region will be traversed."
   (when (eq major-mode 'org-mode)
     (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
                        org-clock-string
@@ -966,10 +946,12 @@ end of the file upwards."
           (cond
            ((match-end 2)
             ;; Two time stamps.
-            (funcall clockline-fn (match-string 2) (match-string 3)))
+            (save-mark-and-excursion
+             (funcall clockline-fn (match-string 2) (match-string 3))))
            (t
             ;; A headline
-            (funcall headline-fn))))))))
+            (save-mark-and-excursion
+             (funcall headline-fn)))))))))
 
 (defun db/org-clocking-time-in-range (tstart tend)
   "Return list of all tasks in the current buffer together with
@@ -1161,44 +1143,133 @@ ending at 23:61.  When not given, FILES defaults to
                           files))
 
 
-;;; Other Utilities
+;;; Manipulating Clock Lines
 
-(defun db/bank-csv-to-org-table ()
-  (interactive)
-  (goto-char (point-min))
-  (kill-line 8)
-  (while (re-search-forward "^\"\\|\"$\\|\";\"" nil :no-error)
-    (replace-match "|"))
-  (goto-char (point-min))
-  (org-mode)
-  (org-table-align)
-  ;; move columns around
-  (cl-loop
-   for (word . count) in '(("Wertstellung" . 6)
-                           ("Umsatzart" . 6)
-                           ("Buchungsdetails" . 3))
-   do (progn (goto-char (point-min))
-             (search-forward word)
-             (dotimes (_ count)
-               (org-table-move-column-right))))
-  (goto-char (point-min)))
+(defun db/org-insert-clockline (time-1 time-2)
+  "Insert new clock line from TIME-1 to TIME-2 at the beginning
+  of the current line.  TIME-1 and TIME-2 must be given in a
+  format understandable by `format-time-string’, which see.
+  Saves mark and point."
+  (let ((timestamp-format (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")))
+    (save-mark-and-excursion
+     (beginning-of-line)
+     (indent-according-to-mode)
+     (insert "CLOCK: ")
+     (insert (format-time-string timestamp-format time-1))
+     (insert "--")
+     (insert (format-time-string timestamp-format time-2))
+     (org-clock-update-time-maybe))))
 
-(defun db/org-cleanup-continuous-clocks ()
-  "Join continuous clock lines in the current buffer."
-  (interactive)
-  (let* ((inactive-timestamp (org-re-timestamp 'inactive))
-         (clock-line (concat "\\(^ *\\)CLOCK: "
-                             inactive-timestamp
-                             "--"
-                             inactive-timestamp
-                             " => .*\n *CLOCK: "
-                             inactive-timestamp
-                             "--\\[\\2\\] => .*$")))
-    (save-excursion
-      (goto-char (point-min))
-      (while (search-forward-regexp clock-line nil t)
-       (replace-match "\\1CLOCK: [\\4]--[\\3]")
-       (org-clock-update-time-maybe)))))
+(defun db/org-add-clocking-time (starting-time ending-time)
+  "Add \"CLOCK:\" line to the task under point in the current org-mode file."
+  (interactive
+   (list (starting-time (org-read-date 4 'totime nil
+                                       "Start:" (current-time) nil t))
+         (ending-time (org-read-date 4 'totime nil
+                                     "End:" (current-time) nil t))))
+  (if (not (eq major-mode 'org-mode))
+      (user-error "Must be in org mode")
+    (save-mark-and-excursion
+     (org-clock-find-position nil)
+     (open-line 1)
+     (db/org-insert-clockline starting-time ending-time))))
+
+(bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
+
+(defun db/org-add-clock-line-to-marker (target-marker start end)
+  "Add clock line with START and END time to task identified by TARGET-MARKER.
+START and END must be given as time objects as returned by
+`encode-time’, or as an integer or float denoting seconds since
+1970-01-01.  TARGET-MARKER must be positioned on the task where
+the clock line is to be added to."
+  (when (not (markerp target-marker))
+    (user-error "Marker not valid."))
+  (let ((new-start (float-time start))
+        (new-end   (float-time end)))
+    (with-current-buffer (marker-buffer target-marker)
+      (db/org-map-clock-lines-and-entries
+       (lambda (timestamp-1 timestamp-2)
+         (let ((current-start (float-time
+                               (apply #'encode-time
+                                      (org-parse-time-string timestamp-1))))
+               (current-end   (float-time
+                               (apply #'encode-time
+                                      (org-parse-time-string timestamp-2))))
+               (kill-whole-line nil)    ; don’t delete newlines if not asked to
+               )
+           (cond
+            ;; if the current clock line is completely contained within the
+            ;; given period, delete it
+            ((and (<= new-start current-start current-end new-end))
+             (kill-whole-line))
+            ;; if the current clock line completely contains the given one,
+            ;; split it
+            ((and (<= current-start new-start new-end current-end))
+             (beginning-of-line)
+             (kill-line)
+             (db/org-insert-clockline current-start new-start)
+             (open-line 1)
+             (db/org-insert-clockline new-end current-end))
+            ;; New interval overlaps beginning of current line
+            ((<= new-start current-start new-end current-end)
+             (beginning-of-line)
+             (kill-line)
+             (db/org-insert-clockline new-end current-end))
+            ;; New interval overlaps at end of current line
+            ((<= current-start new-start current-end new-end)
+             (beginning-of-line)
+             (kill-line)
+             (db/org-insert-clockline current-start new-start)))))
+
+       ;; Keep headline as they are, i.e., do nothing
+       (lambda ())))
+
+    ;; Finally add the new clock line
+    (org-with-point-at target-marker
+      (db/org-add-clocking-time new-start new-end))))
+
+(defun db/org-clock-lines-of-task (marker)
+  "Return list of all clock lines of task under MARKER.
+Each clock line is represented as a cons cell (START . END),
+where both START and END are the starting and ending times of the
+corresponding clock lines, encoded as a float denoting the
+seconds since the epoch.  Includes clock lines of all subtrees as
+well.  The order of the entries in the resulting list will be
+reversed of what it is in the subtree of MARKER."
+  (when (not (markerp marker))
+    (user-error "Marker not valid."))
+  (let ((clock-lines nil))
+    (save-mark-and-excursion
+     (org-with-point-at marker
+       (org-narrow-to-subtree)
+       (db/org-map-clock-lines-and-entries
+        (lambda (start end)
+          (push (cons (org-time-string-to-seconds start)
+                      (org-time-string-to-seconds end))
+                clock-lines))
+        (lambda ()))))
+    clock-lines))
+
+(defun db/org-copy-clock-lines (source-id target-id)
+  "Copy clock lines from one task to another, adapting clock
+  lines in the file of TARGET-ID accordingly.
+
+Both SOURCE-ID and TARGET-ID must designate known org-mode
+tasks.  Copies all clock lines attached to SOURCE-ID or to one of
+its subtree."
+  (let ((source-marker (org-id-find source-id :get-marker))
+        (target-marker (org-id-find target-id :get-marker)))
+    (cl-assert (markerp source-marker)
+               "Source task %s not found" source-id)
+    (cl-assert (markerp target-marker)
+               "Target task %s not found" target-id)
+
+    ;; We first fetch the relevant clock-lines into memory, and then add them to
+    ;; the target task one by one, adjusting the other clock lines in between;
+    ;; this is rather inefficient, but we will fix this only when we need it.
+    (dolist (clock-line (db/org-clock-lines-of-task source-marker))
+      (db/org-add-clock-line-to-marker target-marker
+                                       (car clock-line) (cdr clock-line)))))
 
 
 ;;; End
