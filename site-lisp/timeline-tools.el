@@ -68,21 +68,27 @@ region will be traversed."
                     heading)
       (match-string 4 heading))))
 
+(defvar timeline-tools-org-inactive-timestamp-format
+  (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")
+  "Format of inactive `org-mode’ timestamps.
+Can be used as format string for `format-time’,")
+
 (defun timeline-tools-insert-clockline (time-1 time-2)
   "Insert new clock line from TIME-1 to TIME-2.
 
 Insertion will be done at the beginning of the current line.
 TIME-1 and TIME-2 must be given in a format understandable by
 `format-time-string’, which see.  Saves mark and point."
-  (let ((timestamp-format (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")))
-    (save-mark-and-excursion
-     (beginning-of-line)
-     (indent-according-to-mode)
-     (insert "CLOCK: ")
-     (insert (format-time-string timestamp-format time-1))
-     (insert "--")
-     (insert (format-time-string timestamp-format time-2))
-     (org-clock-update-time-maybe))))
+  (save-mark-and-excursion
+   (beginning-of-line)
+   (indent-according-to-mode)
+   (insert "CLOCK: ")
+   (insert (format-time-string timeline-tools-org-inactive-timestamp-format
+                               time-1))
+   (insert "--")
+   (insert (format-time-string timeline-tools-org-inactive-timestamp-format
+                               time-2))
+   (org-clock-update-time-maybe)))
 
 (defun timeline-tools-clocklines-of-task (marker)
   "Return list of all clock lines of task under MARKER.
