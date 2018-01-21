@@ -27,7 +27,7 @@
 
 ;; Utilities
 
-(defun db/org-map-clock-lines-and-entries (clockline-fn headline-fn)
+(defun timeline-tools-map-clock-lines-and-entries (clockline-fn headline-fn)
   "Iterate point over all clocklines and headlines of the current buffer.
 
 For each clockline, call CLOCKLINE-FN with the starting and
@@ -60,7 +60,7 @@ region will be traversed."
 ;; myself was more fun :)
 ;; XXX: Find actual org-mode functions that do the stuff we are doing here
 
-(defun db/org-clocking-time-in-range (tstart tend)
+(defun timeline-tools-clocklines-in-range (tstart tend)
   "Return tasks in current buffer between TSTART and TEND.
 
 The resulting list consists of elements of the form
@@ -84,7 +84,7 @@ always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
                        ((consp tend) (float-time tend))
                        (t tend)))
            task-clock-times times)
-      (db/org-map-clock-lines-and-entries
+      (timeline-tools-map-clock-lines-and-entries
        ;; when on clock line, collect times
        #'(lambda (start end)
            (let* ((ts (float-time
@@ -111,7 +111,7 @@ always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
              (setq times nil))))
       task-clock-times)))
 
-(defun db/org-timeline-in-range (tstart tend &optional files)
+(defun timeline-tools-timeline-in-range (tstart tend &optional files)
   "Return list of clocked times between TSTART and TEND from FILES.
 
 Each element in this list is of the form
@@ -119,7 +119,7 @@ Each element in this list is of the form
   (START END MARKER),
 
 where START, END, MARKER are as returned by
-`db/org-clocking-time-in-range’, which see.  Entries in the
+`timeline-tools-clocklines-in-range’, which see.  Entries in the
 resulting list are sorted by START, ascending."
   (let (timeline-of-files turned-around-timeline)
     (setq timeline-of-files
@@ -128,7 +128,7 @@ resulting list are sorted by START, ascending."
                (cl-mapcan #'(lambda (file)
                               (with-current-buffer (or (get-file-buffer file)
                                                        (find-file-noselect file))
-                                (db/org-clocking-time-in-range tstart tend))))))
+                                (timeline-tools-clocklines-in-range tstart tend))))))
     (dolist (entry timeline-of-files)
       (dolist (clock-time (cdr entry))
         (push (list (car clock-time) (cdr clock-time) (car entry))
@@ -137,7 +137,7 @@ resulting list are sorted by START, ascending."
           (lambda (entry-1 entry-2)
             (< (car entry-1) (car entry-2))))))
 
-(defun db/org-cluster-timeline-same-category (timeline)
+(defun timeline-tools-cluster-same-category (timeline)
   "Cluster TIMELINE into consecutive entries with equal category.
 Markers to org mode tasks are combined into a list."
   (let ((new-timeline (-partition-by (lambda (entry)
@@ -150,7 +150,7 @@ Markers to org mode tasks are combined into a list."
                     (mapcar #'third cluster)))
             new-timeline)))
 
-(defun db/org-skip-short-entries-in-timeline (threshold timeline)
+(defun timeline-tools-skip-short-entries (threshold timeline)
   "Skip entries shorter than THRESHOLD in TIMELINE.
 
 A slot is short if it is not longer than THRESHOLD seconds.
@@ -182,7 +182,7 @@ Resulting gaps are distributed evenly among adjacent slots."
             (setf (first entry-2) middle)))))
     new-timeline))
 
-(defun db/org-get-headline (marker)
+(defun timeline-tools-get-headline (marker)
   "Get headline of task at MARKER."
   (assert (markerp marker))
   (save-match-data
@@ -196,7 +196,7 @@ Resulting gaps are distributed evenly among adjacent slots."
                     heading)
       (match-string 4 heading))))
 
-(defun db/org-format-timeline (tstart tend &optional files)
+(defun timeline-tools-format-timeline (tstart tend &optional files)
   "Display timeline of tasks between TSTART and TEND from FILES.
 
 When not given, FILES defaults to `org-agenda-files’.  Short
@@ -205,10 +205,10 @@ When called interactively, START and END are queried with
 `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let ((timeline (->> (db/org-timeline-in-range tstart tend files)
-                       (db/org-skip-short-entries-in-timeline
+  (let ((timeline (->> (timeline-tools-timeline-in-range tstart tend files)
+                       (timeline-tools-skip-short-entries
                         timeline-tools-short-task-threshold)
-                       db/org-cluster-timeline-same-category)))
+                       timeline-tools-cluster-same-category)))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
         (erase-buffer)
@@ -224,7 +224,7 @@ When called interactively, START and END are queried with
                             (format-time-string "%Y-%m-%d %H:%M" end)
                             (floor (/ (- end start) 60))))
             ;; insert headline line by line, but only once
-            (dolist (headline (->> (mapcar #'db/org-get-headline markers)
+            (dolist (headline (->> (mapcar #'timeline-tools-get-headline markers)
                                    -uniq
                                    (-interpose "|\n |||||")))
               (insert headline))
@@ -235,22 +235,23 @@ When called interactively, START and END are queried with
       (display-buffer target-buffer)
       t)))
 
-(defun db/org-format-timeline-of-day (date &optional files)
+(defun timeline-tools-timeline-of-day (date &optional files)
   "Format timeline of given DATE.
+
 DATE should be a string of the form %Y-%m-%d.  When called
 interactively, this date will be queried with `org-read-date’.
 The timeline will be formatted for DATE starting at 00:00 and
 ending at 23:61.  When not given, FILES defaults to
 `org-agenda-files’."
   (interactive (list (org-read-date nil nil)))
-  (db/org-format-timeline (concat date " 00:00")
-                          (concat date " 23:61")
-                          files))
+  (timeline-tools-format-timeline (concat date " 00:00")
+                                  (concat date " 23:61")
+                                  files))
 
 
 ;;; Manipulating Clock Lines
 
-(defun db/org-insert-clockline (time-1 time-2)
+(defun timeline-tools-insert-clockline (time-1 time-2)
   "Insert new clock line from TIME-1 to TIME-2.
 
 Insertion will be done at the beginning of the current line.
@@ -266,7 +267,9 @@ TIME-1 and TIME-2 must be given in a format understandable by
      (insert (format-time-string timestamp-format time-2))
      (org-clock-update-time-maybe))))
 
-(defun db/org-add-clocking-time (starting-time ending-time)
+(defun timeline-tools-insert-clockline-to-current-task (starting-time ending-time)
+  ;; XXX: this function has a similar name to the next one, but does something
+  ;; different
   "Add clock line from STARTING-TIME to ENDING-TIME to task under point."
   (interactive
    (list (org-read-date 4 'totime nil
@@ -278,11 +281,9 @@ TIME-1 and TIME-2 must be given in a format understandable by
     (save-mark-and-excursion
      (org-clock-find-position nil)
      (open-line 1)
-     (db/org-insert-clockline starting-time ending-time))))
+     (timeline-tools-insert-clockline starting-time ending-time))))
 
-(bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
-
-(defun db/org-add-clock-line-to-marker (target-marker start end)
+(defun timeline-tools-add-clockline-to-marker (target-marker start end)
   "Add clock line to task under TARGET-MARKER from START to END.
 
 START and END must be given as time objects as returned by
@@ -294,7 +295,7 @@ the clock line is to be added to."
   (let ((new-start (float-time start))
         (new-end   (float-time end)))
     (with-current-buffer (marker-buffer target-marker)
-      (db/org-map-clock-lines-and-entries
+      (timeline-tools-map-clock-lines-and-entries
        (lambda (timestamp-1 timestamp-2)
          (let ((current-start (float-time
                                (apply #'encode-time
@@ -314,28 +315,28 @@ the clock line is to be added to."
             ((and (<= current-start new-start new-end current-end))
              (beginning-of-line)
              (kill-line)
-             (db/org-insert-clockline current-start new-start)
+             (timeline-tools-insert-clockline current-start new-start)
              (open-line 1)
-             (db/org-insert-clockline new-end current-end))
+             (timeline-tools-insert-clockline new-end current-end))
             ;; New interval overlaps beginning of current line
             ((<= new-start current-start new-end current-end)
              (beginning-of-line)
              (kill-line)
-             (db/org-insert-clockline new-end current-end))
+             (timeline-tools-insert-clockline new-end current-end))
             ;; New interval overlaps at end of current line
             ((<= current-start new-start current-end new-end)
              (beginning-of-line)
              (kill-line)
-             (db/org-insert-clockline current-start new-start)))))
+             (timeline-tools-insert-clockline current-start new-start)))))
 
        ;; Keep headline as they are, i.e., do nothing
        (lambda ())))
 
     ;; Finally add the new clock line
     (org-with-point-at target-marker
-      (db/org-add-clocking-time new-start new-end))))
+      (timeline-tools-insert-clockline-to-current-task new-start new-end))))
 
-(defun db/org-clock-lines-of-task (marker)
+(defun timeline-tools-clocklines-of-task (marker)
   "Return list of all clock lines of task under MARKER.
 
 Each clock line is represented as a cons cell (START . END),
@@ -350,7 +351,7 @@ reversed of what it is in the subtree of MARKER."
     (save-mark-and-excursion
      (org-with-point-at marker
        (org-narrow-to-subtree)
-       (db/org-map-clock-lines-and-entries
+       (timeline-tools-map-clock-lines-and-entries
         (lambda (start end)
           (push (cons (org-time-string-to-seconds start)
                       (org-time-string-to-seconds end))
@@ -358,7 +359,7 @@ reversed of what it is in the subtree of MARKER."
         (lambda ()))))
     clock-lines))
 
-(defun db/org-copy-clock-lines (source-id target-id)
+(defun timeline-tools-copy-clocklines (source-id target-id)
   "Copy clock lines from SOURCE-ID to TARGET-ID.
 
 Both SOURCE-ID and TARGET-ID must designate known `org-mode’
@@ -375,8 +376,8 @@ of TARGET-ID accordingly."
     ;; We first fetch the relevant clock-lines into memory, and then add them to
     ;; the target task one by one, adjusting the other clock lines in between;
     ;; this is rather inefficient, but we will fix this only when we need it.
-    (dolist (clock-line (db/org-clock-lines-of-task source-marker))
-      (db/org-add-clock-line-to-marker target-marker
+    (dolist (clock-line (timeline-tools-clocklines-of-task source-marker))
+      (timeline-tools-add-clockline-to-marker target-marker
                                        (car clock-line) (cdr clock-line)))))
 
 (provide 'timeline-tools)
