@@ -1297,9 +1297,6 @@ Certificates are assumed to be of the form *.crt."
             (key-chord-define-global "''" "”")
             (key-chord-define-global ",," "„")))
 
-(use-package markdown-mode
-  :defer t)
-
 (use-package mastodon
   :commands (mastodon))
 
