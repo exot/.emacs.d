@@ -1104,58 +1104,57 @@ ending at 23:61.  When not given, FILES defaults to
 
 (bind-key "C-c C-x C-a" #'db/org-add-clocking-time org-mode-map)
 
-(defun db/org-add-clock-line-to-file (id start end)
-  "Add clock line with START and END time to task identified by ID.
+(defun db/org-add-clock-line-to-marker (target-marker start end)
+  "Add clock line with START and END time to task identified by TARGET-MARKER.
 START and END must be given as time objects as returned by
 `encode-time’, or as an integer or float denoting seconds since
-1970-01-01."
-  (let ((location (org-id-find id t)))
-    (when (null location)
-      (user-error "ID %s cannot be found" id))
-    ;; Update existing clock lines
-    (let ((new-start (float-time start))
-          (new-end   (float-time end)))
-      (with-current-buffer (marker-buffer location)
-        (db/org-map-clock-lines-and-entries
-         (lambda (timestamp-1 timestamp-2)
-           (let ((current-start (float-time
-                                 (apply #'encode-time
-                                        (org-parse-time-string timestamp-1))))
-                 (current-end   (float-time
-                                 (apply #'encode-time
-                                        (org-parse-time-string timestamp-2))))
-                 (kill-whole-line nil)  ; don’t delete newlines if not asked to
-                 )
-             (cond
-              ;; if the current clock line is completely contained within the
-              ;; given period, delete it
-              ((and (<= new-start current-start current-end new-end))
-               (kill-whole-line))
-              ;; if the current clock line completely contains the given one,
-              ;; split it
-              ((and (<= current-start new-start new-end current-end))
-               (beginning-of-line)
-               (kill-line)
-               (db/org-insert-clockline current-start new-start)
-               (open-line 1)
-               (db/org-insert-clockline new-end current-end))
-              ;; New interval overlaps beginning of current line
-              ((<= new-start current-start new-end current-end)
-               (beginning-of-line)
-               (kill-line)
-               (db/org-insert-clockline new-end current-end))
-              ;; New interval overlaps at end of current line
-              ((<= current-start new-start current-end new-end)
-               (beginning-of-line)
-               (kill-line)
-               (db/org-insert-clockline current-start new-start)))))
+1970-01-01.  TARGET-MARKER must be positioned on the task where
+the clock line is to be added to."
+  (when (not (markerp target-marker))
+    (user-error "Marker not valid."))
+  (let ((new-start (float-time start))
+        (new-end   (float-time end)))
+    (with-current-buffer (marker-buffer target-marker)
+      (db/org-map-clock-lines-and-entries
+       (lambda (timestamp-1 timestamp-2)
+         (let ((current-start (float-time
+                               (apply #'encode-time
+                                      (org-parse-time-string timestamp-1))))
+               (current-end   (float-time
+                               (apply #'encode-time
+                                      (org-parse-time-string timestamp-2))))
+               (kill-whole-line nil)    ; don’t delete newlines if not asked to
+               )
+           (cond
+            ;; if the current clock line is completely contained within the
+            ;; given period, delete it
+            ((and (<= new-start current-start current-end new-end))
+             (kill-whole-line))
+            ;; if the current clock line completely contains the given one,
+            ;; split it
+            ((and (<= current-start new-start new-end current-end))
+             (beginning-of-line)
+             (kill-line)
+             (db/org-insert-clockline current-start new-start)
+             (open-line 1)
+             (db/org-insert-clockline new-end current-end))
+            ;; New interval overlaps beginning of current line
+            ((<= new-start current-start new-end current-end)
+             (beginning-of-line)
+             (kill-line)
+             (db/org-insert-clockline new-end current-end))
+            ;; New interval overlaps at end of current line
+            ((<= current-start new-start current-end new-end)
+             (beginning-of-line)
+             (kill-line)
+             (db/org-insert-clockline current-start new-start)))))
 
-         ;; Keep headline as they are, i.e., do nothing
-         (lambda ())))
+       ;; Keep headline as they are, i.e., do nothing
+       (lambda ())))
 
-      ;; Finally add the new clock line
-      (org-with-point-at location
-        (db/org-add-clocking-time new-start new-end)))))
+    ;; Finally add the new clock line
+    (org-with-point-at target-marker
+      (db/org-add-clocking-time new-start new-end))))
 
 
 ;;; End
