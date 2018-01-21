@@ -56,7 +56,7 @@ region will be traversed."
 
 (defun timeline-tools-get-headline (marker)
   "Get headline of task at MARKER."
-  (assert (markerp marker))
+  (cl-assert (markerp marker))
   (save-match-data
     (let* ((heading (save-mark-and-excursion
                      (with-current-buffer (marker-buffer marker)
