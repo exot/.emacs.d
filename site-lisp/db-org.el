@@ -1166,7 +1166,7 @@ ending at 23:61.  When not given, FILES defaults to
   (interactive)
   (goto-char (point-min))
   (kill-line 8)
-  (while (re-search-forward "^\"\\|\"$\\|\";\"")
+  (while (re-search-forward "^\"\\|\"$\\|\";\"" nil :no-error)
     (replace-match "|"))
   (goto-char (point-min))
   (org-mode)
