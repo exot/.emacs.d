@@ -79,7 +79,7 @@ region will be traversed."
 (defvar timeline-tools-org-inactive-timestamp-format
   (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")
   "Format of inactive `org-mode’ timestamps.
-Can be used as format string for `format-time’,")
+Can be used as format string for `format-time’.")
 
 (defun timeline-tools-insert-clockline (time-1 time-2)
   "Insert new clock line from TIME-1 to TIME-2.
@@ -123,8 +123,6 @@ reversed of what it is in the subtree of MARKER."
 
 
 ;; Reporting
-
-;; XXX: Find actual org-mode functions that do the stuff we are doing here
 
 (defun timeline-tools-clocklines-in-range (tstart tend)
   "Return tasks in current buffer between TSTART and TEND.
