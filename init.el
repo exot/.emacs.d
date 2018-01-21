@@ -1342,6 +1342,12 @@ Certificates are assumed to be of the form *.crt."
 (use-package synonyms
   :commands (synonyms))
 
+(use-package timeline-tools
+  :load-path "site-lisp"
+  :commands (timeline-tools-format-timeline
+             timeline-tools-format-timeline-of-day
+             timeline-tools-copy-clocklines))
+
 (use-package typing
   :commands (typing-of-emacs)
   :config (setq toe-highscore-file nil))
