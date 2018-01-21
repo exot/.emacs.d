@@ -110,7 +110,7 @@ reversed of what it is in the subtree of MARKER."
           (push (cons (org-time-string-to-seconds start)
                       (org-time-string-to-seconds end))
                 clock-lines))
-        (lambda ()))))
+        #'ignore)))
     clock-lines))
 
 
@@ -346,7 +346,7 @@ the clock line is to be added to."
              (timeline-tools-insert-clockline current-start new-start)))))
 
        ;; Keep headline as they are, i.e., do nothing
-       (lambda ())))
+       #'ignore))
 
     ;; Finally add the new clock line
     (org-with-point-at target-marker
