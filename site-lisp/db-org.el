@@ -2,6 +2,9 @@
 
 ;;; Commentary:
 
+;; Everything in here influences the standard commands coming with org-mode,
+;; either by setting variables, adding hooks, or by overriding.
+
 ;;; Code:
 
 
@@ -751,6 +754,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 ;;; Calendar
 
+;; XXX: calendar stuff should go to `db-utils’
+
 (use-package ox-icalendar
   :commands (org-icalendar-combine-agenda-files)
   :config   (progn
@@ -873,6 +878,8 @@ Resulting org mode file will have CATEGORY and FILETAGS set."
 
 
 ;;; Hydra
+
+;; XXX: this should go somewhere else, maybe `db/run-init’
 
 (require 'hydra)
 
