@@ -25,6 +25,14 @@
   :group 'timeline-tools
   :type 'integer)
 
+(defcustom timeline-tools-filter-functions
+  '(timeline-tools-skip-short-entries
+    timeline-tools-cluster-same-category)
+  "List of functions to apply when formatting timelines.
+Filter are applied in the order they are given in this list."
+  :group 'timeline-tools
+  :type '(list function))
+
 
 ;; Utilities
 
@@ -208,7 +216,7 @@ Markers to org mode tasks are combined into a list."
                     (mapcar #'third cluster)))
             new-timeline)))
 
-(defun timeline-tools-skip-short-entries (threshold timeline)
+(defun timeline-tools-skip-short-entries (timeline)
   "Skip entries shorter than THRESHOLD in TIMELINE.
 
 A slot is short if it is not longer than THRESHOLD seconds.
@@ -220,7 +228,7 @@ Resulting gaps are distributed evenly among adjacent slots."
     (setq new-timeline
           (cl-remove-if (lambda (entry)
                           (<= (- (second entry) (first entry))
-                              threshold))
+                              timeline-tools-short-task-threshold))
                         timeline))
 
     ;; reset start and end times
@@ -250,12 +258,10 @@ When called interactively, START and END are queried with
 `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let ((timeline (->> (timeline-tools-timeline tstart tend files)
-                       ;; XXX: make these modifiers customizable
-                       timeline-tools-cluster-same-category
-                       (timeline-tools-skip-short-entries
-                        timeline-tools-short-task-threshold)
-                       timeline-tools-cluster-same-category)))
+  (let ((timeline (-reduce-from (lambda (tl f)
+                                  (funcall f tl))
+                                (timeline-tools-timeline tstart tend files)
+                                timeline-tools-filter-functions)))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
         (erase-buffer)
