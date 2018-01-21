@@ -1156,6 +1156,49 @@ the clock line is to be added to."
     (org-with-point-at target-marker
       (db/org-add-clocking-time new-start new-end))))
 
+(defun db/org-clock-lines-of-task (marker)
+  "Return list of all clock lines of task under MARKER.
+Each clock line is represented as a cons cell (START . END),
+where both START and END are the starting and ending times of the
+corresponding clock lines, encoded as a float denoting the
+seconds since the epoch.  Includes clock lines of all subtrees as
+well.  The order of the entries in the resulting list will be
+reversed of what it is in the subtree of MARKER."
+  (when (not (markerp marker))
+    (user-error "Marker not valid."))
+  (let ((clock-lines nil))
+    (save-mark-and-excursion
+     (org-with-point-at marker
+       (org-narrow-to-subtree)
+       (db/org-map-clock-lines-and-entries
+        (lambda (start end)
+          (push (cons (org-time-string-to-seconds start)
+                      (org-time-string-to-seconds end))
+                clock-lines))
+        (lambda ()))))
+    clock-lines))
+
+(defun db/org-copy-clock-lines (source-id target-id)
+  "Copy clock lines from one task to another, adapting clock
+  lines in the file of TARGET-ID accordingly.
+
+Both SOURCE-ID and TARGET-ID must designate known org-mode
+tasks.  Copies all clock lines attached to SOURCE-ID or to one of
+its subtree."
+  (let ((source-marker (org-id-find source-id :get-marker))
+        (target-marker (org-id-find target-id :get-marker)))
+    (cl-assert (markerp source-marker)
+               "Source task %s not found" source-id)
+    (cl-assert (markerp target-marker)
+               "Target task %s not found" target-id)
+
+    ;; We first fetch the relevant clock-lines into memory, and then add them to
+    ;; the target task one by one, adjusting the other clock lines in between;
+    ;; this is rather inefficient, but we will fix this only when we need it.
+    (dolist (clock-line (db/org-clock-lines-of-task source-marker))
+      (db/org-add-clock-line-to-marker target-marker
+                                       (car clock-line) (cdr clock-line)))))
+
 
 ;;; End
 
