@@ -646,7 +646,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("m" "Meeting"
              entry
              (file db/org-default-refile-file)
-             ,(concat "* MEETING with %^{With}: %^{What} :MEETING:\n"
+             ,(concat "* MEETING %^{What} :MEETING:\n"
                       ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                       "\n%?")
              :clock-in t :clock-resume t)
