@@ -266,7 +266,7 @@ forces clocking in of the default task."
                                                   db/org-default-work-file
                                                   db/org-default-refile-file
                                                   db/org-default-notes-file)))
-                          :test #'equalp)))
+                          :test #'cl-equalp)))
 
 (defcustom db/org-default-work-file ""
   "Path to default org-mode file at work."
