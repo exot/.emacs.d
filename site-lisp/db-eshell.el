@@ -17,7 +17,11 @@
 
 (setq eshell-cmpl-cycle-completions nil
       eshell-scroll-to-bottom-on-input t
-      eshell-prefer-lisp-functions nil)
+      eshell-prefer-lisp-functions nil
+      eshell-error-if-no-glob t
+      eshell-hist-ignoredups t
+      eshell-save-history-on-exit t
+      eshell-destroy-buffer-when-process-dies t)
 
 (setenv "PAGER" "cat")
 
