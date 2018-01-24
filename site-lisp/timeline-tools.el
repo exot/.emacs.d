@@ -8,8 +8,6 @@
 
 ;;; Code:
 
-(eval-when-compile
-  (require 'cl))
 (require 'dash)
 (require 'org)
 (require 'org-clock)
@@ -214,8 +212,8 @@ Markers to org mode tasks are combined into a list."
                                          (org-entry-get marker "CATEGORY")))
                                      timeline)))
     (mapcar (lambda (cluster)
-              (list (first (first cluster))       ; start of first entry
-                    (second (car (last cluster))) ; end of last entry
+              (list (caar cluster)         ; start of first entry
+                    (cadar (last cluster)) ; end of last entry
                     (mapcar #'third cluster)))
             new-timeline)))
 
@@ -224,31 +222,32 @@ Markers to org mode tasks are combined into a list."
 
 A slot is short if it is not longer than THRESHOLD seconds.
 Resulting gaps are distributed evenly among adjacent slots."
-  (let ((start (first (first timeline)))
-        (end (second (car (last timeline))))
+  (let ((start (caar timeline))
+        (end (cadar (last timeline)))
         new-timeline)
     ;; remove all slots that are too short
     (setq new-timeline
           (cl-remove-if (lambda (entry)
-                          (<= (- (second entry) (first entry))
+                          (<= (- (cadr entry) (car entry))
                               timeline-tools-short-task-threshold))
                         timeline))
 
     ;; reset start and end times
-    (setf (first (first new-timeline)) start)
-    (setf (second (car (last new-timeline))) end)
+    (setf (caar new-timeline) start)
+    (setf (cadar (last new-timeline)) end)
 
     ;; distribute gaps evenly among adjacent slots
-    (do ((sub-timeline new-timeline (cdr sub-timeline)))
+    (cl-do
+        ((sub-timeline new-timeline (cdr sub-timeline)))
         ((null (cdr sub-timeline)))
-      (let* ((entry-1 (first sub-timeline))
-             (entry-2 (second sub-timeline))
-             (end-1 (second entry-1))
-             (start-2 (first entry-2)))
+      (let* ((entry-1 (car sub-timeline))
+             (entry-2 (cadr sub-timeline))
+             (end-1 (cadr entry-1))
+             (start-2 (car entry-2)))
         (when (not (= end-1 start-2))
           (let ((middle (/ (+ end-1 start-2) 2)))
-            (setf (second entry-1) middle)
-            (setf (first entry-2) middle)))))
+            (setf (cadr entry-1) middle)
+            (setf (car entry-2) middle)))))
     new-timeline))
 
 ;;;###autoload
@@ -275,7 +274,7 @@ When called interactively, START and END are queried with
         (dolist (cluster timeline)
           (cl-destructuring-bind (start end markers) cluster
             (insert (format "| %s | %s | %s | %s min | "
-                            (org-entry-get (first markers) "CATEGORY")
+                            (org-entry-get (car markers) "CATEGORY")
                             (format-time-string "%Y-%m-%d %H:%M" start)
                             (format-time-string "%Y-%m-%d %H:%M" end)
                             (floor (/ (- end start) 60))))
