@@ -8,6 +8,8 @@
 
 ;;; Code:
 
+(eval-when-compile
+  (require 'cl))
 (require 'dash)
 (require 'org)
 (require 'org-clock)
