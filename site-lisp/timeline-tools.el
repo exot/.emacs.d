@@ -163,15 +163,15 @@ given bounds."
            ;; add currently running clock if wanted
            (when (and org-clock-report-include-clocking-task
                       (eq (org-clocking-buffer) (current-buffer))
-                      (eq (marker-position org-clock-hd-marker) (point))
-                      ;; fixme: make this test look nicer
-                      (or (<= tstart (float-time org-clock-start-time) tend)
-                          (<= tstart (float-time) tend)
-                          (<= (float-time org-clock-start-time)
-                              tstart tend
-                              (float-time))))
-             (push (cons (float-time org-clock-start-time) (float-time))
-                   times))
+                      (eq (marker-position org-clock-hd-marker) (point)))
+             (let ((current-clock-start (float-time org-clock-start-time))
+                   (current-clock-end (float-time)))
+               (when (or (<= tstart current-clock-start tend)
+                         (<= tstart current-clock-end tend)
+                         (<= current-clock-start
+                             tstart tend
+                             current-clock-end))
+                 (push (cons current-clock-start current-clock-end) times))))
            ;; store away clocklines of current headline
            (when (not (null times))
              (push (cons (point-marker) times) task-clock-times)
