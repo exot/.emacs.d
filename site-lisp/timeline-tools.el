@@ -321,12 +321,8 @@ the clock line is to be added to."
     (with-current-buffer (marker-buffer target-marker)
       (timeline-tools-map-clocklines
        (lambda (timestamp-1 timestamp-2)
-         (let ((current-start (float-time
-                               (apply #'encode-time
-                                      (org-parse-time-string timestamp-1))))
-               (current-end   (float-time
-                               (apply #'encode-time
-                                      (org-parse-time-string timestamp-2))))
+         (let ((current-start (org-time-string-to-seconds timestamp-1))
+               (current-end   (org-time-string-to-seconds timestamp-2))
                (kill-whole-line nil)    ; don’t delete newlines if not asked to
                )
            (cond
