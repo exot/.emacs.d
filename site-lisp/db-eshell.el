@@ -2,10 +2,11 @@
 
 ;;; Commentary:
 
-;;; Code:
+;; Parts inspired by:
+;; - https://www.masteringemacs.org/article/complete-guide-mastering-eshell
+;; - https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org
 
-
-;; Setup
+;;; Code:
 
 (require 'em-prompt)
 (require 'em-term)
