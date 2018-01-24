@@ -139,8 +139,9 @@ form (START . END), where START and END are the starting and
 ending times of a clock line for this task.  START and END are
 given as seconds since the epoch, as a floating point number.  No
 truncation with respect to TSTART and TEND is done, i.e., START
-or END may occassionally lie outside of these limits, but it is
-always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
+or END may occassionally lie outside of these limits, as long as
+the corresponding clockline has non-empty intersection with the
+given bounds."
   ;; adapted from `org-clock-sum’
   (when (eq major-mode 'org-mode)
     (let* ((tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart))
@@ -153,25 +154,27 @@ always true that TSTART ≤ END ≤ TEND or TSTART ≤ START ≤ TEND."
       (timeline-tools-map-clocklines
        ;; when on clock line, collect times
        #'(lambda (start end)
-           (let* ((ts (float-time
-                       (apply #'encode-time (org-parse-time-string start))))
-                  (te (float-time
-                       (apply #'encode-time (org-parse-time-string end))))
-                  (dt (- (if tend (min te tend) te)
-                         (if tstart (max ts tstart) ts))))
-             (when (> dt 0)
+           (let* ((ts (org-time-string-to-seconds start))
+                  (te (org-time-string-to-seconds end)))
+             (when (or (<= tstart te tend)
+                       (<= tstart ts tend)
+                       (<= ts tstart tend te))
                (push (cons ts te) times))))
        ;; when on headlines, store away collected clocklines
        #'(lambda ()
+           ;; add currently running clock if wanted
            (when (and org-clock-report-include-clocking-task
                       (eq (org-clocking-buffer) (current-buffer))
                       (eq (marker-position org-clock-hd-marker) (point))
-                      (or (and tstart
-                               (<= tstart (float-time org-clock-start-time) tend))
-                          (and tend
-                               (<= tstart (float-time) tend))))
+                      ;; fixme: make this test look nicer
+                      (or (<= tstart (float-time org-clock-start-time) tend)
+                          (<= tstart (float-time) tend)
+                          (<= (float-time org-clock-start-time)
+                              tstart tend
+                              (float-time))))
              (push (cons (float-time org-clock-start-time) (float-time))
                    times))
+           ;; store away clocklines of current headline
            (when (not (null times))
              (push (cons (point-marker) times) task-clock-times)
              (setq times nil))))
