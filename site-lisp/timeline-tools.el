@@ -260,10 +260,14 @@ When called interactively, START and END are queried with
 `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let ((timeline (-reduce-from (lambda (tl f)
-                                  (funcall f tl))
-                                (timeline-tools-timeline tstart tend files)
-                                timeline-tools-filter-functions)))
+  (let* ((timeline (timeline-tools-timeline tstart tend files)))
+    (when (null timeline)
+      (user-error "No clocklines found in given range"))
+    (setq timeline
+          (-reduce-from (lambda (tl f)
+                          (funcall f tl))
+                        timeline
+                        timeline-tools-filter-functions))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
         (erase-buffer)
