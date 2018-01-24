@@ -212,8 +212,8 @@ Markers to org mode tasks are combined into a list."
                                          (org-entry-get marker "CATEGORY")))
                                      timeline)))
     (mapcar (lambda (cluster)
-              (list (caar cluster)         ; start of first entry
-                    (cadar (last cluster)) ; end of last entry
+              (list (car (car cluster))         ; start of first entry
+                    (cadr (car (last cluster))) ; end of last entry
                     (mapcar #'third cluster)))
             new-timeline)))
 
@@ -222,8 +222,8 @@ Markers to org mode tasks are combined into a list."
 
 A slot is short if it is not longer than THRESHOLD seconds.
 Resulting gaps are distributed evenly among adjacent slots."
-  (let ((start (caar timeline))
-        (end (cadar (last timeline)))
+  (let ((start (car (car timeline)))
+        (end (cadr (car (last timeline))))
         new-timeline)
     ;; remove all slots that are too short
     (setq new-timeline
@@ -233,8 +233,8 @@ Resulting gaps are distributed evenly among adjacent slots."
                         timeline))
 
     ;; reset start and end times
-    (setf (caar new-timeline) start)
-    (setf (cadar (last new-timeline)) end)
+    (setf (car (car new-timeline)) start)
+    (setf (cadr (car (last new-timeline))) end)
 
     ;; distribute gaps evenly among adjacent slots
     (cl-do
