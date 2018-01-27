@@ -1063,7 +1063,7 @@ are assumed to be of the form *.crt."
 
 (use-package ansi-color
   :commands (ansi-color-for-comint-mode-on
-             ansi-color-apply-to-region)
+             ansi-color-apply-on-region)
   :config (progn
             (add-hook 'compilation-filter-hook 'endless/colorize-compilation)))
 
