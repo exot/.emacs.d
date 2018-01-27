@@ -1051,7 +1051,9 @@ are assumed to be of the form *.crt."
             ;; called, as it resets the escape character to C-x.
             (defadvice ansi-term (after ansi-term-set-keys activate)
               (unbind-key "C-x C-j" term-raw-map)
-              (unbind-key "C-x g" term-raw-map))))
+              (unbind-key "C-x g" term-raw-map))
+
+            (add-hook 'term-mode-hook (lambda () (yas-minor-mode -1)))))
 
 ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
 (defun endless/colorize-compilation ()
@@ -1402,10 +1404,6 @@ are assumed to be of the form *.crt."
 
 (use-package yasnippet
   :commands (yas-minor-mode-on yas-minor-mode)
-  :diminish yas-minor-mode
-  :config (progn
-            (add-hook 'term-mode-hook (lambda () (yas-minor-mode -1)))
-            (yas-reload-all)))
 
 
 ;; * End
