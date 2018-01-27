@@ -811,63 +811,63 @@ are assumed to be of the form *.crt."
             (dired-quick-sort-setup)
 
             (bind-key [remap beginning-of-buffer]
-                      #'dired-back-to-top dired-mode-map)
+                      'dired-back-to-top dired-mode-map)
             (bind-key [remap end-of-buffer]
-                      #'dired-jump-to-bottom dired-mode-map)
+                      'dired-jump-to-bottom dired-mode-map)
             (bind-key "z" 'dired-get-size dired-mode-map)
             (unbind-key "s" dired-mode-map)
             (unbind-key "<f1>" dired-mode-map)
-            (bind-key "e" #'ora-ediff-files dired-mode-map)))
+            (bind-key "e" 'ora-ediff-files dired-mode-map)
+
+            ;; https://oremacs.com/2017/03/18/dired-ediff/
+            (defun ora-ediff-files ()
+              "Compare marked files in dired with ediff."
+              (interactive)
+              (lexical-let ((files (dired-get-marked-files))
+                            (wnd (current-window-configuration)))
+                (if (<= (length files) 2)
+                    (lexical-let ((file1 (car files))
+                                  (file2 (if (cdr files)
+                                             (cadr files)
+                                           (read-file-name
+                                            "file: "
+                                            (dired-dwim-target-directory)))))
+                      (if (file-newer-than-file-p file1 file2)
+                          (ediff-files file2 file1)
+                        (ediff-files file1 file2))
+                      (add-hook 'ediff-after-quit-hook-internal
+                                (lambda ()
+                                  (setq ediff-after-quit-hook-internal nil)
+                                  (set-window-configuration wnd))))
+                  (error "No more than 2 files should be marked"))))
+
+            (defun dired-back-to-top ()
+              "Jump to first non-trivial line in dired."
+              (interactive)
+              (goto-char (point-min))
+              (dired-next-line 2))
+
+            (defun dired-jump-to-bottom ()
+              "Jump to last non-trivial line in dired."
+              (interactive)
+              (goto-char (point-max))
+              (dired-next-line -1))
+
+            (defun dired-get-size ()    ; from emacswiki, via oremacs
+              "Print size of all files marked in the current dired buffer."
+              (interactive)
+              (let ((files (dired-get-marked-files)))
+                (with-temp-buffer
+                  (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+                  (message
+                   "size of all marked files: %s"
+                   (progn
+                     (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
+                     (match-string 1))))))))
 
 (use-package find-dired
   :commands (find-dired)
   :config (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
-
-;; https://oremacs.com/2017/03/18/dired-ediff/
-(defun ora-ediff-files ()
-  "Compare marked files in dired with ediff."
-  (interactive)
-  (lexical-let ((files (dired-get-marked-files))
-                (wnd (current-window-configuration)))
-    (if (<= (length files) 2)
-        (lexical-let ((file1 (car files))
-                      (file2 (if (cdr files)
-                                 (cadr files)
-                               (read-file-name
-                                "file: "
-                                (dired-dwim-target-directory)))))
-          (if (file-newer-than-file-p file1 file2)
-              (ediff-files file2 file1)
-            (ediff-files file1 file2))
-          (add-hook 'ediff-after-quit-hook-internal
-                    (lambda ()
-                      (setq ediff-after-quit-hook-internal nil)
-                      (set-window-configuration wnd))))
-      (error "No more than 2 files should be marked"))))
-
-(defun dired-back-to-top ()
-  "Jump to first non-trivial line in dired."
-  (interactive)
-  (goto-char (point-min))
-  (dired-next-line 2))
-
-(defun dired-jump-to-bottom ()
-  "Jump to last non-trivial line in dired."
-  (interactive)
-  (goto-char (point-max))
-  (dired-next-line -1))
-
-(defun dired-get-size ()                ; from emacswiki, via oremacs
-  "Print size of all files marked in the current dired buffer."
-  (interactive)
-  (let ((files (dired-get-marked-files)))
-    (with-temp-buffer
-      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-      (message
-       "size of all marked files: %s"
-       (progn
-         (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-         (match-string 1))))))
 
 
 ;; * Completion
