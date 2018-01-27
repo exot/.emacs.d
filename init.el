@@ -1404,10 +1404,6 @@ are assumed to be of the form *.crt."
 
 (use-package yasnippet
   :commands (yas-minor-mode-on yas-minor-mode)
-
-
-;; * End
-
-(provide 'init)
+  :diminish yas-minor-mode)
 
 ;;; init.el ends here
