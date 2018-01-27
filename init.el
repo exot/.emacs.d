@@ -47,10 +47,11 @@
 
 (package-initialize)
 
-(dolist (package '(diminish use-package bind-key))
-  (unless (package-installed-p package)
-    (package-install package))
-  (require package))
+(eval-when-compile
+  (dolist (package '(diminish use-package bind-key))
+    (unless (package-installed-p package)
+      (package-install package))
+    (require package)))
 
 (put 'use-package 'lisp-indent-function 1)
 (setq use-package-verbose t
@@ -185,7 +186,6 @@ _h_   _l_   _o_k        _y_ank
     ("l" forward-char nil)
     ("k" previous-line nil)
     ("j" next-line nil)
-    ("e" ora-ex-point-mark nil)
     ("n" copy-rectangle-as-kill nil)
     ("d" delete-rectangle nil)
     ("r" (if (region-active-p)
@@ -197,19 +197,6 @@ _h_   _l_   _o_k        _y_ank
     ("s" string-rectangle nil)
     ("p" kill-rectangle nil)
     ("o" nil nil))
-
-  (defhydra hydra-ispell (:color blue)
-    "ispell"
-    ("g" (lambda ()
-           (interactive)
-           (setq ispell-dictionary "de_DE")
-           (ispell-change-dictionary "de_DE"))
-         "german")
-    ("e" (lambda ()
-           (interactive)
-           (setq ispell-dictionary "en_US")
-           (ispell-change-dictionary "en_US"))
-         "english"))
 
   ;; Top-Level Keybindings
 
@@ -446,27 +433,31 @@ _h_   _l_   _o_k        _y_ank
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(setq display-time-24hr-format t
-      calendar-date-style 'iso
-      calendar-view-diary-initially-flag nil
-      diary-show-holidays-flag nil
-      holiday-hebrew-holidays nil
-      holiday-islamic-holidays nil
-      holiday-bahai-holidays nil
-      holiday-oriental-holidays nil
-      holiday-solar-holidays nil
-      holiday-general-holidays nil
-      holiday-other-holidays '((holiday-fixed 5 1 "Labour Day")
-                               (holiday-fixed 10 3 "German Unity Day")
-                               (holiday-fixed 10 31 "Reformation Day")
-                               (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)))
+(use-package calendar
+  :config
+  (setq calendar-date-style 'iso
+        calendar-view-diary-initially-flag nil
+        diary-show-holidays-flag nil
+        holiday-hebrew-holidays nil
+        holiday-islamic-holidays nil
+        holiday-bahai-holidays nil
+        holiday-oriental-holidays nil
+        holiday-solar-holidays nil
+        holiday-general-holidays nil
+        holiday-other-holidays '((holiday-fixed 5 1 "Labour Day")
+                                 (holiday-fixed 10 3 "German Unity Day")
+                                 (holiday-fixed 10 31 "Reformation Day")
+                                 (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22))))
 
 (setq-default font-lock-maximum-decoration '((t . t)))
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
 
-(setq tramp-save-ad-hoc-proxies t)
+(use-package tramp
+  :config (setq tramp-save-ad-hoc-proxies t))
 
-(setq reb-re-syntax 'string)
+(use-package re-builder
+  :commands (re-builder)
+  :config (setq reb-re-syntax 'string))
 
 (setq lisp-indent-function #'lisp-indent-function)
 
@@ -513,10 +504,23 @@ _h_   _l_   _o_k        _y_ank
             (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
 
 (use-package ispell
-  :commands (ispell-change-directory)
+  :commands (ispell-change-directory
+             hydra-ispell/body)
   :init (progn
           (setq ispell-dictionary "en_US"
-                ispell-really-hunspell t)))
+                ispell-really-hunspell t)
+          (defhydra hydra-ispell (:color blue)
+            "ispell"
+            ("g" (lambda ()
+                   (interactive)
+                   (setq ispell-dictionary "de_DE")
+                   (ispell-change-dictionary "de_DE"))
+             "german")
+            ("e" (lambda ()
+                   (interactive)
+                   (setq ispell-dictionary "en_US")
+                   (ispell-change-dictionary "en_US"))
+             "english"))))
 
 (use-package mailcap
   :defer t
@@ -620,7 +624,8 @@ _h_   _l_   _o_k        _y_ank
                   magit-popup-use-prefix-argument 'default
                   magit-completing-read-function 'ivy-completing-read)
 
-            (require 'projectile)
+            (eval-when-compile
+              (require 'projectile))
             (setq magit-repository-directories
                   (mapcar
                    (lambda (dir)
@@ -667,8 +672,9 @@ _h_   _l_   _o_k        _y_ank
 (use-package gnus
   :defines (gnus-init-file)
   :commands (gnus)
-  :init   (setq gnus-group-update-tool-bar nil)
   :config (progn
+            (eval-when-compile
+              (require 'gnus-start))
             (bbdb-initialize 'gnus 'message)
             (bbdb-mua-auto-update-init 'message)
             (setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
@@ -735,8 +741,7 @@ are assumed to be of the form *.crt."
               solarized-use-variable-pitch nil))
 
 (use-package smart-mode-line
-  :commands (sml/setup)
-  :init (setq sml/use-projectile-p t))
+  :commands (sml/setup))
 
 
 ;; * Dired
@@ -752,8 +757,9 @@ are assumed to be of the form *.crt."
             (setq dired-recursive-copies 'top)
             (setq dired-recursive-deletes 'top)
 
-            (require 'dired-x)
-            (require 'dired+)
+            (eval-when-compile
+              (require 'dired-x)
+              (require 'dired+))
 
             ;; Gnus support in dired
             (require 'gnus-dired)
@@ -797,6 +803,8 @@ are assumed to be of the form *.crt."
 
             (require 'dired-quick-sort)
             (when on-windows
+              (eval-when-compile
+                (require 'ls-lisp))
               (setq ls-lisp-use-insert-directory-program t))
             (dired-quick-sort-setup)
 
@@ -865,18 +873,21 @@ are assumed to be of the form *.crt."
 (use-package hippie-exp
   :commands (hippie-expand))
 
-(use-package helm
-  :commands (helm-show-kill-ring)
+(use-package helm-config
+  :commands (helm-show-kill-ring
+             helm-command-prefix)
   :diminish helm-mode
   :defines (helm-command-prefix-key
-            helm-command-prefix
             helm-command-map
             helm-completing-read-handlers-alist)
-  :init   (require 'helm-config)
   :config (progn
+            (eval-when-compile
+              (require 'helm)
+              (require 'helm-mode)
+              (require 'helm-buffers)
+              (require 'helm-ring))
             (setq helm-input-idle-delay 0.0
                   helm-buffers-fuzzy-matching t
-                  helm-recentf-fuzzy-match t
                   helm-mode-fuzzy-match t
                   helm-autoresize-min-height 20
                   helm-ff-auto-update-initial-value t
@@ -920,7 +931,9 @@ are assumed to be of the form *.crt."
                                              (man . "^")
                                              (woman . "^")))
             (bind-key "C-S-SPC" #'ivy-restrict-to-matches ivy-minibuffer-map)
-            (unbind-key "S-SPC" ivy-minibuffer-map)))
+            (unbind-key "S-SPC" ivy-minibuffer-map)
+            (add-to-list 'ivy-completing-read-handlers-alist
+                         '(org-capture . completing-read-default))))
 
 (use-package counsel
   :commands (counsel-org-goto-all
@@ -934,7 +947,8 @@ are assumed to be of the form *.crt."
              counsel-recentf))
 
 (use-package swiper
-  :commands (swiper))
+  :commands (swiper
+             swiper-from-isearch))
 
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
@@ -1049,7 +1063,8 @@ are assumed to be of the form *.crt."
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
 (use-package ansi-color
-  :commands (ansi-color-for-comint-mode-on)
+  :commands (ansi-color-for-comint-mode-on
+             ansi-color-apply-to-region)
   :config (progn
             (add-hook 'compilation-filter-hook #'endless/colorize-compilation)))
 
@@ -1157,15 +1172,6 @@ are assumed to be of the form *.crt."
               (setq slime-net-coding-system 'utf-8-unix
                     slime-completion-at-point-functions 'slime-fuzzy-complete-symbol)
               (add-hook 'slime-mode-hook 'slime-redirect-inferior-output)
-
-              (defun db/slime-reload ()
-                (interactive)
-                (mapc 'load-library
-                      (reverse (cl-remove-if-not
-                                (lambda (feature) (string-prefix-p "slime" feature))
-                                (mapcar 'symbol-name features))))
-                (setq slime-protocol-version (slime-changelog-date))
-                (load-slime))
 
               (setq slime-lisp-implementations
                     '((sbcl  ("sbcl")  :coding-system utf-8-unix)
