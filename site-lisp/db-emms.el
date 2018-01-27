@@ -27,21 +27,29 @@
 (declare-function emms-pause "emms")
 (declare-function emms-show "emms")
 (declare-function emms "emms-playlist-mode")
+(declare-function emms-cache-save "emms-cache")
+(declare-function string-remove-prefix "subr-x")
+(declare-function emms-with-inhibit-read-only-t "emms")
 
 
 ;; Setup
 
+(require 'emms)
 (emms-all)
 (emms-default-players)
 
 
 ;; Basic configuration
 
+(require 'emms-source-file)
+(require 'emms-playlist-mode)
+(require 'emms-info)
+
 (setq emms-source-file-default-directory "~/Documents/media/audio/")
 
 (advice-add 'emms-tag-editor-submit
             :after (lambda (&rest r)
-                     (declare (ignore r))
+                     (ignore r)
                      (delete-window)))
 
 (bind-key "S s" #'emms-shuffle emms-playlist-mode-map)
@@ -56,6 +64,8 @@
 
 (when (require 'emms-info-mediainfo nil 'no-error)
   (setq emms-info-functions '(emms-info-mediainfo)))
+
+(run-with-timer 0 3600 #'emms-cache-save)
 
 
 ;; Custom playlist
@@ -102,7 +112,7 @@ that we also follow symbolic links."
                                             (point-max))
                           "\n"))))
 
-(unless on-windows
+(unless (eq system-type 'windows-nt)
   (setq emms-source-file-directory-tree-function
         #'db/emms-source-file-directory-tree-find))
 
@@ -166,6 +176,7 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
 
 ;; Streams
 
+(require 'emms-streams)
 (setq emms-stream-default-action "play")
 
 
