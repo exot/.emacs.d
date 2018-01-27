@@ -532,39 +532,40 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package quail
   :defer t
-  :config (progn
-            (defun db/add-symbols-to-TeX-input-method ()
-              (when (string= current-input-method "TeX")
-                (let ((quail-current-package (assoc "TeX" quail-package-alist)))
-                  (quail-define-rules
-                   ((append . t))
-                   ("\\land" ?∧)
-                   ("\\lor" ?∨)
-                   ("\\lnot" ?¬)
-                   ("\\implies" ?⇒)
-                   ("\\powerset" ?𝔓)
-                   ("\\mathbbK" ?𝕂)
-                   ("\\mathbbR" ?ℝ)
-                   ("\\mathbbN" ?ℕ)
-                   ("\\mathbbZ" ?ℤ)
-                   ("\\mathbbP" ?ℙ)
-                   ("\\mathcalA" ?𝒜)
-                   ("\\mathcalB" ?ℬ)
-                   ("\\mathcalC" ?𝒞)
-                   ("\\mathcalD" ?𝒟)
-                   ("\\mathcalE" ?ℰ)
-                   ("\\mathcalH" ?ℋ)
-                   ("\\mathcalI" ?ℐ)
-                   ("\\mathcalJ" ?𝒥)
-                   ("\\mathcalK" ?𝒦)
-                   ("\\mathcalL" ?ℒ)
-                   ("\\mathcalM" ?ℳ)
-                   ("\\mathcalR" ?ℛ)
-                   ("\\mathcalQ" ?𝒬)
-                   ("\\mathcalS" ?𝒮)
-                   ("\\mathfrakP" ?𝔓)))))
-            (add-hook 'input-method-activate-hook
-                      #'db/add-symbols-to-TeX-input-method)))
+  :config (add-hook 'input-method-activate-hook
+                    #'db/add-symbols-to-TeX-input-method))
+
+(defun db/add-symbols-to-TeX-input-method ()
+  "Add some new symbols to TeX input method."
+  (when (string= current-input-method "TeX")
+    (let ((quail-current-package (assoc "TeX" quail-package-alist)))
+      (quail-define-rules
+       ((append . t))
+       ("\\land" ?∧)
+       ("\\lor" ?∨)
+       ("\\lnot" ?¬)
+       ("\\implies" ?⇒)
+       ("\\powerset" ?𝔓)
+       ("\\mathbbK" ?𝕂)
+       ("\\mathbbR" ?ℝ)
+       ("\\mathbbN" ?ℕ)
+       ("\\mathbbZ" ?ℤ)
+       ("\\mathbbP" ?ℙ)
+       ("\\mathcalA" ?𝒜)
+       ("\\mathcalB" ?ℬ)
+       ("\\mathcalC" ?𝒞)
+       ("\\mathcalD" ?𝒟)
+       ("\\mathcalE" ?ℰ)
+       ("\\mathcalH" ?ℋ)
+       ("\\mathcalI" ?ℐ)
+       ("\\mathcalJ" ?𝒥)
+       ("\\mathcalK" ?𝒦)
+       ("\\mathcalL" ?ℒ)
+       ("\\mathcalM" ?ℳ)
+       ("\\mathcalR" ?ℛ)
+       ("\\mathcalQ" ?𝒬)
+       ("\\mathcalS" ?𝒮)
+       ("\\mathfrakP" ?𝔓)))))
 
 (use-package server
   :commands (server-running-p server-start))
@@ -687,38 +688,38 @@ _h_   _l_   _o_k        _y_ank
             (setq network-security-level 'high
                   nsm-save-host-names t)
 
-            (defun db/sort-nsm-permanent-settings ()
-              (setq nsm-permanent-host-settings
-                    (cl-sort nsm-permanent-host-settings
-                             #'string<
-                             :key #'second)))
-
             (advice-add 'nsm-write-settings
                         :before #'db/sort-nsm-permanent-settings)))
+
+(defun db/sort-nsm-permanent-settings ()
+  "Sort values in `nsm-permanent-host-settings’."
+  (setq nsm-permanent-host-settings
+        (cl-sort nsm-permanent-host-settings
+                 #'string<
+                 :key #'second)))
 
 (use-package gnutls
   :defer t
   :config (progn
             (setq gnutls-log-level 0    ; too noisy otherwise
                   gnutls-min-prime-bits 1024
-                  gnutls-verify-error t)
+                  gnutls-verify-error t)))
 
-            (defun db/update-cert-file-directory (symbol new-value)
-              "Set SYMBOL to NEW-VALUE and, assuming that NEW-VALUE points
-to a directory, add all certificate files in it to
-`gnutls-trustfiles’.
+(defun db/update-cert-file-directory (symbol new-value)
+  "Set SYMBOL to NEW-VALUE and add all certificate in it to `gnutls-trustfiles’.
 
-Certificates are assumed to be of the form *.crt."
-              (set symbol new-value)
-              (when (file-directory-p new-value)
-                (dolist (cert-file (directory-files new-value t ".crt$"))
-                  (add-to-list 'gnutls-trustfiles cert-file))))
+Assumes that NEW-VALUE points to a directory, and certificates
+are assumed to be of the form *.crt."
+  (set symbol new-value)
+  (when (file-directory-p new-value)
+    (dolist (cert-file (directory-files new-value t ".crt$"))
+      (add-to-list 'gnutls-trustfiles cert-file))))
 
-            (defcustom db/cert-file-directory "~/.local/etc/certs/"
-              "Local directory with additional certificates."
-              :group 'personal-settings
-              :type 'string
-              :set #'db/update-cert-file-directory)))
+(defcustom db/cert-file-directory "~/.local/etc/certs/"
+  "Local directory with additional certificates."
+  :group 'personal-settings
+  :type 'string
+  :set #'db/update-cert-file-directory)
 
 (use-package epg
   :defer t
@@ -791,27 +792,6 @@ Certificates are assumed to be of the form *.crt."
             (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
             (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))
 
-            ;; https://oremacs.com/2017/03/18/dired-ediff/
-            (defun ora-ediff-files ()
-              (interactive)
-              (lexical-let ((files (dired-get-marked-files))
-                            (wnd (current-window-configuration)))
-                (if (<= (length files) 2)
-                    (lexical-let ((file1 (car files))
-                                  (file2 (if (cdr files)
-                                             (cadr files)
-                                           (read-file-name
-                                            "file: "
-                                            (dired-dwim-target-directory)))))
-                      (if (file-newer-than-file-p file1 file2)
-                          (ediff-files file2 file1)
-                        (ediff-files file1 file2))
-                      (add-hook 'ediff-after-quit-hook-internal
-                                (lambda ()
-                                  (setq ediff-after-quit-hook-internal nil)
-                                  (set-window-configuration wnd))))
-                  (error "No more than 2 files should be marked"))))
-
             (when on-windows
               (setq dired-free-space-program nil))
 
@@ -819,30 +799,6 @@ Certificates are assumed to be of the form *.crt."
             (when on-windows
               (setq ls-lisp-use-insert-directory-program t))
             (dired-quick-sort-setup)
-
-            (defun dired-back-to-top ()
-              "Jump to first non-trivial line in dired."
-              (interactive)
-              (goto-char (point-min))
-              (dired-next-line 2))
-
-            (defun dired-jump-to-bottom ()
-              "Jump to last non-trivial line in dired."
-              (interactive)
-              (goto-char (point-max))
-              (dired-next-line -1))
-
-            (defun dired-get-size ()    ; from emacswiki, via oremacs
-              "print size of all files marked in the current dired buffer."
-              (interactive)
-              (let ((files (dired-get-marked-files)))
-                (with-temp-buffer
-                  (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-                  (message
-                   "size of all marked files: %s"
-                   (progn
-                     (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-                     (match-string 1))))))
 
             (bind-key [remap beginning-of-buffer]
                       #'dired-back-to-top dired-mode-map)
@@ -856,6 +812,52 @@ Certificates are assumed to be of the form *.crt."
 (use-package find-dired
   :commands (find-dired)
   :config (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
+
+;; https://oremacs.com/2017/03/18/dired-ediff/
+(defun ora-ediff-files ()
+  "Compare marked files in dired with ediff."
+  (interactive)
+  (lexical-let ((files (dired-get-marked-files))
+                (wnd (current-window-configuration)))
+    (if (<= (length files) 2)
+        (lexical-let ((file1 (car files))
+                      (file2 (if (cdr files)
+                                 (cadr files)
+                               (read-file-name
+                                "file: "
+                                (dired-dwim-target-directory)))))
+          (if (file-newer-than-file-p file1 file2)
+              (ediff-files file2 file1)
+            (ediff-files file1 file2))
+          (add-hook 'ediff-after-quit-hook-internal
+                    (lambda ()
+                      (setq ediff-after-quit-hook-internal nil)
+                      (set-window-configuration wnd))))
+      (error "No more than 2 files should be marked"))))
+
+(defun dired-back-to-top ()
+  "Jump to first non-trivial line in dired."
+  (interactive)
+  (goto-char (point-min))
+  (dired-next-line 2))
+
+(defun dired-jump-to-bottom ()
+  "Jump to last non-trivial line in dired."
+  (interactive)
+  (goto-char (point-max))
+  (dired-next-line -1))
+
+(defun dired-get-size ()                ; from emacswiki, via oremacs
+  "Print size of all files marked in the current dired buffer."
+  (interactive)
+  (let ((files (dired-get-marked-files)))
+    (with-temp-buffer
+      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+      (message
+       "size of all marked files: %s"
+       (progn
+         (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
+         (match-string 1))))))
 
 
 ;; * Completion
@@ -1040,15 +1042,15 @@ Certificates are assumed to be of the form *.crt."
               (unbind-key "C-x C-j" term-raw-map)
               (unbind-key "C-x g" term-raw-map))))
 
+;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
+(defun endless/colorize-compilation ()
+  "Colorize from `compilation-filter-start' to `point'."
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+
 (use-package ansi-color
   :commands (ansi-color-for-comint-mode-on)
   :config (progn
-            ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
-            (defun endless/colorize-compilation ()
-              "Colorize from `compilation-filter-start' to `point'."
-              (let ((inhibit-read-only t))
-                (ansi-color-apply-on-region compilation-filter-start (point))))
-
             (add-hook 'compilation-filter-hook #'endless/colorize-compilation)))
 
 (use-package shell
@@ -1082,17 +1084,18 @@ Certificates are assumed to be of the form *.crt."
 
 (use-package elisp-mode
   :defer t
-  :config (progn (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
+  :config (progn
+            (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
+            (add-hook 'emacs-lisp-mode-hook #'db/add-use-package-to-imenu)
+            (add-hook 'ielm-mode-hook #'eldoc-mode)
+            (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
 
-                 (defun db/add-use-package-to-imenu ()
-                   (add-to-list 'imenu-generic-expression
-                                '("Used Packages"
-                                  "\\(^\\s-*(use-package +\\)\\(\\_<.+\\_>\\)"
-                                  2)))
-                 (add-hook 'emacs-lisp-mode-hook #'db/add-use-package-to-imenu)
-
-                 (add-hook 'ielm-mode-hook #'eldoc-mode)
-                 (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
+(defun db/add-use-package-to-imenu ()
+  "Add `use-package’ statements to `imenu-generic-expression."
+  (add-to-list 'imenu-generic-expression
+               '("Used Packages"
+                 "\\(^\\s-*(use-package +\\)\\(\\_<.+\\_>\\)"
+                 2)))
 
 (use-package geiser
   :commands (geiser-mode))
@@ -1169,27 +1172,30 @@ Certificates are assumed to be of the form *.crt."
                       (cmucl ("cmucl") :coding-system utf-8-unix)
                       (ccl   ("ccl")   :coding-system utf-8-unix)))
 
+              (eval-when-compile
+                (require 'slime-repl))
+
               (setq slime-repl-history-remove-duplicates t
                     slime-repl-history-trim-whitespaces t)))
 
 (use-package hy-mode
-  :commands (hy-mode org-babel-execute:hy)
+  :commands (hy-mode)
   :config (progn
             (add-hook 'hy-mode-hook #'lispy-mode)
-            (add-hook 'hy-mode-hook #'inferior-lisp)
+            (add-hook 'hy-mode-hook #'inferior-lisp)))
 
-            (defun org-babel-execute:hy (body params)
-              ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
-              (ignore params)
-              (let* ((temporary-file-directory ".")
-                     (tempfile (make-temp-file "hy-")))
-                (with-temp-file tempfile
-                  (insert body))
-                (unwind-protect
-                    (shell-command-to-string
-                     (format "hy %s" tempfile))
-                  (delete-file tempfile))))))
-
+(defun org-babel-execute:hy (body params)
+  ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
+  "Execute hy code BODY with parameters PARAMS."
+  (ignore params)
+  (let* ((temporary-file-directory ".")
+         (tempfile (make-temp-file "hy-")))
+    (with-temp-file tempfile
+      (insert body))
+    (unwind-protect
+        (shell-command-to-string
+         (format "hy %s" tempfile))
+      (delete-file tempfile))))
 
 ;; * TeX
 
@@ -1253,18 +1259,17 @@ Certificates are assumed to be of the form *.crt."
   :commands (electric-quote-mode))
 
 (use-package elec-pair
-  :commands (electric-pair-mode
-             db/turn-off-local-electric-pair-mode)
+  :commands (electric-pair-mode)
   :config   (progn
               (add-to-list 'electric-pair-pairs '(?“ . ?”))
               (add-to-list 'electric-pair-text-pairs '(?“ . ?”))
               (add-to-list 'electric-pair-pairs '(?„ . ?“))
-              (add-to-list 'electric-pair-text-pairs '(?„ . ?“))
+              (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
 
-              (defun db/turn-off-local-electric-pair-mode ()
-                "Turn off `electric-pair-mode’ locally."
-                (interactive)
-                (electric-pair-local-mode -1))))
+(defun db/turn-off-local-electric-pair-mode ()
+  "Locally turn off electric pair mode."
+  (interactive)
+  (electric-pair-local-mode -1))
 
 (use-package expand-region
   :commands (er/expand-region))
