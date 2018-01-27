@@ -811,6 +811,8 @@ are assumed to be of the form *.crt."
               (setq ls-lisp-use-insert-directory-program t))
             (dired-quick-sort-setup)
 
+            ;; custom keybindings
+
             (bind-key [remap beginning-of-buffer]
                       'dired-back-to-top dired-mode-map)
             (bind-key [remap end-of-buffer]
