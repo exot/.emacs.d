@@ -894,7 +894,9 @@ Certificates are assumed to be of the form *.crt."
             (setq ivy-initial-inputs-alist '((counsel-describe-function . "^")
                                              (counsel-describe-variable . "^")
                                              (man . "^")
-                                             (woman . "^")))))
+                                             (woman . "^")))
+            (bind-key "C-S-SPC" #'ivy-restrict-to-matches ivy-minibuffer-map)
+            (unbind-key "S-SPC" ivy-minibuffer-map)))
 
 (use-package counsel
   :commands (counsel-org-goto-all
