@@ -125,20 +125,20 @@
 
   ;; Global Hooks
 
-  (add-hook 'minibuffer-setup-hook #'conditionally-enable-lispy)
-  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-  (add-hook 'after-save-hook #'executable-make-buffer-file-executable-if-script-p)
-  (add-hook 'text-mode-hook #'turn-on-auto-fill)
-  (add-hook 'before-save-hook #'db/delete-trailing-whitespace-maybe)
-  (add-hook 'prog-mode-hook #'page-break-lines-mode)
+  (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)
+  (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'before-save-hook 'db/delete-trailing-whitespace-maybe)
+  (add-hook 'prog-mode-hook 'page-break-lines-mode)
   (when (<= 24 emacs-major-version)
-    (add-hook 'prog-mode-hook #'electric-indent-local-mode))
-  (add-hook 'lisp-mode-hook #'lispy-mode)
+    (add-hook 'prog-mode-hook 'electric-indent-local-mode))
+  (add-hook 'lisp-mode-hook 'lispy-mode)
   (unless on-windows
     ;; flyspell doesn’t work on windows right now, need to further investigate
     ;; what is happening here
-    (add-hook 'text-mode-hook #'turn-on-flyspell))
-  (add-hook 'text-mode-hook #'yas-minor-mode-on)
+    (add-hook 'text-mode-hook 'turn-on-flyspell))
+  (add-hook 'text-mode-hook 'yas-minor-mode-on)
 
   ;; Auto-Modes
 
@@ -763,10 +763,10 @@ are assumed to be of the form *.crt."
 
             ;; Gnus support in dired
             (require 'gnus-dired)
-            (add-hook 'dired-mode-hook #'turn-on-gnus-dired-mode)
+            (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
             ;; omitting files
-            (add-hook 'dired-mode-hook #'dired-omit-mode)
+            (add-hook 'dired-mode-hook 'dired-omit-mode)
             (setq dired-omit-files
                   (concat dired-omit-files "\\|^\\...+$"))
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
@@ -930,7 +930,7 @@ are assumed to be of the form *.crt."
                                              (counsel-describe-variable . "^")
                                              (man . "^")
                                              (woman . "^")))
-            (bind-key "C-S-SPC" #'ivy-restrict-to-matches ivy-minibuffer-map)
+            (bind-key "C-S-SPC" 'ivy-restrict-to-matches ivy-minibuffer-map)
             (unbind-key "S-SPC" ivy-minibuffer-map)
             (add-to-list 'ivy-completing-read-handlers-alist
                          '(org-capture . completing-read-default))))
@@ -1066,7 +1066,7 @@ are assumed to be of the form *.crt."
   :commands (ansi-color-for-comint-mode-on
              ansi-color-apply-to-region)
   :config (progn
-            (add-hook 'compilation-filter-hook #'endless/colorize-compilation)))
+            (add-hook 'compilation-filter-hook 'endless/colorize-compilation)))
 
 (use-package shell
   :commands (shell)
@@ -1100,10 +1100,10 @@ are assumed to be of the form *.crt."
 (use-package elisp-mode
   :defer t
   :config (progn
-            (add-hook 'emacs-lisp-mode-hook #'lispy-mode)
-            (add-hook 'emacs-lisp-mode-hook #'db/add-use-package-to-imenu)
-            (add-hook 'ielm-mode-hook #'eldoc-mode)
-            (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)))
+            (add-hook 'emacs-lisp-mode-hook 'lispy-mode)
+            (add-hook 'emacs-lisp-mode-hook 'db/add-use-package-to-imenu)
+            (add-hook 'ielm-mode-hook 'eldoc-mode)
+            (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
 
 (defun db/add-use-package-to-imenu ()
   "Add `use-package’ statements to `imenu-generic-expression."
@@ -1132,11 +1132,11 @@ are assumed to be of the form *.crt."
                   cider-repl-history-file (expand-file-name ".cider-history" emacs-d)
                   cider-repl-display-help-banner nil)
 
-            (add-hook 'cider-repl-mode-hook #'subword-mode)
-            (add-hook 'cider-repl-mode-hook #'lispy-mode)
-            (add-hook 'cider-repl-mode-hook #'cider-repl-toggle-pretty-printing)
-            (add-hook 'cider-repl-mode-hook #'company-mode)
-            (add-hook 'cider-mode-hook #'eldoc-mode)
+            (add-hook 'cider-repl-mode-hook 'subword-mode)
+            (add-hook 'cider-repl-mode-hook 'lispy-mode)
+            (add-hook 'cider-repl-mode-hook 'cider-repl-toggle-pretty-printing)
+            (add-hook 'cider-repl-mode-hook 'company-mode)
+            (add-hook 'cider-mode-hook 'eldoc-mode)
 
             (setq cider-cljs-lein-repl "(cemerick.piggieback/cljs-repl (cljs.repl.rhino/repl-env))")))
 
@@ -1146,10 +1146,10 @@ are assumed to be of the form *.crt."
                      (forall 'defun)
                      (exists 'defun)
                    (dopar 'defun))
-                 (add-hook 'clojure-mode-hook #'lispy-mode)
-                 (add-hook 'clojure-mode-hook #'clj-refactor-mode)
-                 (add-hook 'clojure-mode-hook #'yas-minor-mode)
-                 (add-hook 'clojure-mode-hook #'company-mode)))
+                 (add-hook 'clojure-mode-hook 'lispy-mode)
+                 (add-hook 'clojure-mode-hook 'clj-refactor-mode)
+                 (add-hook 'clojure-mode-hook 'yas-minor-mode)
+                 (add-hook 'clojure-mode-hook 'company-mode)))
 
 (use-package clj-refactor
   :commands (clj-refactor-mode)
@@ -1187,8 +1187,8 @@ are assumed to be of the form *.crt."
 (use-package hy-mode
   :commands (hy-mode)
   :config (progn
-            (add-hook 'hy-mode-hook #'lispy-mode)
-            (add-hook 'hy-mode-hook #'inferior-lisp)))
+            (add-hook 'hy-mode-hook 'lispy-mode)
+            (add-hook 'hy-mode-hook 'inferior-lisp)))
 
 (defun org-babel-execute:hy (body params)
   ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
@@ -1351,7 +1351,7 @@ are assumed to be of the form *.crt."
   :config (progn
             (setq python-indent-offset 4
                   python-shell-interpreter "/usr/bin/python")
-            (add-hook 'python-mode-hook #'highlight-indentation-mode)))
+            (add-hook 'python-mode-hook 'highlight-indentation-mode)))
 
 (use-package semantic
   :commands (semantic-mode)
