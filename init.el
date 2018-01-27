@@ -616,6 +616,7 @@ _h_   _l_   _o_k        _y_ank
     ("u" undo nil)
     ("s" string-rectangle nil)
     ("p" kill-rectangle nil)
+    ("e" rectangle-exchange-point-and-mark)
     ("o" nil nil)))
 
 (use-package magit
