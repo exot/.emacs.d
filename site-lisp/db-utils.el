@@ -200,45 +200,6 @@ lispy."
     (lispy-mode 1)))
 
 
-;;; dired
-
-(defun dired-back-to-top ()
-  "Jump to first non-trivial line in dired."
-  (interactive)
-  (goto-char (point-min))
-  (dired-next-line 2))
-
-(defun dired-jump-to-bottom ()
-  "Jump to last non-trivial line in dired."
-  (interactive)
-  (goto-char (point-max))
-  (dired-next-line -1))
-
-(defun dired-get-size ()                ; from emacswiki, via oremacs
-  "print size of all files marked in the current dired buffer."
-  (interactive)
-  (let ((files (dired-get-marked-files)))
-    (with-temp-buffer
-      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-      (message
-       "size of all marked files: %s"
-       (progn
-         (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-         (match-string 1))))))
-
-(defun dired-open-term ()               ; from oremacs
-  "Open an `ansi-term' that corresponds to current directory."
-  (interactive)
-  (let ((current-dir (dired-current-directory)))
-    (term-send-string
-     (db/ansi-term)
-     (if (file-remote-p current-dir)
-         (let ((v (tramp-dissect-file-name current-dir t)))
-           (format "ssh %s@%s\n"
-                   (aref v 1) (aref v 2)))
-       (format "cd '%s'\n" current-dir)))))
-
-
 ;;; helm configuration
 
 (defcustom db/helm-frequently-used-features

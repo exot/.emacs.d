@@ -820,6 +820,30 @@ Certificates are assumed to be of the form *.crt."
               (setq ls-lisp-use-insert-directory-program t))
             (dired-quick-sort-setup)
 
+            (defun dired-back-to-top ()
+              "Jump to first non-trivial line in dired."
+              (interactive)
+              (goto-char (point-min))
+              (dired-next-line 2))
+
+            (defun dired-jump-to-bottom ()
+              "Jump to last non-trivial line in dired."
+              (interactive)
+              (goto-char (point-max))
+              (dired-next-line -1))
+
+            (defun dired-get-size ()    ; from emacswiki, via oremacs
+              "print size of all files marked in the current dired buffer."
+              (interactive)
+              (let ((files (dired-get-marked-files)))
+                (with-temp-buffer
+                  (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+                  (message
+                   "size of all marked files: %s"
+                   (progn
+                     (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
+                     (match-string 1))))))
+
             (bind-key [remap beginning-of-buffer]
                       #'dired-back-to-top dired-mode-map)
             (bind-key [remap end-of-buffer]
@@ -871,8 +895,6 @@ Certificates are assumed to be of the form *.crt."
             (bind-key "<tab>" 'helm-execute-persistent-action helm-map)
             (bind-key "C-i" 'helm-execute-persistent-action helm-map)
             (bind-key "C-z" 'helm-select-action helm-map)
-
-            (require 'db-utils)
 
             (setq helm-mini-default-sources '(helm-source-buffers-list
                                               helm-source-recentf
