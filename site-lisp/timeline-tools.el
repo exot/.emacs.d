@@ -187,10 +187,11 @@ Each element in this list is of the form
 
 where START, END, MARKER are as returned by
 `timeline-tools-clocklines-in-range’, which see.  Entries in the
-resulting list are sorted by START, ascending."
+resulting list are sorted by START, ascending.  If not given,
+FILES defaults to `org-agenda-files’ including all archives."
   (let (timeline-of-files turned-around-timeline)
     (setq timeline-of-files
-          (->> (or files org-agenda-files)
+          (->> (or files (org-agenda-files t t))
                (cl-remove-if-not #'file-exists-p)
                (cl-mapcan #'(lambda (file)
                               (with-current-buffer (or (get-file-buffer file)
@@ -254,10 +255,10 @@ Resulting gaps are distributed evenly among adjacent slots."
 (defun timeline-tools-format-timeline (tstart tend &optional files)
   "Display timeline of tasks between TSTART and TEND from FILES.
 
-When not given, FILES defaults to `org-agenda-files’.  Short
-slots are removed, and afterwards slots are clusted by category.
-When called interactively, START and END are queried with
-`org-read-date’."
+When not given, FILES defaults to `org-agenda-files’ including
+archives.  Short slots are removed, and afterwards slots are
+clusted by category.  When called interactively, START and END
+are queried with `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
   (let* ((timeline (timeline-tools-timeline tstart tend files)))
@@ -302,7 +303,7 @@ DATE should be a string of the form %Y-%m-%d.  When called
 interactively, this date will be queried with `org-read-date’.
 The timeline will be formatted for DATE starting at 00:00 and
 ending at 23:61.  When not given, FILES defaults to
-`org-agenda-files’."
+`org-agenda-files’ including archives."
   (interactive (list (org-read-date nil nil)))
   (timeline-tools-format-timeline (concat date " 00:00")
                                   (concat date " 23:61")
