@@ -1182,11 +1182,9 @@ are assumed to be of the form *.crt."
                       (cmucl ("cmucl") :coding-system utf-8-unix)
                       (ccl   ("ccl")   :coding-system utf-8-unix)))
 
-              (eval-when-compile
-                (require 'slime-repl))
-
-              (setq slime-repl-history-remove-duplicates t
-                    slime-repl-history-trim-whitespaces t)))
+              (eval-after-load 'slime-repl
+               '(setq slime-repl-history-remove-duplicates t
+                      slime-repl-history-trim-whitespaces t))))
 
 (use-package hy-mode
   :commands (hy-mode)
