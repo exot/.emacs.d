@@ -230,7 +230,7 @@
   (when (package-installed-p 'helm)
     (bind-key "M-y" #'helm-show-kill-ring)
     (bind-key "C-c h" #'helm-command-prefix)
-    (bind-key "C-c h #" #'helm-emms))
+    (bind-key "#" #'helm-emms helm-command-map))
 
   (when (package-installed-p 'crux)
     (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
@@ -878,19 +878,19 @@ are assumed to be of the form *.crt."
 (use-package hippie-exp
   :commands (hippie-expand))
 
-(use-package helm-config
-  :commands (helm-show-kill-ring
-             helm-command-prefix)
+(use-package helm
+  :commands (helm-show-kill-ring)
   :diminish helm-mode
-  :defines (helm-command-prefix-key
-            helm-command-map
-            helm-completing-read-handlers-alist)
+  :init   (progn
+            (eval-when-compile
+              (require 'helm-config))   ; autoloads and keybindings
+            (unbind-key helm-command-prefix-key))
   :config (progn
             (eval-when-compile
-              (require 'helm)
               (require 'helm-mode)
               (require 'helm-buffers)
               (require 'helm-ring))
+
             (setq helm-input-idle-delay 0.0
                   helm-buffers-fuzzy-matching t
                   helm-mode-fuzzy-match t
@@ -907,8 +907,6 @@ are assumed to be of the form *.crt."
                   helm-follow-mode-persistent t
                   helm-buffer-details-flag t
                   helm-buffer-skip-remote-checking t)
-
-            (unbind-key helm-command-prefix-key)
 
             (bind-key "<tab>" 'helm-execute-persistent-action helm-map)
             (bind-key "C-i" 'helm-execute-persistent-action helm-map)
