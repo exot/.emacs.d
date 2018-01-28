@@ -933,8 +933,6 @@ are assumed to be of the form *.crt."
                                              (counsel-describe-variable . "^")
                                              (man . "^")
                                              (woman . "^")))
-            (bind-key "C-S-SPC" 'ivy-restrict-to-matches ivy-minibuffer-map)
-            (unbind-key "S-SPC" ivy-minibuffer-map)
             (add-to-list 'ivy-completing-read-handlers-alist
                          '(org-capture . completing-read-default))))
 
