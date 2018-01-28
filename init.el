@@ -878,13 +878,12 @@ are assumed to be of the form *.crt."
 (use-package hippie-exp
   :commands (hippie-expand))
 
+(use-package helm-config
+  :config (unbind-key helm-command-prefix-key))
+
 (use-package helm
   :commands (helm-show-kill-ring)
   :diminish helm-mode
-  :init   (progn
-            (eval-when-compile
-              (require 'helm-config))   ; autoloads and keybindings
-            (unbind-key helm-command-prefix-key))
   :config (progn
             (eval-when-compile
               (require 'helm-mode)
