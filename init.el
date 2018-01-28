@@ -1206,6 +1206,7 @@ are assumed to be of the form *.crt."
         (shell-command-to-string
          (format "hy %s" tempfile))
       (delete-file tempfile))))
+
 
 ;; * TeX
 
