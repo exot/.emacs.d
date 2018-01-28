@@ -34,16 +34,14 @@
 
 ;; Setup
 
-(require 'emms)
+(message "Loading db-emms")
+
+(require 'emms-setup)
 (emms-all)
 (emms-default-players)
 
 
 ;; Basic configuration
-
-(require 'emms-source-file)
-(require 'emms-playlist-mode)
-(require 'emms-info)
 
 (setq emms-source-file-default-directory "~/Documents/media/audio/")
 
@@ -176,7 +174,6 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
 
 ;; Streams
 
-(require 'emms-streams)
 (setq emms-stream-default-action "play")
 
 

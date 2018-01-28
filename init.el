@@ -994,18 +994,19 @@ are assumed to be of the form *.crt."
 
 ;; * Media
 
-(use-package db-emms
-  :commands (db/play-playlist
-             emms-streams
+(use-package emms-setup
+  :commands (emms-streams
              emms-play-dired
              emms-play-file
              emms-play-directory
-             emms-control/body))
+             db/play-playlist
+             emms-control/body)
+  :config (require 'db-emms))
 
 (use-package helm-emms
   :commands (helm-emms)
   :config (progn
-            (require 'db-emms)
+            (require 'emms-setup)
             (require 'helm-adaptive)
             (setq helm-emms-default-sources
                   '(helm-source-emms-streams
