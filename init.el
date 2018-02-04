@@ -1351,9 +1351,10 @@ are assumed to be of the form *.crt."
 (use-package python
   :defer t
   :config (progn
-            (setq python-indent-offset 4
-                  python-shell-interpreter "/usr/bin/python")
-            (add-hook 'python-mode-hook 'highlight-indentation-mode)))
+            (setq python-indent-offset 2)
+            (add-hook 'python-mode-hook 'highlight-indentation-mode)
+            (when (package-installed-p 'elpy)
+              (elpy-enable))))
 
 (use-package semantic
   :commands (semantic-mode)
