@@ -710,6 +710,13 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (setq org-indirect-buffer-display 'current-window)
 (setq org-outline-path-complete-in-steps nil)
 
+; Exclude DONE state tasks from refile targets (from bh)
+(defun db/verify-refile-target ()
+  "Exclude todo keywords with a done state from refile targets"
+  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+
+(setq org-refile-target-verify-function 'db/verify-refile-target)
+
 
 ;;; Babel
 
