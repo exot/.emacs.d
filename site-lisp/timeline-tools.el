@@ -34,6 +34,18 @@ Filter are applied in the order they are given in this list."
   :type '(list function))
 
 
+;; Model
+
+(defalias 'timeline-tools-entry-start-time 'car
+  "Start time of ENTRY.")
+
+(defalias 'timeline-tools-entry-end-time 'cadr
+  "End time of ENTRY.")
+
+(defalias 'timeline-tools-entry-marker 'caddr
+  "Marker to org task of ENTRY.")
+
+
 ;; Utilities
 
 (defun timeline-tools-map-clocklines (clockline-fn headline-fn)
@@ -203,7 +215,9 @@ FILES defaults to `org-agenda-files’ including all archives."
               turned-around-timeline)))
     (sort turned-around-timeline
           (lambda (entry-1 entry-2)
-            (< (car entry-1) (car entry-2))))))
+            (< (timeline-tools-entry-start-time entry-1)
+               (timeline-tools-entry-start-time entry-2))))))
+
 (defun timeline-tools-get-category-at-marker (marker)
   "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
 Return whatever is found first."
@@ -218,9 +232,9 @@ Markers to org mode tasks are combined into a list."
                                          (timeline-tools-get-category-at-marker marker)))
                                      timeline)))
     (mapcar (lambda (cluster)
-              (list (car (car cluster))         ; start of first entry
-                    (cadr (car (last cluster))) ; end of last entry
-                    (mapcar #'third cluster)))
+              (list (timeline-tools-entry-start-time (-first-item cluster))
+                    (timeline-tools-entry-end-time (-last-item cluster))
+                    (mapcar #'timeline-tools-entry-marker cluster)))
             new-timeline)))
 
 (defun timeline-tools-skip-short-entries (timeline)
@@ -228,32 +242,35 @@ Markers to org mode tasks are combined into a list."
 
 A slot is short if it is not longer than THRESHOLD seconds.
 Resulting gaps are distributed evenly among adjacent slots."
-  (let ((start (car (car timeline)))
-        (end (cadr (car (last timeline))))
+  (let ((start (timeline-tools-entry-start-time (-first-item timeline)))
+        (end   (timeline-tools-entry-end-time (-last-item timeline)))
         new-timeline)
+
     ;; remove all slots that are too short
     (setq new-timeline
           (cl-remove-if (lambda (entry)
-                          (<= (- (cadr entry) (car entry))
+                          (<= (- (timeline-tools-entry-end-time entry)
+                                 (timeline-tools-entry-start-time entry))
                               timeline-tools-short-task-threshold))
                         timeline))
 
     ;; reset start and end times
-    (setf (car (car new-timeline)) start)
-    (setf (cadr (car (last new-timeline))) end)
+    (setf (timeline-tools-entry-start-time (-first-item new-timeline)) start)
+    (setf (timeline-tools-entry-end-time (-last-item new-timeline)) end)
 
     ;; distribute gaps evenly among adjacent slots
     (cl-do
         ((sub-timeline new-timeline (cdr sub-timeline)))
         ((null (cdr sub-timeline)))
-      (let* ((entry-1 (car sub-timeline))
-             (entry-2 (cadr sub-timeline))
-             (end-1 (cadr entry-1))
-             (start-2 (car entry-2)))
+      (let* ((entry-1 (-first-item sub-timeline))
+             (entry-2 (-second-item sub-timeline))
+             (end-1   (timeline-tools-entry-end-time entry-1))
+             (start-2 (timeline-tools-entry-start-time entry-2)))
         (when (not (= end-1 start-2))
           (let ((middle (/ (+ end-1 start-2) 2)))
-            (setf (cadr entry-1) middle)
-            (setf (car entry-2) middle)))))
+            (setf (timeline-tools-entry-end-time entry-1) middle)
+            (setf (timeline-tools-entry-start-time entry-2) middle)))))
+
     new-timeline))
 
 ;;;###autoload
