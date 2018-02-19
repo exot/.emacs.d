@@ -44,7 +44,7 @@ Filter are applied in the order they are given in this list."
 (defalias 'timeline-tools-entry-end-time 'cadr
   "End time of ENTRY.")
 
-(defalias 'timeline-tools-entry-marker 'caddr
+(defalias 'timeline-tools-entry-markers 'caddr
   "Marker to org task of ENTRY.")
 
 (defun timeline-tools-make-entry (start-time end-time markers)
@@ -54,9 +54,8 @@ MARKER may be a list of markers, or a single marker."
 
 (defun timeline-tools-entry-category (entry)
   "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
-Return whatever is found first.  ENTRY can be a plain timeline
-entry or a cluster."
-  (let ((marker (car (timeline-tools-entry-marker entry))))
+Return whatever is found first."
+  (let ((marker (car (timeline-tools-entry-markers entry))))
     (or (org-entry-get marker "ARCHIVE_CATEGORY")
         (org-entry-get marker "CATEGORY"))))
 
@@ -241,7 +240,7 @@ Markers to org mode tasks are combined into a list."
               (timeline-tools-make-entry
                (timeline-tools-entry-start-time (-first-item cluster))
                (timeline-tools-entry-end-time (-last-item cluster))
-               (-mapcat #'timeline-tools-entry-marker cluster)))
+               (-mapcat #'timeline-tools-entry-markers cluster)))
             new-timeline)))
 
 (defun timeline-tools-skip-short-entries (timeline)
