@@ -3,7 +3,8 @@
 ;;; Commentary:
 
 ;; XXX: give brief overview, explain nomenclature (timelines, clock-lines,
-;; ...), then list main functionality
+;; entries, ...), then list main functionality
+
 ;; XXX: This needs some tests
 
 ;;; Code:
