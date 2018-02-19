@@ -4,7 +4,7 @@
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
 ;; Version: 2.13.0
-;; Package-Version: 20171028.854
+;; Package-Version: 20180206.2124
 ;; Keywords: lists
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -1325,7 +1325,7 @@ combinations created by taking one element from each list in
 order.  The results are flattened, ignoring the tensor structure
 of the result.  This is equivalent to calling:
 
-  (-flatten-n (1- (length lists)) (apply '-table fn lists))
+  (-flatten-n (1- (length lists)) (apply \\='-table fn lists))
 
 but the implementation here is much more efficient.
 
@@ -2047,7 +2047,7 @@ execute body."
   "Tests for equality use this function or `equal' if this is nil.
 It should only be set using dynamic scope with a let, like:
 
-  (let ((-compare-fn #'=)) (-union numbers1 numbers2 numbers3)")
+  (let ((-compare-fn #\\='=)) (-union numbers1 numbers2 numbers3)")
 
 (defun -distinct (list)
   "Return a new list with all duplicates removed.
@@ -2115,6 +2115,12 @@ or with `-compare-fn' if that's non-nil."
 (defun -tails (list)
   "Return all suffixes of LIST"
   (-reductions-r-from 'cons nil list))
+
+(defun -common-prefix (&rest lists)
+  "Return the longest common prefix of LISTS."
+  (declare (pure t) (side-effect-free t))
+  (--reduce (--take-while (and acc (equal (pop acc) it)) it)
+            lists))
 
 (defun -contains? (list element)
   "Return non-nil if LIST contains ELEMENT.
@@ -2503,12 +2509,15 @@ structure such as plist or alist."
   (eval-after-load 'lisp-mode
     '(progn
        (let ((new-keywords '(
+                             "!cons"
+                             "!cdr"
                              "-each"
                              "--each"
                              "-each-indexed"
                              "--each-indexed"
                              "-each-while"
                              "--each-while"
+                             "-doto"
                              "-dotimes"
                              "--dotimes"
                              "-map"
@@ -2581,6 +2590,10 @@ structure such as plist or alist."
                              "-last"
                              "--last"
                              "-first-item"
+                             "-second-item"
+                             "-third-item"
+                             "-fourth-item"
+                             "-fifth-item"
                              "-last-item"
                              "-butlast"
                              "-count"
@@ -2593,8 +2606,13 @@ structure such as plist or alist."
                              "--any-p"
                              "-some-p"
                              "--some-p"
+                             "-some->"
+                             "-some->>"
+                             "-some-->"
                              "-all?"
+                             "-all-p"
                              "--all?"
+                             "--all-p"
                              "-every?"
                              "--every?"
                              "-all-p"
@@ -2612,6 +2630,8 @@ structure such as plist or alist."
                              "-slice"
                              "-take"
                              "-drop"
+                             "-drop-last"
+                             "-take-last"
                              "-take-while"
                              "--take-while"
                              "-drop-while"
@@ -2635,6 +2655,10 @@ structure such as plist or alist."
                              "-partition-in-steps"
                              "-partition-all"
                              "-partition"
+                             "-partition-after-item"
+                             "-partition-after-pred"
+                             "-partition-before-item"
+                             "-partition-before-pred"
                              "-partition-by"
                              "--partition-by"
                              "-partition-by-header"
@@ -2643,10 +2667,12 @@ structure such as plist or alist."
                              "--group-by"
                              "-interpose"
                              "-interleave"
+                             "-unzip"
                              "-zip-with"
                              "--zip-with"
                              "-zip"
                              "-zip-fill"
+                             "-zip-pair"
                              "-cycle"
                              "-pad"
                              "-annotate"
@@ -2670,6 +2696,7 @@ structure such as plist or alist."
                              "->"
                              "->>"
                              "-->"
+                             "-as->"
                              "-when-let"
                              "-when-let*"
                              "--when-let"
@@ -2688,6 +2715,7 @@ structure such as plist or alist."
                              "-permutations"
                              "-inits"
                              "-tails"
+                             "-common-prefix"
                              "-contains?"
                              "-contains-p"
                              "-same-items?"
