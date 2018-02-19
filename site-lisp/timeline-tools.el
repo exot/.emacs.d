@@ -204,13 +204,18 @@ FILES defaults to `org-agenda-files’ including all archives."
     (sort turned-around-timeline
           (lambda (entry-1 entry-2)
             (< (car entry-1) (car entry-2))))))
+(defun timeline-tools-get-category-at-marker (marker)
+  "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
+Return whatever is found first."
+  (or (org-entry-get marker "ARCHIVE_CATEGORY")
+      (org-entry-get marker "CATEGORY")))
 
 (defun timeline-tools-cluster-same-category (timeline)
   "Cluster TIMELINE into consecutive entries with equal category.
 Markers to org mode tasks are combined into a list."
   (let ((new-timeline (-partition-by (lambda (entry)
-                                       (let ((marker (third entry)))
-                                         (org-entry-get marker "CATEGORY")))
+                                       (let ((marker (timeline-tools-entry-marker entry)))
+                                         (timeline-tools-get-category-at-marker marker)))
                                      timeline)))
     (mapcar (lambda (cluster)
               (list (car (car cluster))         ; start of first entry
@@ -279,7 +284,7 @@ are queried with `org-read-date’."
         (dolist (cluster timeline)
           (cl-destructuring-bind (start end markers) cluster
             (insert (format "| %s | %s | %s | %s min | "
-                            (org-entry-get (car markers) "CATEGORY")
+                            (timeline-tools-get-category-at-marker (car markers))
                             (format-time-string "%Y-%m-%d %H:%M" start)
                             (format-time-string "%Y-%m-%d %H:%M" end)
                             (floor (/ (- end start) 60))))
