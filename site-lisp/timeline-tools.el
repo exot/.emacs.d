@@ -45,6 +45,20 @@ Filter are applied in the order they are given in this list."
 (defalias 'timeline-tools-entry-marker 'caddr
   "Marker to org task of ENTRY.")
 
+(defun timeline-tools-make-entry (start-time end-time marker)
+  "Return a timeline entry made up of START-TIME, END-TIME, and MARKER."
+  (list start-time end-time marker))
+
+(defun timeline-tools-entry-category (entry)
+  "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
+Return whatever is found first.  ENTRY can be a plain timeline
+entry or a cluster."
+  (let ((marker (timeline-tools-entry-marker entry)))
+    (when (listp marker)
+      (setq marker (car marker)))
+    (or (org-entry-get marker "ARCHIVE_CATEGORY")
+        (org-entry-get marker "CATEGORY"))))
+
 
 ;; Utilities
 
@@ -191,16 +205,13 @@ given bounds."
       task-clock-times)))
 
 (defun timeline-tools-timeline (tstart tend &optional files)
-  "Return list of clocked times between TSTART and TEND from FILES.
+  "Return list of timeline entries between TSTART and TEND from FILES.
 
-Each element in this list is of the form
-
-  (START END MARKER),
-
-where START, END, MARKER are as returned by
-`timeline-tools-clocklines-in-range’, which see.  Entries in the
-resulting list are sorted by START, ascending.  If not given,
-FILES defaults to `org-agenda-files’ including all archives."
+Each entry consists of a START-TIME, END-TIME, and MARKER are as
+returned by `timeline-tools-clocklines-in-range’, which see.
+Entries in the resulting list are sorted by START, ascending.  If
+not given, FILES defaults to `org-agenda-files’ including all
+archives."
   (let (timeline-of-files turned-around-timeline)
     (setq timeline-of-files
           (->> (or files (org-agenda-files t t))
@@ -211,26 +222,17 @@ FILES defaults to `org-agenda-files’ including all archives."
                                 (timeline-tools-clocklines-in-range tstart tend))))))
     (dolist (entry timeline-of-files)
       (dolist (clock-time (cdr entry))
-        (push (list (car clock-time) (cdr clock-time) (car entry))
+        (push (timeline-tools-make-entry (car clock-time) (cdr clock-time) (car entry))
               turned-around-timeline)))
     (sort turned-around-timeline
           (lambda (entry-1 entry-2)
             (< (timeline-tools-entry-start-time entry-1)
                (timeline-tools-entry-start-time entry-2))))))
 
-(defun timeline-tools-get-category-at-marker (marker)
-  "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
-Return whatever is found first."
-  (or (org-entry-get marker "ARCHIVE_CATEGORY")
-      (org-entry-get marker "CATEGORY")))
-
 (defun timeline-tools-cluster-same-category (timeline)
   "Cluster TIMELINE into consecutive entries with equal category.
 Markers to org mode tasks are combined into a list."
-  (let ((new-timeline (-partition-by (lambda (entry)
-                                       (let ((marker (timeline-tools-entry-marker entry)))
-                                         (timeline-tools-get-category-at-marker marker)))
-                                     timeline)))
+  (let ((new-timeline (-partition-by #'timeline-tools-entry-category timeline)))
     (mapcar (lambda (cluster)
               (list (timeline-tools-entry-start-time (-first-item cluster))
                     (timeline-tools-entry-end-time (-last-item cluster))
@@ -301,7 +303,7 @@ are queried with `org-read-date’."
         (dolist (cluster timeline)
           (cl-destructuring-bind (start end markers) cluster
             (insert (format "| %s | %s | %s | %s min | "
-                            (timeline-tools-get-category-at-marker (car markers))
+                            (timeline-tools-entry-category cluster)
                             (format-time-string "%Y-%m-%d %H:%M" start)
                             (format-time-string "%Y-%m-%d %H:%M" end)
                             (floor (/ (- end start) 60))))
