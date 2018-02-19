@@ -35,6 +35,12 @@ Filter are applied in the order they are given in this list."
   :group 'timeline-tools
   :type '(list function))
 
+(defcustom timeline-tools-time-format
+  "%Y-%m-%d %H:%M"
+  "Format of time as used by the formatting functions."
+  :group 'timeline-tools
+  :type 'string)
+
 
 ;; Model
 
@@ -49,8 +55,15 @@ Filter are applied in the order they are given in this list."
 
 (defun timeline-tools-make-entry (start-time end-time markers)
   "Return a timeline entry made up of START-TIME, END-TIME, and MARKERS.
-MARKER may be a list of markers, or a single marker."
-  (list start-time end-time (if (listp markers) markers (list markers))))
+MARKER may be a list of markers, or a single marker.  Duplicate
+markers will only be kept once."
+  (list start-time end-time (if (listp markers) (-uniq markers) (list markers))))
+
+(defun timeline-tools-entry-duration (entry)
+  "Returns the duration of ENTRY, in minutes."
+  (floor (/ (- (timeline-tools-entry-end-time entry)
+               (timeline-tools-entry-start-time entry))
+            60)))
 
 (defun timeline-tools-entry-category (entry)
   "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
@@ -58,6 +71,21 @@ Return whatever is found first."
   (let ((marker (car (timeline-tools-entry-markers entry))))
     (or (org-entry-get marker "ARCHIVE_CATEGORY")
         (org-entry-get marker "CATEGORY"))))
+
+(defun timeline-tools-entry-headlines (entry)
+  "Return list of all headlines associated with ENTRY."
+  (mapcar (lambda (marker)
+            (save-match-data
+              (let* ((heading (save-mark-and-excursion
+                               (with-current-buffer (marker-buffer marker)
+                                 (goto-char (marker-position marker))
+                                 (thing-at-point 'line t)))))
+                (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z_]+:\\)+\\)?$"
+                                      (regexp-opt org-todo-keywords-1)
+                                      org-priority-regexp)
+                              heading)
+                (match-string 4 heading))))
+          (timeline-tools-entry-markers entry)))
 
 
 ;; Utilities
@@ -87,20 +115,6 @@ region will be traversed."
             ;; A headline
             (save-mark-and-excursion
              (funcall headline-fn)))))))))
-
-(defun timeline-tools-get-headline (marker)
-  "Get headline of task at MARKER."
-  (cl-assert (markerp marker))
-  (save-match-data
-    (let* ((heading (save-mark-and-excursion
-                     (with-current-buffer (marker-buffer marker)
-                       (goto-char (marker-position marker))
-                       (thing-at-point 'line t)))))
-      (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z_]+:\\)+\\)?$"
-                            (regexp-opt org-todo-keywords-1)
-                            org-priority-regexp)
-                    heading)
-      (match-string 4 heading))))
 
 (defvar timeline-tools-org-inactive-timestamp-format
   (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")
@@ -146,6 +160,16 @@ reversed of what it is in the subtree of MARKER."
                 clock-lines))
         #'ignore)))
     clock-lines))
+
+(defun timeline-tools-format-entry-time (entry type)
+  "Return time of ENTRY of type TYPE formatted as string.
+
+The format used is specified by the value of `timeline-tools-time-format’."
+  (format-time-string
+   timeline-tools-time-format
+   (cl-ecase type
+     ((start) (timeline-tools-entry-start-time entry))
+     ((end) (timeline-tools-entry-end-time entry)))))
 
 
 ;; Reporting
@@ -305,18 +329,16 @@ are queried with `org-read-date’."
         (insert "| Category | Start | End | Duration | Task |\n")
         (insert "|--|\n")
         (dolist (cluster timeline)
-          (cl-destructuring-bind (start end markers) cluster
-            (insert (format "| %s | %s | %s | %s min | "
-                            (timeline-tools-entry-category cluster)
-                            (format-time-string "%Y-%m-%d %H:%M" start)
-                            (format-time-string "%Y-%m-%d %H:%M" end)
-                            (floor (/ (- end start) 60))))
-            ;; insert headline line by line, but only once
-            (dolist (headline (->> (mapcar #'timeline-tools-get-headline markers)
-                                   -uniq
-                                   (-interpose "|\n |||||")))
-              (insert headline))
-            (insert "\n")))
+          (insert (format "| %s | %s | %s | %s min | "
+                          (timeline-tools-entry-category cluster)
+                          (timeline-tools-format-entry-time cluster 'start)
+                          (timeline-tools-format-entry-time cluster 'end)
+                          (timeline-tools-entry-duration cluster)))
+          ;; insert headline line by line
+          (dolist (headline (-interpose "|\n |||||"
+                                        (timeline-tools-entry-headlines cluster)))
+            (insert headline))
+          (insert "\n"))
         (insert "|--|\n")
         (goto-char (point-min))
         (org-table-align)
