@@ -320,7 +320,8 @@ are queried with `org-read-date’."
             (insert "\n")))
         (insert "|--|\n")
         (goto-char (point-min))
-        (org-table-align))
+        (org-table-align)
+        (buffer-enable-undo))
       (display-buffer target-buffer)
       t)))
 
