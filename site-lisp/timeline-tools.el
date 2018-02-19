@@ -27,7 +27,8 @@
   :type 'integer)
 
 (defcustom timeline-tools-filter-functions
-  '(timeline-tools-skip-short-entries
+  '(timeline-tools-cluster-same-category
+    timeline-tools-skip-short-entries
     timeline-tools-cluster-same-category)
   "List of functions to apply when formatting timelines.
 Filter are applied in the order they are given in this list."
