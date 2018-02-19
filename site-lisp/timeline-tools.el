@@ -404,7 +404,7 @@ of TARGET-ID accordingly."
     ;; this is rather inefficient, but we will fix this only when we need it.
     (dolist (clock-line (timeline-tools-clocklines-of-task source-marker))
       (timeline-tools-add-clockline-to-marker target-marker
-                                       (car clock-line) (cdr clock-line)))))
+                                              (car clock-line) (cdr clock-line)))))
 
 ;; XXX: This needs some autoloadable frontend
 
