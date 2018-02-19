@@ -46,17 +46,16 @@ Filter are applied in the order they are given in this list."
 (defalias 'timeline-tools-entry-marker 'caddr
   "Marker to org task of ENTRY.")
 
-(defun timeline-tools-make-entry (start-time end-time marker)
-  "Return a timeline entry made up of START-TIME, END-TIME, and MARKER."
-  (list start-time end-time marker))
+(defun timeline-tools-make-entry (start-time end-time markers)
+  "Return a timeline entry made up of START-TIME, END-TIME, and MARKERS.
+MARKER may be a list of markers, or a single marker."
+  (list start-time end-time (if (listp markers) markers (list markers))))
 
 (defun timeline-tools-entry-category (entry)
   "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
 Return whatever is found first.  ENTRY can be a plain timeline
 entry or a cluster."
-  (let ((marker (timeline-tools-entry-marker entry)))
-    (when (listp marker)
-      (setq marker (car marker)))
+  (let ((marker (car (timeline-tools-entry-marker entry))))
     (or (org-entry-get marker "ARCHIVE_CATEGORY")
         (org-entry-get marker "CATEGORY"))))
 
@@ -238,9 +237,10 @@ archives."
 Markers to org mode tasks are combined into a list."
   (let ((new-timeline (-partition-by #'timeline-tools-entry-category timeline)))
     (mapcar (lambda (cluster)
-              (list (timeline-tools-entry-start-time (-first-item cluster))
-                    (timeline-tools-entry-end-time (-last-item cluster))
-                    (mapcar #'timeline-tools-entry-marker cluster)))
+              (timeline-tools-make-entry
+               (timeline-tools-entry-start-time (-first-item cluster))
+               (timeline-tools-entry-end-time (-last-item cluster))
+               (-mapcat #'timeline-tools-entry-marker cluster)))
             new-timeline)))
 
 (defun timeline-tools-skip-short-entries (timeline)
