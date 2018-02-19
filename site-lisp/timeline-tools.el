@@ -221,10 +221,13 @@ archives."
                               (with-current-buffer (or (get-file-buffer file)
                                                        (find-file-noselect file))
                                 (timeline-tools-clocklines-in-range tstart tend))))))
+    ;; collect clock-lines in timeline and convert them to proper entries
     (dolist (entry timeline-of-files)
       (dolist (clock-time (cdr entry))
         (push (timeline-tools-make-entry (car clock-time) (cdr clock-time) (car entry))
               turned-around-timeline)))
+
+    ;; sort timeline
     (sort turned-around-timeline
           (lambda (entry-1 entry-2)
             (< (timeline-tools-entry-start-time entry-1)
