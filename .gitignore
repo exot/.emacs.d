@@ -42,3 +42,6 @@
 /history
 /server/server
 /speed-type/*
+/site-lisp/timeline-tools-autoloads.el
+/site-lisp/timeline-tools-test.el
+/.cask/
