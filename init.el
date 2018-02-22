@@ -114,12 +114,12 @@
                   sml/setup
                   ivy-mode
                   which-key-mode
-                  eyebrowse-mode
-    (ignore-errors                      ; don’t barf if mode cannot be loaded
+                  eyebrowse-mode))
+    (with-demoted-errors                ; don’t barf if mode cannot be loaded
       (funcall mode +1)))
 
   (unless on-windows
-    (ignore-errors
+    (with-demoted-errors
       (projectile-mode +1)
       (pdf-tools-install)))
 
@@ -248,7 +248,7 @@
   ;; Environment Variables
 
   (unless on-windows
-    (ignore-errors
+    (with-demoted-errors
       (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
                                         "SSH_AGENT_PID"
                                         "PATH"
