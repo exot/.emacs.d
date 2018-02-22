@@ -760,12 +760,11 @@ are assumed to be of the form *.crt."
             (setq dired-recursive-copies 'top)
             (setq dired-recursive-deletes 'top)
 
-            (eval-when-compile
-              (require 'dired-x)
-              (require 'dired+))
+            (use-package dired-x)
+            (use-package dired+)
 
             ;; Gnus support in dired
-            (require 'gnus-dired)
+            (use-package gnus-dired)
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
             ;; omitting files
@@ -797,17 +796,17 @@ are assumed to be of the form *.crt."
             (unbind-key "C-M-o" dired-mode-map)
 
             ;; disable exaggerated fontification of dired+
-            (require 'font-lock)
+            (use-package font-lock)
             (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
             (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))
 
             (when on-windows
               (setq dired-free-space-program nil))
 
-            (require 'dired-quick-sort)
+            (use-package dired-quick-sort)
             (when on-windows
               (eval-when-compile
-                (require 'ls-lisp))
+                (use-package ls-lisp))
               (setq ls-lisp-use-insert-directory-program t))
             (dired-quick-sort-setup)
 
