@@ -114,7 +114,8 @@
                   sml/setup
                   ivy-mode
                   which-key-mode
-                  eyebrowse-mode))
+                  eyebrowse-mode
+                  vlf-setup))
     (ignore-errors                      ; don’t barf if mode cannot be loaded
       (funcall mode +1)))
 
@@ -342,7 +343,7 @@
       tab-always-indent 'complete
       enable-recursive-minibuffers t
       set-mark-command-repeat-pop t
-      large-file-warning-threshold 100000000
+      large-file-warning-threshold 10000000
       echo-keystrokes 0.1
       delete-by-moving-to-trash t
       delete-trailing-lines nil
