@@ -865,7 +865,11 @@ are assumed to be of the form *.crt."
                    "size of all marked files: %s"
                    (progn
                      (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-                     (match-string 1))))))))
+                     (match-string 1))))))
+
+            (use-package dired-subtree)
+            (bind-key "i" 'dired-subtree-insert dired-mode-map)
+            (bind-key ";" 'dired-subtree-remove dired-mode-map)))
 
 (use-package find-dired
   :commands (find-dired)
