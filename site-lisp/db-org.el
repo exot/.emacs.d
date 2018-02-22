@@ -930,6 +930,12 @@ Current Task: %`org-clock-current-task; "
     (start-process "OneNote" nil "OneNote" "/hyperlink" path)))
 
 
+;;; Drag-and-Drop images into org-mode buffer
+
+(when (package-installed-p 'org-download)
+  (use-package org-download))
+
+
 ;;; End
 
 (provide 'db-org)
