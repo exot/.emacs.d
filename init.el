@@ -115,7 +115,6 @@
                   ivy-mode
                   which-key-mode
                   eyebrowse-mode
-                  vlf-setup))
     (ignore-errors                      ; don’t barf if mode cannot be loaded
       (funcall mode +1)))
 
@@ -1395,6 +1394,8 @@ are assumed to be of the form *.crt."
   :config   (setq undo-tree-visualizer-timestamps t
                   undo-tree-visualizer-diff t)
   :diminish undo-tree-mode)
+
+(use-package vlf-setup)
 
 (use-package wgrep
   :commands (wgrep-finish-edit
