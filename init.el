@@ -91,7 +91,6 @@
 
   (appt-activate +1)
   (savehist-mode 1)
-  (midnight-mode +1)
 
   (quietly-read-abbrev-file)
 
