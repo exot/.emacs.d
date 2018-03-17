@@ -780,7 +780,7 @@ This is done only if the value of this variable is not null."
   (require 'ox-icalendar)
   (cond
    ((null org-icalendar-combined-agenda-file)
-    (user-error "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
+    (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
    ((not (file-name-absolute-p org-icalendar-combined-agenda-file))
     (user-error "`org-icalendar-combined-agenda-file’ not an absolute path, aborting."))
    (t
