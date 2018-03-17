@@ -778,8 +778,12 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 This is done only if the value of this variable is not null."
   (interactive)
   (require 'ox-icalendar)
-  (if (null org-icalendar-combined-agenda-file)
-      (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary.")
+  (cond
+   ((null org-icalendar-combined-agenda-file)
+    (user-error "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
+   ((not (file-name-absolute-p org-icalendar-combined-agenda-file))
+    (user-error "`org-icalendar-combined-agenda-file’ not an absolute path, aborting."))
+   (t
     (progn
       (org-save-all-org-buffers)
       (let ((org-agenda-files (cl-remove-if #'string-empty-p
@@ -798,9 +802,10 @@ This is done only if the value of this variable is not null."
           ;; actual export; calls `org-release-buffers’ and may thus close
           ;; buffers we want to keep around … which is why we set
           ;; `org-agenda-new-buffers’ to nil
-          (delete-file org-icalendar-combined-agenda-file)
+          (when (file-exists-p org-icalendar-combined-agenda-file)
+            (delete-file org-icalendar-combined-agenda-file))
           (org-icalendar-combine-agenda-files)
-          (message "Exporting diary ... done."))))))
+          (message "Exporting diary ... done.")))))))
 
 (defun db/ical-to-org (ical-file-name org-file-name category filetags)
   "Convert ICAL-FILE-NAME to ORG-FILE-NAME using ical2org.
