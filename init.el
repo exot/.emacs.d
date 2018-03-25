@@ -82,7 +82,8 @@
   (dolist (mode '(tool-bar-mode
                   scroll-bar-mode
                   menu-bar-mode
-                  blink-cursor-mode))
+                  blink-cursor-mode
+                  tooltip-mode))
     (when (fboundp mode)
       (funcall mode 0)))
 
