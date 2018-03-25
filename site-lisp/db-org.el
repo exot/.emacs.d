@@ -461,7 +461,6 @@ are equal return nil."
                ""
                ((org-agenda-overriding-header "Deadlines")
                 (org-agenda-sorting-strategy '(deadline-up priority-down))
-                (org-agenda-skip-deadline-prewarning-if-scheduled t)
                 (org-deadline-warning-days 30)))
               (tags-todo "-NOAGENDA/WAIT|DELG"
                          ((org-agenda-overriding-header "Waiting-fors")
