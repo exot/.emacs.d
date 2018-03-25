@@ -801,8 +801,6 @@ This is done only if the value of this variable is not null."
           ;; actual export; calls `org-release-buffers’ and may thus close
           ;; buffers we want to keep around … which is why we set
           ;; `org-agenda-new-buffers’ to nil
-          (when (file-exists-p org-icalendar-combined-agenda-file)
-            (delete-file org-icalendar-combined-agenda-file))
           (org-icalendar-combine-agenda-files)
           (message "Exporting diary ... done.")))))))
 
