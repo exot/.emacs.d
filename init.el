@@ -997,10 +997,12 @@ are assumed to be of the form *.crt."
 ;; * Media
 
 (use-package emms-setup
-  :commands (emms-streams
+  :commands (emms
+             emms-streams
              emms-play-dired
              emms-play-file
              emms-play-directory
+             emms-play-directory-tree
              db/play-playlist
              emms-control/body)
   :config (require 'db-emms))
