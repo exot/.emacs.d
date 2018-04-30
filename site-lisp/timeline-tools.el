@@ -325,6 +325,7 @@ are queried with `org-read-date’."
       (with-current-buffer target-buffer
         (erase-buffer)
         (org-mode)
+        (hl-line-mode)
         (insert "|--|\n")
         (insert "| Category | Start | End | Duration | Task |\n")
         (insert "|--|\n")
@@ -343,7 +344,7 @@ are queried with `org-read-date’."
         (goto-char (point-min))
         (org-table-align)
         (buffer-enable-undo))
-      (display-buffer target-buffer)
+      (pop-to-buffer target-buffer)
       t)))
 
 ;;;###autoload
