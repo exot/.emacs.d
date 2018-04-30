@@ -42,6 +42,33 @@ Filter are applied in the order they are given in this list."
   :type 'string)
 
 
+;; Mode definition
+
+(defvar timeline-tools--current-time-start nil
+  "Current start time of the displayed timeline.")
+
+(defvar timeline-tools--current-time-end nil
+  "Current end time of the displayed timeline.")
+
+(defvar timeline-tools--current-files nil
+  "Files from which the current timeline has been extracted.")
+
+(defvar timeline-tools--current-timeline nil
+  "Currently displayed timeline in abstract form.")
+
+(defvar timeline-tools-mode-map
+  (let ((map (make-sparse-keymap)))
+    (define-key map [remap self-insert-command] 'undefined)
+    (define-key map "r" #'timeline-tools-redraw-timeline)
+    (define-key map "f" #'timeline-tools-forward-day)
+    (define-key map "b" #'timeline-tools-backward-day)
+    map))
+
+(define-derived-mode timeline-tools-mode
+  org-mode "Timeline"
+  "Major mode to display org-mode timelines.")
+
+
 ;; Model
 
 (defalias 'timeline-tools-entry-start-time 'car
@@ -303,47 +330,36 @@ Resulting gaps are distributed evenly among adjacent slots."
 
     new-timeline))
 
+(defun timeline-tools-get-transformed-timeline (tstart tend files)
+  "Return timeline from files, after application of `timeline-tools-filter-functions’."
+  (let ((plain-timeline (timeline-tools-timeline tstart tend files)))
+    (and plain-timeline
+         (-reduce-from (lambda (tl f)
+                         (funcall f tl))
+                       plain-timeline
+                       timeline-tools-filter-functions))))
+
 ;;;###autoload
 (defun timeline-tools-format-timeline (tstart tend &optional files)
   "Display timeline of tasks between TSTART and TEND from FILES.
 
 When not given, FILES defaults to `org-agenda-files’ including
-archives.  Short slots are removed, and afterwards slots are
-clusted by category.  When called interactively, START and END
-are queried with `org-read-date’."
+archives.  The timeline is transformed as given by the current
+value of `timeline-tools-filter-functions’.  When called
+interactively, START and END are queried with `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let* ((timeline (timeline-tools-timeline tstart tend files)))
-    (when (null timeline)
-      (user-error "No clocklines found in given range"))
-    (setq timeline
-          (-reduce-from (lambda (tl f)
-                          (funcall f tl))
-                        timeline
-                        timeline-tools-filter-functions))
+  (let* ((timeline (timeline-tools-get-transformed-timeline tstart tend files)))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
-        (erase-buffer)
-        (org-mode)
+        (timeline-tools-mode)
+        (setq-local timeline-tools--current-time-start (org-time-string-to-seconds tstart))
+        (setq-local timeline-tools--current-time-end (org-time-string-to-seconds tend))
+        (setq-local timeline-tools--current-files files)
+        (setq-local timeline-tools--current-timeline timeline)
         (hl-line-mode)
-        (insert "|--|\n")
-        (insert "| Category | Start | End | Duration | Task |\n")
-        (insert "|--|\n")
-        (dolist (cluster timeline)
-          (insert (format "| %s | %s | %s | %s min | "
-                          (timeline-tools-entry-category cluster)
-                          (timeline-tools-format-entry-time cluster 'start)
-                          (timeline-tools-format-entry-time cluster 'end)
-                          (timeline-tools-entry-duration cluster)))
-          ;; insert headline line by line
-          (dolist (headline (-interpose "|\n |||||"
-                                        (timeline-tools-entry-headlines cluster)))
-            (insert headline))
-          (insert "\n"))
-        (insert "|--|\n")
-        (goto-char (point-min))
-        (org-table-align)
-        (buffer-enable-undo))
+        (buffer-enable-undo)
+        (timeline-tools-redraw-timeline))
       (pop-to-buffer target-buffer)
       t)))
 
@@ -360,6 +376,69 @@ ending at 23:61.  When not given, FILES defaults to
   (timeline-tools-format-timeline (concat date " 00:00")
                                   (concat date " 23:61")
                                   files))
+
+
+;; Interactive functions
+
+(defun timeline-tools-redraw-timeline ()
+  "Redraw timeline of current buffer"
+  (interactive)
+  (if (not (eq major-mode 'timeline-tools-mode))
+      (user-error "Not in Timeline buffer")
+    (let ((timeline timeline-tools--current-timeline))
+      (erase-buffer)
+      (insert (format "* Timeline from [%s] to [%s]\n\n"
+                      (format-time-string timeline-tools-time-format
+                                          timeline-tools--current-time-start)
+                      (format-time-string timeline-tools-time-format
+                                          timeline-tools--current-time-end)))
+      (insert "|--|\n")
+      (insert "| Category | Start | End | Duration | Task |\n")
+      (insert "|--|\n")
+      (dolist (cluster timeline)
+        (insert (format "| %s | %s | %s | %s min | "
+                        (timeline-tools-entry-category cluster)
+                        (timeline-tools-format-entry-time cluster 'start)
+                        (timeline-tools-format-entry-time cluster 'end)
+                        (timeline-tools-entry-duration cluster)))
+        ;; insert headline line by line
+        (dolist (headline (-interpose "|\n |||||"
+                                      (timeline-tools-entry-headlines cluster)))
+          (insert headline))
+        (insert "\n"))
+      (insert "|--|\n")
+      (org-table-align)
+      (goto-char (point-min)))))
+
+(defun timeline-tools-forward-day ()
+  "Display timeline of next day."
+  (interactive)
+  (if (not (eq major-mode 'timeline-tools-mode))
+      (user-error "Not in Timeline buffer")
+    (setq-local timeline-tools--current-time-start (+ 86400 timeline-tools--current-time-start))
+    (setq-local timeline-tools--current-time-end (+ 86400 timeline-tools--current-time-end))
+    (setq-local timeline-tools--current-timeline
+                (timeline-tools-get-transformed-timeline
+                 timeline-tools--current-time-start
+                 timeline-tools--current-time-end
+                 timeline-tools--current-files))
+    (timeline-tools-redraw-timeline)))
+
+(defun timeline-tools-backward-day ()
+  "Display timeline of next day."
+  (interactive)
+  (if (not (eq major-mode 'timeline-tools-mode))
+      (user-error "Not in Timeline buffer")
+    (setq-local timeline-tools--current-time-start
+                (- timeline-tools--current-time-start 86400))
+    (setq-local timeline-tools--current-time-end
+                (- timeline-tools--current-time-end 86400))
+    (setq-local timeline-tools--current-timeline
+                (timeline-tools-get-transformed-timeline
+                 timeline-tools--current-time-start
+                 timeline-tools--current-time-end
+                 timeline-tools--current-files))
+    (timeline-tools-redraw-timeline)))
 
 
 ;;; Manipulating Clocklines
