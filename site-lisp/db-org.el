@@ -874,17 +874,18 @@ Resulting org mode file will have CATEGORY and FILETAGS set."
 
 (setq org-export-use-babel nil)
 
-(eval-after-load 'ox
-  '(progn
-    (add-to-list 'org-latex-classes
-     '("scrartcl" "\\documentclass[11pt]{scrartcl}\n\\usepackage{babel}\n"
-       ("\\section{%s}" . "\\section*{%s}")
-       ("\\subsection{%s}" . "\\subsection*{%s}")
-       ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-       ("\\paragraph{%s}" . "\\paragraph*{%s}")
-       ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+(with-eval-after-load "ox-latex"
+  (add-to-list 'org-latex-classes
+               '("scrartcl" "\\documentclass{scrartcl}"
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
-    (require 'ox-md)))
+(use-package ox
+  :defer t
+  :config (require 'ox-md))
 
 
 ;;; Hydra
