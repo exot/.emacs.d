@@ -60,6 +60,7 @@ Filter are applied in the order they are given in this list."
   (let ((map (make-sparse-keymap)))
     (define-key map [remap self-insert-command] 'undefined)
     (define-key map "r" #'timeline-tools-redraw-timeline)
+    (define-key map "R" #'timeline-tools-reparse-timeline)
     (define-key map "f" #'timeline-tools-forward-day)
     (define-key map "b" #'timeline-tools-backward-day)
     (define-key map "q" #'quit-window)
@@ -410,6 +411,20 @@ ending at 23:61.  When not given, FILES defaults to
       (insert "|--|\n")
       (org-table-align)
       (goto-char (point-min)))))
+
+(defun timeline-tools-reparse-timeline ()
+  "Parse timeline from files again and redraws current display
+Updates category properties before constructing the new timeline."
+  (interactive)
+  (dolist (file timeline-tools--current-files)
+    (with-current-buffer (get-file-buffer file)
+      (org-refresh-category-properties)))
+  (setq-local timeline-tools--current-timeline
+              (timeline-tools-get-transformed-timeline
+               timeline-tools--current-time-start
+               timeline-tools--current-time-end
+               timeline-tools--current-files))
+  (timeline-tools-redraw-timeline))
 
 (defun timeline-tools-forward-day ()
   "Display timeline of next day."
