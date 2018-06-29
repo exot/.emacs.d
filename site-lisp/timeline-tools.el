@@ -62,6 +62,7 @@ Filter are applied in the order they are given in this list."
     (define-key map "r" #'timeline-tools-redraw-timeline)
     (define-key map "f" #'timeline-tools-forward-day)
     (define-key map "b" #'timeline-tools-backward-day)
+    (define-key map "q" #'quit-window)
     map))
 
 (define-derived-mode timeline-tools-mode
