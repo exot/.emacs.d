@@ -67,9 +67,10 @@
 ;; open directory links in emacs itself
 (add-to-list 'org-file-apps '(directory . emacs))
 
-(add-to-list 'org-file-apps '("\\.docx\\'" . default))
-(add-to-list 'org-file-apps '("\\.pptx\\'" . default))
-(add-to-list 'org-file-apps '("\\.xlsx\\'" . default))
+;; use system default for Microsoft stuff
+(add-to-list 'org-file-apps '("\\.docx\\'" . system))
+(add-to-list 'org-file-apps '("\\.pptx\\'" . system))
+(add-to-list 'org-file-apps '("\\.xlsx\\'" . system))
 
 
 ;;; Faces
