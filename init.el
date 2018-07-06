@@ -769,8 +769,6 @@ are assumed to be of the form *.crt."
 
             ;; omitting files
             (add-hook 'dired-mode-hook 'dired-omit-mode)
-            (setq dired-omit-files
-                  (concat dired-omit-files "\\|^\\...+$"))
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))
 
