@@ -164,7 +164,7 @@
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
   (bind-key "<f8>" #'counsel-locate)
-  (bind-key "<f9>" #'counsel-org-goto-all)
+  (bind-key "<f9>" #'helm-org-agenda-files-headings)
   (bind-key "<f10>" #'magit-status)
   (bind-key "<f11>" #'org-capture)
   (bind-key "<f12>" #'db/helm-shortcuts)
@@ -883,13 +883,15 @@ are assumed to be of the form *.crt."
   :config (unbind-key helm-command-prefix-key))
 
 (use-package helm
-  :commands (helm-show-kill-ring)
+  :commands (helm-show-kill-ring
+             helm-org-agenda-files-headings)
   :diminish helm-mode
   :config (progn
             (eval-when-compile
               (require 'helm-mode)
               (require 'helm-buffers)
-              (require 'helm-ring))
+              (require 'helm-ring)
+              (require 'helm-org))
 
             (setq helm-input-idle-delay 0.0
                   helm-buffers-fuzzy-matching t
@@ -918,7 +920,14 @@ are assumed to be of the form *.crt."
                                               db/helm-frequently-visited-locations
                                               helm-source-buffer-not-found
                                               helm-source-bookmarks
-                                              helm-source-bookmark-set))))
+                                              helm-source-bookmark-set))
+
+            ;; Make clocking in the new default action for
+            ;; `helm-org-agenda-files-headings’
+            (add-to-list 'helm-org-headings-actions
+                         '("Clock in to this heading" . (lambda (marker)
+                                                          (org-with-point-at marker
+                                                            (org-clock-in)))))))
 
 (use-package ivy
   :commands (ivy-mode
