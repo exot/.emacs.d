@@ -922,12 +922,25 @@ are assumed to be of the form *.crt."
                                               helm-source-bookmarks
                                               helm-source-bookmark-set))
 
-            ;; Make clocking in the new default action for
+            ;; Add action to clock in at current heading to
             ;; `helm-org-agenda-files-headings’
+
+            (defun helm-org--clock-in-at-heading (marker)
+              "Clock in to current heading at MARKER."
+              (org-with-point-at marker
+                (org-clock-in)))
+
+            (defun helm-org-clock-in-at-heading ()
+              (interactive)
+              (with-helm-alive-p
+                (helm-exit-and-execute-action 'helm-org--clock-in-at-heading)))
+
             (add-to-list 'helm-org-headings-actions
-                         '("Clock in to this heading" . (lambda (marker)
-                                                          (org-with-point-at marker
-                                                            (org-clock-in)))))))
+                         '("Clock in to this heading"
+                           . helm-org--clock-in-at-heading)
+                         t)
+
+            (bind-key "C-c c" 'helm-org-clock-in-at-heading helm-org-headings-map)))
 
 (use-package ivy
   :commands (ivy-mode
