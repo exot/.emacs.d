@@ -26,7 +26,9 @@
       org-clone-delete-id t
       org-catch-invisible-edits 'error
       org-M-RET-may-split-line '((default . nil))
-      org-highlight-latex-and-related '(latex))
+      org-highlight-latex-and-related '(latex)
+      org-use-sub-superscripts '{}
+      org-export-with-sub-superscripts '{})
 
 (bind-key [remap org-return] 'org-return-indent org-mode-map)
 
