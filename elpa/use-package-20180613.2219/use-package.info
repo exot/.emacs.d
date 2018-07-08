@@ -109,7 +109,12 @@ File: use-package.info,  Node: Introduction,  Next: Installation,  Prev: Top,  U
 1 Introduction
 **************
 
-TODO
+The ‘use-package’ macro allows you to isolate package configuration in
+your ‘.emacs’ file in a way that is both performance-oriented and, well,
+tidy.  I created it because I have over 400 packages that I use in
+Emacs, and things were getting difficult to manage.  Yet with this
+utility my total load time is around 2 seconds, with no loss of
+functionality!
 
 
 File: use-package.info,  Node: Installation,  Next: Getting Started,  Prev: Introduction,  Up: Top
@@ -999,41 +1004,41 @@ Appendix E Variable Index
 Tag Table:
 Node: Top784
 Node: Introduction2838
-Node: Installation2965
-Node: Installing from an Elpa Archive3317
-Node: Installing from the Git Repository4432
-Node: Post-Installation Tasks5968
-Node: Getting Started6681
-Node: Keywords6853
-Node: after7791
-Node: bind-keymap bind-keymap*9323
-Node: bind bind*10376
-Node: Binding to local keymaps12416
-Node: commands13507
-Node: preface init config13649
-Node: custom15727
-Node: custom-face16167
-Node: defer demand16487
-Node: defines functions17299
-Node: diminish delight18444
-Node: disabled20387
-Node: ensure pin20882
-Node: hook23612
-Node: if when unless25030
-Node: load-path25976
-Node: mode interpreter27122
-Node: magic magic-fallback28433
-Node: no-require29278
-Node: requires29982
-Node: FAQ30869
-Node: FAQ - How to ...?31152
-Node: This is a question31324
-Node: FAQ - Issues and Errors31472
-Node: This is an issues31655
-Node: Debugging Tools31810
-Node: Command Index31984
-Node: Function Index32140
-Node: Variable Index32297
+Node: Installation3325
+Node: Installing from an Elpa Archive3677
+Node: Installing from the Git Repository4792
+Node: Post-Installation Tasks6328
+Node: Getting Started7041
+Node: Keywords7213
+Node: after8151
+Node: bind-keymap bind-keymap*9683
+Node: bind bind*10736
+Node: Binding to local keymaps12776
+Node: commands13867
+Node: preface init config14009
+Node: custom16087
+Node: custom-face16527
+Node: defer demand16847
+Node: defines functions17659
+Node: diminish delight18804
+Node: disabled20747
+Node: ensure pin21242
+Node: hook23972
+Node: if when unless25390
+Node: load-path26336
+Node: mode interpreter27482
+Node: magic magic-fallback28793
+Node: no-require29638
+Node: requires30342
+Node: FAQ31229
+Node: FAQ - How to ...?31512
+Node: This is a question31684
+Node: FAQ - Issues and Errors31832
+Node: This is an issues32015
+Node: Debugging Tools32170
+Node: Command Index32344
+Node: Function Index32500
+Node: Variable Index32657
 
 End Tag Table
 

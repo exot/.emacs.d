@@ -646,17 +646,18 @@ The expressions can be auto-expanded according to NAME."
                     ""
                   (hydra--hint body heads)))
           (start 0)
+          (inner-regex (format "\\(%s\\)\\(%s\\)" hydra-width-spec-regex hydra-key-regex))
           varlist
           offset)
       (while (setq start
                    (string-match
                     (format
-                     "\\(?:%%\\( ?-?[0-9]*s?\\)\\(`[a-z-A-Z/0-9]+\\|(\\)\\)\\|\\(?:[_?]\\(%s\\)\\(%s\\)[_?]\\)"
-                     hydra-width-spec-regex
-                     hydra-key-regex)
+                     "\\(?:%%\\( ?-?[0-9]*s?\\)\\(`[a-z-A-Z/0-9]+\\|(\\)\\)\\|\\(?:_%s_\\)\\|\\(?:[?]%s[?]\\)"
+                     inner-regex
+                     inner-regex)
                     docstring start))
         (cond ((eq ?? (aref (match-string 0 docstring) 0))
-               (let* ((key (match-string 4 docstring))
+               (let* ((key (match-string 6 docstring))
                       (head (assoc key heads)))
                  (if head
                      (progn
@@ -714,17 +715,21 @@ The expressions can be auto-expanded according to NAME."
                         (substring docstring 0 start)
                         "%" spec
                         (substring docstring (+ start offset 1 lspec varp))))))))
-      (if (eq ?\n (aref docstring 0))
-          `(concat (format ,(substring docstring 1) ,@(nreverse varlist))
-                   ,rest)
-        (let ((r `(replace-regexp-in-string
-                   " +$" ""
-                   (concat ,docstring ": "
-                           (replace-regexp-in-string
-                            "\\(%\\)" "\\1\\1" ,rest)))))
-          (if (stringp rest)
-              `(format ,(eval r))
-            `(format ,r)))))))
+      (cond
+        ((string= docstring "")
+         (substring rest 1))
+        ((eq ?\n (aref docstring 0))
+         `(concat (format ,(substring docstring 1) ,@(nreverse varlist))
+                  ,rest))
+        (t
+         (let ((r `(replace-regexp-in-string
+                    " +$" ""
+                    (concat ,docstring ": "
+                            (replace-regexp-in-string
+                             "\\(%\\)" "\\1\\1" ,rest)))))
+           (if (stringp rest)
+               `(format ,(eval r))
+             `(format ,r))))))))
 
 (defun hydra--complain (format-string &rest args)
   "Forward to (`message' FORMAT-STRING ARGS) unless `hydra-verbose' is nil."
@@ -1178,15 +1183,17 @@ result of `defhydra'."
          (setq docstring (concat "\n" (eval docstring))))
         (t
          (setq heads (cons docstring heads))
-         (setq docstring "hydra")))
+         (setq docstring "")))
   (when (keywordp (car body))
     (setq body (cons nil (cons nil body))))
   (condition-case-unless-debug err
-      (let* ((keymap (copy-keymap hydra-base-map))
-             (keymap-name (intern (format "%S/keymap" name)))
+      (let* ((keymap-name (intern (format "%S/keymap" name)))
              (body-name (intern (format "%S/body" name)))
              (body-key (cadr body))
              (body-plist (cddr body))
+             (base-map (or (eval (plist-get body-plist :base-map))
+                           hydra-base-map))
+             (keymap (copy-keymap base-map))
              (body-map (or (car body)
                            (plist-get body-plist :bind)))
              (body-pre (plist-get body-plist :pre))

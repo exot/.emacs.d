@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (directory-file-name (or (file-name-directory #$) (car load-path))))
 
-;;;### (autoloads nil "hydra" "hydra.el" (23194 22908 273187 855000))
+;;;### (autoloads nil "hydra" "hydra.el" (23362 18420 988487 438000))
 ;;; Generated autoloads from hydra.el
 
 (autoload 'defhydra "hydra" "\
@@ -65,7 +65,7 @@ result of `defhydra'.
 ;;;***
 
 ;;;### (autoloads nil nil ("hydra-examples.el" "hydra-ox.el" "hydra-pkg.el"
-;;;;;;  "lv.el") (23194 22908 285187 927000))
+;;;;;;  "lv.el") (23362 18421 487 506000))
 
 ;;;***
 
