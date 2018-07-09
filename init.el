@@ -239,12 +239,6 @@
   (when (package-installed-p 'ace-window)
     (bind-key "C-x o" #'ace-window))
 
-  (when (package-installed-p 'eyebrowse)
-    (dotimes (i 10)
-      (unbind-key (format "M-%d" i))
-      (bind-key (format "M-%d" i)
-                (intern (format "eyebrowse-switch-to-window-config-%d" i)))))
-
   ;; Environment Variables
 
   (unless on-windows
@@ -1004,14 +998,6 @@ are assumed to be of the form *.crt."
              dumb-jump-go-prefer-external
              dumb-jump-go-prefer-external-other-window)
   :config (setq dumb-jump-selector 'helm))
-
-(use-package eyebrowse
-  :commands (eyebrowse-mode)
-  :config (progn (setq eyebrowse-mode-line-separator " "
-                       eyebrowse-new-workspace t)
-                 (unbind-key eyebrowse-keymap-prefix
-                             eyebrowse-mode-map)))
-
 
 
 ;; * Media
