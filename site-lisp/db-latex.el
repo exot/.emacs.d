@@ -161,6 +161,9 @@
 (add-hook 'TeX-language-en-hook
           (lambda () (ispell-change-dictionary "en_US")))
 
+(add-hook 'TeX-mode-hook
+          (lambda () (setq ispell-parser 'tex)))
+
 
 ;; LaTeXMk
 
