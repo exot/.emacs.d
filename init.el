@@ -626,7 +626,7 @@ _h_   _l_   _o_k        _y_ank
             (setq magit-repository-directories
                   (mapcar
                    (lambda (dir)
-                     (substring dir 0 -1))
+                     (cons (substring dir 0 -1) 0))
                    (cl-remove-if-not
                     (lambda (project)
                       (unless (file-remote-p project)
