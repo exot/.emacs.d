@@ -113,8 +113,7 @@
                   key-chord-mode
                   sml/setup
                   ivy-mode
-                  which-key-mode
-                  eyebrowse-mode))
+                  which-key-mode))
     (with-demoted-errors                ; don’t barf if mode cannot be loaded
       (funcall mode +1)))
 
