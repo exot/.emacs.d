@@ -1001,21 +1001,17 @@ are assumed to be of the form *.crt."
 
 ;; * Media
 
-(use-package emms-setup
-  :commands (emms
-             emms-streams
-             emms-play-dired
-             emms-play-file
-             emms-play-directory
-             emms-play-directory-tree
-             db/play-playlist
-             emms-control/body)
+(use-package emms-source-file
   :config (require 'db-emms))
+
+(use-package db-emms
+  :commands (db/play-playlist
+             emms-control/body))
 
 (use-package helm-emms
   :commands (helm-emms)
   :config (progn
-            (require 'emms-setup)
+            (require 'db-emms)
             (require 'helm-adaptive)
             (setq helm-emms-default-sources
                   '(helm-source-emms-streams
