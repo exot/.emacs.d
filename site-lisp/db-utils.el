@@ -306,6 +306,8 @@ path."
                    ,(when (and (= arg 4)
                                (file-directory-p db/important-documents-path))
                       'db/helm-source-important-documents)
+                   ,(when (package-installed-p 'helm-eww)
+                      (helm-eww-bookmarks-build-source))
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
 
