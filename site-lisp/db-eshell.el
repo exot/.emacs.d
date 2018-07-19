@@ -69,6 +69,10 @@
 (add-hook 'eshell-mode-hook
           'with-editor-export-editor)
 
+(defun eshell/gst (&rest args)
+  (magit-status (pop args) nil)
+  (eshell/echo))
+
 
 ;; Git Completion
 ;; https://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/
