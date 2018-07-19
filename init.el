@@ -944,7 +944,14 @@ are assumed to be of the form *.crt."
                   enable-recursive-minibuffers t
                   ivy-magic-tilde nil
                   ivy-count-format "(%d/%d) "
-                  ivy-format-function 'ivy-format-function-arrow)
+                  ivy-format-function #'(lambda (cands)
+                                          (ivy--format-function-generic
+                                           (lambda (str)
+                                             (concat "→ " str))
+                                           (lambda (str)
+                                             (concat "  " str))
+                                           cands
+                                           "\n")))
             (setq ivy-initial-inputs-alist '((counsel-describe-function . "^")
                                              (counsel-describe-variable . "^")
                                              (man . "^")
