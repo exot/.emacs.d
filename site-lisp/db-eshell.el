@@ -45,15 +45,26 @@
 (add-to-list 'eshell-command-completions-alist
              '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
 
-(setq eshell-prompt-function
-      (lambda ()
-        (concat
-         "[" (user-login-name)
-         "@" (getenv "HOST")
-         ":" (abbreviate-file-name (eshell/pwd))
-         "]\n→ "))
-      eshell-prompt-regexp
-      "^→ ")
+(defun eshell/default-prompt-function ()
+  "A prompt for eshell of the form
+
+   ┌[$USER@$HOST] [$PWD]
+   └──
+
+"
+  (let ((head-face '(:foreground "#859900")))
+    (format (concat (propertize "┌" 'face head-face)
+                    "[%s@%s] [%s]\n"
+                    (propertize "└──" 'face head-face)
+                    " ")
+            (user-login-name)
+            (system-name)
+            (propertize (abbreviate-file-name (eshell/pwd))
+                        'face '(:foreground "#dc322f")))))
+
+(setq eshell-prompt-function #'eshell/default-prompt-function
+      eshell-prompt-regexp "└── "
+      eshell-highlight-prompt nil)
 
 (add-hook 'eshell-mode-hook
           'with-editor-export-editor)
