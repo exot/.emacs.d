@@ -32,13 +32,6 @@
     (erase-buffer)
     (eshell-send-input)))
 
-;; eshell is a bit strange and sets up its mode map as a local map;
-;; because of this we need to put key definitions into a hook
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (bind-key "C-a" #'eshell-bol eshell-mode-map)
-            (bind-key "C-l" #'eshell-clear-buffer eshell-mode-map)))
-
 (add-to-list 'eshell-command-completions-alist
              '("gunzip" "gz\\'"))
 
@@ -72,6 +65,22 @@
 (defun eshell/gst (&rest args)
   (magit-status (pop args) nil)
   (eshell/echo))
+
+(defun eshell-insert-history ()
+  "Displays the eshell history to select and insert back into your eshell."
+  ;; directly taken from Howard Abrams
+  (interactive)
+  (insert (completing-read "Eshell history: "
+                           (delete-dups
+                            (ring-elements eshell-history-ring)))))
+
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (bind-key "C-a" #'eshell-bol eshell-mode-map)
+            (bind-key "C-l" #'eshell-clear-buffer eshell-mode-map)
+            (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
+            (bind-key "M-P" #'eshell-previous-prompt)
+            (bind-key "M-N" #'eshell-next-prompt)))
 
 
 ;; Git Completion
