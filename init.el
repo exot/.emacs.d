@@ -943,7 +943,8 @@ are assumed to be of the form *.crt."
             (setq ivy-use-virtual-buffers t
                   enable-recursive-minibuffers t
                   ivy-magic-tilde nil
-                  ivy-count-format "(%d/%d) ")
+                  ivy-count-format "(%d/%d) "
+                  ivy-format-function 'ivy-format-function-arrow)
             (setq ivy-initial-inputs-alist '((counsel-describe-function . "^")
                                              (counsel-describe-variable . "^")
                                              (man . "^")
