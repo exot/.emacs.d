@@ -47,8 +47,9 @@
 "
   (let ((head-face '(:foreground "#859900")))
     (format (concat (propertize "┌─" 'face head-face)
-                    "[%s@%s] [%s]\n"
+                    "%s@%s %s\n"
                     (propertize "└─" 'face head-face)
+                    (if (zerop (user-uid)) "#" "$")
                     (propertize " " 'face '(:weight bold)))
             (user-login-name)
             (system-name)
@@ -56,7 +57,7 @@
                         'face '(:foreground "#dc322f")))))
 
 (setq eshell-prompt-function #'eshell/default-prompt-function
-      eshell-prompt-regexp "└─ "
+      eshell-prompt-regexp "└─[$#] "
       eshell-highlight-prompt nil)
 
 (add-hook 'eshell-mode-hook
