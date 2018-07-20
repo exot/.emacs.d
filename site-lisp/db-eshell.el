@@ -79,8 +79,8 @@
             (bind-key "C-a" #'eshell-bol eshell-mode-map)
             (bind-key "C-l" #'eshell-clear-buffer eshell-mode-map)
             (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
-            (bind-key "M-P" #'eshell-previous-prompt)
-            (bind-key "M-N" #'eshell-next-prompt)))
+            (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+            (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
 
 
 ;; Git Completion
