@@ -793,12 +793,10 @@ are assumed to be of the form *.crt."
             (when on-windows
               (setq dired-free-space-program nil))
 
-            (use-package dired-quick-sort)
             (when on-windows
               (eval-when-compile
                 (use-package ls-lisp))
               (setq ls-lisp-use-insert-directory-program t))
-            (dired-quick-sort-setup)
 
             ;; custom keybindings
 
