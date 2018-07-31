@@ -561,6 +561,8 @@ are equal return nil."
                'org-last-args)))
     (nth 2 args)))
 
+(require 'hydra)
+
 (defhydra hydra-org-agenda-view (:hint none)
   "
 _d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
@@ -845,10 +847,6 @@ This is done only if the value of this variable is not null."
 
 
 ;;; Hydra
-
-;; XXX: this should go somewhere else, maybe `db/run-init’
-
-(require 'hydra)
 
 (defhydra hydra-org-clock (:color blue)
   "
