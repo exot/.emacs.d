@@ -378,13 +378,15 @@ interactively, START and END are queried with `org-read-date’."
 
 DATE should be a string of the form %Y-%m-%d.  When called
 interactively, this date will be queried with `org-read-date’.
-The timeline will be formatted for DATE starting at 00:00 and
-ending at 23:61.  When not given, FILES defaults to
-`org-agenda-files’ including archives."
+When not given, FILES defaults to `org-agenda-files’ including
+archives."
   (interactive (list (org-read-date nil nil)))
-  (timeline-tools-format-timeline (concat date " 00:00")
-                                  (concat date " 23:61")
-                                  files))
+  (let ((timeline-tools-time-format "%H:%M")
+        (timeline-tools-headline-time-format "%Y-%m-%d"))
+   (timeline-tools-format-timeline (concat date " 00:00")
+                                   (org-read-date nil nil "+1d" nil
+                                                  (org-time-string-to-time date))
+                                   files)))
 
 
 ;; Interactive functions
