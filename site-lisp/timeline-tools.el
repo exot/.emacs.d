@@ -26,10 +26,7 @@
   :group 'timeline-tools
   :type 'integer)
 
-(defcustom timeline-tools-filter-functions
-  '(timeline-tools-cluster-same-category
-    timeline-tools-skip-short-entries
-    timeline-tools-cluster-same-category)
+(defcustom timeline-tools-filter-functions nil
   "List of functions to apply when formatting timelines.
 Filter are applied in the order they are given in this list."
   :group 'timeline-tools
@@ -406,18 +403,21 @@ ending at 23:61.  When not given, FILES defaults to
                                           timeline-tools--current-time-end)))
       (insert "|--|\n")
       (insert "| Category | Start | End | Duration | Task |\n")
-      (insert "|--|\n")
-      (dolist (cluster timeline)
-        (insert (format "| %s | %s | %s | %s min | "
-                        (timeline-tools-entry-category cluster)
-                        (timeline-tools-format-entry-time cluster 'start)
-                        (timeline-tools-format-entry-time cluster 'end)
-                        (timeline-tools-entry-duration cluster)))
-        ;; insert headline line by line
-        (dolist (headline (-interpose "|\n |||||"
-                                      (timeline-tools-entry-headlines cluster)))
-          (insert headline))
-        (insert "\n"))
+      (let ((last-category nil))
+        (dolist (cluster timeline)
+          (when (not (equal last-category (timeline-tools-entry-category cluster)))
+            (insert "|--|\n")
+            (setq last-category (timeline-tools-entry-category cluster)))
+          (insert (format "| %s | %s | %s | %s min | "
+                          (timeline-tools-entry-category cluster)
+                          (timeline-tools-format-entry-time cluster 'start)
+                          (timeline-tools-format-entry-time cluster 'end)
+                          (timeline-tools-entry-duration cluster)))
+          ;; insert headline line by line
+          (dolist (headline (-interpose "|\n |||||"
+                                        (timeline-tools-entry-headlines cluster)))
+            (insert headline))
+          (insert "\n")))
       (insert "|--|\n")
       (org-table-align)
       (goto-char (point-min)))))
