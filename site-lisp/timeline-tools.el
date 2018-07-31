@@ -32,18 +32,6 @@ Filter are applied in the order they are given in this list."
   :group 'timeline-tools
   :type '(list function))
 
-(defcustom timeline-tools-headline-time-format
-  "%Y-%m-%d %H:%M"
-  "Format of time used in the headline of a timeline."
-  :group 'timeline-tools
-  :type 'string)
-
-(defcustom timeline-tools-time-format
-  "%Y-%m-%d %H:%M"
-  "Format of time used inside a timeline"
-  :group 'timeline-tools
-  :type 'string)
-
 
 ;; Mode definition
 
@@ -58,6 +46,12 @@ Filter are applied in the order they are given in this list."
 
 (defvar timeline-tools--current-timeline nil
   "Currently displayed timeline in abstract form.")
+
+(defvar timeline-tools-headline-time-format "%Y-%m-%d %H:%M"
+  "Format of time used in the headline of a timeline.")
+
+(defvar timeline-tools-time-format "%Y-%m-%d %H:%M"
+  "Format of time used inside a timeline")
 
 (defvar timeline-tools-mode-map
   (let ((map (make-sparse-keymap)))
