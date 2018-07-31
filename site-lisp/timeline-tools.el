@@ -214,11 +214,9 @@ where MARKER is a marker to the beginning of the corresponding
 heading and CLOCK-TIMES is a list of cons cells of the
 form (START . END), where START and END are the starting and
 ending times of a clock line for this task.  START and END are
-given as seconds since the epoch, as a floating point number.  No
-truncation with respect to TSTART and TEND is done, i.e., START
-or END may occassionally lie outside of these limits, as long as
-the corresponding clockline has non-empty intersection with the
-given bounds."
+given as seconds since the epoch, as a floating point number.
+Truncation with respect to TSTART and TEND is done, i.e., START
+or END will always be in the interval [TSTART,TEND]."
   ;; adapted from `org-clock-sum’
   (when (eq major-mode 'org-mode)
     (let* ((tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart))
@@ -236,7 +234,9 @@ given bounds."
              (when (or (<= tstart te tend)
                        (<= tstart ts tend)
                        (<= ts tstart tend te))
-               (push (cons ts te) times))))
+               (push (cons (max ts tstart)
+                           (min te tend))
+                     times))))
        ;; when on headlines, store away collected clocklines
        #'(lambda ()
            ;; add currently running clock if wanted
@@ -250,7 +250,9 @@ given bounds."
                          (<= current-clock-start
                              tstart tend
                              current-clock-end))
-                 (push (cons current-clock-start current-clock-end) times))))
+                 (push (cons (max current-clock-start tstart)
+                             (min current-clock-end tend))
+                       times))))
            ;; store away clocklines of current headline
            (when (not (null times))
              (push (cons (point-marker) times) task-clock-times)
