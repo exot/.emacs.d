@@ -35,9 +35,15 @@ Filter are applied in the order they are given in this list."
   :group 'timeline-tools
   :type '(list function))
 
+(defcustom timeline-tools-headline-time-format
+  "%Y-%m-%d %H:%M"
+  "Format of time used in the headline of a timeline."
+  :group 'timeline-tools
+  :type 'string)
+
 (defcustom timeline-tools-time-format
   "%Y-%m-%d %H:%M"
-  "Format of time as used by the formatting functions."
+  "Format of time used inside a timeline"
   :group 'timeline-tools
   :type 'string)
 
@@ -361,6 +367,8 @@ interactively, START and END are queried with `org-read-date’."
         (setq-local timeline-tools--current-time-end (org-time-string-to-seconds tend))
         (setq-local timeline-tools--current-files files)
         (setq-local timeline-tools--current-timeline timeline)
+        (setq-local timeline-tools-time-format timeline-tools-time-format)
+        (setq-local timeline-tools-headline-time-format timeline-tools-headline-time-format)
         (hl-line-mode)
         (buffer-enable-undo)
         (timeline-tools-redraw-timeline))
@@ -392,9 +400,9 @@ ending at 23:61.  When not given, FILES defaults to
     (let ((timeline timeline-tools--current-timeline))
       (erase-buffer)
       (insert (format "* Timeline from [%s] to [%s]\n\n"
-                      (format-time-string timeline-tools-time-format
+                      (format-time-string timeline-tools-headline-time-format
                                           timeline-tools--current-time-start)
-                      (format-time-string timeline-tools-time-format
+                      (format-time-string timeline-tools-headline-time-format
                                           timeline-tools--current-time-end)))
       (insert "|--|\n")
       (insert "| Category | Start | End | Duration | Task |\n")
