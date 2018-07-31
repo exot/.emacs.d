@@ -95,18 +95,14 @@ Return whatever is found first."
         (org-entry-get marker "CATEGORY"))))
 
 (defun timeline-tools-entry-headlines (entry)
-  "Return list of all headlines associated with ENTRY."
+  "Return list of all headlines associated with ENTRY.
+The headline will be a string, propertized with a property called
+`marker’ and a corresponding marker pointing to the headline."
   (mapcar (lambda (marker)
-            (save-match-data
-              (let* ((heading (save-mark-and-excursion
-                               (with-current-buffer (marker-buffer marker)
-                                 (goto-char (marker-position marker))
-                                 (thing-at-point 'line t)))))
-                (string-match (format "^\\(\\*+\\)\\(?: +%s\\)?\\(?: %s\\)? +\\(.*?\\)[ \t]*\\(?::\\(?:[A-Za-z_]+:\\)+\\)?$"
-                                      (regexp-opt org-todo-keywords-1)
-                                      org-priority-regexp)
-                              heading)
-                (match-string 4 heading))))
+            (let ((heading (org-with-point-at marker
+                             (org-element-headline-parser (point-max)))))
+              (propertize (plist-get (cadr heading) :raw-value)
+                          'marker marker)))
           (timeline-tools-entry-markers entry)))
 
 
