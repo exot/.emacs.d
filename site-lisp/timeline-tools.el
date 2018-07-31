@@ -21,11 +21,6 @@
   :tag "Timeline Tools"
   :group 'applications)
 
-(defcustom timeline-tools-short-task-threshold 300
-  "Duration of task to be considered as short."
-  :group 'timeline-tools
-  :type 'integer)
-
 (defcustom timeline-tools-filter-functions nil
   "List of functions to apply when formatting timelines.
 Filter are applied in the order they are given in this list."
@@ -60,6 +55,7 @@ Filter are applied in the order they are given in this list."
     (define-key map "R" #'timeline-tools-reparse-timeline)
     (define-key map "f" #'timeline-tools-forward-day)
     (define-key map "b" #'timeline-tools-backward-day)
+    (define-key map "s" #'timeline-tools-skip-short-entries)
     (define-key map "q" #'quit-window)
     map))
 
@@ -295,13 +291,15 @@ Markers to org mode tasks are combined into a list."
                (-mapcat #'timeline-tools-entry-markers cluster)))
             new-timeline)))
 
-(defun timeline-tools-skip-short-entries (timeline)
-  "Skip entries shorter than THRESHOLD in TIMELINE.
+(defun timeline-tools-remove-short-entries (timeline &optional threshold)
+  "Remove entries from TIMELINE shorter than THRESHOLD.
 
 A slot is short if it is not longer than THRESHOLD seconds.
-Resulting gaps are distributed evenly among adjacent slots."
+Resulting gaps are distributed evenly among adjacent slots.
+THRESHOLD defaults to 300 seconds if not supplied."
   (let ((start (timeline-tools-entry-start-time (-first-item timeline)))
         (end   (timeline-tools-entry-end-time (-last-item timeline)))
+        (threshold (or threshold 300))  ; magic number, should be customizable or something
         new-timeline)
 
     ;; remove all slots that are too short
@@ -309,7 +307,7 @@ Resulting gaps are distributed evenly among adjacent slots."
           (cl-remove-if (lambda (entry)
                           (<= (- (timeline-tools-entry-end-time entry)
                                  (timeline-tools-entry-start-time entry))
-                              timeline-tools-short-task-threshold))
+                              threshold))
                         timeline))
 
     ;; reset start and end times
@@ -460,6 +458,18 @@ Updates category properties before constructing the new timeline."
                  timeline-tools--current-time-start
                  timeline-tools--current-time-end
                  timeline-tools--current-files))
+    (timeline-tools-redraw-timeline)))
+
+(defun timeline-tools-skip-short-entries ()
+  "Skip entries in current timeline that are too short.
+Interactively query for the exact value of \"short\"."
+  (interactive)
+  (when (not (eq major-mode 'timeline-tools-mode))
+    (user-error "Not in Timeline buffer"))
+  (let ((threshold (string-to-number
+                    (read-from-minibuffer "Maximum time for short entries (in seconds): "))))
+    (setq-local timeline-tools--current-timeline
+                (timeline-tools-remove-short-entries timeline-tools--current-timeline threshold))
     (timeline-tools-redraw-timeline)))
 
 
