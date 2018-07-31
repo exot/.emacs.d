@@ -812,58 +812,6 @@ This is done only if the value of this variable is not null."
           (org-icalendar-combine-agenda-files)
           (message "Exporting diary ... done.")))))))
 
-(defun db/ical-to-org (ical-file-name org-file-name category filetags)
-  "Convert ICAL-FILE-NAME to ORG-FILE-NAME using ical2org.
-
-CATEGORY and FILETAGS specify the category and the filetags of
-the resulting org mode file, respectively."
-  (when (string-match "^https?://" ical-file-name)
-    (let ((tmp-file (make-temp-file "/tmp/emacs-ical-")))
-      (url-copy-file ical-file-name tmp-file t)
-      (setq ical-file-name tmp-file)))
-  (unless (zerop (call-process "ical2org"
-                               ical-file-name
-                               `(:file ,org-file-name)
-                               nil
-                               "-c" category
-                               "-f" filetags))
-    (error (concat "Error in converting ical file «%s» into org file;"
-                   " see «%s» for more information")
-           ical-file-name org-file-name)))
-
-(defvar db/ical-org-links nil
-  "List of ical-file-names and their linked org mode files.")
-
-(defun db/add-ical-org-link (ical-file-name org-file-name category filetags)
-  "Add a new link from ICAL-FILE-NAME to ORG-FILE-NAME.
-
-Resulting org mode file will have CATEGORY and FILETAGS set."
-  (cl-pushnew (list ical-file-name org-file-name category filetags)
-              db/ical-org-links
-              :test #'equal))
-
-(defun db/update-ical-org-files ()
-  "Update all org mode files that are linked to some iCal file."
-  (interactive)
-  (dolist (entry db/ical-org-links)
-    (cl-destructuring-bind (url target category filetags) entry
-      (condition-case ex
-          (progn
-            ;; update TARGET
-            (db/ical-to-org url target category filetags)
-            ;; revert buffers visiting TARGET
-            (with-current-buffer (find-buffer-visiting target)
-              (let ((revert-without-query (list (regexp-quote (file-truename target)))))
-                (revert-buffer))))
-        (error
-         (warn "Error in generating %s: %s" target (cadr ex)))))))
-
-(defun db/sync-all-iCal ()
-  "Sync all iCal sources."
-  (interactive)
-  (db/export-diary)
-  (db/update-ical-org-files))
-
 
 ;;; Fixes
 
