@@ -400,11 +400,11 @@ archives."
             (insert "|--|\n")
             (setq last-category (timeline-tools-entry-category cluster)))
           (insert (format "| %s | %s | %s | %s min | "
-                          (timeline-tools-entry-category cluster)
-                          (timeline-tools-format-entry-time cluster 'start)
-                          (timeline-tools-format-entry-time cluster 'end)
-                          (timeline-tools-entry-duration cluster)))
-          ;; insert headline line by line
+                           (timeline-tools-entry-category cluster)
+                           (timeline-tools-format-entry-time cluster 'start)
+                           (timeline-tools-format-entry-time cluster 'end)
+                           (timeline-tools-entry-duration cluster)))
+           ;; insert headline line by line
           (dolist (headline (-interpose "|\n |||||"
                                         (timeline-tools-entry-headlines cluster)))
             (insert headline))
@@ -466,7 +466,8 @@ Interactively query for the exact value of \"short\"."
   (let ((threshold (string-to-number
                     (read-from-minibuffer "Maximum time for short entries (in seconds): "))))
     (setq-local timeline-tools--current-timeline
-                (timeline-tools-remove-short-entries timeline-tools--current-timeline threshold))
+                (timeline-tools-remove-short-entries
+                 timeline-tools--current-timeline threshold))
     (timeline-tools-redraw-timeline)))
 
 (defun timeline-tools-jump-to-headline ()
