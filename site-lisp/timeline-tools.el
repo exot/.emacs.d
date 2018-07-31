@@ -56,6 +56,7 @@ Filter are applied in the order they are given in this list."
     (define-key map "f" #'timeline-tools-forward-day)
     (define-key map "b" #'timeline-tools-backward-day)
     (define-key map "s" #'timeline-tools-skip-short-entries)
+    (define-key map (kbd "RET") #'timeline-tools-jump-to-headline)
     (define-key map "q" #'quit-window)
     map))
 
@@ -467,6 +468,21 @@ Interactively query for the exact value of \"short\"."
     (setq-local timeline-tools--current-timeline
                 (timeline-tools-remove-short-entries timeline-tools--current-timeline threshold))
     (timeline-tools-redraw-timeline)))
+
+(defun timeline-tools-jump-to-headline ()
+  "Jump to headline of current entry, if available."
+  (interactive)
+  (unless (eq major-mode 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+  (let ((marker (save-mark-and-excursion
+                 (end-of-line)
+                 (org-table-previous-field)
+                 (get-text-property (point) 'marker))))
+    (unless marker
+      (user-error "Not on headline to jump to"))
+    (switch-to-buffer (marker-buffer marker))
+    (goto-char marker)
+    (org-reveal)))
 
 
 ;;; Manipulating Clocklines
