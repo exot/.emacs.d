@@ -28,7 +28,9 @@
       org-M-RET-may-split-line '((default . nil))
       org-highlight-latex-and-related '(latex)
       org-use-sub-superscripts '{}
-      org-export-with-sub-superscripts '{})
+      org-export-with-sub-superscripts '{}
+      org-src-fontify-natively t
+      org-src-preserve-indentation t)
 
 (bind-key [remap org-return] 'org-return-indent org-mode-map)
 
@@ -66,6 +68,30 @@
 (setq org-columns-default-format
       "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
 
+(setq org-structure-template-alist
+      '(("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
+        ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
+        ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
+        ("Q" "#+begin_equation\n?\n#+end_equation"
+         "<equation>\n?\n</equation>")
+        ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n</verse>")
+        ("V" "#+begin_verbatim\n?\n#+end_verbatim" "<verbatim>\n?\n</verbatim>")
+        ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n</center>")
+        ("l" "#+begin_latex\n?\n#+end_latex"
+         "<literal style=\"latex\">\n?\n</literal>")
+        ("l" "#+latex: " "<literal style=\"latex\">?</literal>")
+        ("h" "#+begin_html\n?\n#+end_html"
+         "<literal style=\"html\">\n?\n</literal>")
+        ("h" "#+html: " "<literal style=\"html\">?</literal>")
+        ("a" "#+begin_ascii\n?\n#+end_ascii" "")
+        ("a" "#+ascii: " "")
+        ("i" "#+index: ?" "#+index: ?")
+        ("i" "#+include: %file ?"
+         "<include file=%file markup=\"?\">")))
+
+
+;;; How to open files and links
+
 ;; open directory links in emacs itself
 (add-to-list 'org-file-apps '(directory . emacs))
 
@@ -73,6 +99,13 @@
 (add-to-list 'org-file-apps '("\\.docx\\'" . system))
 (add-to-list 'org-file-apps '("\\.pptx\\'" . system))
 (add-to-list 'org-file-apps '("\\.xlsx\\'" . system))
+
+(when (eq system-type 'windows-nt)
+  (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
+
+  (defun db/org-onenote-open (path)
+    "Visit OneNote document on PATH."
+    (start-process "OneNote" nil "OneNote" "/hyperlink" path)))
 
 
 ;;; Faces
@@ -719,33 +752,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (setq org-refile-target-verify-function 'db/verify-refile-target)
 
 
-;;; Babel
-
-(setq org-structure-template-alist
-      '(("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
-        ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
-        ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
-        ("Q" "#+begin_equation\n?\n#+end_equation"
-         "<equation>\n?\n</equation>")
-        ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n</verse>")
-        ("V" "#+begin_verbatim\n?\n#+end_verbatim" "<verbatim>\n?\n</verbatim>")
-        ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n</center>")
-        ("l" "#+begin_latex\n?\n#+end_latex"
-         "<literal style=\"latex\">\n?\n</literal>")
-        ("l" "#+latex: " "<literal style=\"latex\">?</literal>")
-        ("h" "#+begin_html\n?\n#+end_html"
-         "<literal style=\"html\">\n?\n</literal>")
-        ("h" "#+html: " "<literal style=\"html\">?</literal>")
-        ("a" "#+begin_ascii\n?\n#+end_ascii" "")
-        ("a" "#+ascii: " "")
-        ("i" "#+index: ?" "#+index: ?")
-        ("i" "#+include: %file ?"
-         "<include file=%file markup=\"?\">")))
-
-(setq org-src-fontify-natively t
-      org-src-preserve-indentation t)
-
-
 ;;; Reset checklists
 
 ;; from `org-checklist’ by James TD Smith (@ ahktenzero (. mohorovi cc)),
@@ -923,17 +929,6 @@ Current Task: %`org-clock-current-task; "
              (let ((org-inhibit-logging 'note))
                (org-todo 'done)
                (org-save-all-org-buffers)))))))
-
-
-
-;;; Custom links for Windows
-
-(when (eq system-type 'windows-nt)
-  (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
-
-  (defun db/org-onenote-open (path)
-    "Visit OneNote document on PATH."
-    (start-process "OneNote" nil "OneNote" "/hyperlink" path)))
 
 
 ;;; Drag-and-Drop images into org-mode buffer
