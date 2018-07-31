@@ -783,8 +783,6 @@ are assumed to be of the form *.crt."
                       ("\\.html?\\'" "firefox")
                       ("\\.docx?\\'" "loffice"))))
 
-            (unbind-key "C-M-o" dired-mode-map)
-
             ;; disable exaggerated fontification of dired+
             (use-package font-lock)
             (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
@@ -800,18 +798,12 @@ are assumed to be of the form *.crt."
 
             ;; custom keybindings
 
-            (bind-key [remap beginning-of-buffer]
-                      'dired-back-to-top dired-mode-map)
-            (bind-key [remap end-of-buffer]
-                      'dired-jump-to-bottom dired-mode-map)
-            (bind-key "z" 'dired-get-size dired-mode-map)
             (unbind-key "s" dired-mode-map)
             (unbind-key "<f1>" dired-mode-map)
-            (bind-key "e" 'ora-ediff-files dired-mode-map)
 
-            ;; https://oremacs.com/2017/03/18/dired-ediff/
             (defun ora-ediff-files ()
               "Compare marked files in dired with ediff."
+              ;; from: https://oremacs.com/2017/03/18/dired-ediff/
               (interactive)
               (lexical-let ((files (dired-get-marked-files))
                             (wnd (current-window-configuration)))
@@ -830,18 +822,25 @@ are assumed to be of the form *.crt."
                                   (setq ediff-after-quit-hook-internal nil)
                                   (set-window-configuration wnd))))
                   (error "No more than 2 files should be marked"))))
+            (bind-key "e" 'ora-ediff-files dired-mode-map)
 
             (defun dired-back-to-top ()
               "Jump to first non-trivial line in dired."
               (interactive)
               (goto-char (point-min))
-              (dired-next-line 2))
+              (dired-next-line 1))
+
+            (bind-key [remap beginning-of-buffer]
+                      'dired-back-to-top dired-mode-map)
 
             (defun dired-jump-to-bottom ()
               "Jump to last non-trivial line in dired."
               (interactive)
               (goto-char (point-max))
               (dired-next-line -1))
+
+            (bind-key [remap end-of-buffer]
+                      'dired-jump-to-bottom dired-mode-map)
 
             (defun dired-get-size ()    ; from emacswiki, via oremacs
               "Print size of all files marked in the current dired buffer."
@@ -855,9 +854,7 @@ are assumed to be of the form *.crt."
                      (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
                      (match-string 1))))))
 
-            (use-package dired-subtree)
-            (bind-key "i" 'dired-subtree-insert dired-mode-map)
-            (bind-key ";" 'dired-subtree-remove dired-mode-map)))
+            (bind-key "z" 'dired-get-size dired-mode-map)))
 
 (use-package find-dired
   :commands (find-dired)
