@@ -170,6 +170,8 @@
   (bind-key "C-;" #'iedit-mode)
   (bind-key "C-<" #'mc/mark-previous-like-this)
   (bind-key "C->" #'mc/mark-next-like-this)
+  (bind-key "C-." #'mc/skip-to-next-like-this)
+  (bind-key "C-," #'mc/skip-to-previous-like-this)
   (bind-key "C-@" #'er/expand-region)
   (bind-key "C-M-\\" #'crux-cleanup-buffer-or-region)
   (bind-key "C-S-c C-S-c" #'mc/edit-lines)
