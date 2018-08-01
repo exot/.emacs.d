@@ -114,11 +114,11 @@
                   sml/setup
                   ivy-mode
                   which-key-mode))
-    (with-demoted-errors                ; don’t barf if mode cannot be loaded
+    (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
   (unless on-windows
-    (with-demoted-errors
+    (with-demoted-errors "Error: %s"
       (projectile-mode +1)
       (pdf-tools-install)))
 
@@ -241,7 +241,7 @@
   ;; Environment Variables
 
   (unless on-windows
-    (with-demoted-errors
+    (with-demoted-errors "Cannot import environment variables: %s"
       (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
                                         "SSH_AGENT_PID"
                                         "PATH"
