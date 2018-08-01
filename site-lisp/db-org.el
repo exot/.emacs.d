@@ -843,7 +843,11 @@ This is done only if the value of this variable is not null."
 
 (use-package ox
   :defer t
-  :config (require 'ox-md))
+  :config (progn
+            (with-demoted-errors "Cannot load package: %s"
+              (require 'ox-md)
+              (require 'ox-pandoc))
+            (setq org-export-exclude-tags '("NO_EXPORT"))))
 
 
 ;;; Hydra
