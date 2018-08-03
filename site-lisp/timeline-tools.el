@@ -27,6 +27,11 @@ Filter are applied in the order they are given in this list."
   :group 'timeline-tools
   :type '(list function))
 
+(defcustom timeline-tools-short-task-threshold 300
+  "Duration of task to be considered as short."
+  :group 'timeline-tools
+  :type 'integer)
+
 
 ;; Mode definition
 
@@ -293,10 +298,11 @@ Markers to org mode tasks are combined into a list."
 
 A slot is short if it is not longer than THRESHOLD seconds.
 Resulting gaps are distributed evenly among adjacent slots.
-THRESHOLD defaults to 300 seconds if not supplied."
+THRESHOLD defaults to the value of
+`timeline-tools-short-task-threshold’ if not supplied."
   (let ((start (timeline-tools-entry-start-time (-first-item timeline)))
         (end   (timeline-tools-entry-end-time (-last-item timeline)))
-        (threshold (or threshold 300))  ; magic number, should be customizable or something
+        (threshold (or threshold timeline-tools-short-task-threshold))
         new-timeline)
 
     ;; remove all slots that are too short
