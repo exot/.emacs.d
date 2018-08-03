@@ -293,6 +293,25 @@ Markers to org mode tasks are combined into a list."
                (-mapcat #'timeline-tools-entry-markers cluster)))
             new-timeline)))
 
+(defun timeline-tools-cluster-same-entry (timeline)
+  "Cluster TIMELINE into consecutive entries with equal marker.
+This only works if every entry in timeline consists of a
+singleton marker only.  In case this is not satisfied, this
+function will throw an error."
+  (assert (-all-p #'(lambda (entry)
+                      (null (cdr (timeline-tools-entry-markers entry))))
+                  timeline)
+          "Timeline must not contain entries with more than one marker.")
+  (let ((new-timeline (-partition-by #'(lambda (entry)
+                                         (-first-item (timeline-tools-entry-markers entry)))
+                                     timeline)))
+    (mapcar (lambda (cluster)
+              (timeline-tools-make-entry
+               (timeline-tools-entry-start-time (-first-item cluster))
+               (timeline-tools-entry-end-time (-last-item cluster))
+               (-mapcat #'timeline-tools-entry-markers cluster)))
+            new-timeline)))
+
 (defun timeline-tools-remove-short-entries (timeline &optional threshold)
   "Remove entries from TIMELINE shorter than THRESHOLD.
 
