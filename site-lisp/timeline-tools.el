@@ -21,7 +21,8 @@
   :tag "Timeline Tools"
   :group 'applications)
 
-(defcustom timeline-tools-filter-functions nil
+(defcustom timeline-tools-filter-functions
+  (list #'timeline-tools-remove-short-entries #'timeline-tools-cluster-same-entry)
   "List of functions to apply when formatting timelines.
 Filter are applied in the order they are given in this list."
   :group 'timeline-tools
