@@ -373,7 +373,7 @@ archives."
   (let ((timeline-tools-time-format "%H:%M")
         (timeline-tools-headline-time-format "%Y-%m-%d"))
    (timeline-tools-format-timeline (concat date " 00:00")
-                                   (org-read-date nil nil "+1d" nil
+                                   (org-read-date nil nil "++1d" nil
                                                   (org-time-string-to-time date))
                                    files)))
 
