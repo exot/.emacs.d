@@ -976,7 +976,8 @@ are assumed to be of the form *.crt."
   :config (run-with-timer 0 3600 #'recentf-save-list))
 
 (use-package company
-  :commands (company-mode global-company-mode))
+  :commands (company-mode global-company-mode)
+  :config (setq company-show-numbers t))
 
 
 ;; * Navigation
