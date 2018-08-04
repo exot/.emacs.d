@@ -1205,19 +1205,6 @@ are assumed to be of the form *.crt."
             (add-hook 'hy-mode-hook 'lispy-mode)
             (add-hook 'hy-mode-hook 'inferior-lisp)))
 
-(defun org-babel-execute:hy (body params)
-  ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
-  "Execute hy code BODY with parameters PARAMS."
-  (ignore params)
-  (let* ((temporary-file-directory ".")
-         (tempfile (make-temp-file "hy-")))
-    (with-temp-file tempfile
-      (insert body))
-    (unwind-protect
-        (shell-command-to-string
-         (format "hy %s" tempfile))
-      (delete-file tempfile))))
-
 
 ;; * TeX
 
