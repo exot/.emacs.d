@@ -1003,6 +1003,9 @@ are assumed to be of the form *.crt."
              dumb-jump-go-prefer-external-other-window)
   :config (setq dumb-jump-selector 'helm))
 
+(use-package helm-pages
+  :commands (helm-pages))
+
 
 ;; * Media
 
