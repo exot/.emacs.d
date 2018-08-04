@@ -447,8 +447,8 @@
 
             (add-hook 'ediff-keymap-setup-hook
                       '(lambda ()
-                        (bind-key "j" 'ediff-next-difference ediff-mode-map)
-                        (bind-key "k" 'ediff-previous-difference ediff-mode-map)))
+                        (bind-key "j" #'ediff-next-difference ediff-mode-map)
+                        (bind-key "k" #'ediff-previous-difference ediff-mode-map)))
 
             (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
 
@@ -824,7 +824,7 @@ are assumed to be of the form *.crt."
                                   (setq ediff-after-quit-hook-internal nil)
                                   (set-window-configuration wnd))))
                   (error "No more than 2 files should be marked"))))
-            (bind-key "e" 'ora-ediff-files dired-mode-map)
+            (bind-key "e" #'ora-ediff-files dired-mode-map)
 
             (defun dired-back-to-top ()
               "Jump to first non-trivial line in dired."
@@ -833,7 +833,7 @@ are assumed to be of the form *.crt."
               (dired-next-line 1))
 
             (bind-key [remap beginning-of-buffer]
-                      'dired-back-to-top dired-mode-map)
+                      #'dired-back-to-top dired-mode-map)
 
             (defun dired-jump-to-bottom ()
               "Jump to last non-trivial line in dired."
@@ -856,7 +856,7 @@ are assumed to be of the form *.crt."
                      (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
                      (match-string 1))))))
 
-            (bind-key "z" 'dired-get-size dired-mode-map)))
+            (bind-key "z" #'dired-get-size dired-mode-map)))
 
 (use-package find-dired
   :commands (find-dired)
@@ -899,9 +899,9 @@ are assumed to be of the form *.crt."
                   helm-buffer-details-flag t
                   helm-buffer-skip-remote-checking t)
 
-            (bind-key "<tab>" 'helm-execute-persistent-action helm-map)
-            (bind-key "C-i" 'helm-execute-persistent-action helm-map)
-            (bind-key "C-z" 'helm-select-action helm-map)
+            (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
+            (bind-key "C-i" #'helm-execute-persistent-action helm-map)
+            (bind-key "C-z" #'helm-select-action helm-map)
 
             (setq helm-mini-default-sources '(helm-source-buffers-list
                                               helm-source-recentf
@@ -929,7 +929,7 @@ are assumed to be of the form *.crt."
                            . helm-org--clock-in-at-heading)
                          t)
 
-            (bind-key "C-c c" 'helm-org-clock-in-at-heading helm-org-headings-map)))
+            (bind-key "C-c c" #'helm-org-clock-in-at-heading helm-org-headings-map)))
 
 (use-package ivy
   :commands (ivy-mode
@@ -1057,7 +1057,7 @@ are assumed to be of the form *.crt."
 
             ;; does not work; C-c is shadowed by some minor modes like semantic,
             ;; projectile, and winner
-            (bind-key "C-c" 'term-send-raw term-raw-map)
+            (bind-key "C-c" #'term-send-raw term-raw-map)
 
             ;; unbind some keys to allow the global keymap to handle them
             (unbind-key "M-:" term-raw-map)
