@@ -412,6 +412,13 @@
 
 (setq custom-theme-directory (expand-file-name "themes/" emacs-d))
 
+;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
+(setq math-additional-units
+      '((bit nil "Bit")
+        (byte "8 * bit" "Byte")
+        (bps "bit / s" "Bit per second"))
+      math-units-table nil)
+
 
 ;; * Basic Builtin Packages
 
