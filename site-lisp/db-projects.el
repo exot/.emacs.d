@@ -35,7 +35,7 @@
   "Add new project."
   (interactive "sShort Name: \nsLong Name: ")
   (when (projects-project-exists-p short-name)
-    (user-error "Project %s already exists, existing" short-name))
+    (user-error "Project %s already exists, exiting" short-name))
   (let ((project-directory (expand-file-name short-name
                                              projects-main-project-directory)))
     (make-directory project-directory)
