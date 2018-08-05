@@ -1261,6 +1261,9 @@ are assumed to be of the form *.crt."
              crux-cleanup-buffer-or-region
              crux-delete-buffer-and-file))
 
+(use-package db-projects
+  :commands (projects-add-project projects-archive-project))
+
 (use-package define-word
   :commands (define-word-at-point define-word))
 
