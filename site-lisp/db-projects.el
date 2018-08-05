@@ -3,6 +3,7 @@
 ;;; Commentary:
 
 ;; XXX: add projectile integration
+;; XXX: check that newly created projects aren’t name the same as archived projects
 
 ;;; Code:
 
