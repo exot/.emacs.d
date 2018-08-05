@@ -22,15 +22,14 @@
 
 (defun projects-project-exists-p (short-name)
   "Check whether a project named SHORT-NAME already exists"
-  (file-exists-p (expand-file-name ".projectile"
-                                   (expand-file-name short-name
-                                                     projects-main-project-directory))))
+  (file-exists-p (expand-file-name (concat (file-name-as-directory short-name) ".projectile")
+                                   projects-main-project-directory)))
 
 (defun projects-existing-projects ()
   "Return list of all short-names of existing projects"
   (cl-remove-if-not (lambda (name)
-                      (file-exists-p (expand-file-name ".projectile"
-                                                       (expand-file-name name projects-main-project-directory))))
+                      (file-exists-p (expand-file-name (concat (file-name-as-directory name) ".projectile")
+                                                       projects-main-project-directory)))
                     (directory-files projects-main-project-directory)))
 
 (defun projects-add-project (short-name long-name)
