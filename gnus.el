@@ -520,6 +520,14 @@ If found, imports the certificate via gpgsm."
 (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-summary-mode-map)
 (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-article-mode-map)
 
+(defun db/gnus-html-mime-part-to-org ()
+  "Convert current gnus article to org mode."
+  (let ((return-code (gnus-mime-pipe-part "pandoc -f html -t org")))
+    (unless (zerop return-code)
+      (error "Error in extracting text"))
+    (with-current-buffer "*Shell Command Output*"
+      (kill-ring-save (point-min) (point-max)))))
+
 
 ;;; Timeout for fetching news
 
