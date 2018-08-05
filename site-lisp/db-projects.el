@@ -48,9 +48,8 @@
                       (format-time-string "[%Y-%m-%d %a %H:%M]" (current-time))))
       (write-file (expand-file-name "projekttagebuch.org" project-directory))
       (bookmark-set (format "Projekttagebuch %s" short-name)))
-    (with-temp-buffer
-      (insert (format "%s" long-name))
-      (write-file (expand-file-name ".projectile" project-directory)))))
+    (write-region (format "%s" long-name) nil
+                  (expand-file-name ".projectile" project-directory))))
 
 (defun projects-archive-project (short-name)
   "Archive existing project."
