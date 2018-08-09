@@ -834,12 +834,25 @@ This is done only if the value of this variable is not null."
 
 (with-eval-after-load "ox-latex"
   (add-to-list 'org-latex-classes
-               '("scrartcl" "\\documentclass{scrartcl}"
+               `("scrartcl"
+                 ,(concat "\\documentclass{scrartcl}\n"
+                          "[DEFAULT-PACKAGES]"
+                          "[PACKAGES]"
+                          "[EXTRA]\n")
                  ("\\section{%s}" . "\\section*{%s}")
                  ("\\subsection{%s}" . "\\subsection*{%s}")
                  ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
                  ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
+                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+  (add-to-list 'org-latex-classes
+               `("beamer"
+                 ,(concat "\\documentclass[presentation]{beamer}\n"
+                          "[DEFAULT-PACKAGES]"
+                          "[PACKAGES]"
+                          "[EXTRA]\n")
+                 ("\\section{%s}" . "\\section*{%s}")
+                 ("\\subsection{%s}" . "\\subsection*{%s}")
+                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
 
 (use-package ox
   :defer t
