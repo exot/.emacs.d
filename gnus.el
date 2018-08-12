@@ -522,6 +522,7 @@ If found, imports the certificate via gpgsm."
 
 (defun db/gnus-html-mime-part-to-org ()
   "Convert current gnus article to org mode."
+  (interactive)
   (let ((return-code (gnus-mime-pipe-part "pandoc -f html -t org")))
     (unless (zerop return-code)
       (error "Error in extracting text"))
