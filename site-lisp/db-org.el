@@ -740,7 +740,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 ;; Refiling targets include this file and any file contributing to the agenda,
 ;; up to 9 levels deep
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 9))))
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 9))
+                           (nil . (:maxlevel . 9))))
 
 ;; Use full outline paths for refile targets
 (setq org-refile-use-outline-path 'file)
