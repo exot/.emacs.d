@@ -100,6 +100,9 @@
 (add-to-list 'org-file-apps '("\\.pptx\\'" . system))
 (add-to-list 'org-file-apps '("\\.xlsx\\'" . system))
 
+(when (eq system-type 'cygwin)
+  (add-to-list 'org-file-apps '(t . "cygstart") t))
+
 (when (eq system-type 'windows-nt)
   (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
 
