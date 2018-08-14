@@ -834,7 +834,8 @@ This is done only if the value of this variable is not null."
 
 ;;; Exporting
 
-(setq org-export-use-babel nil)
+(setq org-export-use-babel nil
+      org-export-with-broken-links 'mark)
 
 (with-eval-after-load "ox-latex"
   (add-to-list 'org-latex-classes
