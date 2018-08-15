@@ -388,9 +388,9 @@ forces clocking in of the default task."
       '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t))
 
 (setq org-stuck-projects
-      '("-DATE-NOP-HOLD-REGULAR-HOLD-NOTE+TODO=\"\""
+      '("-DATE-HOLD-REGULAR-HOLD-NOTE+TODO=\"\""
         ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG")
-        ()
+        ("NOP")
         ""))
 
 (defun db/org-agenda-list-deadlines (&optional match)
