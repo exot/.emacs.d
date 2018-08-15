@@ -1376,17 +1376,15 @@ are assumed to be of the form *.crt."
             (require 'semantic/ia)
             (require 'semantic/bovine/el)
 
-            ;; recognize `use-package' as include statement; for some reason,
-            ;; this form needs to be wrapped in a backquote so that the lambda
-            ;; form is evaluated before parser is installed; otherwise, the
-            ;; lambda-form is not recognized as a function and the parsing does
-            ;; not work
-            (eval-after-load 'semantic/bovine/el
-              `(semantic-elisp-setup-form-parser
-                   ,(lambda (form start end)
-                      (ignore start end)
-                      (semantic-tag-new-include (symbol-name (nth 1 form)) nil))
-                 use-package))))
+            ;; recognize `use-package' as include statement; the function seems
+            ;; to have to be a byte-compiled function, for otherwise it just
+            ;; won’t work … ?
+            (eval `(semantic-elisp-setup-form-parser
+                       ,(lambda (form start end)
+                          (ignore start end)
+                          (semantic-tag-new-include (symbol-name (nth 1 form))
+                                                    nil))
+                     use-package))))
 
 (use-package synonyms
   :commands (synonyms))
