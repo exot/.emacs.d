@@ -612,18 +612,17 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
      (org-agenda-redo)))
   ("q" (message "Abort") :exit t))
 
-(eval-after-load 'org-agenda
-  '(bind-key "v" #'hydra-org-agenda-view/body org-agenda-mode-map))
+(with-eval-after-load 'org-agenda
+  (bind-key "v" #'hydra-org-agenda-view/body org-agenda-mode-map))
 
 
 ;;; Capturing
 
 ;; disable usage of helm for `org-capture'
-(eval-after-load 'helm-mode
-  '(progn
-     (defvar helm-completing-read-handlers-alist) ; for the byte compiler
-     (add-to-list 'helm-completing-read-handlers-alist
-                  '(org-capture . nil))))
+(with-eval-after-load 'helm-mode
+  (defvar helm-completing-read-handlers-alist) ; for the byte compiler
+  (add-to-list 'helm-completing-read-handlers-alist
+               '(org-capture . nil)))
 
 (setq org-capture-use-agenda-date nil)
 
@@ -837,7 +836,7 @@ This is done only if the value of this variable is not null."
 (setq org-export-use-babel nil
       org-export-with-broken-links 'mark)
 
-(with-eval-after-load "ox-latex"
+(with-eval-after-load 'ox-latex
   (add-to-list 'org-latex-classes
                `("scrartcl"
                  ,(concat "\\documentclass{scrartcl}\n"

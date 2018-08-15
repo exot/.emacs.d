@@ -67,11 +67,10 @@
              '(output-pdf "Evince"))
 
 ;; use pdf-tools when loaded
-(eval-after-load 'pdf-tools
-  `(progn
-     (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))
-     (add-to-list 'TeX-after-compilation-finished-functions
-                  #'TeX-revert-document-buffer)))
+(with-eval-after-load 'pdf-tools
+  (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))
+  (add-to-list 'TeX-after-compilation-finished-functions
+               #'TeX-revert-document-buffer))
 
 
 

@@ -255,10 +255,10 @@
 
   ;; Fixes
 
-  (eval-after-load "enriched"
-    '(defun enriched-decode-display-prop (start end &optional params)
-       (ignore params)
-       (list start end)))
+  (with-eval-after-load 'enriched
+    (defun enriched-decode-display-prop (start end &optional params)
+      (ignore params)
+      (list start end)))
 
   ;; Start Server when not running already
 
@@ -1206,9 +1206,9 @@ are assumed to be of the form *.crt."
                       (cmucl ("cmucl") :coding-system utf-8-unix)
                       (ccl   ("ccl")   :coding-system utf-8-unix)))
 
-              (eval-after-load 'slime-repl
-               '(setq slime-repl-history-remove-duplicates t
-                      slime-repl-history-trim-whitespaces t))))
+              (with-eval-after-load 'slime-repl
+               (setq slime-repl-history-remove-duplicates t
+                     slime-repl-history-trim-whitespaces t))))
 
 (use-package hy-mode
   :commands (hy-mode)
@@ -1223,14 +1223,13 @@ are assumed to be of the form *.crt."
   :commands (turn-on-reftex)
   :init (add-hook 'latex-mode-hook 'turn-on-reftex)  ; with Emacs latex mode
   :config (progn
-            (eval-after-load 'helm-mode
-              '(add-to-list
-                'helm-completing-read-handlers-alist
-                '(reftex-citation . nil)))
+            (with-eval-after-load 'helm-mode
+              (add-to-list 'helm-completing-read-handlers-alist
+                           '(reftex-citation . nil)))
             (setq reftex-plug-into-AUCTeX t)))
 
-(eval-after-load 'tex-mode
-  '(use-package db-latex))
+(with-eval-after-load 'tex-mode
+  (use-package db-latex))
 
 (use-package ebib
   :commands (ebib))
