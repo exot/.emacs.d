@@ -738,7 +738,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 ;; from http://ul.io/nb/2018/04/30/better-code-snippets-with-org-capture/
 
 (defun db/org-capture-code-snippet (filename)
-  "Format Org mode entry for capturing code at point in file FILENAMe."
+  "Format Org mode entry for capturing code in active region in
+the buffer visiting FILENAME."
   (with-current-buffer (find-buffer-visiting filename)
     (let ((code-snippet (buffer-substring-no-properties (mark) (- (point) 1)))
           (func-name (which-function))
