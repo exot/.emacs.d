@@ -46,7 +46,7 @@
       (insert (format "#+created: %s\n\n"
                       (format-time-string "[%Y-%m-%d %a %H:%M]" (current-time))))
       (write-file (expand-file-name "projekttagebuch.org" project-directory))
-      (bookmark-set (format "Projekttagebuch %s" short-name)))
+      (bookmark-set (format "Projekttagebuch %s" long-name)))
     (write-region (format "%s" long-name) nil
                   (expand-file-name ".projectile" project-directory))
     (when (require 'projectile nil 'no-error)
@@ -63,7 +63,7 @@
   (rename-file (expand-file-name short-name projects-main-project-directory)
                (expand-file-name short-name projects-archive-directory)
                nil)
-  (bookmark-delete (format "Projekttagebuch %s" short-name))
+  ;; XXX: Delete bookmark
   (when (require 'projectile nil 'no-error)
     (projectile-cleanup-known-projects)))
 
