@@ -7,9 +7,9 @@ the web.  Have fun with it!
 
 The main configuration is available in the usual [[init.el]] file, with additional
 functionality distributed over files in the [[site-lisp]] directory.  Some private
-data is outsources into a separate submodule named =private=, and is not included
-in this repository.  The configuration should work nevertheless, even without
-these private files.
+data (like customization) is outsources into a separate directory named
+=private=, and is not included in this repository.  The configuration should
+work nevertheless, even without these private files.
 
 The main =init.el= file consists mostly of variable assignments, =use-package=
 declarations, and initializing the =package= subsystem.  The main lifting is
