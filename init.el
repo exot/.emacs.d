@@ -777,9 +777,9 @@ are assumed to be of the form *.crt."
             (if on-windows
                 (setq dired-guess-shell-alist-user
                       '(("\\.pdf\\'" "cmd /c")
-                        ("\\.docx\\'" "cmd /c")
-                        ("\\.pptx\\'" "cmd /c")
-                        ("\\.xlsx\\'" "cmd /c")
+                        ("\\.docx?\\'" "cmd /c")
+                        ("\\.pptx?\\'" "cmd /c")
+                        ("\\.xlsx?\\'" "cmd /c")
                         ("\\.one\\'" "cmd /c")))
               (setq dired-guess-shell-alist-user
                     '(("\\.pdf\\'" "evince")
