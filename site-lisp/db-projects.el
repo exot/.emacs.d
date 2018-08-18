@@ -7,6 +7,8 @@
 ;;; Code:
 
 (require 'subr-x)
+(require 'cl-lib)
+(require 'dash)
 
 (defgroup projects nil
   "Simple directory-based project management"
@@ -65,12 +67,33 @@
    (list (completing-read "Short Name: " (projects-existing-projects) nil t)))
   (unless (projects-project-exists-p short-name)
     (user-error "Project %s does not exist, exiting" short-name))
+
+  ;; Remove bookmark first
+  (let* ((notebook-path (expand-file-name (concat
+                                           (file-name-as-directory short-name)
+                                           "projekttagebuch.org")
+                                          projects-main-project-directory))
+         (bookmark-entry (cl-find-if (lambda (entry)
+                                       (let ((filename (->> entry
+                                                            cdr
+                                                            (cl-assoc 'filename)
+                                                            cdr)))
+                                         (and (not (file-remote-p filename))
+                                              (file-equal-p notebook-path
+                                                            filename))))
+                                     bookmark-alist)))
+    (if (null bookmark-entry)
+        (warn "No bookmark for project notebook of %s found." short-name)
+      (bookmark-delete (car bookmark-entry))))
+
+  ;; Move project directory into archive
   (unless (file-exists-p projects-archive-directory)
     (make-directory projects-archive-directory))
   (rename-file (expand-file-name short-name projects-main-project-directory)
                (expand-file-name short-name projects-archive-directory)
                nil)
-  ;; XXX: Delete bookmark
+
+  ;; Update projectile’s cache
   (when (require 'projectile nil 'no-error)
     (projectile-cleanup-known-projects)))
 
