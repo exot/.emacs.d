@@ -6,6 +6,8 @@
 
 ;;; Code:
 
+(require 'subr-x)
+
 (defgroup projects nil
   "Simple directory-based project management"
   :tag "Project Management"
@@ -36,19 +38,21 @@
   (interactive "sShort Name: \nsLong Name: ")
   (when (projects-project-exists-p short-name)
     (user-error "Project %s already exists, exiting" short-name))
-  (let ((project-directory (expand-file-name short-name
-                                             projects-main-project-directory)))
+  (let* ((project-directory (expand-file-name short-name
+                                              projects-main-project-directory))
+         (default-directory project-directory))
     (make-directory project-directory)
-    (make-directory (expand-file-name "scripts" project-directory))
-    (make-directory (expand-file-name "data" project-directory))
+    (make-directory (expand-file-name "scripts"))
+    (make-directory (expand-file-name "data"))
     (with-temp-buffer
       (insert (format "#+title: %s\n" long-name))
       (insert (format "#+created: %s\n\n"
                       (format-time-string "[%Y-%m-%d %a %H:%M]" (current-time))))
-      (write-file (expand-file-name "projekttagebuch.org" project-directory))
+      (write-file (expand-file-name "projekttagebuch.org"))
       (bookmark-set (format "Projekttagebuch %s" long-name)))
-    (write-region (format "%s" long-name) nil
-                  (expand-file-name ".projectile" project-directory))
+    (if-let ((git-executable (executable-find "git")))
+        (call-process git-executable nil nil nil "init")
+      (write-region "" nil (expand-file-name ".projectile")))
     (when (require 'projectile nil 'no-error)
       (projectile-add-known-project project-directory))))
 
