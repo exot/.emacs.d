@@ -734,6 +734,37 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
          (difference (db/org-timestamp-difference starting ending)))
     (format "CLOCK: %s--%s => %s" starting ending difference)))
 
+;; Capture Code Snippets
+;; from http://ul.io/nb/2018/04/30/better-code-snippets-with-org-capture/
+
+(defun db/org-capture-code-snippet (filename)
+  "Format Org mode entry for capturing code at point in file FILENAMe."
+  (with-current-buffer (find-buffer-visiting filename)
+    (let ((code-snippet (buffer-substring-no-properties (mark) (- (point) 1)))
+          (func-name (which-function))
+          (file-name (buffer-file-name))
+          (line-number (line-number-at-pos (region-beginning)))
+          (org-src-mode (let ((mm (intern (replace-regexp-in-string
+                                           "-mode" "" (format "%s" major-mode)))))
+                          (or (car (rassoc mm org-src-lang-modes))
+                              (format "%s" mm)))))
+      (format
+       "file:%s::%s
+In ~%s~:
+#+BEGIN_SRC %s
+%s
+#+END_SRC"
+       file-name
+       line-number
+       func-name
+       org-src-mode
+       code-snippet))))
+
+(add-to-list 'org-capture-templates
+             '("s" "Code Snippet" entry (file db/org-default-refile-file)
+               "* %?\n%(db/org-capture-code-snippet \"%F\")")
+             t)
+
 
 ;;; Refiling
 
