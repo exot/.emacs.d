@@ -71,6 +71,7 @@
   (when (require 'projectile nil 'no-error)
     (projectile-cleanup-known-projects)))
 
+
 (provide 'db-projects)
 
 ;;; db-projects.el ends here
