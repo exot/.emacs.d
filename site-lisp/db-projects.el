@@ -58,8 +58,8 @@
 
 (defun projects-archive-project (short-name)
   "Archive existing project."
-  (interactive (list
-                (completing-read "Short Name: " (projects-existing-projects) nil t)))
+  (interactive
+   (list (completing-read "Short Name: " (projects-existing-projects) nil t)))
   (unless (projects-project-exists-p short-name)
     (user-error "Project %s does not exist, exiting" short-name))
   (unless (file-exists-p projects-archive-directory)
