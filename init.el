@@ -117,9 +117,11 @@
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
+  (unless (eq system-name 'windows-nt)
+    (projectile-mode +1))
+
   (unless on-windows
     (with-demoted-errors "Error: %s"
-      (projectile-mode +1)
       (pdf-tools-install)))
 
   ;; Global Hooks
