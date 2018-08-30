@@ -15,20 +15,19 @@
 
 ;; Customization
 
-(defcustom db/smtp-accounts nil
-  "Configuration for sending mail as used by `db/set-smtp-server-from-header’, which see.
-This is a list of lists, where each such list specifies the SMTP
-parameters for one particular email address.  This specification
-consists of the mail address, the address of the mail server, the
-stream type (e.g. `starttls’), the SMTP service port, and the
-SMTP user."
+(defcustom db/mail-accounts nil
+  "Configuration for email accounts.
+This is a list of lists, where each such list specifies necessary
+parameters for one particular email address."
   :group 'personal-settings
   :type '(repeat
           (list
            (string :tag "EMail Address")
+           (string :tag "Group Name")
+           (string :tag "IMAP Server Address")
            (string :tag "SMTP Server Address")
            (choice :tag "SMTP Stream Type"
-            (const nil) (const starttls) (const plain) (const ssl))
+                   (const nil) (const starttls) (const plain) (const ssl))
            (integer :tag "SMTP Service Port")
            (string :tag "SMTP Login Name"))))
 
@@ -64,32 +63,48 @@ SMTP user."
                           'words))
 
 (setq gnus-select-method '(nnnil "")
+      ;; XXX: this should be set by the customize interface of
+      ;; `db/mail-accounts’
       gnus-secondary-select-methods
-      `((nntp "etsep"
-              (nntp-open-connection-function nntp-open-tls-stream)
-              (nntp-port-number 563)
-              (nntp-address "news.eternal-september.org"))
-        (nntp "gmane"
-              (nntp-open-connection-function nntp-open-plain-stream)
-              ;; (nntp-open-connection-function nntp-open-tls-stream)
-              ;; (nntp-port-number 563)
-              (nntp-address "news.gmane.org"))
-        (nnimap "algebra20"
-                (nnimap-stream shell)
-                (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/algebra20")
-                (nnimap-split-methods nnimap-split-fancy)
-                (nnimap-inbox "INBOX")
-                (nnimap-split-fancy ,db/personal-gnus-filter-rules))
-        (nnml "local"
-              (nnmail-split-methods nnmail-split-fancy)
-              (nnmail-split-fancy
-               (| ("subject" ".*Tiger Auditing Report for.*" "mail.tiger")
-                  "mail.misc")))
-        (nnmaildir "archive"
-                   (directory "~/Mail/archive/")
-                   (directory-files nnheader-directory-files-safe)
-                   (nnir-search-engine notmuch)
-                   (nnir-notmuch-remove-prefix ,(expand-file-name "~/Mail/archive/")))))
+      (append
+       `((nntp "etsep"
+               (nntp-open-connection-function nntp-open-tls-stream)
+               (nntp-port-number 563)
+               (nntp-address "news.eternal-september.org"))
+         (nntp "gmane"
+               (nntp-open-connection-function nntp-open-plain-stream)
+               ;; (nntp-open-connection-function nntp-open-tls-stream)
+               ;; (nntp-port-number 563)
+               (nntp-address "news.gmane.org"))
+         (nnimap "algebra20"
+                 (nnimap-stream shell)
+                 (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/algebra20")
+                 (nnimap-split-methods nnimap-split-fancy)
+                 (nnimap-inbox "INBOX")
+                 (nnimap-split-fancy ,db/personal-gnus-filter-rules))
+         (nnml "local"
+               (nnmail-split-methods nnmail-split-fancy)
+               (nnmail-split-fancy
+                (| ("subject" ".*Tiger Auditing Report for.*" "mail.tiger")
+                   "mail.misc")))
+         (nnmaildir "archive"
+                    (directory "~/Mail/archive/")
+                    (directory-files nnheader-directory-files-safe)
+                    (nnir-search-engine notmuch)
+                    (nnir-notmuch-remove-prefix ,(expand-file-name "~/Mail/archive/"))))
+
+       ;; automatically add accounts when address is not nil and not the empty string
+       (remove-if #'null
+                  (mapcar (lambda (account)
+                            (let ((account-name (nth 1 account))
+                                  (account-address (nth 2 account)))
+                              (when (and account-address
+                                         (stringp account-address)
+                                         (< 0 (length account-address)))
+                                `(nnimap ,account-name
+                                         (nnimap-address ,account-address)
+                                         (nnimap-inbox "INBOX")))))
+                          db/mail-accounts))))
 
 ;; General Configuration
 
@@ -582,12 +597,24 @@ If found, imports the certificate via gpgsm."
 
 ;;; Mail Formatting
 
+;; XXX: This should actually be set by the customize setter of
+;; `db/mail-accounts’
 (setq gnus-posting-styles
-      `((".*"
-         (name ,user-full-name)
-         (address ,user-mail-address)
-         (signature-file "~/.signature")
-         ("X-Jabber-ID" ,db/jabber-id))))
+      (append
+       `((".*"
+          (name ,user-full-name)
+          (address ,user-mail-address)
+          (signature-file "~/.signature")
+          ("X-Jabber-ID" ,db/jabber-id)))
+       (mapcar (lambda (account)
+                 (let ((account-name (nth 1 account))
+                       (account-address (nth 0 account)))
+                   `(,(concat account-name ":")
+                     (name ,user-full-name)
+                     (address ,account-address)
+                     (signature-file "~/.signature")
+                     ("X-Jabber-ID" ,db/jabber-id))))
+               db/mail-accounts)))
 
 ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
 (defun db/mml-attach-file--go-to-eob (orig-fun &rest args)
@@ -631,8 +658,8 @@ If found, imports the certificate via gpgsm."
       smtpmail-smtp-service 587
       starttls-use-gnutls t
       starttls-extra-arguments '("--strict-tofu")
-      smtpmail-smtp-server (nth 1 (car db/smtp-accounts))
-      smtpmail-smtp-user (nth 4 (car db/smtp-accounts)))
+      smtpmail-smtp-server (nth 3 (car db/mail-accounts))
+      smtpmail-smtp-user (nth 6 (car db/mail-accounts)))
 
 (defun db/set-smtp-server-from-header (orig-fun &rest args)
   "Choose smtp-settings dynamically, based on the From: header
@@ -643,17 +670,15 @@ entry of the current mail."
                         (mail-fetch-field "From"))
                       user-mail-address))
          (address (cadr (mail-extract-address-components from)))
-         ;; db/smtp-accounts set in db-private
-         (account (assoc address db/smtp-accounts)))
+         (account (assoc address db/mail-accounts)))
     (message "Using address: %s" address)
     (if account
         (progn
           (message "Sending with account for %s" address)
-          (cl-destructuring-bind (smtpmail-smtp-server
-                                  smtpmail-stream-type
-                                  smtpmail-smtp-service
-                                  smtpmail-smtp-user)
-              (cdr account)
+          (let ((smtpmail-smtp-server (nth 3 account))
+                (smtpmail-stream-type (nth 4 account))
+                (smtpmail-smtp-service (nth 5 account))
+                (smtpmail-smtp-user (nth 6 account)))
             (apply orig-fun args)))
       (progn
         (message "Sending with default account settings")
