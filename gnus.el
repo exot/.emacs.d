@@ -15,6 +15,7 @@
 
 ;; Customization
 
+;; XXX: This needs some functionality for local accounts
 (defcustom db/mail-accounts nil
   "Configuration for email accounts.
 This is a list of lists, where each such list specifies necessary
@@ -67,6 +68,7 @@ parameters for one particular email address."
       ;; `db/mail-accounts’
       gnus-secondary-select-methods
       (append
+       ;; immutable account definitions
        `((nntp "etsep"
                (nntp-open-connection-function nntp-open-tls-stream)
                (nntp-port-number 563)
@@ -94,6 +96,7 @@ parameters for one particular email address."
                     (nnir-notmuch-remove-prefix ,(expand-file-name "~/Mail/archive/"))))
 
        ;; automatically add accounts when address is not nil and not the empty string
+       ;; XXX: this should be abstracted away in some kind of function
        (remove-if #'null
                   (mapcar (lambda (account)
                             (let ((account-name (nth 1 account))
@@ -606,6 +609,7 @@ If found, imports the certificate via gpgsm."
           (address ,user-mail-address)
           (signature-file "~/.signature")
           ("X-Jabber-ID" ,db/jabber-id)))
+       ;; XXX: this should be abstracted away in some kind of function
        (mapcar (lambda (account)
                  (let ((account-name (nth 1 account))
                        (account-address (nth 0 account)))
@@ -675,6 +679,7 @@ entry of the current mail."
     (if account
         (progn
           (message "Sending with account for %s" address)
+          ;; XXX: these calls to `nth’ should be abstracted away
           (let ((smtpmail-smtp-server (nth 3 account))
                 (smtpmail-stream-type (nth 4 account))
                 (smtpmail-smtp-service (nth 5 account))
