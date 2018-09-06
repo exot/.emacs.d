@@ -759,10 +759,14 @@ are assumed to be of the form *.crt."
             (put 'dired-find-alternate-file 'disabled nil)
             (setq dired-listing-switches "-alh")
             (setq dired-hide-details-hide-information-lines t
-                  dired-hide-details-hide-symlink-targets t
-                  dired-enable-local-variables nil)
+                  dired-hide-details-hide-symlink-targets t)
+
             (setq dired-recursive-copies 'top)
             (setq dired-recursive-deletes 'top)
+
+            ;; Don’t use obsolete diredx local variables
+            (setq dired-enable-local-variables nil
+                  dired-local-variables-file nil)
 
             (use-package dired-x)
             (use-package dired+)
