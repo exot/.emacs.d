@@ -1232,8 +1232,9 @@ are assumed to be of the form *.crt."
                            '(reftex-citation . nil)))
             (setq reftex-plug-into-AUCTeX t)))
 
-(with-eval-after-load 'tex-mode
-  (use-package db-latex))
+(use-package tex
+  :defer t
+  :config (require 'db-latex))
 
 (use-package ebib
   :commands (ebib))

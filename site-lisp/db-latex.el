@@ -7,9 +7,6 @@
 
 ;; Setup
 
-(use-package tex
-  :ensure auctex)
-
 (require 'latex)
 (require 'tex-buf)
 (require 'reftex)
