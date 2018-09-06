@@ -773,7 +773,6 @@ are assumed to be of the form *.crt."
             (use-package dired-open)
 
             ;; Gnus support in dired
-            (use-package gnus-dired)
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
             ;; omitting files
@@ -874,6 +873,9 @@ are assumed to be of the form *.crt."
 
 (use-package dired-open
   :config (add-to-list 'dired-open-functions #'dired-open-guess-shell-alist))
+
+(use-package gnus-dired
+  :commands (turn-on-gnus-dired-mode))
 
 
 ;; * Completion
