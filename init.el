@@ -768,9 +768,9 @@ are assumed to be of the form *.crt."
             (setq dired-enable-local-variables nil
                   dired-local-variables-file nil)
 
-            (use-package dired-x)
-            (use-package dired+)
-            (use-package dired-open)
+            (require 'dired-x)
+            (require 'dired+)
+            (require 'dired-open)
 
             ;; Gnus support in dired
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
@@ -800,7 +800,7 @@ are assumed to be of the form *.crt."
                       ("\\.docx?\\'" "loffice"))))
 
             ;; disable exaggerated fontification of dired+
-            (use-package font-lock)
+            (require 'font-lock)
             (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
             (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))
 
@@ -1109,7 +1109,7 @@ are assumed to be of the form *.crt."
 
 (use-package eshell
   :commands (eshell)
-  :config (use-package db-eshell))
+  :config (require 'db-eshell))
 
 (use-package with-editor
   :commands (with-editor-export-editor))
