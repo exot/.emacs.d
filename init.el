@@ -806,12 +806,7 @@ are assumed to be of the form *.crt."
             (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))
 
             (when on-windows
-              (setq dired-free-space-program nil))
-
-            (when on-windows
-              (eval-when-compile
-                (use-package ls-lisp))
-              (setq ls-lisp-use-insert-directory-program t))
+              (setq directory-free-space-program nil))
 
             ;; custom keybindings
 
