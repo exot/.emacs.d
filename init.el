@@ -630,17 +630,18 @@ _h_   _l_   _o_k        _y_ank
                   magit-popup-use-prefix-argument 'default
                   magit-completing-read-function 'ivy-completing-read)
 
-            (eval-when-compile
-              (require 'projectile))
-            (setq magit-repository-directories
-                  (mapcar
-                   (lambda (dir)
-                     (cons (substring dir 0 -1) 0))
-                   (cl-remove-if-not
-                    (lambda (project)
-                      (unless (file-remote-p project)
-                        (file-exists-p (concat project "/.git"))))
-                    projectile-known-projects)))))
+            (with-demoted-errors "Non-Fatal Error: %s"
+              (eval-when-compile
+                (require 'projectile))
+              (setq magit-repository-directories
+                    (mapcar
+                     (lambda (dir)
+                       (cons (substring dir 0 -1) 0))
+                     (cl-remove-if-not
+                      (lambda (project)
+                        (unless (file-remote-p project)
+                          (file-exists-p (concat project "/.git"))))
+                      projectile-known-projects))))))
 
 (use-package projectile
   :commands (projectile-mode)
@@ -769,8 +770,9 @@ are assumed to be of the form *.crt."
                   dired-local-variables-file nil)
 
             (require 'dired-x)
-            (require 'dired+)
-            (require 'dired-open)
+            (with-demoted-errors "Non-Fatal Error: %s"
+              (require 'dired+)
+              (require 'dired-open))
 
             ;; Gnus support in dired
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
@@ -1325,9 +1327,10 @@ are assumed to be of the form *.crt."
                                      company-backends))))
             (add-hook 'haskell-mode-hook 'flycheck-mode)
 
-            (require 'haskell-indentation)
-            (add-hook 'haskell-mode-hook
-                      'haskell-indentation-mode)
+            (with-demoted-errors "Non-Fatal Error: %s"
+              (require 'haskell-indentation)
+              (add-hook 'haskell-mode-hook
+                        'haskell-indentation-mode))
 
             (add-hook 'haskell-mode-hook
                       'interactive-haskell-mode)))
