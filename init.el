@@ -755,6 +755,12 @@ are assumed to be of the form *.crt."
 
 (use-package dired
   :defer t
+  :bind (:map dired-mode-map
+              ("e" . ora-ediff-files)
+              ("z" . dired-get-size)
+              ([remap beginning-of-buffer] . dired-back-to-top)
+              ([remap end-of-buffer] . dired-jump-to-bottom)
+              ("<f1>" . nil))
   :config (progn
             (setq dired-dwim-target t)
             (put 'dired-find-alternate-file 'disabled nil)
@@ -809,11 +815,6 @@ are assumed to be of the form *.crt."
             (when on-windows
               (setq directory-free-space-program nil))
 
-            ;; custom keybindings
-
-            (unbind-key "s" dired-mode-map)
-            (unbind-key "<f1>" dired-mode-map)
-
             (defun ora-ediff-files ()
               "Compare marked files in dired with ediff."
               ;; from: https://oremacs.com/2017/03/18/dired-ediff/
@@ -835,7 +836,6 @@ are assumed to be of the form *.crt."
                                   (setq ediff-after-quit-hook-internal nil)
                                   (set-window-configuration wnd))))
                   (error "No more than 2 files should be marked"))))
-            (bind-key "e" #'ora-ediff-files dired-mode-map)
 
             (defun dired-back-to-top ()
               "Jump to first non-trivial line in dired."
@@ -843,17 +843,11 @@ are assumed to be of the form *.crt."
               (goto-char (point-min))
               (dired-next-line 1))
 
-            (bind-key [remap beginning-of-buffer]
-                      #'dired-back-to-top dired-mode-map)
-
             (defun dired-jump-to-bottom ()
               "Jump to last non-trivial line in dired."
               (interactive)
               (goto-char (point-max))
               (dired-next-line -1))
-
-            (bind-key [remap end-of-buffer]
-                      'dired-jump-to-bottom dired-mode-map)
 
             (defun dired-get-size ()    ; from emacswiki, via oremacs
               "Print size of all files marked in the current dired buffer."
@@ -865,9 +859,7 @@ are assumed to be of the form *.crt."
                    "size of all marked files: %s"
                    (progn
                      (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-                     (match-string 1))))))
-
-            (bind-key "z" #'dired-get-size dired-mode-map)))
+                     (match-string 1))))))))
 
 (use-package find-dired
   :commands (find-dired)
