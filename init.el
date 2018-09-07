@@ -646,6 +646,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package projectile
   :commands (projectile-mode)
   :defines (projectile-known-projects)
+  :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
   :config (progn
             (setq projectile-switch-project-action 'projectile-dired
                   projectile-completion-system 'ivy
