@@ -886,18 +886,16 @@ This is done only if the value of this variable is not null."
                   org-latex-compiler "lualatex")
             (add-to-list 'org-latex-classes
                          `("scrartcl"
-                           ,(concat "\\documentclass{scrartcl}\n"
+                           ,(concat "\\documentclass[parskip=half,colorlinks]{scrartcl}\n"
                                     "[DEFAULT-PACKAGES]"
                                     "[PACKAGES]"
                                     "
 \\lstset{
   basewidth=0.5em,
   keywordstyle=\\bfseries,
-  basicstyle=\\sffamily,
-  mathescape=true,
-  texcl=true,
+  basicstyle=\\ttfamily,
   commentstyle={\\itshape},
-  columns=fullflexible,
+  columns=flexible,
   frame=tb,
   showspaces=false,
   showtabs=false,
