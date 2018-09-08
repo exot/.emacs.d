@@ -882,7 +882,8 @@ This is done only if the value of this variable is not null."
   :defer t
   :config (progn
             (setq org-latex-default-class "scrartcl"
-                  org-latex-listings t)
+                  org-latex-listings t
+                  org-latex-compiler "lualatex")
             (add-to-list 'org-latex-classes
                          `("scrartcl"
                            ,(concat "\\documentclass{scrartcl}\n"
