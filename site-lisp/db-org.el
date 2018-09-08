@@ -910,6 +910,10 @@ This is done only if the value of this variable is not null."
             (add-to-list 'org-latex-packages-alist
                          '("" "xcolor"))))
 
+(use-package ox-html
+  :defer t
+  :config (setq org-html-postamble nil))
+
 (use-package ox
   :defer t
   :config (progn
