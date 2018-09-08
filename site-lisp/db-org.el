@@ -28,7 +28,6 @@
       org-M-RET-may-split-line '((default . nil))
       org-highlight-latex-and-related '(latex)
       org-use-sub-superscripts '{}
-      org-export-with-sub-superscripts '{}
       org-src-fontify-natively t
       org-src-preserve-indentation t)
 
@@ -866,29 +865,50 @@ This is done only if the value of this variable is not null."
 ;;; Exporting
 
 (setq org-export-use-babel nil
-      org-export-with-broken-links 'mark)
+      org-export-with-broken-links 'mark
+      org-export-with-sub-superscripts '{}
+      org-export-with-author nil
+      org-export-with-date nil
+      org-export-with-toc nil
+      org-export-with-archived-trees nil
+      org-export-with-tags t
+      org-export-with-priority nil
+      org-export-with-creator nil
+      org-export-with-entities t
+      org-export-with-special-strings t
+      org-export-with-todo-keywords nil)
 
-(with-eval-after-load 'ox-latex
-  (add-to-list 'org-latex-classes
-               `("scrartcl"
-                 ,(concat "\\documentclass{scrartcl}\n"
-                          "[DEFAULT-PACKAGES]"
-                          "[PACKAGES]"
-                          "[EXTRA]\n")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                 ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                 ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-  (add-to-list 'org-latex-classes
-               `("beamer"
-                 ,(concat "\\documentclass[presentation]{beamer}\n"
-                          "[DEFAULT-PACKAGES]"
-                          "[PACKAGES]"
-                          "[EXTRA]\n")
-                 ("\\section{%s}" . "\\section*{%s}")
-                 ("\\subsection{%s}" . "\\subsection*{%s}")
-                 ("\\subsubsection{%s}" . "\\subsubsection*{%s}"))))
+(use-package ox-latex
+  :defer t
+  :config (progn
+            (setq org-latex-default-class "scrartcl"
+                  org-latex-listings t)
+            (add-to-list 'org-latex-classes
+                         `("scrartcl"
+                           ,(concat "\\documentclass{scrartcl}\n"
+                                    "[DEFAULT-PACKAGES]"
+                                    "[PACKAGES]"
+                                    ;; XXX: this needs some additional
+                                    ;; settings for the listings package
+                                    "[EXTRA]\n")
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+            (add-to-list 'org-latex-classes
+                         `("beamer"
+                           ,(concat "\\documentclass[presentation]{beamer}\n"
+                                    "[DEFAULT-PACKAGES]"
+                                    "[PACKAGES]"
+                                    "[EXTRA]\n")
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+            (add-to-list 'org-latex-packages-alist
+                         '("" "listings"))
+            (add-to-list 'org-latex-packages-alist
+                         '("" "xcolor"))))
 
 (use-package ox
   :defer t
