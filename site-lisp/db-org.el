@@ -889,8 +889,21 @@ This is done only if the value of this variable is not null."
                            ,(concat "\\documentclass{scrartcl}\n"
                                     "[DEFAULT-PACKAGES]"
                                     "[PACKAGES]"
-                                    ;; XXX: this needs some additional
-                                    ;; settings for the listings package
+                                    "
+\\lstset{
+  basewidth=0.5em,
+  keywordstyle=\\bfseries,
+  basicstyle=\\sffamily,
+  mathescape=true,
+  texcl=true,
+  commentstyle={\\itshape},
+  columns=fullflexible,
+  frame=tb,
+  showspaces=false,
+  showtabs=false,
+  showstringspaces=false,
+}
+"
                                     "[EXTRA]\n")
                            ("\\section{%s}" . "\\section*{%s}")
                            ("\\subsection{%s}" . "\\subsection*{%s}")
