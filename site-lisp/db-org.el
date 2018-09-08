@@ -892,10 +892,9 @@ This is done only if the value of this variable is not null."
                                     "
 \\lstset{
   basewidth=0.5em,
-  keywordstyle=\\bfseries,
+  keywordstyle=\\textcolor{blue!80!white},
   basicstyle=\\ttfamily,
   commentstyle={\\itshape},
-  columns=flexible,
   frame=tb,
   showspaces=false,
   showtabs=false,
