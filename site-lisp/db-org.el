@@ -912,6 +912,18 @@ This is done only if the value of this variable is not null."
                            ,(concat "\\documentclass[presentation]{beamer}\n"
                                     "[DEFAULT-PACKAGES]"
                                     "[PACKAGES]"
+                                    "
+\\lstset{
+  basewidth=0.5em,
+  keywordstyle=\\textcolor{blue!80!white},
+  basicstyle=\\ttfamily,
+  commentstyle={\\itshape},
+  frame=tb,
+  showspaces=false,
+  showtabs=false,
+  showstringspaces=false,
+}
+"
                                     "[EXTRA]\n")
                            ("\\section{%s}" . "\\section*{%s}")
                            ("\\subsection{%s}" . "\\subsection*{%s}")
