@@ -864,8 +864,9 @@ This is done only if the value of this variable is not null."
 
 ;;; Exporting
 
-(setq org-export-use-babel nil
-      org-export-with-broken-links 'mark
+(setq org-export-use-babel nil)
+
+(setq org-export-with-broken-links 'mark
       org-export-with-sub-superscripts '{}
       org-export-with-author nil
       org-export-with-date nil
@@ -984,6 +985,11 @@ Current Task: %`org-clock-current-task; "
 
 
 ;;; Babel
+
+(use-package ob-core
+  :defer t
+  :config (setf (alist-get :results org-babel-default-header-args)
+                "output code replace"))
 
 (defun org-babel-execute:hy (body params)
   ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
