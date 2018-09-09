@@ -630,6 +630,8 @@ _h_   _l_   _o_k        _y_ank
                   magit-popup-use-prefix-argument 'default
                   magit-completing-read-function 'ivy-completing-read)
 
+            (global-magit-file-mode -1)
+
             (with-demoted-errors "Non-Fatal Error: %s"
               (eval-when-compile
                 (require 'projectile))
