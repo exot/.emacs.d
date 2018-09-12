@@ -641,7 +641,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
         ("d" "Date"
              entry
              (file db/org-default-refile-file)
-             "* GOTO %^{What} :DATE:\n%^{When}t\n%a")
+             "* GOTO %^{What} :DATE:\n%^{When}t\n%a%?")
         ("i" "Interruptions")
         ("in" "Interruption now"
               entry
