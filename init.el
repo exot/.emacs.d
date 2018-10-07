@@ -130,7 +130,6 @@
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
-  (add-hook 'before-save-hook 'db/delete-trailing-whitespace-maybe)
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
