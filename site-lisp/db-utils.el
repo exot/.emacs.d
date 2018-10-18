@@ -69,7 +69,7 @@ If already in `*ansi-term*' buffer, bury it."
         (when arg
           (end-of-line)
           (eshell-kill-input)
-          (insert (format "cd %s" current-dir))
+          (insert (format "cd '%s'" current-dir))
           (eshell-send-input))))))
 
 (defun db/run-or-hide-shell ()
