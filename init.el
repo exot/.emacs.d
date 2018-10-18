@@ -99,7 +99,6 @@
   (display-battery-mode -1)
 
   (electric-pair-mode +1)
-  (electric-quote-mode +1)
 
   (recentf-mode t)
   (winner-mode 1)
@@ -139,6 +138,7 @@
     ;; what is happening here
     (add-hook 'text-mode-hook 'turn-on-flyspell))
   (add-hook 'text-mode-hook 'yas-minor-mode-on)
+  (add-hook 'text-mode-hook 'electric-quote-mode)
 
   ;; Auto-Modes
 
