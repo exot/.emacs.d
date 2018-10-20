@@ -159,7 +159,7 @@
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2> i" #'counsel-info-lookup-symbol)
   (bind-key "<f2> u" #'counsel-unicode-char)
-  (bind-key "<f5>" #'counsel-ag)
+  (bind-key "<f5>" #'rgrep)
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
   (bind-key "<f8>" #'counsel-locate)
@@ -239,6 +239,9 @@
 
   (when (package-installed-p 'ace-window)
     (bind-key "C-x o" #'ace-window))
+
+  (when (executable-find "ag")
+    (bind-key "<f5>" #'counsel-ag))
 
   ;; Environment Variables
 
