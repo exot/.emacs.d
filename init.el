@@ -132,7 +132,7 @@
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
   (add-hook 'lisp-mode-hook 'lispy-mode)
-  (unless (eq system-name 'windows-nt)
+  (unless (eq system-type 'windows-nt)
     ;; flyspell doesn’t work on windows right now, need to further investigate
     ;; what is happening here
     (add-hook 'text-mode-hook 'turn-on-flyspell))
