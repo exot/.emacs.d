@@ -84,10 +84,24 @@
             (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
 
 
-;; Git Completion
-;; https://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/
+;; File Completion
 
 (require 'pcomplete)
+
+;; Ignoring case when completing file names seems to have a bug: when a ~ is
+;; encountered, it is implicitly expaned by `pcomplete-insert-entry’,
+;; overwriting the prompt as a side effect.  Keeping the case as it is does not
+;; seem to have this issue.  This problem occurs by default only on Windows
+;; systems (in all flavors), because this is the only time
+;; `pcomplete-ignore-case’ is non-nil by default.
+
+(when on-windows
+  (add-to-list 'eshell-mode-hook
+               (lambda ()
+                 (setq pcomplete-ignore-case nil))))
+
+;; Git Completion
+;; https://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/
 
 (defun pcmpl-git-commands ()
   "Return the most common git commands by parsing the git output."
