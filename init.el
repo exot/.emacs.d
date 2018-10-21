@@ -388,14 +388,11 @@
 (use-package calendar
   :config
   (setq calendar-date-style 'iso
-        calendar-view-diary-initially-flag nil
-        diary-show-holidays-flag nil
-        holiday-hebrew-holidays nil
-        holiday-islamic-holidays nil
-        holiday-bahai-holidays nil
-        holiday-oriental-holidays nil
-        holiday-solar-holidays nil
-        holiday-general-holidays nil
+        calendar-bahai-all-holidays-flag nil
+        calendar-chinese-all-holidays-flag nil
+        calendar-christian-all-holidays-flag t
+        calendar-islamic-all-holidays-flag nil
+        calendar-hebrew-all-holidays-flag nil
         holiday-other-holidays '((holiday-fixed 5 1 "Labour Day")
                                  (holiday-fixed 10 3 "German Unity Day")
                                  (holiday-fixed 10 31 "Reformation Day")
