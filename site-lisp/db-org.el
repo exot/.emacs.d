@@ -1025,7 +1025,7 @@ Current Task: %`org-clock-current-task; "
         ;; Caching is not possible, check it directly.
         (org-entry-get pom property 'inherit)
       ;; This is different in the original implementation
-      (org-entry-properties pom property))))
+      (org-entry-get pom property))))
 
 
 ;;; End
