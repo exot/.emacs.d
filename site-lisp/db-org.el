@@ -336,7 +336,7 @@ forces clocking in of the default task."
   :type 'string
   :set #'db/update-org-agenda-files)
 
-(setq org-agenda-include-diary nil
+(setq org-agenda-include-diary t
       org-agenda-span 1
       org-agenda-diary-file db/org-default-refile-file
       org-agenda-insert-diary-strategy 'top-level
