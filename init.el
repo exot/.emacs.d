@@ -112,7 +112,8 @@
                   key-chord-mode
                   sml/setup
                   ivy-mode
-                  which-key-mode))
+                  which-key-mode
+                  eyebrowse-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
@@ -1109,6 +1110,9 @@ are assumed to be of the form *.crt."
   :commands (helm-pages)
   :config (with-eval-after-load 'helm-mode
             (bind-key "P" #'helm-pages helm-command-prefix)))
+
+(use-package eyebrowse
+  :commands (eyebrowse-mode))
 
 
 ;; * Media
