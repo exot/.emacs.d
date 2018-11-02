@@ -68,29 +68,8 @@
 (setq org-columns-default-format
       "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
 
-(setq org-structure-template-alist
-      '(("s" "#+begin_src ?\n\n#+end_src" "<src lang=\"?\">\n\n</src>")
-        ("e" "#+begin_example\n?\n#+end_example" "<example>\n?\n</example>")
-        ("q" "#+begin_quote\n?\n#+end_quote" "<quote>\n?\n</quote>")
-        ("Q" "#+begin_equation\n?\n#+end_equation"
-         "<equation>\n?\n</equation>")
-        ("v" "#+begin_verse\n?\n#+end_verse" "<verse>\n?\n</verse>")
-        ("V" "#+begin_verbatim\n?\n#+end_verbatim" "<verbatim>\n?\n</verbatim>")
-        ("c" "#+begin_center\n?\n#+end_center" "<center>\n?\n</center>")
-        ("l" "#+begin_latex\n?\n#+end_latex"
-         "<literal style=\"latex\">\n?\n</literal>")
-        ("l" "#+latex: " "<literal style=\"latex\">?</literal>")
-        ("h" "#+begin_html\n?\n#+end_html"
-         "<literal style=\"html\">\n?\n</literal>")
-        ("h" "#+html: " "<literal style=\"html\">?</literal>")
-        ("a" "#+begin_ascii\n?\n#+end_ascii" "")
-        ("a" "#+ascii: " "")
-        ("i" "#+index: ?" "#+index: ?")
-        ("i" "#+include: %file ?"
-         "<include file=%file markup=\"?\">")))
-
 
-;;; How to open files and links
+;;; How to open files
 
 ;; open directory links in emacs itself
 (add-to-list 'org-file-apps '(directory . emacs))
@@ -102,13 +81,6 @@
 
 (when (eq system-type 'cygwin)
   (add-to-list 'org-file-apps '(t . "cygstart %s") t))
-
-(when (eq system-type 'windows-nt)
-  (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
-
-  (defun db/org-onenote-open (path)
-    "Visit OneNote document on PATH."
-    (start-process "OneNote" nil "OneNote" "/hyperlink" path)))
 
 
 ;;; Faces
