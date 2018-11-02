@@ -802,55 +802,6 @@ In ~%s~:
 
 (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
 
-
-;;; Calendar
-
-;; XXX: calendar stuff should go to `db-utils’
-
-(use-package ox-icalendar
-  :commands (org-icalendar-combine-agenda-files)
-  :config   (progn
-              (setq org-icalendar-include-body nil
-                    org-icalendar-store-UID t
-                    org-icalendar-use-deadline nil
-                    org-icalendar-use-scheduled nil
-                    org-icalendar-include-todo nil
-                    org-icalendar-exclude-tags '("NO_EXPORT"))))
-
-(defun db/export-diary ()
-  "Export diary.org as ics file to the current value of `org-icalendar-combined-agenda-file’.
-This is done only if the value of this variable is not null."
-  (interactive)
-  (require 'ox-icalendar)
-  (cond
-   ((null org-icalendar-combined-agenda-file)
-    (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
-   ((not (file-name-absolute-p org-icalendar-combined-agenda-file))
-    (user-error "`org-icalendar-combined-agenda-file’ not an absolute path, aborting."))
-   (t
-    (progn
-      (org-save-all-org-buffers)
-      (let ((org-agenda-files (cl-remove-if #'string-empty-p
-                                            (list db/org-default-home-file
-                                                  db/org-default-work-file)))
-            (org-agenda-new-buffers nil))
-        ;; check whether we need to do something
-        (when (cl-some (lambda (org-file)
-                         (file-newer-than-file-p org-file
-                                                 org-icalendar-combined-agenda-file))
-                       org-agenda-files)
-          (message "Exporting diary ...")
-          ;; open files manually to avoid polluting `org-agenda-new-buffers’; we
-          ;; don’t want these buffers to be closed after exporting
-          (mapc #'find-file-noselect org-agenda-files)
-          ;; actual export; calls `org-release-buffers’ and may thus close
-          ;; buffers we want to keep around … which is why we set
-          ;; `org-agenda-new-buffers’ to nil
-          (when (file-exists-p org-icalendar-combined-agenda-file)
-            (delete-file org-icalendar-combined-agenda-file)
-            (sit-for 3))
-          (org-icalendar-combine-agenda-files)
-          (message "Exporting diary ... done.")))))))
 
 
 ;;; Fixes
@@ -866,132 +817,16 @@ This is done only if the value of this variable is not null."
 (add-hook 'org-mode-hook #'endless/org-ispell)
 
 
-;;; Exporting
-
-(setq org-export-use-babel nil)
-
-(setq org-export-with-broken-links 'mark
-      org-export-with-sub-superscripts '{}
-      org-export-with-author nil
-      org-export-with-date nil
-      org-export-with-toc nil
-      org-export-with-archived-trees nil
-      org-export-with-tags t
-      org-export-with-priority nil
-      org-export-with-creator nil
-      org-export-with-entities t
-      org-export-with-special-strings t
-      org-export-with-todo-keywords nil)
-
-(use-package ox-latex
-  :defer t
-  :config (progn
-            (setq org-latex-default-class "scrartcl"
-                  org-latex-listings t
-                  org-latex-compiler "lualatex")
-            (add-to-list 'org-latex-classes
-                         `("scrartcl"
-                           ,(concat "\\documentclass[parskip=half,colorlinks]{scrartcl}\n"
-                                    "[DEFAULT-PACKAGES]"
-                                    "[PACKAGES]"
-                                    "
-\\lstset{
-  basewidth=0.5em,
-  keywordstyle=\\textcolor{blue!80!white},
-  basicstyle=\\ttfamily,
-  commentstyle={\\itshape},
-  frame=tb,
-  showspaces=false,
-  showtabs=false,
-  showstringspaces=false,
-}
-"
-                                    "[EXTRA]\n")
-                           ("\\section{%s}" . "\\section*{%s}")
-                           ("\\subsection{%s}" . "\\subsection*{%s}")
-                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                           ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-            (add-to-list 'org-latex-classes
-                         `("beamer"
-                           ,(concat "\\documentclass[presentation]{beamer}\n"
-                                    "[DEFAULT-PACKAGES]"
-                                    "[PACKAGES]"
-                                    "
-\\lstset{
-  basewidth=0.5em,
-  keywordstyle=\\textcolor{blue!80!white},
-  basicstyle=\\ttfamily,
-  commentstyle={\\itshape},
-  frame=tb,
-  showspaces=false,
-  showtabs=false,
-  showstringspaces=false,
-}
-"
-                                    "[EXTRA]\n")
-                           ("\\section{%s}" . "\\section*{%s}")
-                           ("\\subsection{%s}" . "\\subsection*{%s}")
-                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-            (add-to-list 'org-latex-packages-alist
-                         '("" "listings"))
-            (add-to-list 'org-latex-packages-alist
-                         '("" "xcolor"))))
-
-(use-package ox-html
-  :defer t
-  :config (setq org-html-postamble nil))
-
-(use-package ox
-  :defer t
-  :config (progn
-            (with-demoted-errors "Cannot load package: %s"
-              (require 'ox-md)
-              (require 'ox-pandoc))
-            (setq org-export-exclude-tags '("NO_EXPORT"))))
-
-
-;;; Hydra
-
-(defhydra hydra-org-clock (:color blue)
-  "
-Current Task: %`org-clock-current-task; "
-  ("w" (lambda ()
-         (interactive)
-         (clock-in-task-by-id org-working-task-id)))
-  ("h" (lambda ()
-         (interactive)
-         (clock-in-task-by-id org-home-task-id)))
-  ("b" (lambda ()
-         (interactive)
-         (clock-in-task-by-id org-break-task-id)))
-  ("i" (lambda ()
-         (interactive)
-         (org-clock-in '(4))))
-  ("a" counsel-org-goto-all)
-  ("o" org-clock-out)
-  ("l" db/org-clock-in-last-task)
-  ("p" db/play-playlist)
-  ("d" (lambda ()
-         (interactive)
-         (when (org-clock-is-active)
-           (save-window-excursion
-             (org-clock-goto)
-             (let ((org-inhibit-logging 'note))
-               (org-todo 'done)
-               (org-save-all-org-buffers)))))))
-
-
 ;;; Drag-and-Drop images into org-mode buffer
 
-(when (package-installed-p 'org-download)
-  (use-package org-download))
+(use-package org-download)
 
 
 ;;; Babel
 
 (use-package ob-core
   :defer t
+  :init (setq org-export-use-babel nil)
   :config (setf (alist-get :results org-babel-default-header-args)
                 "output code replace"))
 

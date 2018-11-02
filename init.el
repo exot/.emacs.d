@@ -569,27 +569,6 @@ _h_   _l_   _o_k        _y_ank
 
 ;; * Some essential packages
 
-(use-package org
-  :commands (org-agenda
-             org-capture
-             org-store-link
-             org-clock-save
-             db/export-diary
-             hydra-org-clock/body)
-  :config (progn
-            (require 'db-org)
-
-            ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
-            ;; opening them manually
-            (mapc #'find-file-noselect org-agenda-files)
-
-            (unless (memq #'org-clock-save
-                          (mapcar #'timer--function timer-list))
-              (run-with-timer 0 3600 #'org-clock-save))
-            (unless (memq #'db/export-diary
-                          (mapcar #'timer--function timer-idle-list))
-             (run-with-idle-timer 20 t #'db/export-diary))))
-
 (use-package db-utils
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
@@ -601,7 +580,8 @@ _h_   _l_   _o_k        _y_ank
              db/run-or-hide-ansi-term
              db/helm-shortcuts
              db/hex-to-ascii
-             conditionally-enable-lispy))
+             conditionally-enable-lispy
+             db/export-diary))
 
 (use-package db-emacsclient)
 
@@ -664,6 +644,116 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package exec-path-from-shell
   :commands (exec-path-from-shell-copy-envs))
+
+
+;; * Org
+
+(use-package org
+  :commands (org-agenda
+             org-capture
+             org-store-link
+             org-clock-save
+             hydra-org-clock/body)
+  :config (progn
+            (require 'db-org)
+
+            ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
+            ;; opening them manually
+            (mapc #'find-file-noselect org-agenda-files)
+
+            (unless (memq #'org-clock-save
+                          (mapcar #'timer--function timer-list))
+              (run-with-timer 0 3600 #'org-clock-save))
+            (unless (memq #'db/export-diary
+                          (mapcar #'timer--function timer-idle-list))
+             (run-with-idle-timer 20 t #'db/export-diary))))
+
+(use-package ox-icalendar
+  :commands (org-icalendar-combine-agenda-files)
+  :init (setq org-icalendar-include-body nil
+              org-icalendar-store-UID t
+              org-icalendar-use-deadline nil
+              org-icalendar-use-scheduled nil
+              org-icalendar-include-todo nil
+              org-icalendar-exclude-tags '("NO_EXPORT")))
+
+(use-package ox
+  :defer t
+  :init (setq org-export-with-broken-links 'mark
+              org-export-with-sub-superscripts '{}
+              org-export-with-author nil
+              org-export-with-date nil
+              org-export-with-toc nil
+              org-export-with-archived-trees nil
+              org-export-with-tags t
+              org-export-with-priority nil
+              org-export-with-creator nil
+              org-export-with-entities t
+              org-export-with-special-strings t
+              org-export-with-todo-keywords nil
+              org-export-exclude-tags '("NO_EXPORT"))
+  :config (with-demoted-errors "Cannot load package: %s"
+            (require 'ox-md)
+            (require 'ox-pandoc)))
+
+(use-package ox-latex
+  :defer t
+  :config (progn
+            (setq org-latex-default-class "scrartcl"
+                  org-latex-listings t
+                  org-latex-compiler "lualatex")
+            (add-to-list 'org-latex-classes
+                         `("scrartcl"
+                           ,(concat "\\documentclass[parskip=half,colorlinks]{scrartcl}\n"
+                                    "[DEFAULT-PACKAGES]"
+                                    "[PACKAGES]"
+                                    "
+\\lstset{
+  basewidth=0.5em,
+  keywordstyle=\\textcolor{blue!80!white},
+  basicstyle=\\ttfamily,
+  commentstyle={\\itshape},
+  frame=tb,
+  showspaces=false,
+  showtabs=false,
+  showstringspaces=false,
+}
+"
+                                    "[EXTRA]\n")
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
+                           ("\\paragraph{%s}" . "\\paragraph*{%s}")
+                           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
+            (add-to-list 'org-latex-classes
+                         `("beamer"
+                           ,(concat "\\documentclass[presentation]{beamer}\n"
+                                    "[DEFAULT-PACKAGES]"
+                                    "[PACKAGES]"
+                                    "
+\\lstset{
+  basewidth=0.5em,
+  keywordstyle=\\textcolor{blue!80!white},
+  basicstyle=\\ttfamily,
+  commentstyle={\\itshape},
+  frame=tb,
+  showspaces=false,
+  showtabs=false,
+  showstringspaces=false,
+}
+"
+                                    "[EXTRA]\n")
+                           ("\\section{%s}" . "\\section*{%s}")
+                           ("\\subsection{%s}" . "\\subsection*{%s}")
+                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
+            (add-to-list 'org-latex-packages-alist
+                         '("" "listings"))
+            (add-to-list 'org-latex-packages-alist
+                         '("" "xcolor"))))
+
+(use-package ox-html
+  :defer t
+  :init (setq org-html-postamble nil))
 
 
 ;; * Mail
