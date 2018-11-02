@@ -1016,7 +1016,9 @@ are assumed to be of the form *.crt."
   :config (setq dumb-jump-selector 'helm))
 
 (use-package helm-pages
-  :commands (helm-pages))
+  :commands (helm-pages)
+  :config (with-eval-after-load 'helm-mode
+            (bind-key "P" #'helm-pages helm-command-prefix)))
 
 
 ;; * Media
