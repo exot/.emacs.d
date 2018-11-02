@@ -344,7 +344,8 @@
       delete-by-moving-to-trash t
       delete-trailing-lines nil
       x-underline-at-descent-line t
-      search-whitespace-regexp "[ \t\r\n]+")
+      search-whitespace-regexp "[ \t\r\n]+"
+      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (when on-windows
   ;; treat memory for display time ...  but hey, this is Windows, memory doesn’t
@@ -386,7 +387,7 @@
 (put 'narrow-to-region 'disabled nil)
 
 (use-package calendar
-  :config
+  :init
   (setq calendar-date-style 'iso
         calendar-bahai-all-holidays-flag nil
         calendar-chinese-all-holidays-flag nil
@@ -396,7 +397,9 @@
         holiday-other-holidays '((holiday-fixed 5 1 "Labour Day")
                                  (holiday-fixed 10 3 "German Unity Day")
                                  (holiday-fixed 10 31 "Reformation Day")
-                                 (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22))))
+                                 (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22))
+        diary-show-holidays-flag t
+        calendar-view-holidays-initially-flag t))
 
 (setq-default font-lock-maximum-decoration '((t . t)))
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
@@ -419,6 +422,11 @@
         (bps "bit / s" "Bit per second"))
       math-units-table nil)
 
+(setq default-input-method "TeX")
+
+(setq browse-url-browser-function 'browse-url-generic
+      browse-url-generic-program "firefox")
+
 
 ;; * Basic Builtin Packages
 
@@ -436,22 +444,21 @@
 
 (use-package abbrev
   :commands (quietly-read-abbrev-file)
-  :config   (progn
-              (setq-default abbrev-mode t)
-              (setq save-abbrevs 'silently))
+  :init (progn
+          (setq-default abbrev-mode t)
+          (setq save-abbrevs 'silently))
   :diminish abbrev-mode)
 
 (use-package appt
   :commands (appt-activate)
-  :config (setq appt-display-mode-line nil))
+  :init (setq appt-display-mode-line nil))
 
 (use-package ediff
   :defer t
+  :init (setq ediff-diff-options "-w"
+              ediff-window-setup-function 'ediff-setup-windows-plain
+              ediff-split-window-function 'split-window-horizontally)
   :config (progn
-            (setq ediff-diff-options "-w"
-                  ediff-window-setup-function 'ediff-setup-windows-plain
-                  ediff-split-window-function 'split-window-horizontally)
-
             (add-hook 'ediff-keymap-setup-hook
                       '(lambda ()
                         (bind-key "j" #'ediff-next-difference ediff-mode-map)
@@ -462,10 +469,9 @@
 (use-package ispell
   :commands (ispell-change-directory
              hydra-ispell/body)
-  :init (progn
-          (setq ispell-dictionary "en_US"
-                ispell-really-hunspell t)
-          (defhydra hydra-ispell (:color blue)
+  :init (setq ispell-dictionary "en_US"
+              ispell-really-hunspell t)
+  :config (defhydra hydra-ispell (:color blue)
             "ispell"
             ("g" (lambda ()
                    (interactive)
@@ -476,7 +482,7 @@
                    (interactive)
                    (setq ispell-dictionary "en_US")
                    (ispell-change-dictionary "en_US"))
-             "english"))))
+             "english")))
 
 (use-package mailcap
   :defer t
@@ -622,12 +628,11 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package magit
   :commands (magit-status)
+  :init (setq magit-diff-refine-hunk t
+              magit-commit-show-diff nil
+              magit-popup-use-prefix-argument 'default
+              magit-completing-read-function 'ivy-completing-read)
   :config (progn
-            (setq magit-diff-refine-hunk t
-                  magit-commit-show-diff nil
-                  magit-popup-use-prefix-argument 'default
-                  magit-completing-read-function 'ivy-completing-read)
-
             (global-magit-file-mode -1)
 
             (with-demoted-errors "Non-Fatal Error: %s"
@@ -647,11 +652,11 @@ _h_   _l_   _o_k        _y_ank
   :commands (projectile-mode)
   :defines (projectile-known-projects)
   :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
-  :config (progn
-            (setq projectile-switch-project-action 'projectile-dired
-                  projectile-completion-system 'ivy
-                  projectile-ignored-project-function #'file-remote-p)
-            (projectile-cleanup-known-projects))
+  :init (setq projectile-switch-project-action 'projectile-dired
+              projectile-completion-system 'ivy
+              projectile-ignored-project-function #'file-remote-p
+              projectile-create-missing-test-files t)
+  :config (projectile-cleanup-known-projects)
   :diminish projectile-mode)
 
 (use-package counsel-projectile
@@ -665,14 +670,14 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
+  :init (setq bbdb-completion-display-record nil
+              bbdb-complete-mail-allow-cycling t
+              bbdb-mua-auto-update-p 'query
+              bbdb-default-country "Germany"
+              bbdb-user-mail-address-re (regexp-opt
+                                         (cons user-mail-address
+                                               db/additional-mail-addresses)))
   :config (progn
-            (setq bbdb-completion-display-record nil
-                  bbdb-complete-mail-allow-cycling t
-                  bbdb-mua-auto-update-p 'query
-                  bbdb-default-country "Germany"
-                  bbdb-user-mail-address-re (regexp-opt
-                                             (cons user-mail-address
-                                                   db/additional-mail-addresses)))
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
             (run-with-timer 0 3600 #'bbdb-save)))
@@ -680,30 +685,27 @@ _h_   _l_   _o_k        _y_ank
 (use-package gnus
   :defines (gnus-init-file)
   :commands (gnus)
+  :init (setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
+              gnus-home-directory (expand-file-name "~/Mail/news/")
+              gnus-directory (expand-file-name "~/Mail/news/")
+              gnus-kill-files-directory gnus-directory
+              gnus-startup-file (expand-file-name "~/Mail/gnus-newsrc")
+              gnus-cache-directory (expand-file-name "cache/" gnus-directory))
   :config (progn
             (eval-when-compile
               (require 'gnus-start))
             (bbdb-initialize 'gnus 'message)
-            (bbdb-mua-auto-update-init 'message)
-            (setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
-                  gnus-home-directory (expand-file-name "~/Mail/news/")
-                  gnus-directory (expand-file-name "~/Mail/news/")
-                  gnus-kill-files-directory gnus-directory
-                  gnus-startup-file (expand-file-name "~/Mail/gnus-newsrc")
-                  gnus-cache-directory (expand-file-name
-                                        "cache/" gnus-directory))))
+            (bbdb-mua-auto-update-init 'message)))
 
 
 ;; * Crypto
 
 (use-package nsm
   :defer t
-  :config (progn
-            (setq network-security-level 'high
-                  nsm-save-host-names t)
-
-            (advice-add 'nsm-write-settings
-                        :before #'db/sort-nsm-permanent-settings)))
+  :init (setq network-security-level 'high
+              nsm-save-host-names t)
+  :config (advice-add 'nsm-write-settings
+                      :before #'db/sort-nsm-permanent-settings))
 
 (defun db/sort-nsm-permanent-settings ()
   "Sort values in `nsm-permanent-host-settings’."
@@ -714,10 +716,9 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package gnutls
   :defer t
-  :config (progn
-            (setq gnutls-log-level 0    ; too noisy otherwise
-                  gnutls-min-prime-bits 1024
-                  gnutls-verify-error t)))
+  :init (setq gnutls-log-level 0        ; too noisy otherwise
+              gnutls-min-prime-bits 1024
+              gnutls-verify-error t))
 
 (defun db/update-cert-file-directory (symbol new-value)
   "Set SYMBOL to NEW-VALUE and add all certificate in it to `gnutls-trustfiles’.
@@ -737,7 +738,8 @@ are assumed to be of the form *.crt."
 
 (use-package epg
   :defer t
-  :config (setq epg-debug t))
+  :init (setq epg-debug t
+              epg-gpg-program "gpg"))
 
 
 ;; * Appearance
@@ -749,6 +751,9 @@ are assumed to be of the form *.crt."
               solarized-use-variable-pitch nil))
 
 (use-package smart-mode-line
+  :init (setq sml/mode-width 'full
+              sml/name-width 30
+              sml/theme 'respectful)
   :commands (sml/setup))
 
 
@@ -762,19 +767,39 @@ are assumed to be of the form *.crt."
               ([remap beginning-of-buffer] . dired-back-to-top)
               ([remap end-of-buffer] . dired-jump-to-bottom)
               ("<f1>" . nil))
+  :init (progn
+          (setq dired-dwim-target t
+                dired-listing-switches "-alh"
+                dired-hide-details-hide-information-lines t
+                dired-hide-details-hide-symlink-targets t
+                dired-recursive-copies 'top
+                dired-recursive-deletes 'top
+
+                ;; Don’t use obsolete diredx local variables
+                dired-enable-local-variables nil
+                dired-local-variables-file nil
+
+                dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$"
+                diredp-hide-details-initially-flag t)
+
+          (if on-windows
+              (setq dired-guess-shell-alist-user '((".*" "cmd /c")))
+            (setq dired-guess-shell-alist-user
+                  '(("\\.pdf\\'" "evince")
+                    ("\\.ps\\'" "evince")
+                    ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                    ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
+                    ("\\.\\(?:xcf\\)\\'" "gimp")
+                    ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
+                     "vlc")
+                    ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
+                    ("\\.html?\\'" "firefox")
+                    ("\\.docx?\\'" "loffice"))))
+
+          (when on-windows
+            (setq directory-free-space-program nil)))
   :config (progn
-            (setq dired-dwim-target t)
             (put 'dired-find-alternate-file 'disabled nil)
-            (setq dired-listing-switches "-alh")
-            (setq dired-hide-details-hide-information-lines t
-                  dired-hide-details-hide-symlink-targets t)
-
-            (setq dired-recursive-copies 'top)
-            (setq dired-recursive-deletes 'top)
-
-            ;; Don’t use obsolete diredx local variables
-            (setq dired-enable-local-variables nil
-                  dired-local-variables-file nil)
 
             (require 'dired-x)
             (with-demoted-errors "Non-Fatal Error: %s"
@@ -791,27 +816,10 @@ are assumed to be of the form *.crt."
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))
 
-            (if on-windows
-                (setq dired-guess-shell-alist-user '((".*" "cmd /c")))
-              (setq dired-guess-shell-alist-user
-                    '(("\\.pdf\\'" "evince")
-                      ("\\.ps\\'" "evince")
-                      ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
-                      ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
-                      ("\\.\\(?:xcf\\)\\'" "gimp")
-                      ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
-                       "vlc")
-                      ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
-                      ("\\.html?\\'" "firefox")
-                      ("\\.docx?\\'" "loffice"))))
-
             ;; disable exaggerated fontification of dired+
             (require 'font-lock)
             (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
             (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))
-
-            (when on-windows
-              (setq directory-free-space-program nil))
 
             (defun ora-ediff-files ()
               "Compare marked files in dired with ediff."
@@ -861,7 +869,7 @@ are assumed to be of the form *.crt."
 
 (use-package find-dired
   :commands (find-dired)
-  :config (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
+  :init (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
 
 (use-package dired-open
   :config (add-to-list 'dired-open-functions #'dired-open-guess-shell-alist))
@@ -882,6 +890,29 @@ are assumed to be of the form *.crt."
   :commands (helm-show-kill-ring
              helm-org-agenda-files-headings)
   :diminish helm-mode
+  :init (setq helm-input-idle-delay 0.0
+              helm-buffers-fuzzy-matching t
+              helm-mode-fuzzy-match t
+              helm-autoresize-min-height 20
+              helm-ff-auto-update-initial-value t
+              helm-ff-file-name-history-use-recentf t
+              helm-ff-search-library-in-sexp t
+              helm-ff-skip-boring-files nil
+              helm-split-window-inside-p t
+              helm-move-to-line-cycle-in-source nil
+              helm-scroll-amount nil
+              helm-locate-command nil
+              helm-candidate-number-limit 100
+              helm-follow-mode-persistent t
+              helm-buffer-details-flag t
+              helm-buffer-skip-remote-checking t
+              helm-mini-default-sources '(helm-source-buffers-list
+                                          helm-source-recentf
+                                          db/helm-frequently-used-features
+                                          db/helm-frequently-visited-locations
+                                          helm-source-buffer-not-found
+                                          helm-source-bookmarks
+                                          helm-source-bookmark-set))
   :config (progn
             (eval-when-compile
               (require 'helm-mode)
@@ -889,34 +920,9 @@ are assumed to be of the form *.crt."
               (require 'helm-ring)
               (require 'helm-org))
 
-            (setq helm-input-idle-delay 0.0
-                  helm-buffers-fuzzy-matching t
-                  helm-mode-fuzzy-match t
-                  helm-autoresize-min-height 20
-                  helm-ff-auto-update-initial-value t
-                  helm-ff-file-name-history-use-recentf t
-                  helm-ff-search-library-in-sexp t
-                  helm-ff-skip-boring-files nil
-                  helm-split-window-inside-p t
-                  helm-move-to-line-cycle-in-source nil
-                  helm-scroll-amount nil
-                  helm-locate-command nil
-                  helm-candidate-number-limit 100
-                  helm-follow-mode-persistent t
-                  helm-buffer-details-flag t
-                  helm-buffer-skip-remote-checking t)
-
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
             (bind-key "C-z" #'helm-select-action helm-map)
-
-            (setq helm-mini-default-sources '(helm-source-buffers-list
-                                              helm-source-recentf
-                                              db/helm-frequently-used-features
-                                              db/helm-frequently-visited-locations
-                                              helm-source-buffer-not-found
-                                              helm-source-bookmarks
-                                              helm-source-bookmark-set))
 
             ;; Add action to clock in at current heading to
             ;; `helm-org-agenda-files-headings’
@@ -942,25 +948,24 @@ are assumed to be of the form *.crt."
   :commands (ivy-mode
              ivy-resume)
   :diminish ivy-mode
-  :config (progn
-            (setq ivy-use-virtual-buffers t
-                  enable-recursive-minibuffers t
-                  ivy-magic-tilde nil
-                  ivy-count-format "(%d/%d) "
-                  ivy-format-function #'(lambda (cands)
-                                          (ivy--format-function-generic
-                                           (lambda (str)
-                                             (concat "→ " str))
-                                           (lambda (str)
-                                             (concat "  " str))
-                                           cands
-                                           "\n")))
-            (setq ivy-initial-inputs-alist '((counsel-describe-function . "^")
-                                             (counsel-describe-variable . "^")
-                                             (man . "^")
-                                             (woman . "^")))
-            (add-to-list 'ivy-completing-read-handlers-alist
-                         '(org-capture . completing-read-default))))
+  :init (setq ivy-use-virtual-buffers t
+              enable-recursive-minibuffers t
+              ivy-magic-tilde nil
+              ivy-count-format "(%d/%d) "
+              ivy-format-function #'(lambda (cands)
+                                      (ivy--format-function-generic
+                                       (lambda (str)
+                                         (concat "→ " str))
+                                       (lambda (str)
+                                         (concat "  " str))
+                                       cands
+                                       "\n"))
+              ivy-initial-inputs-alist '((counsel-describe-function . "^")
+                                         (counsel-describe-variable . "^")
+                                         (man . "^")
+                                         (woman . "^")))
+  :config (add-to-list 'ivy-completing-read-handlers-alist
+                       '(org-capture . completing-read-default)))
 
 (use-package counsel
   :commands (counsel-org-goto-all
@@ -984,7 +989,7 @@ are assumed to be of the form *.crt."
 
 (use-package company
   :commands (company-mode global-company-mode)
-  :config (setq company-show-numbers t))
+  :init (setq company-show-numbers t))
 
 
 ;; * Navigation
@@ -1025,33 +1030,30 @@ are assumed to be of the form *.crt."
 
 (use-package helm-emms
   :commands (helm-emms)
+  :init (setq helm-emms-use-track-description-function t
+              helm-emms-default-sources '(helm-source-emms-streams
+                                          helm-source-emms-dired
+                                          helm-source-emms-files))
   :config (progn
             (require 'db-emms)
-            (require 'helm-adaptive)
-            (setq helm-emms-default-sources
-                  '(helm-source-emms-streams
-                    helm-source-emms-dired
-                    helm-source-emms-files))
-            (setq helm-emms-use-track-description-function t)))
+            (require 'helm-adaptive)))
 
 
 ;; * Shells and such
 
 (use-package comint
   :defer t
-  :config (progn
-            (setq comint-scroll-to-bottom-on-input t)
-            (setq comint-scroll-to-bottom-on-output nil)
-            (setq comint-scroll-show-maximum-output t)
-            (setq comint-completion-addsuffix t)
-            (setq comint-buffer-maximum-size 100000)
-            (setq comint-input-ring-size 5000)))
+  :init (setq comint-scroll-to-bottom-on-input t
+              comint-scroll-to-bottom-on-output nil
+              comint-scroll-show-maximum-output t
+              comint-completion-addsuffix t
+              comint-buffer-maximum-size 100000
+              comint-input-ring-size 5000))
 
 (use-package term
   :commands (term-send-string)
+  :init (setq explicit-shell-file-name shell-file-name)
   :config (progn
-            (setq explicit-shell-file-name shell-file-name)
-
             (add-hook 'term-exec-hook   ; oremacs.com
                       (lambda ()
                         (let* ((buff (current-buffer))
@@ -1141,39 +1143,38 @@ are assumed to be of the form *.crt."
 
 (use-package cider
   :commands (cider-jack-in)
+  :init (setq nrepl-hide-special-buffers t
+              cider-auto-select-error-buffer t
+              cider-stacktrace-default-filters '(tooling dup)
+              cider-stacktrace-fill-column 80
+              cider-save-file-on-load nil
+              cider-repl-result-prefix ";; => "
+              cider-repl-use-clojure-font-lock t
+              cider-repl-wrap-history t
+              cider-repl-history-size 1000
+              ;;cider-lein-parameters "trampoline repl :headless"
+              cider-lein-parameters "repl :headless"
+              cider-repl-history-file (expand-file-name ".cider-history" emacs-d)
+              cider-repl-display-help-banner nil
+              cider-cljs-lein-repl "(cemerick.piggieback/cljs-repl (cljs.repl.rhino/repl-env))")
   :config (progn
-            (setq nrepl-hide-special-buffers t
-                  cider-auto-select-error-buffer t
-                  cider-stacktrace-default-filters '(tooling dup)
-                  cider-stacktrace-fill-column 80
-                  cider-save-file-on-load nil
-                  cider-repl-result-prefix ";; => "
-                  cider-repl-use-clojure-font-lock t
-                  cider-repl-wrap-history t
-                  cider-repl-history-size 1000
-                  ;;cider-lein-parameters "trampoline repl :headless"
-                  cider-lein-parameters "repl :headless"
-                  cider-repl-history-file (expand-file-name ".cider-history" emacs-d)
-                  cider-repl-display-help-banner nil)
-
             (add-hook 'cider-repl-mode-hook 'subword-mode)
             (add-hook 'cider-repl-mode-hook 'lispy-mode)
             (add-hook 'cider-repl-mode-hook 'cider-repl-toggle-pretty-printing)
             (add-hook 'cider-repl-mode-hook 'company-mode)
-            (add-hook 'cider-mode-hook 'eldoc-mode)
-
-            (setq cider-cljs-lein-repl "(cemerick.piggieback/cljs-repl (cljs.repl.rhino/repl-env))")))
+            (add-hook 'cider-mode-hook 'eldoc-mode)))
 
 (use-package clojure-mode
   :defer t
-  :config (progn (define-clojure-indent
-                     (forall 'defun)
-                     (exists 'defun)
-                   (dopar 'defun))
-                 (add-hook 'clojure-mode-hook 'lispy-mode)
-                 (add-hook 'clojure-mode-hook 'clj-refactor-mode)
-                 (add-hook 'clojure-mode-hook 'yas-minor-mode)
-                 (add-hook 'clojure-mode-hook 'company-mode)))
+  :config (progn
+            (define-clojure-indent
+              (forall 'defun)
+              (exists 'defun)
+              (dopar 'defun))
+            (add-hook 'clojure-mode-hook 'lispy-mode)
+            (add-hook 'clojure-mode-hook 'clj-refactor-mode)
+            (add-hook 'clojure-mode-hook 'yas-minor-mode)
+            (add-hook 'clojure-mode-hook 'company-mode)))
 
 (use-package clj-refactor
   :commands (clj-refactor-mode)
@@ -1185,26 +1186,20 @@ are assumed to be of the form *.crt."
 (use-package slime
   :commands (slime slime-mode slime-connect)
   :init     (progn
-              (setq inferior-lisp-program "sbcl --noinform --no-linedit")
+              (setq inferior-lisp-program "sbcl --noinform --no-linedit"
+                    slime-compile-file-options '(:fasl-directory "/tmp/slime-fasls/")
+                    slime-net-coding-system 'utf-8-unix
+                    slime-completion-at-point-functions 'slime-fuzzy-complete-symbol
+                    slime-lisp-implementations '((sbcl ("sbcl") :coding-system utf-8-unix)
+                                                 (cmucl ("cmucl") :coding-system utf-8-unix)
+                                                 (ccl ("ccl") :coding-system utf-8-unix))
+                    slime-repl-history-remove-duplicates t
+                    slime-repl-history-trim-whitespaces t)
               (add-hook 'lisp-mode-hook '(lambda () (slime-mode +1)) t))
   :config   (progn
-              (setq slime-compile-file-options '(:fasl-directory "/tmp/slime-fasls/"))
               (make-directory "/tmp/slime-fasls/" t)
-
               (slime-setup '(slime-repl slime-fancy slime-autodoc))
-
-              (setq slime-net-coding-system 'utf-8-unix
-                    slime-completion-at-point-functions 'slime-fuzzy-complete-symbol)
-              (add-hook 'slime-mode-hook 'slime-redirect-inferior-output)
-
-              (setq slime-lisp-implementations
-                    '((sbcl  ("sbcl")  :coding-system utf-8-unix)
-                      (cmucl ("cmucl") :coding-system utf-8-unix)
-                      (ccl   ("ccl")   :coding-system utf-8-unix)))
-
-              (with-eval-after-load 'slime-repl
-               (setq slime-repl-history-remove-duplicates t
-                     slime-repl-history-trim-whitespaces t))))
+              (add-hook 'slime-mode-hook 'slime-redirect-inferior-output)))
 
 (use-package hy-mode
   :commands (hy-mode)
@@ -1217,7 +1212,6 @@ are assumed to be of the form *.crt."
 
 (use-package reftex
   :commands (turn-on-reftex)
-  :init (add-hook 'latex-mode-hook 'turn-on-reftex)  ; with Emacs latex mode
   :config (progn
             (with-eval-after-load 'helm-mode
               (add-to-list 'helm-completing-read-handlers-alist
@@ -1248,11 +1242,11 @@ are assumed to be of the form *.crt."
            (lambda (pair)
              (if (eq (cdr pair) 'perl-mode)
                  (setcdr pair 'cperl-mode)))
-           (append auto-mode-alist interpreter-mode-alist)))
+           (append auto-mode-alist interpreter-mode-alist))
+          (setq cperl-hairy nil))
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
-            (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
-            (setq cperl-hairy nil)))
+            (add-hook 'cperl-mode-hook 'prettify-symbols-mode)))
 
 (use-package crux
   :commands (crux-eval-and-replace
@@ -1305,8 +1299,8 @@ are assumed to be of the form *.crt."
 (use-package haskell-mode
   :defer t
   :defines (haskell-program-name)
+  :init (setq haskell-program-name "ghci")
   :config (progn
-            (setq haskell-program-name "ghci")
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
             (add-hook 'haskell-mode-hook
@@ -1362,8 +1356,8 @@ are assumed to be of the form *.crt."
 
 (use-package python
   :defer t
+  :init (setq python-indent-offset 2)
   :config (progn
-            (setq python-indent-offset 2)
             (add-hook 'python-mode-hook 'highlight-indentation-mode)
             (when (package-installed-p 'elpy)
               (elpy-enable))))
@@ -1384,6 +1378,11 @@ are assumed to be of the form *.crt."
                                                     nil))
                      use-package))))
 
+(use-package sh-scripts
+  :defer t
+  :init (setq sh-basic-offset 2
+              sh-indentation 2))
+
 (use-package synonyms
   :commands (synonyms))
 
@@ -1395,14 +1394,14 @@ are assumed to be of the form *.crt."
 
 (use-package typing
   :commands (typing-of-emacs)
-  :config (setq toe-highscore-file nil))
+  :init (setq toe-highscore-file nil))
 
 (use-package undo-tree
   :commands (global-undo-tree-mode
              undo
              undo-tree-redo)
-  :config   (setq undo-tree-visualizer-timestamps t
-                  undo-tree-visualizer-diff t)
+  :init (setq undo-tree-visualizer-timestamps t
+              undo-tree-visualizer-diff t)
   :diminish undo-tree-mode)
 
 (use-package vlf-setup)
@@ -1414,9 +1413,9 @@ are assumed to be of the form *.crt."
 (use-package which-key
   :commands (which-key-mode)
   :diminish which-key-mode
-  :config   (progn (which-key-setup-side-window-bottom)
-                   (setq which-key-side-window-max-width 0.33
-                         which-key-side-window-max-height 0.25)))
+  :init (setq which-key-side-window-max-width 0.33
+              which-key-side-window-max-height 0.25)
+  :config (which-key-setup-side-window-bottom))
 
 (use-package yasnippet
   :commands (yas-minor-mode-on yas-minor-mode)

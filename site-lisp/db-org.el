@@ -29,7 +29,8 @@
       org-highlight-latex-and-related '(latex)
       org-use-sub-superscripts '{}
       org-src-fontify-natively t
-      org-src-preserve-indentation t)
+      org-src-preserve-indentation t
+      org-ellipsis "⤵")
 
 (bind-key [remap org-return] 'org-return-indent org-mode-map)
 
