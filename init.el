@@ -779,7 +779,9 @@ are assumed to be of the form *.crt."
             (require 'dired-x)
             (with-demoted-errors "Non-Fatal Error: %s"
               (require 'dired+)
-              (require 'dired-open))
+              (when (and (eq system-type 'windows-nt)
+                         (not (package-installed-p 'w32-browser)))
+                (warn "`w32-browser’ not installed, dired will have reduced functionality.")))
 
             ;; Gnus support in dired
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
