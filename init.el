@@ -757,6 +757,9 @@ _h_   _l_   _o_k        _y_ank
   :config (progn
             (require 'db-org)
 
+            ;; Reset checkboxes if the RESET_CHECK_BOXES property is set
+            (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
+
             ;; Color links to file according to whether they exist or not
             (org-link-set-parameters
              "file"

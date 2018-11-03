@@ -350,8 +350,6 @@ In ~%s~:
   (if (org-entry-get (point) "RESET_CHECK_BOXES")
       (org-reset-checkbox-state-subtree)))
 
-(add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
-
 
 ;; Helper Functions for Clocking
 
