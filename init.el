@@ -231,7 +231,6 @@
 
   (when (package-installed-p 'helm)
     (bind-key "M-y" #'helm-show-kill-ring)
-    (bind-key "C-c h" #'helm-command-prefix)
     (bind-key "#" #'helm-emms helm-command-map))
 
   (when (package-installed-p 'crux)
@@ -978,7 +977,7 @@ are assumed to be of the form *.crt."
   :commands (hippie-expand))
 
 (use-package helm-config
-  :config (unbind-key helm-command-prefix-key))
+  :init (setq helm-command-prefix-key "C-c h"))
 
 (use-package helm
   :commands (helm-show-kill-ring
