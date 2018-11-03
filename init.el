@@ -585,6 +585,7 @@ _h_   _l_   _o_k        _y_ank
              db/run-or-hide-ansi-term
              db/helm-shortcuts
              db/hex-to-ascii
+             db/ascii-to-hex
              conditionally-enable-lispy
              db/export-diary))
 
