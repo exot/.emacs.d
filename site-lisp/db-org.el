@@ -181,95 +181,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 ;;; Capturing
 
-;; disable usage of helm for `org-capture'
-(with-eval-after-load 'helm-mode
-  (defvar helm-completing-read-handlers-alist) ; for the byte compiler
-  (add-to-list 'helm-completing-read-handlers-alist
-               '(org-capture . nil)))
-
-(setq org-capture-use-agenda-date nil)
-
-(setq org-capture-templates
-      `(("t" "Todo"
-             entry
-             (file db/org-default-refile-file)
-             ,(concat "* TODO %^{What}\n"
-                      "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
-                      ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "%?"))
-        ("n" "Note"
-             entry
-             (file db/org-default-refile-file)
-             "* %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
-             :clock-in t :clock-resume t)
-        ("d" "Date"
-             entry
-             (file db/org-default-refile-file)
-             "* GOTO %^{What} :DATE:\n%^{When}t\n%a%?")
-        ("i" "Interruptions")
-        ("in" "Interruption now"
-              entry
-              (file db/org-default-refile-file)
-              "* DONE %^{What}\n\n%?"
-              :clock-in t :clock-resume t)
-        ("ip" "Interruption previously" ; bad English vs mnemonics
-              entry
-              (file db/org-default-refile-file)
-              ,(concat "* DONE %^{What}\n"
-                       ":LOGBOOK:\n"
-                       "%(db/read-clockline)\n" ; evaluated before above prompt?
-                       ":END:\n"
-                       "%?"))
-        ("j" "journal entry"
-             plain
-             (file+datetree db/org-default-pensieve-file)
-             "\n%i%U\n\n%?\n")
-        ("r" "respond"
-             entry
-             (file db/org-default-refile-file)
-             ,(concat "* TODO E-Mail: %:subject (%:from) :EMAIL:\n"
-                      "SCHEDULED: %^{Reply when?}t\n"
-                      ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%a")
-             :immediate-finish t)
-        ("R" "read"
-             entry
-             (file db/org-default-refile-file)
-             ,(concat "* READ %:subject :READ:\n"
-                      ;; "DEADLINE: <%(org-read-date nil nil \"+1m\")>\n"
-                      ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%a"))
-        ("U" "Read current content of clipboard"
-             entry
-             (file db/org-default-refile-file)
-             ,(concat "* READ %^{Description} :READ:\n"
-                      ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%(current-kill 0)"))
-        ("m" "Meeting"
-             entry
-             (file db/org-default-refile-file)
-             ,(concat "* MEETING %^{What} :MEETING:\n"
-                      ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%?")
-             :clock-in t :clock-resume t)
-        ("p" "Phone call"
-             entry
-             (file db/org-default-refile-file)
-             ,(concat "* PHONE %^{Calling} :PHONE:\n"
-                      ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                      "\n%?")
-             :clock-in t :clock-resume t)
-        ("w" "Weekly Summary"
-             entry
-             (file+datetree db/org-default-pensieve-file)
-             "* Weekly Review\n\n%?")
-        ("b" "Bookmark"
-             entry
-             (file+headline db/org-default-notes-file "Bookmarks")
-             ,(concat "* [[%^{Link}][%^{Caption}]]\n"
-                      ":PROPERTIES:\n:CREATED: %U\n:END:\n\n")
-             :immediate-finish t)))
-
 (defun db/org-timestamp-difference (stamp-1 stamp-2)
   "Returns time difference between two given org-mode timestamps."
   ;; Things copied from `org-clock-update-time-maybe’
@@ -323,11 +234,6 @@ In ~%s~:
        func-name
        org-src-mode
        code-snippet))))
-
-(add-to-list 'org-capture-templates
-             '("s" "Code Snippet" entry (file db/org-default-refile-file)
-               "* %?\n%(db/org-capture-code-snippet \"%F\")")
-             t)
 
 
 ;;; Refiling
