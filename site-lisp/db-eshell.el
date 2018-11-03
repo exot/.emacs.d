@@ -45,8 +45,7 @@
   ;; directly taken from Howard Abrams
   (interactive)
   (insert (completing-read "Eshell history: "
-                           (delete-dups
-                            (ring-elements eshell-history-ring)))))
+                           (seq-uniq (ring-elements eshell-history-ring)))))
 
 
 ;; Git Completion
