@@ -781,6 +781,22 @@ _h_   _l_   _o_k        _y_ank
             (unless (memq #'db/export-diary
                           (mapcar #'timer--function timer-idle-list))
               (run-with-idle-timer 20 t #'db/export-diary))))
+            ;; Hack: The default implementation is too slow, because it is
+            ;; parsing all properties of an entry by default.  Let’s simplify
+            ;; this to only parse what we are looking for.  This makes tag
+            ;; search *much* faster!
+            (with-eval-after-load 'org
+              (defun org-cached-entry-get (pom property)
+                (if (or (eq t org-use-property-inheritance)
+                        (and (stringp org-use-property-inheritance)
+                             (let ((case-fold-search t))
+                               (string-match-p org-use-property-inheritance property)))
+                        (and (listp org-use-property-inheritance)
+                             (member-ignore-case property org-use-property-inheritance)))
+                    ;; Caching is not possible, check it directly.
+                    (org-entry-get pom property 'inherit)
+                  ;; This is different in the original implementation
+                  (org-entry-get pom property))))))
 
 ;; Default Tasks for Working, Home, Breaks
 
