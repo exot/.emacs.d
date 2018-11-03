@@ -1598,8 +1598,9 @@ are assumed to be of the form *.crt."
 
 ;; * Media
 
-(use-package emms-setup
-  :commands (emms-pause
+(use-package emms
+  :commands (emms
+             emms-pause
              emms-stop
              emms-next
              emms-previous)
@@ -1608,29 +1609,72 @@ are assumed to be of the form *.crt."
   :init (setq emms-source-file-default-directory "~/Documents/media/audio/"
               emms-player-list '(emms-player-mplayer emms-player-mplayer-playlist)
               emms-show-format "NP: %s"
-              emms-stream-default-action "play")
+              emms-stream-default-action "play"
+              emms-track-description-function 'db/emms-track-description
+              emms-playlist-default-major-mode 'emms-playlist-mode)
   :config (progn
-            (emms-all)
-            (emms-default-players)
 
-            ;; Reset track description function to personal configuration (it’s
-            ;; overwritten by `emms-all’)
-            (setq emms-track-description-function 'db/emms-track-description)
+            ;; Initialization copied and adapted from `emms-setup’
+
+            (require 'emms-source-file)
+            (require 'emms-source-playlist)
+            (require 'emms-player-simple)
+            (require 'emms-player-mplayer)
+            (require 'emms-playlist-mode)
+            (require 'emms-info)
+            (require 'emms-info-mp3info)
+            (require 'emms-info-ogginfo)
+            (require 'emms-info-opusinfo)
+            (require 'emms-cache)
+            (require 'emms-mode-line)
+            (require 'emms-mark)
+            (require 'emms-tag-editor)
+            (require 'emms-show-all)
+            (require 'emms-streams)
+            (require 'emms-playing-time)
+            (require 'emms-player-mpd)
+            (require 'emms-playlist-sort)
+            (require 'emms-browser)
+            (require 'emms-mode-line-icon)
+            (require 'emms-cue)
+            (require 'emms-bookmarks)
+            (require 'emms-last-played)
+            (require 'emms-metaplaylist-mode)
+            (require 'emms-stream-info)
+            (require 'emms-score)
+            (require 'emms-history)
+            (require 'emms-i18n)
+            (require 'emms-volume)
+            (require 'emms-playlist-limit)
+
+            (add-to-list 'emms-track-initialize-functions
+                         'emms-info-initialize-track)
+
+            (if (require 'emms-info-mediainfo nil 'no-error)
+                (setq emms-info-functions '(emms-info-mediainfo))
+              (when (executable-find emms-info-mp3info-program-name)
+                (add-to-list 'emms-info-functions 'emms-info-mp3info))
+              (when (executable-find emms-info-ogginfo-program-name)
+                (add-to-list 'emms-info-functions 'emms-info-ogginfo))
+              (when (executable-find emms-info-opusinfo-program-name)
+                (add-to-list 'emms-info-functions 'emms-info-opusinfo))
+              (add-to-list 'emms-info-functions 'emms-info-cueinfo))
+
+            (when (fboundp 'emms-cache) ; work around compiler warning
+              (emms-cache 1))
+            (emms-mode-line -1)
+            (emms-playing-time 1)
+
+            (emms-score 1)
+            (emms-playlist-limit 1)
+
+            (add-hook 'emms-player-started-hook 'emms-last-played-update-current)
+            (add-hook 'emms-player-started-hook 'emms-show)
 
             (advice-add 'emms-tag-editor-submit
                         :after (lambda (&rest r)
                                  (ignore r)
                                  (delete-window)))
-
-            (add-hook 'emms-player-started-hook 'emms-show)
-
-            (when (require 'emms-info-mediainfo nil 'no-error)
-              (setq emms-info-functions '(emms-info-mediainfo)))
-
-            (emms-mode-line -1)
-            (emms-playing-time-enable-display)
-
-            (run-with-timer 0 3600 #'emms-cache-save)
 
             (unless (eq system-type 'windows-nt)
               (setq emms-source-file-directory-tree-function
@@ -1639,13 +1683,15 @@ are assumed to be of the form *.crt."
             (add-hook 'emms-playlist-mode-hook
                       (lambda ()
                         (setq emms-playlist-insert-track-function
-                              #'db/emms-playlist-mode-insert-track)))))
+                              #'db/emms-playlist-mode-insert-track)))
+
+            (run-with-timer 0 3600 #'emms-cache-save)))
 
 ;; Make sure emms is up and running when we call functions such as
 ;; `emms-play-dired’ etc.
 (use-package emms-source-file
   :defer t
-  :config (require 'emms-setup))
+  :config (require 'emms))
 
 (use-package db-emms
   :commands (db/play-playlist
@@ -1661,7 +1707,7 @@ are assumed to be of the form *.crt."
                                           helm-source-emms-dired
                                           helm-source-emms-files))
   :config (progn
-            (require 'emms-setup)
+            (require 'emms)
             (require 'helm-adaptive)))
 
 
