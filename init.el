@@ -410,11 +410,11 @@
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
 
 (use-package tramp
-  :config (setq tramp-save-ad-hoc-proxies t))
+  :init (setq tramp-save-ad-hoc-proxies t))
 
 (use-package re-builder
   :commands (re-builder)
-  :config (setq reb-re-syntax 'string))
+  :init (setq reb-re-syntax 'string))
 
 (setq lisp-indent-function #'lisp-indent-function)
 
@@ -440,9 +440,9 @@
 
 (use-package grep
   :commands (rgrep zrgrep)
-  :config (progn
-            (bind-key "C-x C-q" #'wgrep-change-to-wgrep-mode grep-mode-map)
-            (bind-key "C-c C-c" #'wgrep-finish-edit          grep-mode-map)))
+  :bind (:map grep-mode-map
+              ("C-x C-q" . wgrep-change-to-wgrep-mode)
+              ("C-c C-c" . wgrep-finish-edit)))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
@@ -1569,10 +1569,10 @@ are assumed to be of the form *.crt."
 
 (use-package ace-window
   :commands (ace-window ace-window-display-mode)
-  :config (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-                aw-background nil
-                aw-leading-char-style 'char
-                aw-scope 'frame))
+  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+              aw-background nil
+              aw-leading-char-style 'char
+              aw-scope 'frame))
 
 (use-package avy
   :commands (avy-goto-char-timer
@@ -1586,7 +1586,7 @@ are assumed to be of the form *.crt."
              dumb-jump-quick-look
              dumb-jump-go-prefer-external
              dumb-jump-go-prefer-external-other-window)
-  :config (setq dumb-jump-selector 'helm))
+  :init (setq dumb-jump-selector 'helm))
 
 (use-package helm-pages
   :commands (helm-pages))
