@@ -658,7 +658,8 @@ _h_   _l_   _o_k        _y_ank
              db/org-agenda-list-deadlines
              db/org-agenda-skip-tag
              db/cmp-date-property
-             hydra-org-agenda-view/body))
+             hydra-org-agenda-view/body
+             org-babel-execute:hy))
 
 (use-package org
   :commands (org-capture
@@ -1019,6 +1020,14 @@ _h_   _l_   _o_k        _y_ank
             (mapc #'find-file-noselect org-agenda-files)
 
             (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)))
+
+;; Babel
+
+(use-package ob-core
+  :defer t
+  :init (setq org-export-use-babel nil)
+  :config (setf (alist-get :results org-babel-default-header-args)
+                "output code replace"))
 
 (use-package ox-icalendar
   :commands (org-icalendar-combine-agenda-files)

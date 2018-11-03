@@ -482,12 +482,6 @@ Current Task: %`org-clock-current-task; "
 
 ;;; Babel
 
-(use-package ob-core
-  :defer t
-  :init (setq org-export-use-babel nil)
-  :config (setf (alist-get :results org-babel-default-header-args)
-                "output code replace"))
-
 (defun org-babel-execute:hy (body params)
   ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
   "Execute hy code BODY with parameters PARAMS."
