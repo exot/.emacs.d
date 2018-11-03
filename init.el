@@ -982,7 +982,9 @@ are assumed to be of the form *.crt."
   :commands (helm-show-kill-ring
              helm-org-agenda-files-headings)
   :diminish helm-mode
-  :bind (:map helm-command-map ("#" . helm-emms))
+  :bind (:map helm-command-map
+              ("#" . helm-emms)
+              ("P" . helm-pages))
   :init (setq helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
               helm-mode-fuzzy-match t
@@ -1109,9 +1111,7 @@ are assumed to be of the form *.crt."
   :config (setq dumb-jump-selector 'helm))
 
 (use-package helm-pages
-  :commands (helm-pages)
-  :config (with-eval-after-load 'helm-mode
-            (bind-key "P" #'helm-pages helm-command-prefix)))
+  :commands (helm-pages))
 
 (use-package eyebrowse
   :commands (eyebrowse-mode)
