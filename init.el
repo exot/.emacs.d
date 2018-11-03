@@ -65,6 +65,8 @@
 (defun db/run-init ()
   "Run main initialization after everything is set up."
 
+  (message "Running main initialization ... done")
+
   ;; Load customizations
 
   (when (file-exists-p custom-file)
@@ -266,6 +268,8 @@
 
   (unless (server-running-p)
     (server-start))
+
+  (message "Running main initialization ... done")
 
   t)
 
