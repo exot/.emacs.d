@@ -68,20 +68,6 @@
       "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
 
 
-;;; How to open files
-
-;; open directory links in emacs itself
-(add-to-list 'org-file-apps '(directory . emacs))
-
-;; use system default for Microsoft stuff
-(add-to-list 'org-file-apps '("\\.docx?\\'" . default))
-(add-to-list 'org-file-apps '("\\.pptx?\\'" . default))
-(add-to-list 'org-file-apps '("\\.xlsx?\\'" . default))
-
-(when (eq system-type 'cygwin)
-  (add-to-list 'org-file-apps '(t . "cygstart %s") t))
-
-
 ;;; Faces
 
 (setq org-todo-keyword-faces
@@ -106,13 +92,10 @@
         (?B . (:foreground "firebrick"))
         (?C . (:foreground "tomato"))))
 
-(org-link-set-parameters
- "file"
- :face (lambda (path) (if (file-exists-p path) 'org-link 'org-warning)))
-
 
 ;;; Agenda Customization
 
+;; For customization of default org agenda files
 (defun db/update-org-agenda-files (symbol value)
   "Set SYMBOL to VALUE and update `org-agenda-files’ afterwards."
   (set-default symbol value)
@@ -126,90 +109,6 @@
                                                   db/org-default-refile-file
                                                   db/org-default-notes-file)))
                           :test #'cl-equalp)))
-
-(defcustom db/org-default-work-file ""
-  "Path to default org-mode file at work."
-  :group 'personal-settings
-  :type 'string
-  :set #'db/update-org-agenda-files)
-
-(defcustom db/org-default-home-file ""
-  "Path to default org-mode file at home."
-  :group 'personal-settings
-  :type 'string
-  :set #'db/update-org-agenda-files)
-
-(defcustom db/org-default-notes-file ""
-  "Path to default org-mode file for notes."
-  :group 'personal-settings
-  :type 'string
-  :set #'db/update-org-agenda-files)
-
-(defcustom db/org-default-refile-file ""
-  "Path to default org-mode file for capturing."
-  :group 'personal-settings
-  :type 'string
-  :set #'db/update-org-agenda-files)
-
-(defcustom db/org-default-pensieve-file ""
-  "Path to default org-mode file for private notes."
-  :group 'personal-settings
-  :type 'string
-  :set #'db/update-org-agenda-files)
-
-(setq org-agenda-include-diary t
-      org-agenda-span 1
-      org-agenda-diary-file db/org-default-refile-file
-      org-agenda-insert-diary-strategy 'top-level
-      org-catch-invisible-edits 'show
-      org-agenda-sorting-strategy '((agenda time-up habit-up priority-down)
-                                    (todo category-keep)
-                                    (tags category-keep)
-                                    (search category-keep))
-      org-agenda-window-setup 'current-window
-      org-agenda-restore-windows-after-quit t
-      org-agenda-compact-blocks nil
-      org-agenda-todo-ignore-with-date nil
-      org-agenda-todo-ignore-deadlines nil
-      org-agenda-todo-ignore-scheduled nil
-      org-agenda-todo-ignore-timestamp nil
-      org-agenda-skip-deadline-if-done t
-      org-agenda-skip-scheduled-if-done t
-      org-agenda-skip-timestamp-if-done t
-      org-agenda-skip-scheduled-if-deadline-is-shown 'not-today
-      org-agenda-tags-todo-honor-ignore-options t
-      org-agenda-start-with-log-mode nil
-      org-agenda-log-mode-items '(closed state)
-      org-agenda-remove-tags t
-      org-agenda-sticky nil
-      org-agenda-inhibit-startup t
-      org-agenda-tags-todo-honor-ignore-options t
-      org-agenda-dim-blocked-tasks nil
-      org-enforce-todo-checkbox-dependencies t
-      org-enforce-todo-dependencies          t
-      org-agenda-use-time-grid t
-      org-agenda-persistent-filter t
-      org-agenda-search-headline-for-time nil)
-
-(setq org-agenda-clock-consistency-checks
-      '(:max-duration 9999999
-        :min-duration 0
-        :max-gap 0
-        :gap-ok-around nil
-        :default-face ((:background "DarkRed") (:foreground "white"))
-        :overlap-face nil :gap-face nil :no-end-time-face nil
-        :long-face nil :short-face nil))
-
-(add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)
-
-(setq org-agenda-clockreport-parameter-plist
-      '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
-
-      org-stuck-projects
-      '("-DATE-HOLD-REGULAR-HOLD-NOTE+TODO=\"\""
-        ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG")
-        ("NOP")
-        ""))
 
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
@@ -308,70 +207,6 @@ are equal return nil."
                (cmp (compare-strings a-date nil nil b-date nil nil)))
           (if (eq cmp t) nil (cl-signum cmp))))))
 
-(setq org-agenda-custom-commands
-      `(("A" "Main List"
-             ((agenda
-               ""
-               ((org-agenda-entry-types '(:timestamp :sexp :scheduled :deadline))
-                (org-deadline-warning-days 0)))
-              (db/org-agenda-list-deadlines
-               ""
-               ((org-agenda-overriding-header "Deadlines")
-                (org-agenda-sorting-strategy '(deadline-up priority-down))
-                (org-deadline-warning-days 30)))
-              (tags-todo "-NOAGENDA/WAIT|DELG"
-                         ((org-agenda-overriding-header "Waiting-fors")
-                          (org-agenda-todo-ignore-deadlines t)
-                          (org-agenda-todo-ignore-scheduled t)))
-              (tags "REFILE"
-                    ((org-agenda-files (list db/org-default-refile-file))
-                     (org-agenda-overriding-header "Things to refile")))))
-        ("R" "Reading List"
-             ((tags-todo "READ/-DONE-CANC"
-                         ((org-agenda-overriding-header "To Read (unscheduled)")
-                          (org-agenda-cmp-user-defined (db/cmp-date-property "CREATED"))
-                          (org-agenda-sorting-strategy '(user-defined-up))
-                          (org-agenda-todo-ignore-scheduled t)))))
-        ("E" "Everything"
-             ((tags-todo "/WAIT"
-                         ((org-agenda-overriding-header "Tasks requiring response/input")))
-              (tags-todo "-HOLD-READ-SOMEWHEN/-DONE"
-                         ((org-agenda-overriding-header "Things not being scheduled or deadlined")
-                          (org-tags-match-list-sublevels t)
-                          (org-agenda-todo-ignore-with-date t)
-                          (org-agenda-sorting-strategy
-                           '(priority-down time-up category-keep))))
-              (stuck ""
-                     ((org-agenda-overriding-header "Stuck Tasks")))))
-        ("S" "Somewhen"
-             ((tags-todo "SOMEWHEN/-CANC-DONE"
-                         ((org-agenda-overriding-header "Things to do somewhen")
-                          (org-agenda-todo-ignore-with-date t)
-                          (org-tags-match-list-sublevels nil)))
-              (tags-todo "/HOLD"
-                         ((org-agenda-overriding-header "Tasks on Hold")))))
-        ("W" "Weekly Review"
-             ((agenda ""
-                      ((org-agenda-span 7)
-                       (org-agenda-archives-mode t)
-                       (org-agenda-dim-blocked-tasks nil)
-                       (org-agenda-skip-deadline-prewarning-if-scheduled t)))))
-        ("M" "Monthly Preview"
-             ((db/org-agenda-list-deadlines
-               ""
-               ((org-agenda-overriding-header "Deadlines")
-                (org-agenda-sorting-strategy '(deadline-up priority-down))
-                (org-deadline-warning-days 90)))
-              (agenda ""
-                      ((org-agenda-span 'month)
-                       (org-agenda-dim-blocked-tasks nil)
-                       (org-deadline-warning-days 0) ; covered by display above
-                       ))))
-        ("N" "Notes" tags "NOTE"
-             ((org-agenda-overriding-header "Notes")
-              (org-use-tag-inheritance nil)
-              (org-agenda-prefix-format '((tags . "  ")))))))
-
 ;; A Hydra for changing agenda appearance
 ;; http://oremacs.com/2016/04/04/hydra-doc-syntax/
 
@@ -381,8 +216,6 @@ are equal return nil."
                (min (1- (point-max)) (point))
                'org-last-args)))
     (nth 2 args)))
-
-(require 'hydra)
 
 (defhydra hydra-org-agenda-view (:hint none)
   "
@@ -429,9 +262,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
      (org-agenda-check-type t 'timeline 'agenda)
      (org-agenda-redo)))
   ("q" (message "Abort") :exit t))
-
-(with-eval-after-load 'org-agenda
-  (bind-key "v" #'hydra-org-agenda-view/body org-agenda-mode-map))
 
 
 ;;; Capturing
@@ -678,8 +508,6 @@ In ~%s~:
   (add-to-list 'ispell-skip-region-alist '("~" "~"))
   (add-to-list 'ispell-skip-region-alist '("=" "="))
   (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
-
-(add-hook 'org-mode-hook #'endless/org-ispell)
 
 
 ;;; Hydra

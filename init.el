@@ -650,11 +650,16 @@ _h_   _l_   _o_k        _y_ank
 (use-package db-org
   :commands (db/find-parent-task
              db/ensure-running-clock
-             db/save-current-org-task-to-file))
+             db/save-current-org-task-to-file
+             endless/org-ispell
+             db/update-org-agenda-files
+             db/org-agenda-list-deadlines
+             db/org-agenda-skip-tag
+             db/cmp-date-property
+             hydra-org-agenda-view/body))
 
 (use-package org
-  :commands (org-agenda
-             org-capture
+  :commands (org-capture
              org-store-link
              hydra-org-clock/body)
   :bind (:map org-mode-map
@@ -662,16 +667,31 @@ _h_   _l_   _o_k        _y_ank
   :config (progn
             (require 'db-org)
 
-            ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
-            ;; opening them manually
-            (mapc #'find-file-noselect org-agenda-files)
+            ;; Color links to file according to whether they exist or not
+            (org-link-set-parameters
+             "file"
+             :face (lambda (path) (if (file-exists-p path) 'org-link 'org-warning)))
+
+            ;; File Apps
+
+            (add-to-list 'org-file-apps '(directory . emacs))
+
+            (add-to-list 'org-file-apps '("\\.docx?\\'" . default))
+            (add-to-list 'org-file-apps '("\\.pptx?\\'" . default))
+            (add-to-list 'org-file-apps '("\\.xlsx?\\'" . default))
+
+            (when (eq system-type 'cygwin)
+              (add-to-list 'org-file-apps '(t . "cygstart %s") t))
+
+            ;; Skip some org mode regions to be skipped by ispell
+            (add-hook 'org-mode-hook #'endless/org-ispell)
 
             (unless (memq #'org-clock-save
                           (mapcar #'timer--function timer-list))
               (run-with-timer 0 3600 #'org-clock-save))
             (unless (memq #'db/export-diary
                           (mapcar #'timer--function timer-idle-list))
-             (run-with-idle-timer 20 t #'db/export-diary))))
+              (run-with-idle-timer 20 t #'db/export-diary))))
 
 ;; Default Tasks for Working, Home, Breaks
 
@@ -696,6 +716,7 @@ _h_   _l_   _o_k        _y_ank
   :type 'string)
 
 (use-package org-clock
+  :defer t
   :init (setq org-clock-history-length 23
               org-clock-in-resume t
               org-clock-into-drawer t
@@ -735,6 +756,164 @@ _h_   _l_   _o_k        _y_ank
 
             ;; Communicate the currently clocked in task to the outside world
             (add-hook 'org-clock-in-hook #'db/save-current-org-task-to-file)))
+
+;; Agenda
+
+(defcustom db/org-default-work-file ""
+  "Path to default org-mode file at work."
+  :group 'personal-settings
+  :type 'string
+  :set #'db/update-org-agenda-files)
+
+(defcustom db/org-default-home-file ""
+  "Path to default org-mode file at home."
+  :group 'personal-settings
+  :type 'string
+  :set #'db/update-org-agenda-files)
+
+(defcustom db/org-default-notes-file ""
+  "Path to default org-mode file for notes."
+  :group 'personal-settings
+  :type 'string
+  :set #'db/update-org-agenda-files)
+
+(defcustom db/org-default-refile-file ""
+  "Path to default org-mode file for capturing."
+  :group 'personal-settings
+  :type 'string
+  :set #'db/update-org-agenda-files)
+
+(defcustom db/org-default-pensieve-file ""
+  "Path to default org-mode file for private notes."
+  :group 'personal-settings
+  :type 'string
+  :set #'db/update-org-agenda-files)
+
+(use-package org-agenda
+  :commands (org-agenda)
+  :bind (:map org-agenda-mode-map
+              ("v" . hydra-org-agenda-view/body))
+  :init (setq org-agenda-include-diary t
+              org-agenda-span 1
+              org-agenda-diary-file db/org-default-refile-file
+              org-agenda-insert-diary-strategy 'top-level
+              org-catch-invisible-edits 'show
+              org-agenda-sorting-strategy '((agenda time-up habit-up priority-down)
+                                            (todo category-keep)
+                                            (tags category-keep)
+                                            (search category-keep))
+              org-agenda-window-setup 'current-window
+              org-agenda-restore-windows-after-quit t
+              org-agenda-compact-blocks nil
+              org-agenda-todo-ignore-with-date nil
+              org-agenda-todo-ignore-deadlines nil
+              org-agenda-todo-ignore-scheduled nil
+              org-agenda-todo-ignore-timestamp nil
+              org-agenda-skip-deadline-if-done t
+              org-agenda-skip-scheduled-if-done t
+              org-agenda-skip-timestamp-if-done t
+              org-agenda-skip-scheduled-if-deadline-is-shown 'not-today
+              org-agenda-tags-todo-honor-ignore-options t
+              org-agenda-start-with-log-mode nil
+              org-agenda-log-mode-items '(closed state)
+              org-agenda-remove-tags t
+              org-agenda-sticky nil
+              org-agenda-inhibit-startup t
+              org-agenda-tags-todo-honor-ignore-options t
+              org-agenda-dim-blocked-tasks nil
+              org-enforce-todo-checkbox-dependencies t
+              org-enforce-todo-dependencies          t
+              org-agenda-use-time-grid t
+              org-agenda-persistent-filter t
+              org-agenda-search-headline-for-time nil
+
+              org-agenda-clock-consistency-checks
+              '(:max-duration 9999999
+                              :min-duration 0
+                              :max-gap 0
+                              :gap-ok-around nil
+                              :default-face ((:background "DarkRed") (:foreground "white"))
+                              :overlap-face nil :gap-face nil :no-end-time-face nil
+                              :long-face nil :short-face nil)
+
+              org-agenda-clockreport-parameter-plist
+              '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
+
+              org-stuck-projects
+              '("-DATE-HOLD-REGULAR-HOLD-NOTE+TODO=\"\""
+                ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG")
+                ("NOP")
+                "")
+
+              org-agenda-custom-commands
+              `(("A" "Main List"
+                 ((agenda
+                   ""
+                   ((org-agenda-entry-types '(:timestamp :sexp :scheduled :deadline))
+                    (org-deadline-warning-days 0)))
+                  (db/org-agenda-list-deadlines
+                   ""
+                   ((org-agenda-overriding-header "Deadlines")
+                    (org-agenda-sorting-strategy '(deadline-up priority-down))
+                    (org-deadline-warning-days 30)))
+                  (tags-todo "-NOAGENDA/WAIT|DELG"
+                             ((org-agenda-overriding-header "Waiting-fors")
+                              (org-agenda-todo-ignore-deadlines t)
+                              (org-agenda-todo-ignore-scheduled t)))
+                  (tags "REFILE"
+                        ((org-agenda-files (list db/org-default-refile-file))
+                         (org-agenda-overriding-header "Things to refile")))))
+                ("R" "Reading List"
+                 ((tags-todo "READ/-DONE-CANC"
+                             ((org-agenda-overriding-header "To Read (unscheduled)")
+                              (org-agenda-cmp-user-defined (db/cmp-date-property "CREATED"))
+                              (org-agenda-sorting-strategy '(user-defined-up))
+                              (org-agenda-todo-ignore-scheduled t)))))
+                ("E" "Everything"
+                 ((tags-todo "/WAIT"
+                             ((org-agenda-overriding-header "Tasks requiring response/input")))
+                  (tags-todo "-HOLD-READ-SOMEWHEN/-DONE"
+                             ((org-agenda-overriding-header "Things not being scheduled or deadlined")
+                              (org-tags-match-list-sublevels t)
+                              (org-agenda-todo-ignore-with-date t)
+                              (org-agenda-sorting-strategy
+                               '(priority-down time-up category-keep))))
+                  (stuck ""
+                         ((org-agenda-overriding-header "Stuck Tasks")))))
+                ("S" "Somewhen"
+                 ((tags-todo "SOMEWHEN/-CANC-DONE"
+                             ((org-agenda-overriding-header "Things to do somewhen")
+                              (org-agenda-todo-ignore-with-date t)
+                              (org-tags-match-list-sublevels nil)))
+                  (tags-todo "/HOLD"
+                             ((org-agenda-overriding-header "Tasks on Hold")))))
+                ("W" "Weekly Review"
+                 ((agenda ""
+                          ((org-agenda-span 7)
+                           (org-agenda-archives-mode t)
+                           (org-agenda-dim-blocked-tasks nil)
+                           (org-agenda-skip-deadline-prewarning-if-scheduled t)))))
+                ("M" "Monthly Preview"
+                 ((db/org-agenda-list-deadlines
+                   ""
+                   ((org-agenda-overriding-header "Deadlines")
+                    (org-agenda-sorting-strategy '(deadline-up priority-down))
+                    (org-deadline-warning-days 90)))
+                  (agenda ""
+                          ((org-agenda-span 'month)
+                           (org-agenda-dim-blocked-tasks nil)
+                           (org-deadline-warning-days 0) ; covered by display above
+                           ))))
+                ("N" "Notes" tags "NOTE"
+                 ((org-agenda-overriding-header "Notes")
+                  (org-use-tag-inheritance nil)
+                  (org-agenda-prefix-format '((tags . "  ")))))))
+  :config (progn
+            ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
+            ;; opening them manually
+            (mapc #'find-file-noselect org-agenda-files)
+
+            (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)))
 
 (use-package ox-icalendar
   :commands (org-icalendar-combine-agenda-files)
