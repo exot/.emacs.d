@@ -1671,9 +1671,62 @@ are assumed to be of the form *.crt."
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
             (add-hook 'shell-mode-hook 'with-editor-export-editor)))
 
+(use-package db-eshell
+  :commands (eshell-clear-buffer
+             eshell/default-prompt-function
+             eshell/gst
+             eshell-insert-history
+             pcomplete/git))
+
 (use-package eshell
   :commands (eshell)
-  :config (require 'db-eshell))
+  :init (setq eshell-cmpl-cycle-completions nil
+              eshell-scroll-to-bottom-on-input t
+              eshell-prefer-lisp-functions nil
+              eshell-error-if-no-glob t
+              eshell-hist-ignoredups t
+              eshell-save-history-on-exit t
+              eshell-destroy-buffer-when-process-dies t
+              eshell-prompt-function #'eshell/default-prompt-function
+              eshell-prompt-regexp "└─[$#] "
+              eshell-highlight-prompt nil)
+  :config (progn (require 'em-prompt)
+                 (require 'em-term)
+                 (require 'em-cmpl)
+
+                 (setenv "PAGER" "cat")
+
+                 (add-to-list 'eshell-command-completions-alist
+                              '("gunzip" "gz\\'"))
+
+                 (add-to-list 'eshell-command-completions-alist
+                              '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
+
+                 (add-hook 'eshell-mode-hook
+                           'with-editor-export-editor)
+
+                 (add-hook 'eshell-mode-hook
+                           (lambda ()
+                             (bind-key "C-a" #'eshell-bol eshell-mode-map)
+                             (bind-key "C-l" #'eshell-clear-buffer eshell-mode-map)
+                             (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
+                             (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+                             (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
+
+                 ;; Ignoring case when completing file names seems to have a
+                 ;; bug: when a ~ is encountered, it is implicitly expaned by
+                 ;; `pcomplete-insert-entry’, overwriting the prompt as a side
+                 ;; effect.  Keeping the case as it is does not seem to have
+                 ;; this issue.  This problem occurs by default only on Windows
+                 ;; systems (in all flavors), because this is the only time
+                 ;; `pcomplete-ignore-case’ is non-nil by default.
+                 (when on-windows
+                   (add-to-list 'eshell-mode-hook
+                                (lambda ()
+                                  (setq pcomplete-ignore-case nil))))
+
+
+                 (require 'db-eshell)))
 
 (use-package with-editor
   :commands (with-editor-export-editor))
