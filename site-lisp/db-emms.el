@@ -37,6 +37,7 @@
 (defun db/play-playlist ()
   "Play `db/personal-playlist’ in dedicated EMMS buffer."
   (interactive)
+  (require 'emms)
   (save-window-excursion
     (let ((music-buffer-name "*EMMS Playlist* -- Misc"))
       (unless (get-buffer music-buffer-name)
