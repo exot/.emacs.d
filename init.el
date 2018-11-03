@@ -230,8 +230,7 @@
     (bind-key "C-S-s" #'counsel-grep-or-swiper))
 
   (when (package-installed-p 'helm)
-    (bind-key "M-y" #'helm-show-kill-ring)
-    (bind-key "#" #'helm-emms helm-command-map))
+    (bind-key "M-y" #'helm-show-kill-ring))
 
   (when (package-installed-p 'crux)
     (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
@@ -983,6 +982,7 @@ are assumed to be of the form *.crt."
   :commands (helm-show-kill-ring
              helm-org-agenda-files-headings)
   :diminish helm-mode
+  :bind (:map helm-command-map ("#" . helm-emms))
   :init (setq helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
               helm-mode-fuzzy-match t
