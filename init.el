@@ -1598,7 +1598,10 @@ are assumed to be of the form *.crt."
 ;; * Media
 
 (use-package emms-setup
-  :defer t
+  :commands (emms-pause
+             emms-stop
+             emms-next
+             emms-previous)
   :bind (:map emms-playlist-mode-map
               ("S s" . emms-shuffle))
   :init (setq emms-source-file-default-directory "~/Documents/media/audio/"
