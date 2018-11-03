@@ -1664,9 +1664,7 @@ are assumed to be of the form *.crt."
               (emms-cache 1))
             (emms-mode-line -1)
             (emms-playing-time 1)
-
             (emms-score 1)
-            (emms-playlist-limit 1)
 
             (add-hook 'emms-player-started-hook 'emms-last-played-update-current)
             (add-hook 'emms-player-started-hook 'emms-show)
