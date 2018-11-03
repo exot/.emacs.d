@@ -8,91 +8,6 @@
 ;;; Code:
 
 
-;;; Basic Setup
-
-(require 'org)
-
-(setq org-deadline-warning-days 14
-      org-read-date-popup-calendar t
-      org-insert-heading-respect-content t
-      org-list-description-max-indent 5
-      org-adapt-indentation nil
-      org-edit-timestamp-down-means-later t
-      org-archive-location "%s_archive.gpg::"
-      org-image-actual-width nil
-      org-footnote-section nil
-      org-log-into-drawer "LOGBOOK"
-      org-log-reschedule 'time
-      org-clone-delete-id t
-      org-catch-invisible-edits 'error
-      org-M-RET-may-split-line '((default . nil))
-      org-highlight-latex-and-related '(latex)
-      org-use-sub-superscripts '{}
-      org-src-fontify-natively t
-      org-src-preserve-indentation t
-      org-ellipsis "⤵"
-
-      org-todo-keywords
-      '((sequence "TODO(t)" "CONT(n!)" "|" "DONE(d@)")
-        (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
-        (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@)")
-        (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)"
-                  "|" "CANC(c@/!)" "PHONE" "MEETING"))
-
-      org-todo-state-tags-triggers
-      '(("WAIT" ("WAIT" . t))
-        ("HOLD" ("HOLD" . t))
-        (done ("HOLD") ("WAIT") ("DATE") ("NO_EXPORT" . t))
-        ("TODO" ("HOLD") ("WAIT") ("NO_EXPORT"))
-        ("READ" ("READ" . t) ("HOLD") ("WAIT"))
-        ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
-        ("CONT" ("HOLD") ("WAIT"))
-        ("ATTN" ("HOLD") ("WAIT")))
-
-      org-tag-alist
-      '((:startgroup . nil)
-        ("WORK" . ?w)
-        ("HOME" . ?h)
-        ("FUN" . ?f)
-        ("UNTAGGED" . ?u)
-        (:endgroup . nil)
-        ("NOTE" . ?n))
-
-      org-treat-S-cursor-todo-selection-as-state-change nil
-      org-fast-tag-selection-single-key 'expert
-
-      org-global-properties
-      '(("Effort_ALL" . "0:00 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00"))
-
-      org-columns-default-format
-      "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
-
-
-;;; Faces
-
-(setq org-todo-keyword-faces
-      '(("TODO" :foreground "red" :weight normal)
-        ("GOTO" :foreground "red" :weight normal)
-        ("READ" :foreground "red" :weight normal)
-        ("CONT" :foreground "DeepSkyBlue" :weight normal)
-        ("ATTN" :foreground "DeepSkyBlue" :weight normal)
-        ("DONE" :foreground "forest green" :weight normal)
-        ("DELG" :foreground "dark orange" :weight normal)
-        ("WAIT" :foreground "orange" :weight normal)
-        ("HOLD" :foreground "magenta" :weight normal)
-        ("CANC" :foreground "lime green" :weight normal)
-        ("MEETING" :foreground "forest green" :weight normal)
-        ("PHONE" :foreground "forest green" :weight normal)
-        ("REPEAT" :foreground "indian red" :weight normal))
-
-      org-fontify-done-headline nil
-
-      org-priority-faces
-      '((?A . (:foreground "Red" :weight bold))
-        (?B . (:foreground "firebrick"))
-        (?C . (:foreground "tomato"))))
-
-
 ;;; Agenda Customization
 
 ;; For customization of default org agenda files
@@ -417,25 +332,11 @@ In ~%s~:
 
 ;;; Refiling
 
-;; Refiling targets include this file and any file contributing to the agenda,
-;; up to 9 levels deep
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 9))
-                           (nil . (:maxlevel . 9))))
-
-;; Use full outline paths for refile targets
-(setq org-refile-use-outline-path 'file)
-
-(setq org-refile-allow-creating-parent-nodes 'confirm)
-(setq org-indirect-buffer-display 'current-window)
-(setq org-outline-path-complete-in-steps nil)
-
-; Exclude DONE state tasks from refile targets (from bh)
+;; Exclude DONE state tasks from refile targets (from bh)
 (defun db/verify-refile-target ()
   "Exclude todo keywords with a done state from refile targets"
   (not (member (nth 2 (org-heading-components))
                org-done-keywords)))
-
-(setq org-refile-target-verify-function 'db/verify-refile-target)
 
 
 ;;; Reset checklists

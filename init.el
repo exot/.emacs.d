@@ -648,7 +648,9 @@ _h_   _l_   _o_k        _y_ank
 ;; * Org
 
 (use-package db-org
-  :commands (db/find-parent-task
+  :commands (db/verify-refile-target
+             org-reset-checkbox-state-maybe
+             db/find-parent-task
              db/ensure-running-clock
              db/save-current-org-task-to-file
              endless/org-ispell
@@ -664,6 +666,93 @@ _h_   _l_   _o_k        _y_ank
              hydra-org-clock/body)
   :bind (:map org-mode-map
               ([remap org-return] . org-return-indent))
+  :init (setq org-deadline-warning-days 14
+              org-read-date-popup-calendar t
+              org-insert-heading-respect-content t
+              org-list-description-max-indent 5
+              org-adapt-indentation nil
+              org-edit-timestamp-down-means-later t
+              org-archive-location "%s_archive.gpg::"
+              org-image-actual-width nil
+              org-footnote-section nil
+              org-log-into-drawer "LOGBOOK"
+              org-log-reschedule 'time
+              org-clone-delete-id t
+              org-catch-invisible-edits 'error
+              org-M-RET-may-split-line '((default . nil))
+              org-highlight-latex-and-related '(latex)
+              org-use-sub-superscripts '{}
+              org-src-fontify-natively t
+              org-src-preserve-indentation t
+              org-ellipsis "⤵"
+              org-fontify-done-headline nil
+
+              org-todo-keywords
+              '((sequence "TODO(t)" "CONT(n!)" "|" "DONE(d@)")
+                (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
+                (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@)")
+                (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)"
+                          "|" "CANC(c@/!)" "PHONE" "MEETING"))
+
+              org-todo-state-tags-triggers
+              '(("WAIT" ("WAIT" . t))
+                ("HOLD" ("HOLD" . t))
+                (done ("HOLD") ("WAIT") ("DATE") ("NO_EXPORT" . t))
+                ("TODO" ("HOLD") ("WAIT") ("NO_EXPORT"))
+                ("READ" ("READ" . t) ("HOLD") ("WAIT"))
+                ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
+                ("CONT" ("HOLD") ("WAIT"))
+                ("ATTN" ("HOLD") ("WAIT")))
+
+              org-tag-alist
+              '((:startgroup . nil)
+                ("WORK" . ?w)
+                ("HOME" . ?h)
+                ("FUN" . ?f)
+                ("UNTAGGED" . ?u)
+                (:endgroup . nil)
+                ("NOTE" . ?n))
+
+              org-treat-S-cursor-todo-selection-as-state-change nil
+              org-fast-tag-selection-single-key 'expert
+
+              org-global-properties
+              '(("Effort_ALL" . "0:00 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00"))
+
+              org-columns-default-format
+              "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM"
+
+              ;; Faces
+
+              org-todo-keyword-faces
+              '(("TODO" :foreground "red" :weight normal)
+                ("GOTO" :foreground "red" :weight normal)
+                ("READ" :foreground "red" :weight normal)
+                ("CONT" :foreground "DeepSkyBlue" :weight normal)
+                ("ATTN" :foreground "DeepSkyBlue" :weight normal)
+                ("DONE" :foreground "forest green" :weight normal)
+                ("DELG" :foreground "dark orange" :weight normal)
+                ("WAIT" :foreground "orange" :weight normal)
+                ("HOLD" :foreground "magenta" :weight normal)
+                ("CANC" :foreground "lime green" :weight normal)
+                ("MEETING" :foreground "forest green" :weight normal)
+                ("PHONE" :foreground "forest green" :weight normal)
+                ("REPEAT" :foreground "indian red" :weight normal))
+
+              org-priority-faces
+              '((?A . (:foreground "Red" :weight bold))
+                (?B . (:foreground "firebrick"))
+                (?C . (:foreground "tomato")))
+
+              ;; Refiling
+
+              org-refile-targets '((org-agenda-files . (:maxlevel . 9))
+                                        (nil . (:maxlevel . 9)))
+              org-refile-use-outline-path 'file
+              org-refile-allow-creating-parent-nodes 'confirm
+              org-indirect-buffer-display 'current-window
+              org-outline-path-complete-in-steps nil
+              org-refile-target-verify-function 'db/verify-refile-target)
   :config (progn
             (require 'db-org)
 
