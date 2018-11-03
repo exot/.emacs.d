@@ -2153,6 +2153,9 @@ are assumed to be of the form *.crt."
   :commands (page-break-lines-mode)
   :diminish page-break-lines-mode)
 
+(use-package pdf-tools
+  :commands (pdf-tools-install))
+
 (use-package python
   :defer t
   :init (setq python-indent-offset 2)
