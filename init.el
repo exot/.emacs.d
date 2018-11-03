@@ -832,6 +832,7 @@ _h_   _l_   _o_k        _y_ank
 
 (use-package org-clock
   :defer t
+  :commands (org-clock-save)
   :init (setq org-clock-history-length 23
               org-clock-in-resume t
               org-clock-into-drawer t
