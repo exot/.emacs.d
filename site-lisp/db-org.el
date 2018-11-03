@@ -622,6 +622,53 @@ In ~%s~:
 (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
 
 
+;; Helper Functions for Clocking
+
+(defun db/find-parent-task ()
+  ;; http://doc.norang.ca/org-mode.html#Clocking
+  "Return point of the nearest parent task, and NIL if no such task exists."
+  (save-mark-and-excursion
+   (save-restriction
+     (widen)
+     (let ((parent-task nil))
+       (or (org-at-heading-p)
+           (org-back-to-heading t))
+       (while (and (not parent-task)
+                   (org-up-heading-safe))
+         (let ((tags (nth 5 (org-heading-components))))
+           (unless (and tags (member "NOP" (split-string tags ":" t)))
+             (setq parent-task (point)))))
+       parent-task))))
+
+(defun db/ensure-running-clock ()
+  "Clocks in into the parent task, if it exists, or the default task."
+  (when (and (not org-clock-clocking-in)
+             (not org-clock-resolving-clocks-due-to-idleness))
+    (let ((parent-task (db/find-parent-task)))
+      (save-mark-and-excursion
+       (cond
+        (parent-task
+         ;; found parent task
+         (org-with-point-at parent-task
+           (org-clock-in)))
+        ((and (markerp org-clock-default-task)
+              (marker-buffer org-clock-default-task))
+         ;; default task is set
+         (org-with-point-at org-clock-default-task
+           (org-clock-in)))
+        (t
+         (org-clock-in '(4))))))))
+
+(defun db/org-current-task ()
+  "Format currently clocked task and write it to
+`db/org-clock-current-task-file'."
+  (with-temp-file db/org-clock-current-task-file
+    (let ((clock-buffer (marker-buffer org-clock-marker)))
+      (if (null clock-buffer)
+          (insert "No running clock")
+        (insert org-clock-heading)))))
+
+
 ;;; Fixes
 
 (defun endless/org-ispell ()
