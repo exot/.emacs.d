@@ -651,7 +651,6 @@ _h_   _l_   _o_k        _y_ank
   :commands (org-agenda
              org-capture
              org-store-link
-             org-clock-save
              hydra-org-clock/body)
   :bind (:map org-mode-map
               ([remap org-return] . org-return-indent))
