@@ -690,8 +690,9 @@ _h_   _l_   _o_k        _y_ank
   :group 'personal-settings
   :type 'string)
 
-(defvar db/org-clock-current-task-file
-  "~/.org-current-task")
+(defcustom db/org-clock-current-task-file "~/.org-current-task"
+  :group 'personal-settings
+  :type 'string)
 
 (use-package org-clock
   :init (setq org-clock-history-length 23
