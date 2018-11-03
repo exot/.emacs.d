@@ -65,7 +65,7 @@
 (defun db/run-init ()
   "Run main initialization after everything is set up."
 
-  (message "Running main initialization ... done")
+  (message "Running main initialization ...")
 
   ;; Load customizations
 
@@ -269,6 +269,8 @@
   (unless (server-running-p)
     (server-start))
 
+  ;; Finish
+  
   (message "Running main initialization ... done")
 
   t)
