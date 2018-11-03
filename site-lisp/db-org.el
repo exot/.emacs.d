@@ -444,9 +444,14 @@ forces clocking in of the default task."
     (org-with-point-at clock-in-to-task
       (org-clock-in nil))))
 
+(defun db/org-clock-current-task ()
+  "Return currently clocked in task."
+  (require 'org-clock)
+  org-clock-current-task)
+
 (defhydra hydra-org-clock (:color blue)
   "
-Current Task: %`org-clock-current-task; "
+Current Task: %s(db/org-clock-current-task); "
   ("w" (lambda ()
          (interactive)
          (db/clock-in-task-by-id org-working-task-id)))
