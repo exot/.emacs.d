@@ -2,8 +2,9 @@
 
 ;;; Commentary:
 
-;; Everything in here influences the standard commands coming with org-mode,
-;; either by setting variables, adding hooks, or by overriding.
+;; This file defines functions used in the main configuration of org-mode and
+;; it’s subpackages.  Nothing here changes the behavior of org-mode per se, as
+;; loading this file only defines a couple of functions.
 
 ;;; Code:
 
@@ -210,7 +211,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 ;; Capture Code Snippets
 ;; from http://ul.io/nb/2018/04/30/better-code-snippets-with-org-capture/
-
 (defun db/org-capture-code-snippet (filename)
   "Format Org mode entry for capturing code in active region in
 the buffer visiting FILENAME."
@@ -249,7 +249,6 @@ In ~%s~:
 
 ;; from `org-checklist’ by James TD Smith (@ ahktenzero (. mohorovi cc)),
 ;; version: 1.0
-
 (defun org-reset-checkbox-state-maybe ()
   "Reset all checkboxes in an entry if the `RESET_CHECK_BOXES' property is set"
   (interactive "*")
