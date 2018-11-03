@@ -1628,6 +1628,8 @@ are assumed to be of the form *.crt."
                         (setq emms-playlist-insert-track-function
                               #'db/emms-playlist-mode-insert-track)))))
 
+;; Make sure emms is up and running when we call functions such as
+;; `emms-play-dired’ etc.
 (use-package emms-source-file
   :defer t
   :config (require 'emms-setup))
