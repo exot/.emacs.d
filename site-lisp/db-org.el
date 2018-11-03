@@ -32,8 +32,6 @@
       org-src-preserve-indentation t
       org-ellipsis "⤵")
 
-(bind-key [remap org-return] 'org-return-indent org-mode-map)
-
 (setq org-todo-keywords
       '((sequence "TODO(t)" "CONT(n!)" "|" "DONE(d@)")
         (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
