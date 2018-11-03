@@ -367,6 +367,41 @@ This is done only if the value of this variable is not null."
           (message "Exporting diary ... done.")))))))
 
 
+;;; Extend Input Methods
+
+(defun db/add-symbols-to-TeX-input-method ()
+  "Add some new symbols to TeX input method."
+  (when (string= current-input-method "TeX")
+    (let ((quail-current-package (assoc "TeX" quail-package-alist)))
+      (quail-define-rules
+       ((append . t))
+       ("\\land" ?∧)
+       ("\\lor" ?∨)
+       ("\\lnot" ?¬)
+       ("\\implies" ?⇒)
+       ("\\powerset" ?𝔓)
+       ("\\mathbbK" ?𝕂)
+       ("\\mathbbR" ?ℝ)
+       ("\\mathbbN" ?ℕ)
+       ("\\mathbbZ" ?ℤ)
+       ("\\mathbbP" ?ℙ)
+       ("\\mathcalA" ?𝒜)
+       ("\\mathcalB" ?ℬ)
+       ("\\mathcalC" ?𝒞)
+       ("\\mathcalD" ?𝒟)
+       ("\\mathcalE" ?ℰ)
+       ("\\mathcalH" ?ℋ)
+       ("\\mathcalI" ?ℐ)
+       ("\\mathcalJ" ?𝒥)
+       ("\\mathcalK" ?𝒦)
+       ("\\mathcalL" ?ℒ)
+       ("\\mathcalM" ?ℳ)
+       ("\\mathcalR" ?ℛ)
+       ("\\mathcalQ" ?𝒬)
+       ("\\mathcalS" ?𝒮)
+       ("\\mathfrakP" ?𝔓)))))
+
+
 ;;; End
 
 (provide 'db-utils)

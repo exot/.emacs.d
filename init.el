@@ -506,38 +506,6 @@
   :config (add-hook 'input-method-activate-hook
                     #'db/add-symbols-to-TeX-input-method))
 
-(defun db/add-symbols-to-TeX-input-method ()
-  "Add some new symbols to TeX input method."
-  (when (string= current-input-method "TeX")
-    (let ((quail-current-package (assoc "TeX" quail-package-alist)))
-      (quail-define-rules
-       ((append . t))
-       ("\\land" ?∧)
-       ("\\lor" ?∨)
-       ("\\lnot" ?¬)
-       ("\\implies" ?⇒)
-       ("\\powerset" ?𝔓)
-       ("\\mathbbK" ?𝕂)
-       ("\\mathbbR" ?ℝ)
-       ("\\mathbbN" ?ℕ)
-       ("\\mathbbZ" ?ℤ)
-       ("\\mathbbP" ?ℙ)
-       ("\\mathcalA" ?𝒜)
-       ("\\mathcalB" ?ℬ)
-       ("\\mathcalC" ?𝒞)
-       ("\\mathcalD" ?𝒟)
-       ("\\mathcalE" ?ℰ)
-       ("\\mathcalH" ?ℋ)
-       ("\\mathcalI" ?ℐ)
-       ("\\mathcalJ" ?𝒥)
-       ("\\mathcalK" ?𝒦)
-       ("\\mathcalL" ?ℒ)
-       ("\\mathcalM" ?ℳ)
-       ("\\mathcalR" ?ℛ)
-       ("\\mathcalQ" ?𝒬)
-       ("\\mathcalS" ?𝒮)
-       ("\\mathfrakP" ?𝔓)))))
-
 (use-package server
   :commands (server-running-p server-start))
 
@@ -587,7 +555,8 @@ _h_   _l_   _o_k        _y_ank
              db/hex-to-ascii
              db/ascii-to-hex
              conditionally-enable-lispy
-             db/export-diary))
+             db/export-diary
+             db/add-symbols-to-TeX-input-method))
 
 (use-package db-emacsclient)
 
