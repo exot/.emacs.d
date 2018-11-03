@@ -1614,7 +1614,7 @@ are assumed to be of the form *.crt."
             (emms-default-players)
 
             ;; Reset track description function to personal configuration (it’s
-            ;; overwritten by `emms-all’
+            ;; overwritten by `emms-all’)
             (setq emms-track-description-function 'db/emms-track-description)
 
             (advice-add 'emms-tag-editor-submit
