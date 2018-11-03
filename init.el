@@ -1114,7 +1114,8 @@ are assumed to be of the form *.crt."
             (bind-key "P" #'helm-pages helm-command-prefix)))
 
 (use-package eyebrowse
-  :commands (eyebrowse-mode))
+  :commands (eyebrowse-mode)
+  :init (setq eyebrowse-keymap-prefix (kbd "C-c w")))
 
 
 ;; * Media
