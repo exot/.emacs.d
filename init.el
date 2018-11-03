@@ -1680,6 +1680,9 @@ are assumed to be of the form *.crt."
               (setq emms-source-file-directory-tree-function
                     #'db/emms-source-file-directory-tree-find))
 
+            ;; `emms-playlist-mode’ sets `emms-playlist-insert-track-function’,
+            ;; no matter what previous values or customization may say otherwise
+            ;; … so we need to employ a hook to change its value
             (add-hook 'emms-playlist-mode-hook
                       (lambda ()
                         (setq emms-playlist-insert-track-function
