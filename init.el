@@ -1449,8 +1449,7 @@ are assumed to be of the form *.crt."
   :init (setq helm-command-prefix-key "C-c h"))
 
 (use-package helm
-  :commands (helm-show-kill-ring
-             helm-org-agenda-files-headings)
+  :commands (helm-show-kill-ring)
   :diminish helm-mode
   :bind (:map helm-command-map
               ("#" . helm-emms)
@@ -1482,13 +1481,17 @@ are assumed to be of the form *.crt."
             (eval-when-compile
               (require 'helm-mode)
               (require 'helm-buffers)
-              (require 'helm-ring)
-              (require 'helm-org))
+              (require 'helm-ring))
 
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
-            (bind-key "C-z" #'helm-select-action helm-map)
+            (bind-key "C-z" #'helm-select-action helm-map)))
 
+(use-package helm-org
+  :commands (helm-org-agenda-files-headings)
+  :bind (:map helm-org-headings-map
+              ("C-c c" . helm-org-clock-in-at-heading))
+  :config (progn
             ;; Add action to clock in at current heading to
             ;; `helm-org-agenda-files-headings’
 
@@ -1505,9 +1508,7 @@ are assumed to be of the form *.crt."
             (add-to-list 'helm-org-headings-actions
                          '("Clock in to this heading"
                            . helm-org--clock-in-at-heading)
-                         t)
-
-            (bind-key "C-c c" #'helm-org-clock-in-at-heading helm-org-headings-map)))
+                         t)))
 
 (use-package ivy
   :commands (ivy-mode
