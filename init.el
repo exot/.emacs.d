@@ -1608,11 +1608,14 @@ are assumed to be of the form *.crt."
   :init (setq emms-source-file-default-directory "~/Documents/media/audio/"
               emms-player-list '(emms-player-mplayer emms-player-mplayer-playlist)
               emms-show-format "NP: %s"
-              emms-track-description-function 'db/emms-track-description
               emms-stream-default-action "play")
   :config (progn
             (emms-all)
             (emms-default-players)
+
+            ;; Reset track description function to personal configuration (it’s
+            ;; overwritten by `emms-all’
+            (setq emms-track-description-function 'db/emms-track-description)
 
             (advice-add 'emms-tag-editor-submit
                         :after (lambda (&rest r)
