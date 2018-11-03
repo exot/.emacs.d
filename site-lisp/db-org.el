@@ -30,15 +30,16 @@
       org-use-sub-superscripts '{}
       org-src-fontify-natively t
       org-src-preserve-indentation t
-      org-ellipsis "⤵")
+      org-ellipsis "⤵"
 
-(setq org-todo-keywords
+      org-todo-keywords
       '((sequence "TODO(t)" "CONT(n!)" "|" "DONE(d@)")
         (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
         (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@)")
-        (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)" "|" "CANC(c@/!)" "PHONE" "MEETING")))
+        (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)"
+                  "|" "CANC(c@/!)" "PHONE" "MEETING"))
 
-(setq org-todo-state-tags-triggers
+      org-todo-state-tags-triggers
       '(("WAIT" ("WAIT" . t))
         ("HOLD" ("HOLD" . t))
         (done ("HOLD") ("WAIT") ("DATE") ("NO_EXPORT" . t))
@@ -46,24 +47,24 @@
         ("READ" ("READ" . t) ("HOLD") ("WAIT"))
         ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
         ("CONT" ("HOLD") ("WAIT"))
-        ("ATTN" ("HOLD") ("WAIT"))))
+        ("ATTN" ("HOLD") ("WAIT")))
 
-(setq org-tag-alist
+      org-tag-alist
       '((:startgroup . nil)
         ("WORK" . ?w)
         ("HOME" . ?h)
         ("FUN" . ?f)
         ("UNTAGGED" . ?u)
         (:endgroup . nil)
-        ("NOTE" . ?n)))
+        ("NOTE" . ?n))
 
-(setq org-treat-S-cursor-todo-selection-as-state-change nil
-      org-fast-tag-selection-single-key 'expert)
+      org-treat-S-cursor-todo-selection-as-state-change nil
+      org-fast-tag-selection-single-key 'expert
 
-(setq org-global-properties
-      '(("Effort_ALL" . "0:00 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00")))
+      org-global-properties
+      '(("Effort_ALL" . "0:00 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00"))
 
-(setq org-columns-default-format
+      org-columns-default-format
       "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
 
 
@@ -96,11 +97,11 @@
         ("CANC" :foreground "lime green" :weight normal)
         ("MEETING" :foreground "forest green" :weight normal)
         ("PHONE" :foreground "forest green" :weight normal)
-        ("REPEAT" :foreground "indian red" :weight normal)))
+        ("REPEAT" :foreground "indian red" :weight normal))
 
-(setq org-fontify-done-headline nil)
+      org-fontify-done-headline nil
 
-(setq org-priority-faces
+      org-priority-faces
       '((?A . (:foreground "Red" :weight bold))
         (?B . (:foreground "firebrick"))
         (?C . (:foreground "tomato"))))
@@ -109,7 +110,6 @@
  "file"
  :face (lambda (path) (if (file-exists-p path) 'org-link 'org-warning)))
 
-
 
 ;;; Agenda Customization
 
@@ -165,13 +165,11 @@
       org-agenda-sorting-strategy '((agenda time-up habit-up priority-down)
                                     (todo category-keep)
                                     (tags category-keep)
-                                    (search category-keep)))
-
-(setq org-agenda-window-setup 'current-window
+                                    (search category-keep))
+      org-agenda-window-setup 'current-window
       org-agenda-restore-windows-after-quit t
-      org-agenda-compact-blocks nil)
-
-(setq org-agenda-todo-ignore-with-date nil
+      org-agenda-compact-blocks nil
+      org-agenda-todo-ignore-with-date nil
       org-agenda-todo-ignore-deadlines nil
       org-agenda-todo-ignore-scheduled nil
       org-agenda-todo-ignore-timestamp nil
@@ -205,9 +203,9 @@
 (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)
 
 (setq org-agenda-clockreport-parameter-plist
-      '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t))
+      '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
 
-(setq org-stuck-projects
+      org-stuck-projects
       '("-DATE-HOLD-REGULAR-HOLD-NOTE+TODO=\"\""
         ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG")
         ("NOP")
@@ -604,7 +602,8 @@ In ~%s~:
 ; Exclude DONE state tasks from refile targets (from bh)
 (defun db/verify-refile-target ()
   "Exclude todo keywords with a done state from refile targets"
-  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
+  (not (member (nth 2 (org-heading-components))
+               org-done-keywords)))
 
 (setq org-refile-target-verify-function 'db/verify-refile-target)
 
@@ -621,7 +620,6 @@ In ~%s~:
       (org-reset-checkbox-state-subtree)))
 
 (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
-
 
 
 ;;; Fixes
@@ -699,7 +697,6 @@ Current Task: %`org-clock-current-task; "
              (let ((org-inhibit-logging 'note))
                (org-todo 'done)
                (org-save-all-org-buffers)))))))
-
 
 
 ;;; Drag-and-Drop images into org-mode buffer
