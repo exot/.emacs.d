@@ -659,7 +659,7 @@ In ~%s~:
         (t
          (org-clock-in '(4))))))))
 
-(defun db/org-current-task ()
+(defun db/save-current-org-task-to-file ()
   "Format currently clocked task and write it to
 `db/org-clock-current-task-file'."
   (with-temp-file db/org-clock-current-task-file

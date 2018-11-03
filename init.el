@@ -650,7 +650,7 @@ _h_   _l_   _o_k        _y_ank
 (use-package db-org
   :commands (db/find-parent-task
              db/ensure-running-clock
-             db/org-current-task))
+             db/save-current-org-task-to-file))
 
 (use-package org
   :commands (org-agenda
@@ -733,7 +733,7 @@ _h_   _l_   _o_k        _y_ank
             (add-hook 'org-clock-out-hook #'db/ensure-running-clock 'append)
 
             ;; Communicate the currently clocked in task to the outside world
-            (add-hook 'org-clock-in-hook #'db/org-current-task)))
+            (add-hook 'org-clock-in-hook #'db/save-current-org-task-to-file)))
 
 (use-package ox-icalendar
   :commands (org-icalendar-combine-agenda-files)
