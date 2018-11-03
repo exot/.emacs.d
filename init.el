@@ -897,7 +897,10 @@ are assumed to be of the form *.crt."
               (require 'dired+)
               (when (and (eq system-type 'windows-nt)
                          (not (package-installed-p 'w32-browser)))
-                (warn "`w32-browser’ not installed, dired will have reduced functionality.")))
+                (warn "`w32-browser’ not installed, dired will have reduced functionality."))
+              (when (and (require 'dired-open)
+                         (eq system-type 'gnu/linux))
+                (bind-key "M-RET" #'dired-open-xdg dired-mode-map)))
 
             ;; Gnus support in dired
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
