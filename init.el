@@ -757,8 +757,6 @@ _h_   _l_   _o_k        _y_ank
               org-outline-path-complete-in-steps nil
               org-refile-target-verify-function 'db/verify-refile-target)
   :config (progn
-            (require 'db-org)
-
             ;; Reset checkboxes if the RESET_CHECK_BOXES property is set
             (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
 
