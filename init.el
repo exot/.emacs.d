@@ -779,12 +779,15 @@ _h_   _l_   _o_k        _y_ank
             ;; Skip some org mode regions to be skipped by ispell
             (add-hook 'org-mode-hook #'endless/org-ispell)
 
+            ;; Some timers
+
             (unless (memq #'org-clock-save
                           (mapcar #'timer--function timer-list))
               (run-with-timer 0 3600 #'org-clock-save))
             (unless (memq #'db/export-diary
                           (mapcar #'timer--function timer-idle-list))
-              (run-with-idle-timer 20 t #'db/export-diary))))
+              (run-with-idle-timer 20 t #'db/export-diary))
+
             ;; Drag-and-Drop images into org-mode buffer
             (use-package org-download)
 
@@ -1034,6 +1037,8 @@ _h_   _l_   _o_k        _y_ank
   :init (setq org-export-use-babel nil)
   :config (setf (alist-get :results org-babel-default-header-args)
                 "output code replace"))
+
+;; Exporting
 
 (use-package ox-icalendar
   :commands (org-icalendar-combine-agenda-files)
