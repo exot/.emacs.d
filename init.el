@@ -691,6 +691,7 @@ _h_   _l_   _o_k        _y_ank
   :type 'string)
 
 (defcustom db/org-clock-current-task-file "~/.org-current-task"
+  "File to save the currently clocked in task to."
   :group 'personal-settings
   :type 'string)
 
