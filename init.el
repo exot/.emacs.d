@@ -662,11 +662,11 @@ _h_   _l_   _o_k        _y_ank
              org-babel-execute:hy
              db/org-timestamp-difference
              db/read-clockline
-             db/org-capture-code-snippet))
+             db/org-capture-code-snippet
+             hydra-org-clock/body))
 
 (use-package org
-  :commands (org-store-link
-             hydra-org-clock/body)
+  :commands (org-store-link)
   :bind (:map org-mode-map
               ([remap org-return] . org-return-indent))
   :init (setq org-deadline-warning-days 14
