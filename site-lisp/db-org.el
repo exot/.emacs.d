@@ -473,11 +473,6 @@ Current Task: %`org-clock-current-task; "
                (org-save-all-org-buffers)))))))
 
 
-;;; Drag-and-Drop images into org-mode buffer
-
-(use-package org-download)
-
-
 ;;; Babel
 
 (defun org-babel-execute:hy (body params)

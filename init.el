@@ -785,6 +785,9 @@ _h_   _l_   _o_k        _y_ank
             (unless (memq #'db/export-diary
                           (mapcar #'timer--function timer-idle-list))
               (run-with-idle-timer 20 t #'db/export-diary))))
+            ;; Drag-and-Drop images into org-mode buffer
+            (use-package org-download)
+
             ;; Hack: The default implementation is too slow, because it is
             ;; parsing all properties of an entry by default.  Let’s simplify
             ;; this to only parse what we are looking for.  This makes tag
