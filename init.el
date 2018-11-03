@@ -1591,11 +1591,52 @@ are assumed to be of the form *.crt."
 
 ;; * Media
 
+(use-package emms-setup
+  :defer t
+  :bind (:map emms-playlist-mode-map
+              ("S s" . emms-shuffle))
+  :init (setq emms-source-file-default-directory "~/Documents/media/audio/"
+              emms-player-list '(emms-player-mplayer emms-player-mplayer-playlist)
+              emms-show-format "NP: %s"
+              emms-track-description-function 'db/emms-track-description
+              emms-stream-default-action "play")
+  :config (progn
+            (emms-all)
+            (emms-default-players)
+
+            (advice-add 'emms-tag-editor-submit
+                        :after (lambda (&rest r)
+                                 (ignore r)
+                                 (delete-window)))
+
+            (add-hook 'emms-player-started-hook 'emms-show)
+
+            (when (require 'emms-info-mediainfo nil 'no-error)
+              (setq emms-info-functions '(emms-info-mediainfo)))
+
+            (emms-mode-line -1)
+            (emms-playing-time-enable-display)
+
+            (run-with-timer 0 3600 #'emms-cache-save)
+
+            (unless (eq system-type 'windows-nt)
+              (setq emms-source-file-directory-tree-function
+                    #'db/emms-source-file-directory-tree-find))
+
+            (add-hook 'emms-playlist-mode-hook
+                      (lambda ()
+                        (setq emms-playlist-insert-track-function
+                              #'db/emms-playlist-mode-insert-track)))))
+
 (use-package emms-source-file
-  :config (require 'db-emms))
+  :defer t
+  :config (require 'emms-setup))
 
 (use-package db-emms
   :commands (db/play-playlist
+             db/emms-source-file-directory-tree-find
+             db/emms-track-description
+             db/emms-playlist-mode-insert-track
              emms-control/body))
 
 (use-package helm-emms
@@ -1605,7 +1646,7 @@ are assumed to be of the form *.crt."
                                           helm-source-emms-dired
                                           helm-source-emms-files))
   :config (progn
-            (require 'db-emms)
+            (require 'emms-setup)
             (require 'helm-adaptive)))
 
 

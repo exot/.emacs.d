@@ -32,40 +32,6 @@
 (declare-function emms-with-inhibit-read-only-t "emms")
 
 
-;; Setup
-
-(message "Loading db-emms")
-
-(require 'emms-setup)
-(emms-all)
-(emms-default-players)
-
-
-;; Basic configuration
-
-(setq emms-source-file-default-directory "~/Documents/media/audio/")
-
-(advice-add 'emms-tag-editor-submit
-            :after (lambda (&rest r)
-                     (ignore r)
-                     (delete-window)))
-
-(bind-key "S s" #'emms-shuffle emms-playlist-mode-map)
-
-(add-hook 'emms-player-started-hook 'emms-show)
-(setq emms-show-format "NP: %s")
-
-(emms-mode-line -1)
-(emms-playing-time-enable-display)
-(setq emms-player-list
-      '(emms-player-mplayer emms-player-mplayer-playlist))
-
-(when (require 'emms-info-mediainfo nil 'no-error)
-  (setq emms-info-functions '(emms-info-mediainfo)))
-
-(run-with-timer 0 3600 #'emms-cache-save)
-
-
 ;; Custom playlist
 
 (defun db/play-playlist ()
@@ -110,10 +76,6 @@ that we also follow symbolic links."
                                             (point-max))
                           "\n"))))
 
-(unless (eq system-type 'windows-nt)
-  (setq emms-source-file-directory-tree-function
-        #'db/emms-source-file-directory-tree-find))
-
 
 ;; Track description
 
@@ -148,9 +110,6 @@ This function can be used as a value for `emms-track-description-function’."
       (string-remove-prefix (expand-file-name emms-source-file-default-directory)
                             (emms-track-simple-description track)))))
 
-(setq emms-track-description-function
-      'db/emms-track-description)
-
 ;; don't set face in playlist to emms-playlist-track-face
 (defun db/emms-playlist-mode-insert-track (track &optional no-newline)
   "Insert the description of TRACK at point.
@@ -165,16 +124,6 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
      (emms-playlist-mode-overlay-selected))
    (unless no-newline
      (insert "\n"))))
-
-(add-hook 'emms-playlist-mode-hook
-          (lambda ()
-            (setq emms-playlist-insert-track-function
-                  #'db/emms-playlist-mode-insert-track)))
-
-
-;; Streams
-
-(setq emms-stream-default-action "play")
 
 
 ;; Hydra
@@ -207,4 +156,5 @@ _RET_: ?RET?    _M_: ?M?
 ;; End
 
 (provide 'db-emms)
+
 ;;; db-emms ends here
