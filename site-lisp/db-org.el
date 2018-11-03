@@ -112,156 +112,6 @@
  :face (lambda (path) (if (file-exists-p path) 'org-link 'org-warning)))
 
 
-;;; Clocking
-
-(setq org-clock-history-length 23
-      org-clock-in-resume t
-      org-clock-into-drawer t
-      org-clock-idle-time nil
-      org-clock-out-remove-zero-time-clocks t
-      org-clock-out-when-done '("DONE" "CANC" "WAIT" "HOLD")
-      org-clock-auto-clock-resolution 'when-no-clock-is-running
-      org-clock-mode-line-total 'auto
-      org-clock-report-include-clocking-task t
-      org-clock-in-switch-to-state (lambda (_)
-                                     (when (and (not
-                                                 (and (boundp 'org-capture-mode)
-                                                      org-capture-mode)))
-                                       (cond
-                                        ((member (org-get-todo-state)
-                                                 (list "TODO" "READ"))
-                                         "CONT")
-                                        ((member (org-get-todo-state)
-                                                 (list "GOTO"))
-                                         "ATTN")))))
-
-(org-clock-persistence-insinuate)
-
-(setq org-clock-persist t
-      org-clock-persist-query-resume nil)
-
-(setq org-duration-format 'h:mm
-      org-time-stamp-rounding-minutes '(1 1))
-
-;; Default Tasks for Working, Home, Breaks
-
-(defcustom org-working-task-id ""
-  "Task ID of default working task."
-  :group 'personal-settings
-  :type 'string)
-
-(defcustom org-break-task-id ""
-  "Task ID of default break task."
-  :group 'personal-settings
-  :type 'string)
-
-(defcustom org-home-task-id ""
-  "Task ID of default home task."
-  :group 'personal-settings
-  :type 'string)
-
-(add-hook 'org-clock-in-hook            ; mark current default task
-          (lambda ()
-            (let ((current-id (org-id-get org-clock-marker)))
-              (when (member current-id (list org-working-task-id
-                                             org-home-task-id))
-                (org-clock-mark-default-task)))))
-
-;; Clock in default task if no other task is given
-
-(defun db/find-parent-task ()
-  ;; http://doc.norang.ca/org-mode.html#Clocking
-  "Return point of the nearest parent task, and NIL if no such task exists."
-  (save-mark-and-excursion
-    (save-restriction
-      (widen)
-      (let ((parent-task nil))
-        (or (org-at-heading-p)
-            (org-back-to-heading t))
-        (while (and (not parent-task)
-                    (org-up-heading-safe))
-          (let ((tags (nth 5 (org-heading-components))))
-            (unless (and tags (member "NOP" (split-string tags ":" t)))
-              (setq parent-task (point)))))
-        parent-task))))
-
-(defun db/ensure-running-clock ()
-  "Clocks in into the parent task, if it exists, or the default task."
-  (when (and (not org-clock-clocking-in)
-             (not org-clock-resolving-clocks-due-to-idleness))
-    (let ((parent-task (db/find-parent-task)))
-      (save-mark-and-excursion
-        (cond
-          (parent-task
-           ;; found parent task
-           (org-with-point-at parent-task
-             (org-clock-in)))
-          ((and (markerp org-clock-default-task)
-                (marker-buffer org-clock-default-task))
-           ;; default task is set
-           (org-with-point-at org-clock-default-task
-             (org-clock-in)))
-          (t
-           (org-clock-in '(4))))))))
-
-(add-hook 'org-clock-out-hook #'db/ensure-running-clock 'append)
-
-;; clock-in helpers
-
-(defun clock-in-task-by-id (task-id)
-  "Clock in org mode task as given by TASK-ID."
-  (org-with-point-at (org-id-find task-id 'marker)
-    (org-clock-in))
-  (org-save-all-org-buffers))
-
-(defun clock-out-task-by-id (task-id)
-  "Clock out org mode task as given by TASK-ID."
-  (org-with-point-at (org-id-find task-id 'marker)
-    (org-clock-out))
-  (org-save-all-org-buffers))
-
-(defun db/org-clock-in-last-task (&optional arg)
-  ;; from doc.norang.ca, originally bh/clock-in-last-task
-  "Clock in the interrupted task if there is one.
-
-Skip the default task and get the next one.  If ARG is given,
-forces clocking in of the default task."
-  (interactive "p")
-  (let ((clock-in-to-task
-         (cond
-           ((eq arg 4) org-clock-default-task)
-           ((and (org-clock-is-active)
-                 (equal org-clock-default-task (cadr org-clock-history)))
-            (caddr org-clock-history))
-           ((org-clock-is-active) (cadr org-clock-history))
-           ((equal org-clock-default-task (car org-clock-history))
-            (cadr org-clock-history))
-           (t (car org-clock-history)))))
-    (widen)
-    (org-with-point-at clock-in-to-task
-      (org-clock-in nil))))
-
-;; Communicate the currently clocked in task to the outside world
-
-(defvar db/org-clock-current-task-file
-  "~/.org-current-task")
-
-(defun db/org-current-task ()
-  "Format currently clocked task and write it to
-`db/org-clock-current-task-file'."
-  (with-temp-file db/org-clock-current-task-file
-    (let ((clock-buffer (marker-buffer org-clock-marker)))
-      (if (null clock-buffer)
-          (insert "No running clock")
-        (insert org-clock-heading)))))
-
-(add-hook 'org-clock-in-hook #'db/org-current-task)
-
-(defun db/select-clocking-task ()
-  "Select task from recent clocked-in tasks."
-  (interactive)
-  (org-clock-in '(4)))
-
 
 ;;; Agenda Customization
 
@@ -791,18 +641,51 @@ In ~%s~:
 
 ;;; Hydra
 
+(defun db/clock-in-task-by-id (task-id)
+  "Clock in org mode task as given by TASK-ID."
+  (org-with-point-at (org-id-find task-id 'marker)
+    (org-clock-in))
+  (org-save-all-org-buffers))
+
+(defun db/clock-out-task-by-id (task-id)
+  "Clock out org mode task as given by TASK-ID."
+  (org-with-point-at (org-id-find task-id 'marker)
+    (org-clock-out))
+  (org-save-all-org-buffers))
+
+(defun db/org-clock-in-last-task (&optional arg)
+  ;; from doc.norang.ca, originally bh/clock-in-last-task
+  "Clock in the interrupted task if there is one.
+
+Skip the default task and get the next one.  If ARG is given,
+forces clocking in of the default task."
+  (interactive "p")
+  (let ((clock-in-to-task
+         (cond
+          ((eq arg 4) org-clock-default-task)
+          ((and (org-clock-is-active)
+                (equal org-clock-default-task (cadr org-clock-history)))
+           (caddr org-clock-history))
+          ((org-clock-is-active) (cadr org-clock-history))
+          ((equal org-clock-default-task (car org-clock-history))
+           (cadr org-clock-history))
+          (t (car org-clock-history)))))
+    (widen)
+    (org-with-point-at clock-in-to-task
+      (org-clock-in nil))))
+
 (defhydra hydra-org-clock (:color blue)
   "
 Current Task: %`org-clock-current-task; "
   ("w" (lambda ()
          (interactive)
-         (clock-in-task-by-id org-working-task-id)))
+         (db/clock-in-task-by-id org-working-task-id)))
   ("h" (lambda ()
          (interactive)
-         (clock-in-task-by-id org-home-task-id)))
+         (db/clock-in-task-by-id org-home-task-id)))
   ("b" (lambda ()
          (interactive)
-         (clock-in-task-by-id org-break-task-id)))
+         (db/clock-in-task-by-id org-break-task-id)))
   ("i" (lambda ()
          (interactive)
          (org-clock-in '(4))))
