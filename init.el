@@ -669,7 +669,7 @@
               ;; Refiling
 
               org-refile-targets '((org-agenda-files . (:maxlevel . 9))
-                                        (nil . (:maxlevel . 9)))
+                                   (nil . (:maxlevel . 9)))
               org-refile-use-outline-path 'file
               org-refile-allow-creating-parent-nodes 'confirm
               org-indirect-buffer-display 'current-window
