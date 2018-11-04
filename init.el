@@ -852,7 +852,7 @@
               org-agenda-start-with-log-mode nil
               org-agenda-log-mode-items '(closed state)
               org-agenda-remove-tags t
-              org-agenda-sticky t
+              org-agenda-sticky nil
               org-agenda-inhibit-startup t
               org-agenda-tags-todo-honor-ignore-options t
               org-agenda-dim-blocked-tasks nil
