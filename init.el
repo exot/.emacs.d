@@ -1448,7 +1448,8 @@ are assumed to be of the form *.crt."
               ivy-initial-inputs-alist '((counsel-describe-function . "^")
                                          (counsel-describe-variable . "^")
                                          (man . "^")
-                                         (woman . "^")))
+                                         (woman . "^"))
+              ivy-use-selectable-prompt t)
   :config (add-to-list 'ivy-completing-read-handlers-alist
                        '(org-capture . completing-read-default)))
 
