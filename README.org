@@ -28,6 +28,6 @@ Debian GNU/Linux and Windows 10 (sigh).
 
 * License
 
-ⓒ 2017 Daniel Borchmann
+ⓒ 2017–2018 Daniel Borchmann
 
-This configuration is available under the MIT license, see [[LICENSE]] for details.
+This configuration is available under the MIT license, see [[LICENSE]] for details.
