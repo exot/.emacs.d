@@ -1096,10 +1096,10 @@
 
 (use-package ox-latex
   :defer t
+  :init (setq org-latex-default-class "scrartcl"
+              org-latex-listings t
+              org-latex-compiler "lualatex")
   :config (progn
-            (setq org-latex-default-class "scrartcl"
-                  org-latex-listings t
-                  org-latex-compiler "lualatex")
             (add-to-list 'org-latex-classes
                          `("scrartcl"
                            ,(concat "\\documentclass[parskip=half,colorlinks]{scrartcl}\n"
