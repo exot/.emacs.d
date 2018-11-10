@@ -708,7 +708,8 @@
               (run-with-idle-timer 20 t #'db/export-diary))
 
             ;; Drag-and-Drop images into org-mode buffer
-            (use-package org-download)
+            (use-package org-download
+              :init (setq org-download-method 'attach))
 
             ;; Hack: The default implementation is too slow, because it is
             ;; parsing all properties of an entry by default.  Let’s simplify
@@ -880,6 +881,12 @@
                 ("NOP")
                 "")
 
+              org-agenda-prefix-format
+              '((agenda . "%11s%?-12t")
+                (todo . "%-8c ")
+                (tags . "%-8c ")
+                (search . "%-8c "))
+
               org-agenda-custom-commands
               `(("A" "Main List"
                  ((agenda
@@ -942,7 +949,10 @@
                 ("N" "Notes" tags "NOTE"
                  ((org-agenda-overriding-header "Notes")
                   (org-use-tag-inheritance nil)
-                  (org-agenda-prefix-format '((tags . "  ")))))))
+                  (org-agenda-prefix-format '((tags . "  "))))))
+
+              org-babel-load-languages '((shell . t)
+                                         (emacs-lisp . t)))
   :config (progn
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
@@ -1181,7 +1191,9 @@
 (use-package nsm
   :defer t
   :init (setq network-security-level 'high
-              nsm-save-host-names t)
+              nsm-save-host-names t
+              nsm-settings-file (expand-file-name
+                                 "~/.emacs.d/private/network-security.data"))
   :config (advice-add 'nsm-write-settings
                       :before #'db/sort-nsm-permanent-settings))
 
