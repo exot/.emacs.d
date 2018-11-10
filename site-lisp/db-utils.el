@@ -199,6 +199,41 @@ lispy."
                  (eq this-command 'pp-eval-expression)))
     (lispy-mode 1)))
 
+(defun db/sort-nsm-permanent-settings ()
+  "Sort values in `nsm-permanent-host-settings’."
+  (setq nsm-permanent-host-settings
+        (cl-sort nsm-permanent-host-settings
+                 #'string<
+                 :key #'second)))
+
+(defun db/update-cert-file-directory (symbol new-value)
+  "Set SYMBOL to NEW-VALUE and add all certificate in it to `gnutls-trustfiles’.
+
+Assumes that NEW-VALUE points to a directory, and certificates
+are assumed to be of the form *.crt."
+  (set symbol new-value)
+  (when (file-directory-p new-value)
+    (dolist (cert-file (directory-files new-value t ".crt$"))
+      (add-to-list 'gnutls-trustfiles cert-file))))
+
+(defun endless/colorize-compilation ()
+  "Colorize from `compilation-filter-start' to `point'."
+  ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
+  (let ((inhibit-read-only t))
+    (ansi-color-apply-on-region compilation-filter-start (point))))
+
+(defun db/add-use-package-to-imenu ()
+  "Add `use-package’ statements to `imenu-generic-expression."
+  (add-to-list 'imenu-generic-expression
+               '("Used Packages"
+                 "\\(^\\s-*(use-package +\\)\\(\\_<.+\\_>\\)"
+                 2)))
+
+(defun db/turn-off-local-electric-pair-mode ()
+  "Locally turn off electric pair mode."
+  (interactive)
+  (electric-pair-local-mode -1))
+
 
 ;;; helm configuration
 

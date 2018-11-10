@@ -512,6 +512,11 @@
              db/hex-to-ascii
              db/ascii-to-hex
              conditionally-enable-lispy
+             db/sort-nsm-permanent-settings
+             db/update-cert-file-directory
+             endless/colorize-compilation
+             db/add-use-package-to-imenu
+             db/turn-off-local-electric-pair-mode
              db/export-diary
              db/add-symbols-to-TeX-input-method
              hydra-ispell/body
@@ -1197,28 +1202,11 @@
   :config (advice-add 'nsm-write-settings
                       :before #'db/sort-nsm-permanent-settings))
 
-(defun db/sort-nsm-permanent-settings ()
-  "Sort values in `nsm-permanent-host-settings’."
-  (setq nsm-permanent-host-settings
-        (cl-sort nsm-permanent-host-settings
-                 #'string<
-                 :key #'second)))
-
 (use-package gnutls
   :defer t
   :init (setq gnutls-log-level 0        ; too noisy otherwise
               gnutls-min-prime-bits 1024
               gnutls-verify-error t))
-
-(defun db/update-cert-file-directory (symbol new-value)
-  "Set SYMBOL to NEW-VALUE and add all certificate in it to `gnutls-trustfiles’.
-
-Assumes that NEW-VALUE points to a directory, and certificates
-are assumed to be of the form *.crt."
-  (set symbol new-value)
-  (when (file-directory-p new-value)
-    (dolist (cert-file (directory-files new-value t ".crt$"))
-      (add-to-list 'gnutls-trustfiles cert-file))))
 
 (defcustom db/cert-file-directory "~/.local/etc/certs/"
   "Local directory with additional certificates."
@@ -1680,12 +1668,6 @@ are assumed to be of the form *.crt."
 
             (add-hook 'term-mode-hook (lambda () (yas-minor-mode -1)))))
 
-;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
-(defun endless/colorize-compilation ()
-  "Colorize from `compilation-filter-start' to `point'."
-  (let ((inhibit-read-only t))
-    (ansi-color-apply-on-region compilation-filter-start (point))))
-
 (use-package ansi-color
   :commands (ansi-color-for-comint-mode-on
              ansi-color-apply-on-region)
@@ -1781,13 +1763,6 @@ are assumed to be of the form *.crt."
             (add-hook 'emacs-lisp-mode-hook 'db/add-use-package-to-imenu)
             (add-hook 'ielm-mode-hook 'eldoc-mode)
             (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
-
-(defun db/add-use-package-to-imenu ()
-  "Add `use-package’ statements to `imenu-generic-expression."
-  (add-to-list 'imenu-generic-expression
-               '("Used Packages"
-                 "\\(^\\s-*(use-package +\\)\\(\\_<.+\\_>\\)"
-                 2)))
 
 (use-package geiser
   :commands (geiser-mode))
@@ -2063,11 +2038,6 @@ are assumed to be of the form *.crt."
               (add-to-list 'electric-pair-text-pairs '(?“ . ?”))
               (add-to-list 'electric-pair-pairs '(?„ . ?“))
               (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
-
-(defun db/turn-off-local-electric-pair-mode ()
-  "Locally turn off electric pair mode."
-  (interactive)
-  (electric-pair-local-mode -1))
 
 (use-package expand-region
   :commands (er/expand-region))
