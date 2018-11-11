@@ -399,10 +399,14 @@
         calendar-christian-all-holidays-flag t
         calendar-islamic-all-holidays-flag nil
         calendar-hebrew-all-holidays-flag nil
-        holiday-other-holidays '((holiday-fixed 5 1 "Labour Day")
-                                 (holiday-fixed 10 3 "German Unity Day")
-                                 (holiday-fixed 10 31 "Reformation Day")
-                                 (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22))
+        holiday-general-holidays '((holiday-fixed 1 1 "New Year's Day")
+                                   (holiday-fixed 2 14 "Valentine's Day")
+                                   (holiday-fixed 4 1 "April Fools' Day")
+                                   (holiday-fixed 5 1 "Labour Day")
+                                   (holiday-fixed 10 3 "German Unity Day")
+                                   (holiday-fixed 10 31 "Reformation Day")
+                                   (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
+                                   (holiday-float 11 4 4 "Thanksgiving"))
         diary-show-holidays-flag t
         calendar-view-holidays-initially-flag t))
 
