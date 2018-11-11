@@ -683,7 +683,12 @@
               org-refile-allow-creating-parent-nodes 'confirm
               org-indirect-buffer-display 'current-window
               org-outline-path-complete-in-steps nil
-              org-refile-target-verify-function 'db/verify-refile-target)
+              org-refile-target-verify-function 'db/verify-refile-target
+
+              ;; Bable
+
+              org-babel-load-languages '((shell . t)
+                                         (emacs-lisp . t)))
   :config (progn
             ;; Reset checkboxes if the RESET_CHECK_BOXES property is set
             (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
@@ -958,10 +963,7 @@
                 ("N" "Notes" tags "NOTE"
                  ((org-agenda-overriding-header "Notes")
                   (org-use-tag-inheritance nil)
-                  (org-agenda-prefix-format '((tags . "  "))))))
-
-              org-babel-load-languages '((shell . t)
-                                         (emacs-lisp . t)))
+                  (org-agenda-prefix-format '((tags . "  ")))))))
   :config (progn
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
