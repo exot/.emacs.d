@@ -704,22 +704,8 @@ entry of the current mail."
                                     (nntp . gmane)))
 
 (use-package notmuch
-  :config (progn
-            ;; (bind-key "GG" 'notmuch-search gnus-group-mode-map)
-
-            (defun db/notmuch-search-update-index (orig-fun &rest args)
-              "Update notmuch index before searching"
-                (message "Indexing new Mail...")
-                (shell-command "notmuch new --quiet 2>&1 | grep -v \"Note: Ignoring\"")
-                (message "Indexing new Mail... done.")
-                (apply orig-fun args))
-
-            (advice-add 'notmuch-search
-                        :around #'db/notmuch-search-update-index)
-            (advice-add 'nnir-run-notmuch
-                        :around #'db/notmuch-search-update-index)
-
-            (setq notmuch-fcc-dirs nil)))
+  :init (progn
+          (setq notmuch-fcc-dirs nil)))
 
 ;;;
 
