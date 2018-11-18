@@ -244,8 +244,7 @@ In ~%s~:
   (make-frame '((name . "capture")))
   (select-frame-by-name "capture")
   (delete-other-windows)
-  (let ((org-capture-after-finalize-hook org-capture-after-finalize-hook))
-    (org-capture)))
+  (org-capture))
 
 (defun db/delete-frame-if-capture (&rest r)
   "If current frame was made for a capture, close after done."
