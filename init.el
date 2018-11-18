@@ -595,7 +595,8 @@
              db/org-timestamp-difference
              db/read-clockline
              db/org-capture-code-snippet
-             hydra-org-clock/body))
+             hydra-org-clock/body
+             db/make-org-capture-frame))
 
 (use-package org
   :commands (org-store-link)

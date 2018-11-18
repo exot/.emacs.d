@@ -235,6 +235,28 @@ In ~%s~:
        org-src-mode
        code-snippet))))
 
+;; Make capture frame, made for being called via emacsclient
+;; https://cestlaz.github.io/posts/using-emacs-24-capture-2/
+
+(defun db/make-org-capture-frame ()
+  "Create a new frame for capturing."
+  (interactive)
+  (make-frame '((name . "capture")))
+  (select-frame-by-name "capture")
+  (delete-other-windows)
+  (let ((org-capture-after-finalize-hook org-capture-after-finalize-hook))
+    (org-capture)))
+
+(defun db/delete-frame-if-capture (&rest r)
+  "If current frame was made for a capture, close after done."
+  (ignore r)
+  (when (equal (frame-parameter nil 'name)
+               "capture")
+    (delete-frame)))
+
+(advice-add 'org-capture-finalize
+            :after #'db/delete-frame-if-capture)
+
 
 ;;; Refiling
 
