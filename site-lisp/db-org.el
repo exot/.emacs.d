@@ -318,9 +318,12 @@ In ~%s~:
 
 (defun db/clock-in-task-by-id (task-id)
   "Clock in org mode task as given by TASK-ID."
-  (org-with-point-at (org-id-find task-id 'marker)
-    (org-clock-in))
-  (org-save-all-org-buffers))
+  (let ((location (org-id-find task-id 'marker)))
+    (if (null location)
+        (user-error "Invalid location «%s» given." task-id)
+      (org-with-point-at location
+        (org-clock-in))
+      (org-save-all-org-buffers))))
 
 (defun db/clock-out-task-by-id (task-id)
   "Clock out org mode task as given by TASK-ID."
