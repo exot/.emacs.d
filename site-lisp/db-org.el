@@ -302,22 +302,6 @@ In ~%s~:
           (insert "No running clock")
         (insert org-clock-heading)))))
 
-(defun db/org-clock-out ()
-  "Clock out current clock."
-  (org-clock-out))
-
-(defun db/org-clock-in-break-task ()
-  "Clock into default break task as given by `org-break-task-id’."
-  (db/clock-in-task-by-id org-break-task-id))
-
-(defun db/org-clock-in-home-task ()
-  "Clock into default home task as given by `org-home-task-id’."
-  (db/clock-in-task-by-id org-home-task-id))
-
-(defun db/org-clock-in-work-task ()
-  "Clock into default work task as given by `org-work-task-id’."
-  (db/clock-in-task-by-id org-working-task-id))
-
 
 ;;; Fixes
 
@@ -343,6 +327,26 @@ In ~%s~:
   (org-with-point-at (org-id-find task-id 'marker)
     (org-clock-out))
   (org-save-all-org-buffers))
+
+(defun db/org-clock-out ()
+  "Clock out current clock."
+  (interactive)
+  (org-clock-out))
+
+(defun db/org-clock-in-break-task ()
+  "Clock into default break task as given by `org-break-task-id’."
+  (interactive)
+  (db/clock-in-task-by-id org-break-task-id))
+
+(defun db/org-clock-in-home-task ()
+  "Clock into default home task as given by `org-home-task-id’."
+  (interactive)
+  (db/clock-in-task-by-id org-home-task-id))
+
+(defun db/org-clock-in-work-task ()
+  "Clock into default work task as given by `org-work-task-id’."
+  (interactive)
+  (db/clock-in-task-by-id org-working-task-id))
 
 (defun db/org-clock-in-last-task (&optional arg)
   ;; from doc.norang.ca, originally bh/clock-in-last-task
@@ -373,15 +377,9 @@ forces clocking in of the default task."
 (defhydra hydra-org-clock (:color blue)
   "
 Current Task: %s(db/org-clock-current-task); "
-  ("w" (lambda ()
-         (interactive)
-         (db/clock-in-task-by-id org-working-task-id)))
-  ("h" (lambda ()
-         (interactive)
-         (db/clock-in-task-by-id org-home-task-id)))
-  ("b" (lambda ()
-         (interactive)
-         (db/clock-in-task-by-id org-break-task-id)))
+  ("w" (db/org-clock-in-work-task))
+  ("h" (db/org-clock-in-home-task))
+  ("b" (db/org-clock-in-break-task))
   ("i" (lambda ()
          (interactive)
          (org-clock-in '(4))))
