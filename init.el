@@ -526,9 +526,9 @@
              hydra-ispell/body
              hydra-toggle/body
              hydra-zoom/body
-             hydra-rectangle/body))
-
-(use-package db-emacsclient)
+             hydra-rectangle/body
+             db/two-monitors-xrandr
+             db/one-monitor-xrandr))
 
 (use-package hydra
   :commands (defhydra))
@@ -581,6 +581,10 @@
              db/find-parent-task
              db/ensure-running-clock
              db/save-current-org-task-to-file
+             db/org-clock-out
+             db/org-clock-in-break-task
+             db/org-clock-in-home-task
+             db/org-clock-in-work-task
              endless/org-ispell
              db/update-org-agenda-files
              db/org-agenda-list-deadlines

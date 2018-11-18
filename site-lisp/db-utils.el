@@ -496,6 +496,19 @@ _h_   _l_   _o_k        _y_ank
   ("o" nil nil))
 
 
+;;; Wrappers for external applications
+
+(defun db/two-monitors-xrandr ()
+  "Activate second monitor using xrandr."
+  (call-process "xrandr" nil nil nil
+                "--output" "HDMI-3" "--primary" "--right-of" "LVDS-1" "--auto"))
+
+(defun db/one-monitor-xrandr ()
+  "Deactivate all additional monitors."
+  (call-process "xrandr" nil nil nil
+                "--output" "HDMI-3" "--off"))
+
+
 ;;; End
 
 (provide 'db-utils)

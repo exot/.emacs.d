@@ -302,6 +302,22 @@ In ~%s~:
           (insert "No running clock")
         (insert org-clock-heading)))))
 
+(defun db/org-clock-out ()
+  "Clock out current clock."
+  (org-clock-out))
+
+(defun db/org-clock-in-break-task ()
+  "Clock into default break task as given by `org-break-task-id’."
+  (db/clock-in-task-by-id org-break-task-id))
+
+(defun db/org-clock-in-home-task ()
+  "Clock into default home task as given by `org-home-task-id’."
+  (db/clock-in-task-by-id org-home-task-id))
+
+(defun db/org-clock-in-work-task ()
+  "Clock into default work task as given by `org-work-task-id’."
+  (db/clock-in-task-by-id org-working-task-id))
+
 
 ;;; Fixes
 
