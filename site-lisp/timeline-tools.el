@@ -516,6 +516,8 @@ Interactively query for the exact value of \"short\"."
 
 ;;; Manipulating Clocklines
 
+;; XXX: All this needs some autoloadable frontend
+
 (defun timeline-tools-add-clockline-to-marker (target-marker start end)
   "Add clock line to task under TARGET-MARKER from START to END.
 
@@ -588,7 +590,35 @@ of TARGET-ID accordingly."
       (timeline-tools-add-clockline-to-marker target-marker
                                               (car clock-line) (cdr clock-line)))))
 
-;; XXX: This needs some autoloadable frontend
+(defun timeline-tools-copy-inverted-clocklines (source-id target-id)
+  "Copy clock lines from SOURCE-ID to TARGET-ID.
+
+Both SOURCE-ID and TARGET-ID must designate known `org-mode’
+tasks by their ID.  Considers all clock lines attached to
+SOURCE-ID or to one of its subtree, and generates clock lines
+starting at an end time of one clock line and ending at the start
+time of the consecutive clock line.  These inverted clock lines
+are then copied to TARGET-ID and clock lines in the file of
+TARGET-ID are adapted accordingly."
+  (let ((source-marker (org-id-find source-id :get-marker))
+        (target-marker (org-id-find target-id :get-marker)))
+    (cl-assert (markerp source-marker)
+               "Source task %s not found" source-id)
+    (cl-assert (markerp target-marker)
+               "Target task %s not found" target-id)
+
+    (let (inverted-timeline)
+      (dolist (clock-line (timeline-tools-clocklines-of-task source-marker))
+        (push (cdr clock-line) inverted-timeline)
+        (push (car clock-line) inverted-timeline))
+
+      (setq inverted-timeline (-partition 2 (rest (reverse inverted-timeline))))
+
+      ;; This is inefficient, but see comment in
+      ;; `timeline-tools-copy-clocklines’ for rationale.
+      (dolist (clock-line inverted-timeline)
+        (timeline-tools-add-clockline-to-marker target-marker
+                                                (cadr clock-line) (car clock-line))))))
 
 (provide 'timeline-tools)
 ;;; timeline-tools.el ends here
