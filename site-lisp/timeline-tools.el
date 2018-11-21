@@ -125,6 +125,10 @@ on the start of the headline.  Traversal will be done from the
 end of the file upwards.  If the buffer is narrowed, only this
 region will be traversed."
   (when (eq major-mode 'org-mode)
+    ;; Make sure everything is visible, as otherwise editing may produce odd
+    ;; results
+    (org-cycle '(64))
+
     (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
                        org-clock-string
                        "[ \t]*\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)")))
