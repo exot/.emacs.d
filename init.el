@@ -528,7 +528,8 @@
              hydra-zoom/body
              hydra-rectangle/body
              db/two-monitors-xrandr
-             db/one-monitor-xrandr))
+             db/one-monitor-xrandr
+             db/pretty-print-xml))
 
 (use-package hydra
   :commands (defhydra))

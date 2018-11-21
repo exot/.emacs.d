@@ -234,6 +234,22 @@ are assumed to be of the form *.crt."
   (interactive)
   (electric-pair-local-mode -1))
 
+(defun db/pretty-print-xml ()
+  "Stupid function to pretty print XML content in current buffer."
+  (interactive)
+  (unless (eq major-mode 'nxml-mode)
+   (require 'nxml-mode)
+   (nxml-mode))
+  (save-mark-and-excursion
+   (goto-char (point-min))
+   (while (re-search-forward "\n[[:space:]]*" nil 'no-error)
+     (replace-match ""))
+   (goto-char (point-min))
+   (while (re-search-forward ">[[:space:]]*<" nil 'no-error)
+     (replace-match ">\n<"))
+   (mark-whole-buffer)
+   (indent-region (point-min) (point-max))))
+
 
 ;;; helm configuration
 
