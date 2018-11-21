@@ -167,20 +167,18 @@ TIME-1 and TIME-2 must be given in a format understandable by
                                time-2))
    (org-clock-update-time-maybe)))
 
-(defun timeline-tools-clocklines-of-task (marker)
-  "Return list of all clock lines of task under MARKER.
+(defun timeline-tools-clocklines-of-task (pom)
+  "Return list of all clock lines of task under POM.
 
 Each clock line is represented as a cons cell (START . END),
 where both START and END are the starting and ending times of the
 corresponding clock lines, encoded as a float denoting the
 seconds since the epoch.  Includes clock lines of all subtrees as
 well.  The order of the entries in the resulting list will be
-reversed of what it is in the subtree of MARKER."
-  (when (not (markerp marker))
-    (user-error "Marker not valid"))
+reversed of what it is in the subtree of POM."
   (let ((clock-lines nil))
     (save-mark-and-excursion
-     (org-with-point-at marker
+     (org-with-point-at pom
        (org-narrow-to-subtree)
        (timeline-tools-map-clocklines
         (lambda (start end)
