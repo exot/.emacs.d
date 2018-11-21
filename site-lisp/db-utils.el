@@ -236,17 +236,36 @@ are assumed to be of the form *.crt."
 
 (defun db/pretty-print-xml ()
   "Stupid function to pretty print XML content in current buffer."
+  ;; We assume that < and > only occur as XML tag delimiters, not in strings;
+  ;; this function is not Unicode-safe
   (interactive)
+
   (unless (eq major-mode 'nxml-mode)
-   (require 'nxml-mode)
-   (nxml-mode))
+    (require 'nxml-mode)
+    (nxml-mode))
+
   (save-mark-and-excursion
+
+   ;; First make it all into one line
    (goto-char (point-min))
-   (while (re-search-forward "\n[[:space:]]*" nil 'no-error)
-     (replace-match ""))
+   (while (re-search-forward "\n[\t ]*" nil 'no-error)
+     ;; In case there was a space, we have to keep at least one as a separator
+     (if (save-match-data (looking-back "[\t ]"))
+         (replace-match " ")
+       (replace-match "")))
+
+   ;; Next break between tags
    (goto-char (point-min))
-   (while (re-search-forward ">[[:space:]]*<" nil 'no-error)
+   (while (re-search-forward ">[\t ]*<" nil 'no-error)
      (replace-match ">\n<"))
+
+   ;; Move opening and closing tags to same line in case there’s nothing in
+   ;; between
+   (goto-char (point-min))
+   (while (re-search-forward "<\\([^>]*\\)>\n</\\1>" nil 'no-error)
+     (replace-match "<\\1></\\1>"))
+
+   ;; Indent
    (mark-whole-buffer)
    (indent-region (point-min) (point-max))))
 
