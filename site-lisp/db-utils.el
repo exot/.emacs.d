@@ -266,7 +266,6 @@ are assumed to be of the form *.crt."
      (replace-match "<\\1></\\1>"))
 
    ;; Indent
-   (mark-whole-buffer)
    (indent-region (point-min) (point-max))))
 
 
