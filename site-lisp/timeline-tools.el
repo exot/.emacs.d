@@ -311,7 +311,7 @@ archives."
             (< (timeline-tools-entry-start-time entry-1)
                (timeline-tools-entry-start-time entry-2))))))
 
-(defun timeline-tools-cluster-same-entry (timeline)
+(defun timeline-tools-cluster-same-entries (timeline)
   "Cluster TIMELINE into consecutive entries with equal marker.
 This only works if every entry in timeline consists of a
 singleton marker only.  In case this is not satisfied, this
