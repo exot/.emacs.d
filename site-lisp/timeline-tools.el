@@ -511,6 +511,8 @@ Interactively query for the exact value of \"short\"."
   (save-mark-and-excursion
    ;; get actual entry from headline of line
    (end-of-line)
+   (unless (looking-back " |$")
+     (user-error "Not in table."))
    (org-table-previous-field)
    (let ((entry (get-text-property (point) 'entry)))
      (unless entry
