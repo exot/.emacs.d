@@ -75,7 +75,7 @@ Filter are applied in the order they are given in this list."
   "Format of time used in the headline of a timeline.")
 
 (defvar timeline-tools-time-format "%Y-%m-%d %H:%M"
-  "Format of time used inside a timeline")
+  "Format of time used inside a timeline.")
 
 (defvar timeline-tools-mode-map
   (let ((map (make-sparse-keymap)))
@@ -115,17 +115,17 @@ Filter are applied in the order they are given in this list."
   "Return a timeline entry made up of START-TIME, END-TIME, and MARKER.
 MARKER must be a single marker."
   (unless (markerp marker)
-    (user-error "No marker given."))
+    (user-error "No marker given"))
   (list start-time end-time marker))
 
 (defun timeline-tools-entry-duration (entry)
-  "Returns the duration of ENTRY, in minutes."
+  "Return the duration of ENTRY, in minutes."
   (floor (/ (- (timeline-tools-entry-end-time entry)
                (timeline-tools-entry-start-time entry))
             60)))
 
 (defun timeline-tools-entry-category (entry)
-  "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
+  "Return ARCHIVE_CATEGORY or CATEGORY at position given by marker of ENTRY.
 Return whatever is found first."
   (let ((marker (timeline-tools-entry-marker entry)))
     (or (org-entry-get marker "ARCHIVE_CATEGORY")
@@ -323,7 +323,7 @@ function will throw an error."
               (timeline-tools-make-entry
                (timeline-tools-entry-start-time (-first-item cluster))
                (timeline-tools-entry-end-time (-last-item cluster))
-               (timeline-tools-entry-markers (-first-item cluster))))
+               (timeline-tools-entry-marker (-first-item cluster))))
             new-timeline)))
 
 (defun timeline-tools-remove-short-entries (timeline &optional threshold)
@@ -376,8 +376,9 @@ This function destructively modifies its first argument."
           (setf (timeline-tools-entry-start-time entry-2) middle))))))
 
 (defun timeline-tools-transform-timeline (timeline)
-  "Return timeline from files, after application of
-`timeline-tools-filter-functions’."
+  "Return result of filtering TIMELINE.
+Filtering is done by applying all functions from
+`timeline-tools-filter-functions’, in order."
   (-reduce-from (lambda (tl f)
                   (funcall f tl))
                 timeline
@@ -429,7 +430,7 @@ archives."
 ;; Interactive functions
 
 (defun timeline-tools-redraw-timeline ()
-  "Redraw timeline of current buffer"
+  "Redraw timeline of current buffer."
   (interactive)
   (if (not (eq major-mode 'timeline-tools-mode))
       (user-error "Not in Timeline buffer")
@@ -461,7 +462,7 @@ archives."
       (timeline-tools-next-line))))
 
 (defun timeline-tools-reparse-timeline ()
-  "Parse timeline from files again and redraws current display
+  "Parse timeline from files again and redraw current display.
 Updates category properties before constructing the new timeline."
   (interactive)
   (dolist (file timeline-tools--current-files)
@@ -543,14 +544,14 @@ Interactively query for the exact value of \"short\"."
   (save-mark-and-excursion
    ;; get actual entry from headline of line
    (end-of-line)
-   (unless (looking-back " |$")
-     (user-error "Not in table."))
+   (unless (looking-back " |$" nil)
+     (user-error "Not in table"))
    (org-table-previous-field)
    (let ((entry (get-text-property (point) 'entry)))
      (unless entry
-       (user-error "Not on valid row in timeline."))
+       (user-error "Not on valid row in timeline"))
      (unless (< 1 (length timeline-tools--current-timeline))
-       (user-error "Cannot delete last line."))
+       (user-error "Cannot delete last line"))
      (setq-local timeline-tools--current-timeline
                  (timeline-tools-transform-timeline
                   (delq entry timeline-tools--current-timeline)))))
@@ -681,7 +682,7 @@ TARGET-ID are adapted accordingly."
         (push (cdr clock-line) inverted-timeline)
         (push (car clock-line) inverted-timeline))
 
-      (setq inverted-timeline (-partition 2 (rest (reverse inverted-timeline))))
+      (setq inverted-timeline (-partition 2 (cl-rest (reverse inverted-timeline))))
 
       ;; This is inefficient, but see comment in
       ;; `timeline-tools-copy-clocklines’ for rationale.
