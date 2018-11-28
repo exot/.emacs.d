@@ -333,37 +333,38 @@ A slot is short if it is not longer than THRESHOLD seconds.
 Resulting gaps are distributed evenly among adjacent slots.
 THRESHOLD defaults to the value of
 `timeline-tools-short-task-threshold’ if not supplied."
-  (let ((start (timeline-tools-entry-start-time (-first-item timeline)))
-        (end   (timeline-tools-entry-end-time (-last-item timeline)))
-        (threshold (or threshold timeline-tools-short-task-threshold))
-        new-timeline)
+  (unless (null timeline)
+   (let ((start (timeline-tools-entry-start-time (-first-item timeline)))
+         (end   (timeline-tools-entry-end-time (-last-item timeline)))
+         (threshold (or threshold timeline-tools-short-task-threshold))
+         new-timeline)
 
-    ;; remove all slots that are too short
-    (setq new-timeline
-          (cl-remove-if (lambda (entry)
-                          (<= (- (timeline-tools-entry-end-time entry)
-                                 (timeline-tools-entry-start-time entry))
-                              threshold))
-                        timeline))
+     ;; remove all slots that are too short
+     (setq new-timeline
+           (cl-remove-if (lambda (entry)
+                           (<= (- (timeline-tools-entry-end-time entry)
+                                  (timeline-tools-entry-start-time entry))
+                               threshold))
+                         timeline))
 
-    ;; reset start and end times
-    (setf (timeline-tools-entry-start-time (-first-item new-timeline)) start)
-    (setf (timeline-tools-entry-end-time (-last-item new-timeline)) end)
+     ;; reset start and end times
+     (setf (timeline-tools-entry-start-time (-first-item new-timeline)) start)
+     (setf (timeline-tools-entry-end-time (-last-item new-timeline)) end)
 
-    ;; distribute gaps evenly among adjacent slots
-    (cl-do
-        ((sub-timeline new-timeline (cdr sub-timeline)))
-        ((null (cdr sub-timeline)))
-      (let* ((entry-1 (-first-item sub-timeline))
-             (entry-2 (-second-item sub-timeline))
-             (end-1   (timeline-tools-entry-end-time entry-1))
-             (start-2 (timeline-tools-entry-start-time entry-2)))
-        (when (not (= end-1 start-2))
-          (let ((middle (/ (+ end-1 start-2) 2)))
-            (setf (timeline-tools-entry-end-time entry-1) middle)
-            (setf (timeline-tools-entry-start-time entry-2) middle)))))
+     ;; distribute gaps evenly among adjacent slots
+     (cl-do
+         ((sub-timeline new-timeline (cdr sub-timeline)))
+         ((null (cdr sub-timeline)))
+       (let* ((entry-1 (-first-item sub-timeline))
+              (entry-2 (-second-item sub-timeline))
+              (end-1   (timeline-tools-entry-end-time entry-1))
+              (start-2 (timeline-tools-entry-start-time entry-2)))
+         (when (not (= end-1 start-2))
+           (let ((middle (/ (+ end-1 start-2) 2)))
+             (setf (timeline-tools-entry-end-time entry-1) middle)
+             (setf (timeline-tools-entry-start-time entry-2) middle)))))
 
-    new-timeline))
+     new-timeline)))
 
 (defun timeline-tools-transform-timeline (timeline)
   "Return timeline from files, after application of
