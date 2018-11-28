@@ -68,7 +68,9 @@ Filter are applied in the order they are given in this list."
     (define-key map (kbd "C-k") #'timeline-tools-kill-line)
     (define-key map "k" #'timeline-tools-kill-line)
     (define-key map (kbd "C-n") #'timeline-tools-next-line)
+    (define-key map "n" #'timeline-tools-next-line)
     (define-key map (kbd "C-p") #'timeline-tools-previous-line)
+    (define-key map "p" #'timeline-tools-previous-line)
     map))
 
 (define-derived-mode timeline-tools-mode
@@ -519,6 +521,33 @@ Interactively query for the exact value of \"short\"."
                  (timeline-tools-transform-timeline
                   (delq entry timeline-tools--current-timeline))))
    (timeline-tools-redraw-timeline)))
+
+(defun timeline-tools-next-line ()
+  "Move point to next line in timetable, if possible."
+  (interactive)
+  (unless (eq major-mode 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+  (beginning-of-line)
+  (let ((point (point)))
+    (when (looking-at "^| ")
+      (forward-line))
+    (unless (re-search-forward "^| " nil 'no-error)
+      (goto-char point)
+      (user-error "No next line"))
+    (beginning-of-line)))
+
+(defun timeline-tools-previous-line ()
+  "Move point to previous line in timetable, if possible."
+  (interactive)
+  (unless (eq major-mode 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+  (beginning-of-line)
+  (let ((point (point)))
+    (unless (re-search-backward "^| " nil 'no-error)
+      (goto-char point)
+      (user-error "No previous line"))
+    (beginning-of-line)))
+
 
 ;;; Manipulating Clocklines
 
