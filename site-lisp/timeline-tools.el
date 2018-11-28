@@ -66,6 +66,7 @@ Filter are applied in the order they are given in this list."
     (define-key map (kbd "RET") #'timeline-tools-jump-to-headline)
     (define-key map "q" #'quit-window)
     (define-key map (kbd "C-k") #'timeline-tools-kill-line)
+    (define-key map "k" #'timeline-tools-kill-line)
     (define-key map (kbd "C-n") #'timeline-tools-next-line)
     (define-key map (kbd "C-p") #'timeline-tools-previous-line)
     map))
@@ -500,6 +501,24 @@ Interactively query for the exact value of \"short\"."
     (goto-char marker)
     (org-reveal)))
 
+(defun timeline-tools-kill-line ()
+  "Delete line at point from the current timeline."
+  (interactive)
+  (unless (eq major-mode 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+  (save-mark-and-excursion
+   ;; get actual entry from headline of line
+   (end-of-line)
+   (org-table-previous-field)
+   (let ((entry (get-text-property (point) 'entry)))
+     (unless entry
+       (user-error "Not on valid row in timeline."))
+     (unless (< 1 (length timeline-tools--current-timeline))
+       (user-error "Cannot delete last line."))
+     (setq-local timeline-tools--current-timeline
+                 (timeline-tools-transform-timeline
+                  (delq entry timeline-tools--current-timeline))))
+   (timeline-tools-redraw-timeline)))
 
 ;;; Manipulating Clocklines
 
