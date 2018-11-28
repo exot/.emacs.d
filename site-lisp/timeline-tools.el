@@ -26,8 +26,9 @@
 
 ;; XXX: talk about the way the timeline is generated
 ;; XXX: talk about filters
-
 ;; XXX: This needs some tests
+;; XXX: timelines should have some metadata on their own (start time, end time,
+;; files)
 
 ;;; Code:
 
