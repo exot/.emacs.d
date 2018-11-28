@@ -22,7 +22,8 @@
   :group 'applications)
 
 (defcustom timeline-tools-filter-functions
-  (list #'timeline-tools-remove-short-entries #'timeline-tools-cluster-same-entry)
+  (list #'timeline-tools-remove-short-entries
+        #'timeline-tools-cluster-same-entries)
   "List of functions to apply when formatting timelines.
 Filter are applied in the order they are given in this list."
   :group 'timeline-tools
@@ -79,14 +80,15 @@ Filter are applied in the order they are given in this list."
 (defalias 'timeline-tools-entry-end-time 'cadr
   "End time of ENTRY.")
 
-(defalias 'timeline-tools-entry-markers 'caddr
+(defalias 'timeline-tools-entry-marker 'caddr
   "Marker to org task of ENTRY.")
 
-(defun timeline-tools-make-entry (start-time end-time markers)
-  "Return a timeline entry made up of START-TIME, END-TIME, and MARKERS.
-MARKER may be a list of markers, or a single marker.  Duplicate
-markers will only be kept once."
-  (list start-time end-time (if (listp markers) (-uniq markers) (list markers))))
+(defun timeline-tools-make-entry (start-time end-time marker)
+  "Return a timeline entry made up of START-TIME, END-TIME, and MARKER.
+MARKER must be a single marker."
+  (unless (markerp marker)
+    (user-error "No marker given."))
+  (list start-time end-time marker))
 
 (defun timeline-tools-entry-duration (entry)
   "Returns the duration of ENTRY, in minutes."
@@ -97,20 +99,19 @@ markers will only be kept once."
 (defun timeline-tools-entry-category (entry)
   "Return ARCHIVE_CATEGORY or CATEGORY at position given by MARKER.
 Return whatever is found first."
-  (let ((marker (car (timeline-tools-entry-markers entry))))
+  (let ((marker (timeline-tools-entry-marker entry)))
     (or (org-entry-get marker "ARCHIVE_CATEGORY")
         (org-entry-get marker "CATEGORY"))))
 
-(defun timeline-tools-entry-headlines (entry)
-  "Return list of all headlines associated with ENTRY.
+(defun timeline-tools-entry-headline (entry)
+  "Return the headline associated with ENTRY.
 The headline will be a string, propertized with a property called
 `marker’ and a corresponding marker pointing to the headline."
-  (mapcar (lambda (marker)
-            (let ((heading (org-with-point-at marker
-                             (org-element-headline-parser (point-max)))))
-              (propertize (plist-get (cadr heading) :raw-value)
-                          'marker marker)))
-          (timeline-tools-entry-markers entry)))
+  (let* ((marker (timeline-tools-entry-marker entry))
+         (heading (org-with-point-at marker
+                    (org-element-headline-parser (point-max)))))
+    (propertize (plist-get (cadr heading) :raw-value)
+                'marker marker)))
 
 
 ;; Utilities
@@ -301,18 +302,14 @@ Markers to org mode tasks are combined into a list."
 This only works if every entry in timeline consists of a
 singleton marker only.  In case this is not satisfied, this
 function will throw an error."
-  (assert (-all-p #'(lambda (entry)
-                      (null (cdr (timeline-tools-entry-markers entry))))
-                  timeline)
-          "Timeline must not contain entries with more than one marker.")
   (let ((new-timeline (-partition-by #'(lambda (entry)
-                                         (-first-item (timeline-tools-entry-markers entry)))
+                                         (timeline-tools-entry-marker entry))
                                      timeline)))
     (mapcar (lambda (cluster)
               (timeline-tools-make-entry
                (timeline-tools-entry-start-time (-first-item cluster))
                (timeline-tools-entry-end-time (-last-item cluster))
-               (-mapcat #'timeline-tools-entry-markers cluster)))
+               (timeline-tools-entry-markers (-first-item cluster))))
             new-timeline)))
 
 (defun timeline-tools-remove-short-entries (timeline &optional threshold)
@@ -423,20 +420,16 @@ archives."
       (insert "|--|\n")
       (insert "| Category | Start | End | Duration | Task |\n")
       (let ((last-category nil))
-        (dolist (cluster timeline)
-          (when (not (equal last-category (timeline-tools-entry-category cluster)))
+        (dolist (line timeline)
+          (when (not (equal last-category (timeline-tools-entry-category line)))
             (insert "|--|\n")
-            (setq last-category (timeline-tools-entry-category cluster)))
-          (insert (format "| %s | %s | %s | %s min | "
-                           (timeline-tools-entry-category cluster)
-                           (timeline-tools-format-entry-time cluster 'start)
-                           (timeline-tools-format-entry-time cluster 'end)
-                           (timeline-tools-entry-duration cluster)))
-           ;; insert headline line by line
-          (dolist (headline (-interpose "|\n |||||"
-                                        (timeline-tools-entry-headlines cluster)))
-            (insert headline))
-          (insert "\n")))
+            (setq last-category (timeline-tools-entry-category line)))
+          (insert (format "| %s | %s | %s | %s min | %s | \n"
+                          (timeline-tools-entry-category line)
+                          (timeline-tools-format-entry-time line 'start)
+                          (timeline-tools-format-entry-time line 'end)
+                          (timeline-tools-entry-duration line)
+                          (timeline-tools-entry-headline line)))))
       (insert "|--|\n")
       (org-table-align)
       (goto-char (point-min)))))
