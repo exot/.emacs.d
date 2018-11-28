@@ -65,6 +65,9 @@ Filter are applied in the order they are given in this list."
     (define-key map "s" #'timeline-tools-skip-short-entries)
     (define-key map (kbd "RET") #'timeline-tools-jump-to-headline)
     (define-key map "q" #'quit-window)
+    (define-key map (kbd "C-k") #'timeline-tools-kill-line)
+    (define-key map (kbd "C-n") #'timeline-tools-next-line)
+    (define-key map (kbd "C-p") #'timeline-tools-previous-line)
     map))
 
 (define-derived-mode timeline-tools-mode
@@ -104,14 +107,10 @@ Return whatever is found first."
         (org-entry-get marker "CATEGORY"))))
 
 (defun timeline-tools-entry-headline (entry)
-  "Return the headline associated with ENTRY.
-The headline will be a string, propertized with a property called
-`marker’ and a corresponding marker pointing to the headline."
-  (let* ((marker (timeline-tools-entry-marker entry))
-         (heading (org-with-point-at marker
-                    (org-element-headline-parser (point-max)))))
-    (propertize (plist-get (cadr heading) :raw-value)
-                'marker marker)))
+  "Return the headline associated with ENTRY."
+  (let* ((marker (timeline-tools-entry-marker entry)))
+    (org-with-point-at marker
+      (org-element-headline-parser (point-max)))))
 
 
 ;; Utilities
@@ -418,7 +417,9 @@ archives."
                           (timeline-tools-format-entry-time line 'start)
                           (timeline-tools-format-entry-time line 'end)
                           (timeline-tools-entry-duration line)
-                          (timeline-tools-entry-headline line)))))
+                          (propertize (timeline-tools-entry-headline line)
+                                      'marker (timeline-tools-entry-marker line)
+                                      'entry line)))))
       (insert "|--|\n")
       (org-table-align)
       (goto-char (point-min)))))
