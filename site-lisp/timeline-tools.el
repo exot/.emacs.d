@@ -373,7 +373,6 @@ interactively, START and END are queried with `org-read-date’."
         (setq-local timeline-tools-time-format timeline-tools-time-format)
         (setq-local timeline-tools-headline-time-format timeline-tools-headline-time-format)
         (hl-line-mode)
-        (buffer-enable-undo)
         (timeline-tools-redraw-timeline))
       (pop-to-buffer target-buffer)
       t)))
