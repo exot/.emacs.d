@@ -2,8 +2,30 @@
 
 ;;; Commentary:
 
-;; XXX: give brief overview, explain nomenclature (timelines, clock-lines,
-;; entries, ...), then list main functionality
+;; This package is a home-grown solution for displaying easily readable
+;; overviews of the clock times in my org-agenda files.  I find the display
+;; easier to read than the clock entries as shown in the agenda with log mode
+;; enabled.  Some additional editing functions help my with bringing the
+;; displayed timelines into the shape as required for work.
+
+;; The main entry point to this package is
+;; `timeline-tools-format-timeline-of-day’, which when called interactively
+;; queries for a date to display, and then formats all clocked times in a nicely
+;; aligned org-mode table.  Navigation in these tables as well as going forward
+;; and backward by day are implemented as shortcuts; see the mode description
+;; for more.  The clock times are assumed to be non-overlapping, i.e., no point
+;; in time is contained in the clock of more than one entry.
+
+;; The main data structures used in this package are as follows:
+;;
+;; - Timelines: these are lists of entries (see next).
+;; - Timeline Entries: structures consisting of start times,
+;;   end times, durations, headlines, and categories.
+;;
+;; To retrieve data from timeline entries, corresponding functions are provided.
+
+;; XXX: talk about the way the timeline is generated
+;; XXX: talk about filters
 
 ;; XXX: This needs some tests
 
@@ -262,7 +284,7 @@ or END will always be in the interval [TSTART,TEND]."
       task-clock-times)))
 
 (defun timeline-tools-timeline (tstart tend &optional files)
-  "Return list of timeline entries between TSTART and TEND from FILES.
+  "Return timeline between TSTART and TEND from FILES.
 
 Each entry consists of a START-TIME, END-TIME, and MARKER are as
 returned by `timeline-tools-clocklines-in-range’, which see.
