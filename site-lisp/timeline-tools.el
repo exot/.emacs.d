@@ -340,14 +340,13 @@ THRESHOLD defaults to the value of
 
     new-timeline))
 
-(defun timeline-tools-get-transformed-timeline (tstart tend files)
-  "Return timeline from files, after application of `timeline-tools-filter-functions’."
-  (let ((plain-timeline (timeline-tools-timeline tstart tend files)))
-    (and plain-timeline
-         (-reduce-from (lambda (tl f)
-                         (funcall f tl))
-                       plain-timeline
-                       timeline-tools-filter-functions))))
+(defun timeline-tools-transform-timeline (timeline)
+  "Return timeline from files, after application of
+`timeline-tools-filter-functions’."
+  (-reduce-from (lambda (tl f)
+                  (funcall f tl))
+                timeline
+                timeline-tools-filter-functions))
 
 ;;;###autoload
 (defun timeline-tools-format-timeline (tstart tend &optional files)
@@ -359,7 +358,8 @@ value of `timeline-tools-filter-functions’.  When called
 interactively, START and END are queried with `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let* ((timeline (timeline-tools-get-transformed-timeline tstart tend files)))
+  (let* ((timeline (timeline-tools-transform-timeline
+                    (timeline-tools-timeline tstart tend files))))
     (let ((target-buffer (get-buffer-create " *Org Timeline*")))
       (with-current-buffer target-buffer
         (timeline-tools-mode)
@@ -433,10 +433,11 @@ Updates category properties before constructing the new timeline."
     (with-current-buffer (get-file-buffer file)
       (org-refresh-category-properties)))
   (setq-local timeline-tools--current-timeline
-              (timeline-tools-get-transformed-timeline
-               timeline-tools--current-time-start
-               timeline-tools--current-time-end
-               timeline-tools--current-files))
+              (timeline-tools-transform-timeline
+               (timeline-tools-timeline
+                timeline-tools--current-time-start
+                timeline-tools--current-time-end
+                timeline-tools--current-files)))
   (timeline-tools-redraw-timeline))
 
 (defun timeline-tools-forward-day ()
@@ -447,10 +448,11 @@ Updates category properties before constructing the new timeline."
     (setq-local timeline-tools--current-time-start (+ 86400 timeline-tools--current-time-start))
     (setq-local timeline-tools--current-time-end (+ 86400 timeline-tools--current-time-end))
     (setq-local timeline-tools--current-timeline
-                (timeline-tools-get-transformed-timeline
-                 timeline-tools--current-time-start
-                 timeline-tools--current-time-end
-                 timeline-tools--current-files))
+                (timeline-tools-transform-timeline
+                 (timeline-tools-timeline
+                  timeline-tools--current-time-start
+                  timeline-tools--current-time-end
+                  timeline-tools--current-files)))
     (timeline-tools-redraw-timeline)))
 
 (defun timeline-tools-backward-day ()
@@ -463,10 +465,11 @@ Updates category properties before constructing the new timeline."
     (setq-local timeline-tools--current-time-end
                 (- timeline-tools--current-time-end 86400))
     (setq-local timeline-tools--current-timeline
-                (timeline-tools-get-transformed-timeline
-                 timeline-tools--current-time-start
-                 timeline-tools--current-time-end
-                 timeline-tools--current-files))
+                (timeline-tools-transform-timeline
+                 (timeline-tools-timeline
+                  timeline-tools--current-time-start
+                  timeline-tools--current-time-end
+                  timeline-tools--current-files)))
     (timeline-tools-redraw-timeline)))
 
 (defun timeline-tools-skip-short-entries ()
