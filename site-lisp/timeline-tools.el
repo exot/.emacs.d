@@ -425,7 +425,8 @@ archives."
                                       'entry line)))))
       (insert "|--|\n")
       (org-table-align)
-      (goto-char (point-min)))))
+      (goto-char (point-min))
+      (timeline-tools-next-line))))
 
 (defun timeline-tools-reparse-timeline ()
   "Parse timeline from files again and redraws current display
