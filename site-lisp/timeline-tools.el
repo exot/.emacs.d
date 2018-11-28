@@ -553,8 +553,8 @@ Interactively query for the exact value of \"short\"."
        (user-error "Cannot delete last line."))
      (setq-local timeline-tools--current-timeline
                  (timeline-tools-transform-timeline
-                  (delq entry timeline-tools--current-timeline))))
-   (timeline-tools-redraw-timeline)))
+                  (delq entry timeline-tools--current-timeline)))))
+  (timeline-tools-redraw-timeline))
 
 (defun timeline-tools-next-line ()
   "Move point to next line in timetable, if possible."
