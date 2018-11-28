@@ -109,8 +109,9 @@ Return whatever is found first."
 (defun timeline-tools-entry-headline (entry)
   "Return the headline associated with ENTRY."
   (let* ((marker (timeline-tools-entry-marker entry)))
-    (org-with-point-at marker
-      (org-element-headline-parser (point-max)))))
+    (plist-get (cadr (org-with-point-at marker
+                       (org-element-headline-parser (point-max))))
+               :raw-value)))
 
 
 ;; Utilities
