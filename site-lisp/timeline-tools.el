@@ -286,17 +286,6 @@ archives."
             (< (timeline-tools-entry-start-time entry-1)
                (timeline-tools-entry-start-time entry-2))))))
 
-(defun timeline-tools-cluster-same-category (timeline)
-  "Cluster TIMELINE into consecutive entries with equal category.
-Markers to org mode tasks are combined into a list."
-  (let ((new-timeline (-partition-by #'timeline-tools-entry-category timeline)))
-    (mapcar (lambda (cluster)
-              (timeline-tools-make-entry
-               (timeline-tools-entry-start-time (-first-item cluster))
-               (timeline-tools-entry-end-time (-last-item cluster))
-               (-mapcat #'timeline-tools-entry-markers cluster)))
-            new-timeline)))
-
 (defun timeline-tools-cluster-same-entry (timeline)
   "Cluster TIMELINE into consecutive entries with equal marker.
 This only works if every entry in timeline consists of a
