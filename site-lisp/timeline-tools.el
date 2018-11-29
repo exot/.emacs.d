@@ -556,7 +556,13 @@ Interactively query for the exact value of \"short\"."
      (setq-local timeline-tools--current-timeline
                  (timeline-tools-transform-timeline
                   (delq entry timeline-tools--current-timeline)))))
-  (timeline-tools-redraw-timeline))
+  ;; the call to `erase-buffer’ in `timeline-tools-redraw-timeline’ somehow
+  ;; makes `save-mark-and-excursion’ meaningless; thus we save the number of the
+  ;; current line by ourselves
+  (let ((linenum (line-number-at-pos (point))))
+    (timeline-tools-redraw-timeline)
+    (goto-char (point-min))
+    (forward-line (1- linenum))))
 
 (defun timeline-tools-next-line ()
   "Move point to next line in timetable, if possible."
