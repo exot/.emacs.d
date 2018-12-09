@@ -57,14 +57,11 @@
     (if (not (zerop (call-process "git" nil (current-buffer) nil "help" "--all")))
         (warn "Cannot call `git’ to obtain list of available commands; completion won’t be available.")
       (goto-char 0)
-      (search-forward "available git commands in")
       (let (commands)
         (while (re-search-forward
-                "^[[:blank:]]+\\([[:word:]-.]+\\)[[:blank:]]*\\([[:word:]-.]+\\)?"
+                "^[[:blank:]]\\{3\\}\\([[:word:]-.]+\\)[[:blank:]]+"
                 nil t)
-          (push (match-string 1) commands)
-          (when (match-string 2)
-            (push (match-string 2) commands)))
+          (push (match-string 1) commands))
         (sort commands #'string<)))))
 
 (defconst pcmpl-git-commands (pcmpl-git-commands)
