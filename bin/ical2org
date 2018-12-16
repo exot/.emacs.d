@@ -1,0 +1,167 @@
+#!/usr/bin/env perl
+# by PerlStalker, http://perlstalker.vuser.org/blog/2014/06/04/importing-ical-into-org-mode/
+# with minor modifications by exot
+
+use warnings;
+use strict;
+
+use Data::ICal;
+use Data::Dumper;
+use DateTime::Format::ICal;
+
+use Getopt::Long;
+my $category = undef;
+my $filetags = undef;
+
+GetOptions(
+  'category|c=s' => \$category,
+  'filetags|f=s' => \$filetags
+);
+
+my $cal = Data::ICal->new(data => join '', <STDIN>);
+
+#print Dumper $cal;
+my %gprops = %{ $cal->properties };
+
+print "#+TITLE: ical entries\n";
+print "#+AUTHOR: ".$gprops{'x-wr-calname'}[0]->decoded_value."\n" if defined $gprops{'x-wr-calname'};
+print "#+EMAIL: \n";
+print "#+DESCRIPTION: Converted using ical2org.pl\n";
+print "#+CATEGORY: $category\n" if defined($category);
+print "#+FILETAGS: $filetags\n" if defined($filetags);
+print "#+STARTUP: overview\n";
+print "\n";
+
+#print "* COMMENT original iCal properties\n";
+#print Dumper \%gprops;
+#print "Timezone: ", $gprops{'x-wr-timezone'}[0]->value, "\n";
+
+#foreach my $prop (values %gprops) {
+#  foreach my $p (@{ $prop }) {
+#    print $p->key, ':', $p->value, "\n";
+#  }
+#}
+
+my $error_code = 0;
+
+foreach my $entry (@{ $cal->entries }) {
+  next if not $entry->isa('Data::ICal::Entry::Event');
+  # print 'Entry: ', Dumper $entry;
+
+  eval { handle_entry($entry) };
+  if ($@) {
+    print STDERR $@;
+    $error_code = 1;
+  }
+}
+
+exit $error_code;
+
+sub org_date_range {
+    my $start = shift;
+    my $end = shift;
+
+    my $str = sprintf('<%04d-%02d-%02d %s %02d:%02d>',
+     $start->year,
+     $start->month,
+     $start->day,
+     $start->day_abbr,
+     $start->hour,
+     $start->minute
+       );
+    $str .= '--';
+    $str .= sprintf('<%04d-%02d-%02d %s %02d:%02d>',
+     $end->year,
+     $end->month,
+     $end->day,
+     $end->day_abbr,
+     $end->hour,
+     $end->minute
+       );
+
+    return $str;
+}
+
+sub handle_entry {
+  my $entry = shift;
+
+  my %props = %{ $entry->properties };
+
+  # skip entries with no start
+  next if not $props{dtstart}[0];
+
+  my $dtstart = DateTime::Format::ICal->parse_datetime($props{dtstart}[0]->value);
+  my ($duration, $dtend);
+
+  if (not $props{dtend}[0]) {
+    $duration = DateTime::Format::ICal->parse_duration($props{duration}[0]->value);
+    $dtend    = $dtstart->clone->add_duration($duration);
+  } else {
+    $dtend    = DateTime::Format::ICal->parse_datetime($props{dtend}[0]->value);
+    $duration = $dtend->subtract_datetime($dtstart);
+  }
+
+  if (defined $props{rrule}) {
+    #print "  REPEATABLE\n";
+    # Bad: There may be multiple rrules but I'm ignoring them
+    my $set = DateTime::Format::ICal->parse_recurrence(recurrence => $props{rrule}[0]->value,
+                                                       dtstart    => $dtstart,
+                                                       dtend      => DateTime->now->add(weeks => 1),
+                                                      );
+
+    my $itr = $set->iterator;
+    while (my $dt = $itr->next) {
+      $dt->set_time_zone($props{dtstart}[0]->parameters->{'TZID'} || $gprops{'x-wr-timezone'}[0]->value);
+      print "* ".$props{summary}[0]->decoded_value."\n";
+      my $end = $dt->clone->add_duration($duration);
+      print '  ', org_date_range($dt, $end), "\n";
+      #print $dt, "\n";
+      print  "  :PROPERTIES:\n";
+      printf "  :ID: %s\n", $props{uid}[0]->value;
+
+      if (defined $props{location}) {
+        printf "  :LOCATION: %s\n", $props{location}[0]->value;
+      }
+
+      if (defined $props{status}) {
+        printf "  :STATUS: %s\n", $props{status}[0]->value;
+      }
+
+      print "  :END:\n";
+
+      if ($props{description}) {
+        print "\n", $props{description}[0]->decoded_value, "\n";
+      }
+    }
+  }
+  else {
+
+    print "* ".$props{summary}[0]->decoded_value."\n";
+
+    # my $tz = $gprops{'x-wr-timezone'}[0]->value;
+    # $dtstart->set_time_zone($props{dtstart}[0]->parameters->{'TZID'} || $tz);
+    # $dtend->set_time_zone($props{dtend}[0]->parameters->{'TZID'} || $tz);
+
+    print '  ', org_date_range($dtstart, $dtend), "\n";
+
+    print  "  :PROPERTIES:\n";
+    printf "  :ID: %s\n", $props{uid}[0]->value;
+
+    if (defined $props{location}) {
+      printf "  :LOCATION: %s\n", $props{location}[0]->value;
+    }
+
+    if (defined $props{status}) {
+      printf "  :STATUS: %s\n", $props{status}[0]->value;
+    }
+
+    print "  :END:\n";
+
+    if ($props{description}) {
+      print "\n", $props{description}[0]->decoded_value, "\n";
+    }
+
+  }
+
+#    print Dumper \%props;
+}
