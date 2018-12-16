@@ -1287,7 +1287,10 @@
                 dired-local-variables-file nil
 
                 dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$"
-                diredp-hide-details-initially-flag t)
+                diredp-hide-details-initially-flag t
+
+                wdired-create-parent-directories t
+                wdired-allow-to-change-permissions t)
 
           (if on-windows
               (setq dired-guess-shell-alist-user '((".*" "cmd /c")))
