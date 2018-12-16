@@ -1181,6 +1181,12 @@
   :defer t
   :init (setq org-html-postamble nil))
 
+(use-package ox-reveal
+  :defer t
+  :config (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js/3.0.0/"
+                org-reveal-mathjax t
+                org-reveal-transition "none"))
+
 
 ;; * Mail
 
