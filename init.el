@@ -2122,6 +2122,12 @@
             (key-chord-define-global "''" "”")
             (key-chord-define-global ",," "„")))
 
+(use-package ldap
+  :commands (ldap-search)
+  :init (setq ldap-default-host ""
+              ldap-default-base "O=DFN-Verein,C=DE"
+              ldap-ldapsearch-args '("-x" "-tt" "-H ldaps://ldap.pca.dfn.de")))
+
 (use-package mastodon
   :commands (mastodon))
 

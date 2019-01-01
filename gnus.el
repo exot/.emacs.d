@@ -421,13 +421,6 @@ METHOD specifies the encrypt method used.  Can be either
 
 ;; inspired by https://www.emacswiki.org/emacs/ExtendSMIME
 
-(use-package ldap
-  :commands (ldap-search)
-  :config (progn
-            (setq ldap-default-host "")
-            (setq ldap-default-base "O=DFN-Verein,C=DE"
-                  ldap-ldapsearch-args '("-x" "-tt" "-H ldaps://ldap.pca.dfn.de"))))
-
 (defun db/lookup-smime-key (mail)
   "Look up `MAIL' on ldap-server of the DFN.
 
