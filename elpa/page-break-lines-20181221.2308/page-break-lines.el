@@ -4,7 +4,7 @@
 
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; URL: https://github.com/purcell/page-break-lines
-;; Package-Version: 20171210.831
+;; Package-Version: 20181221.2308
 ;; Package-X-Original-Version: 0
 ;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: convenience, faces
@@ -138,7 +138,7 @@ its display table will be modified as necessary."
                      (new-display-entry (vconcat (make-list width glyph))))
                 (unless (equal new-display-entry (elt buffer-display-table ?\^L))
                   (aset buffer-display-table ?\^L new-display-entry)))))
-        (when (and (member major-mode page-break-lines-modes)
+        (when (and (apply 'derived-mode-p page-break-lines-modes)
                    buffer-display-table)
           (aset buffer-display-table ?\^L nil))))))
 
