@@ -926,12 +926,6 @@
                   (tags "REFILE"
                         ((org-agenda-files (list db/org-default-refile-file))
                          (org-agenda-overriding-header "Things to refile")))))
-                ("R" "Reading List"
-                 ((tags-todo "READ/-DONE-CANC"
-                             ((org-agenda-overriding-header "To Read (unscheduled)")
-                              (org-agenda-cmp-user-defined (db/cmp-date-property "CREATED"))
-                              (org-agenda-sorting-strategy '(user-defined-up))
-                              (org-agenda-todo-ignore-scheduled t)))))
                 ("E" "Everything"
                  ((tags-todo "/WAIT"
                              ((org-agenda-overriding-header "Tasks requiring response/input")))
@@ -944,8 +938,8 @@
                   (stuck ""
                          ((org-agenda-overriding-header "Stuck Tasks")))))
                 ("S" "Somewhen"
-                 ((tags-todo "SOMEWHEN/-CANC-DONE"
-                             ((org-agenda-overriding-header "Things to do somewhen")
+                 ((tags-todo "SOMEWHEN/-CANC-DONE|READ/-CANC-DONE"
+                             ((org-agenda-overriding-header "Things to do or read somewhen")
                               (org-agenda-todo-ignore-with-date t)
                               (org-tags-match-list-sublevels nil)))
                   (tags-todo "/HOLD"
