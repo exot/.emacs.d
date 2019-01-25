@@ -502,6 +502,10 @@
 (use-package server
   :commands (server-running-p server-start))
 
+(use-package bookmark
+  :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
+                                                      emacs-d)))
+
 
 ;; * Some essential packages
 
