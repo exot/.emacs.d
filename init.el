@@ -351,8 +351,10 @@
       delete-trailing-lines nil
       x-underline-at-descent-line t
       search-whitespace-regexp "[ \t\r\n]+"
-      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
-      x-wait-for-event-timeout nil)
+      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+
+(when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
+  (setq x-wait-for-event-timeout nil))
 
 (when on-windows
   ;; treat memory for display time ...  but hey, this is Windows, memory doesn’t
