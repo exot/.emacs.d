@@ -276,9 +276,6 @@ are assumed to be of the form *.crt."
     ("Agenda"    . db/org-agenda)
     ("Init File" . db/find-user-init-file)
     ("EMMS"      . emms)
-    ("Gnus"      . (lambda ()
-                     (interactive)
-                     (find-file gnus-init-file)))
     ("Shell"     . shell)
     ("EShell"    . eshell)
     ("scratch"   . db/scratch))
@@ -292,18 +289,6 @@ are assumed to be of the form *.crt."
     (action . (("Open" . funcall)))
     (filtered-candidate-transformer . helm-adaptive-sort))
   "Helm source for `db/helm-frequently-used-features’.")
-
-(defcustom db/helm-frequently-visited-locations
-  '(("db-utils" . "~/.emacs.d/site-lisp/db-utils.el")
-    ("db-org" . "~/.emacs.d/site-lisp/db-org.el")
-    ("db-private" . "~/.emacs.d/site-lisp/db-private.el")
-    ("notes" . "~/Documents/home/notes.org")
-    ("pensieve" . "~/Documents/home/pensieve.org.gpg")
-    ("things (home)" . "~/Documents/home/admin/things.gpg")
-    ("things (work)" . "~/Documents/uni/admin/misc/things.gpg"))
-  "Helm shortcuts to frequentely visited locations"
-  :group 'personal-settings
-  :type  '(alist :key-type string :value-type sexp))
 
 (defvar db/helm-source-frequently-visited-locations
   '((name . "Locations")
@@ -371,13 +356,9 @@ path."
   (require 'helm-files)
   (require 'helm-bookmark)
   (helm :sources `(db/helm-source-frequently-used-features
-                   db/helm-source-frequently-visited-locations
                    ,(when (and (= arg 4)
                                (file-directory-p db/important-documents-path))
                       'db/helm-source-important-documents)
-                   ,(when (package-installed-p 'helm-eww)
-                      (require 'helm-eww)
-                      (helm-eww-bookmarks-build-source))
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
 
