@@ -202,6 +202,7 @@
   (bind-key "C-x C-r" #'revert-buffer)
   (bind-key "C-x g" #'db/helm-shortcuts)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
+  (bind-key "C-x r M" #'db/bookmark-add-url)
   (bind-key "C-x r v" #'list-registers)
   (bind-key "C-x t" #'hydra-toggle/body)
   (bind-key "C-z" #'undo)
@@ -530,7 +531,9 @@
              hydra-rectangle/body
              db/two-monitors-xrandr
              db/one-monitor-xrandr
-             db/pretty-print-xml))
+             db/pretty-print-xml
+             db/bookmark-add-external
+             db/bookmark-add-url))
 
 (use-package hydra
   :commands (defhydra))

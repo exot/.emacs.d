@@ -543,6 +543,34 @@ _h_   _l_   _o_k        _y_ank
                 "--output" "HDMI-3" "--off"))
 
 
+;;; Bookmarks
+
+(defun db/bookmark-add-with-handler (name location handler)
+  "Add NAME as bookmark to LOCATION and use HANDLER to open it.
+HANDLER is a function receiving a single argument, namely
+LOCATION.  If a bookmark named NAME is already present, replace
+it."
+  (when (assoc name bookmark-alist)
+    (setq bookmark-alist
+          (cl-delete-if #'(lambda (bmk) (equal (car bmk) name))
+                        bookmark-alist)))
+  (push `(,name
+          (filename . ,location)
+          (handler . ,#'(lambda (arg)
+                          (funcall handler (cdr (assoc 'filename arg))))))
+        bookmark-alist))
+
+(defun db/bookmark-add-external (location name)
+  "Add NAME as bookmark to LOCATION that is opened by the operating system."
+  (interactive "sLocation: \nsName: ")
+  (db/bookmark-add-with-handler name location #'db/system-open))
+
+(defun db/bookmark-add-url (url name)
+  "Add NAME as bookmark to URL that is opened by `browse-url’."
+  (interactive "sURL: \nsName: ")
+  (db/bookmark-add-with-handler name url #'browse-url))
+
+
 ;;; End
 
 (provide 'db-utils)
