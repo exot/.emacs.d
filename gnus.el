@@ -162,6 +162,9 @@ parameters for one particular email address."
                                          "X-Jabber-ID:"
                                          "User-Agent:")))
 
+;; Ensure that whenever we compose new mail, this mail will use the correct
+;; posting style.  This is ensured by setting ARG of `gnus-group-mail’ to 1 to
+;; let it query the user for a group.
 (defadvice gnus-group-mail (before inhibit-no-argument activate)
   (unless (ad-get-arg 0)
     (ad-set-arg 0 1)))
