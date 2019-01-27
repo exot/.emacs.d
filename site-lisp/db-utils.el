@@ -268,6 +268,29 @@ are assumed to be of the form *.crt."
    ;; Indent
    (indent-region (point-min) (point-max))))
 
+(defun db/lookup-smime-key (mail)
+  "Look up `MAIL' on ldap-server of the DFN.
+
+If found, imports the certificate via gpgsm."
+  ;; inspired by https://www.emacswiki.org/emacs/ExtendSMIME
+  (interactive "sMail: ")
+  (require 'ldap)
+  (when (get-buffer " *ldap-value*")
+    (kill-buffer " *ldap-value*"))
+  (ldap-search (format "(mail=%s)" mail))
+  (let ((bufval (get-buffer " *ldap-value*")))
+    (when bufval
+      (with-current-buffer bufval
+        (save-restriction
+          (widen)                       ; just to be sure
+          (let ((result (call-process-region (point-min) (point-max)
+                                             "gpgsm"
+                                             nil nil nil
+                                             "--import")))
+            (if (zerop result)
+                (message "Successfully imported certificate for <%s>" mail)
+              (error "Could not import certificate for <%s>" mail))))))))
+
 
 ;;; helm configuration
 

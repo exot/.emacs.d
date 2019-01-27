@@ -539,7 +539,8 @@
              db/one-monitor-xrandr
              db/pretty-print-xml
              db/bookmark-add-external
-             db/bookmark-add-url))
+             db/bookmark-add-url
+             db/lookup-smime-key))
 
 (use-package hydra
   :commands (defhydra))

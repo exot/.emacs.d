@@ -417,28 +417,6 @@ METHOD specifies the encrypt method used.  Can be either
 (add-hook 'gnus-message-setup-hook
           #'db/signencrypt-message-when-possible)
 
-;; inspired by https://www.emacswiki.org/emacs/ExtendSMIME
-
-(defun db/lookup-smime-key (mail)
-  "Look up `MAIL' on ldap-server of the DFN.
-
-If found, imports the certificate via gpgsm."
-  (interactive "sMail: ")
-  (when (get-buffer " *ldap-value*")
-    (kill-buffer " *ldap-value*"))
-  (ldap-search (format "(mail=%s)" mail))
-  (let ((bufval (get-buffer " *ldap-value*")))
-    (when bufval
-      (with-current-buffer bufval
-        (save-restriction
-          (widen)                       ; just to be sure
-          (let ((result (call-process-region (point-min) (point-max)
-                                             "gpgsm"
-                                             nil nil nil
-                                             "--import")))
-            (if (zerop result)
-                (message "Successfully imported certificate for <%s>" mail)
-              (error "Could not import certificate for <%s>" mail))))))))
 
 ;; Fix
 
