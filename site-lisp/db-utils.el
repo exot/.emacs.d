@@ -539,7 +539,8 @@ it."
           (filename . ,location)
           (handler . ,#'(lambda (arg)
                           (funcall handler (cdr (assoc 'filename arg))))))
-        bookmark-alist))
+        bookmark-alist)
+  (setq bookmark-alist (cl-sort bookmark-alist #'string-lessp :key #'car)))
 
 (defun db/bookmark-add-external (location name)
   "Add NAME as bookmark to LOCATION that is opened by the operating system."
