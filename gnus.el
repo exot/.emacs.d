@@ -74,9 +74,7 @@ parameters for one particular email address."
                (nntp-port-number 563)
                (nntp-address "news.eternal-september.org"))
          (nntp "gmane"
-               (nntp-open-connection-function nntp-open-plain-stream)
-               ;; (nntp-open-connection-function nntp-open-tls-stream)
-               ;; (nntp-port-number 563)
+               (nntp-open-connection-function nntp-open-network-stream)
                (nntp-address "news.gmane.org"))
          (nnimap "algebra20"
                  (nnimap-stream shell)
