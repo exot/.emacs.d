@@ -1232,13 +1232,10 @@
                                                   "text/enriched"
                                                   "text/richtext")))
   :config (progn
-            ;; Tells Gnus to inline the PGP data
+            ;; Automatically show PGP data inline
             (add-to-list 'mm-inlined-types "application/pgp$")
-            ;; Tells Gnus how to display PGP data when it is requested
             (add-to-list 'mm-inline-media-tests
                          '("application/pgp$" mm-inline-text identity))
-            ;; Tell Gnus not to wait for a request, just display PGP data
-            ;; straight away.
             (add-to-list 'mm-automatic-display "application/pgp$")))
 
 (use-package mm-view
