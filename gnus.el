@@ -116,6 +116,7 @@ parameters for one particular email address."
       mail-sources '((file))
       mail-source-delete-incoming t
       nntp-nov-is-evil t
+      nntp-connection-timeout nil
       gnus-asynchronous t
       gnus-save-killed-list nil
       gnus-save-newsrc-file nil
@@ -125,7 +126,7 @@ parameters for one particular email address."
       gnus-read-active-file 'some
       gnus-build-sparse-threads 'some
       gnus-subscribe-newsgroup-method 'gnus-subscribe-killed
-      gnus-group-list-inactive-groups nil
+      gnus-group-list-inactive-groups t
       gnus-suppress-duplicates nil
       gnus-large-newsgroup 200
       nnmail-expiry-wait 7
@@ -297,12 +298,6 @@ parameters for one particular email address."
 
 ;;; MIME
 
-(use-package dash
-  :demand t
-  :ensure t)
-
-(add-to-list 'gnus-boring-article-headers 'long-to)
-
 (setq gnus-ignored-mime-types '("text/x-vcard")
       mm-discouraged-alternatives '("text/richtext" "text/html")
       mm-automatic-display (-difference mm-automatic-display
@@ -417,8 +412,8 @@ METHOD specifies the encrypt method used.  Can be either
 (add-hook 'gnus-message-setup-hook
           #'db/signencrypt-message-when-possible)
 
-
-;; Fix
+;; Fix: mm-view does not seem to support verifying S/MIME messages using gpgsm,
+;; so we add a simple fix here
 
 (defun mm-view-pkcs7-verify (handle)
   (let ((verified nil))
@@ -454,30 +449,17 @@ METHOD specifies the encrypt method used.  Can be either
 
 ;;; Custom commands
 
+;; Visit group under point and immediately close it; this updates gnus’ registry
+;; as a side-effect
 (bind-key "v u"
           '(lambda ()
-            (interactive)
-            (save-mark-and-excursion
-              (when (gnus-topic-select-group)
-                (gnus-summary-exit))))
-           gnus-group-mode-map)
+             (interactive)
+             (save-mark-and-excursion
+               (when (gnus-topic-select-group)
+                 (gnus-summary-exit))))
+          gnus-group-mode-map)
 
-(bind-key "v j"
-          '(lambda ()
-            (interactive)
-            (gnus-agent-toggle-plugged nil)
-            (gnus-agent-toggle-plugged t)
-            (gnus-group-get-new-news 3))
-           gnus-group-mode-map)
-
-(add-hook 'gnus-get-new-news-hook
-          (lambda ()
-            (when gnus-plugged
-              (gnus-agent-toggle-plugged nil)
-              (gnus-agent-toggle-plugged t))))
-
-;; (bind-key "v g" #'db/get-mail gnus-group-mode-map)
-
+;; Toggle visibility of News group
 (bind-key "v c"
           (lambda ()
             (interactive)
@@ -517,11 +499,6 @@ METHOD specifies the encrypt method used.  Can be either
       (kill-ring-save (point-min) (point-max)))))
 
 
-;;; Timeout for fetching news
-
-(setq nntp-connection-timeout nil)
-
-
 ;;; Daemons
 
 (defun db/gnus-demon-scan-news-on-level-2 ()
@@ -541,7 +518,6 @@ METHOD specifies the encrypt method used.  Can be either
                  (gnus-group-get-new-news level))))
         (set-window-configuration win)))))
 
-(gnus-demon-add-handler 'gnus-demon-close-connections nil 10)
 (gnus-demon-add-handler 'db/gnus-demon-scan-news-on-level-2 5 5)
 
 
