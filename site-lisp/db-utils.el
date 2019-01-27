@@ -530,11 +530,10 @@ _h_   _l_   _o_k        _y_ank
   "Add NAME as bookmark to LOCATION and use HANDLER to open it.
 HANDLER is a function receiving a single argument, namely
 LOCATION.  If a bookmark named NAME is already present, replace
-it."
-  (when (assoc name bookmark-alist)
-    (setq bookmark-alist
-          (cl-delete-if #'(lambda (bmk) (equal (car bmk) name))
-                        bookmark-alist)))
+it.  The bookmarks will finally be sorted by their name."
+  (setq bookmark-alist
+        (cl-delete-if #'(lambda (bmk) (equal (car bmk) name))
+                      bookmark-alist))
   (push `(,name
           (filename . ,location)
           (handler . ,#'(lambda (arg)
