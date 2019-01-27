@@ -1224,6 +1224,23 @@
             (bbdb-initialize 'gnus 'message)
             (bbdb-mua-auto-update-init 'message)))
 
+(use-package mm-decode
+  :init (setq mm-text-html-renderer 'shr
+              mm-discouraged-alternatives '("text/richtext" "text/html")
+              mm-automatic-display (-difference mm-automatic-display
+                                                '("text/html"
+                                                  "text/enriched"
+                                                  "text/richtext")))
+  :config (progn
+            ;; Tells Gnus to inline the PGP data
+            (add-to-list 'mm-inlined-types "application/pgp$")
+            ;; Tells Gnus how to display PGP data when it is requested
+            (add-to-list 'mm-inline-media-tests
+                         '("application/pgp$" mm-inline-text identity))
+            ;; Tell Gnus not to wait for a request, just display PGP data
+            ;; straight away.
+            (add-to-list 'mm-automatic-display "application/pgp$")))
+
 (use-package mm-view
   :config (progn
             ;; Fix: mm-view does not seem to support verifying S/MIME messages

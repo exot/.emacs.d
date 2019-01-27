@@ -299,11 +299,6 @@ parameters for one particular email address."
 ;;; MIME
 
 (setq gnus-ignored-mime-types '("text/x-vcard")
-      mm-discouraged-alternatives '("text/richtext" "text/html")
-      mm-automatic-display (-difference mm-automatic-display
-                                        '("text/html"
-                                          "text/enriched"
-                                          "text/richtext"))
       message-forward-as-mime t
       gnus-inhibit-mime-unbuttonizing nil
       gnus-buttonized-mime-types '("multipart/signed" "multipart/encrypted")
@@ -315,19 +310,6 @@ parameters for one particular email address."
         (when message-reply-headers
           (insert "ghItlhpu' " (mail-header-from message-reply-headers) ":")
           (newline))))
-
-(use-package mm-decode
-  :config (progn
-            ;; Tells Gnus to inline the part
-            (add-to-list 'mm-inlined-types "application/pgp$")
-            ;; Tells Gnus how to display the part when it is requested
-            (add-to-list 'mm-inline-media-tests
-                         '("application/pgp$" mm-inline-text identity))
-            ;; Tell Gnus not to wait for a request, just display the thing
-            ;; straight away.
-            (add-to-list 'mm-automatic-display "application/pgp$")
-
-            (setq mm-text-html-renderer 'shr)))
 
 
 ;;; Signing and Encryption
