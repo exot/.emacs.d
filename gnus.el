@@ -53,10 +53,6 @@ parameters for one particular email address."
 (require 'nnml)
 (require 'gnus-async)
 
-;; Debugging
-
-(setq gnus-verbose 10)
-
 ;; Accounts
 
 (setq-default message-dont-reply-to-names

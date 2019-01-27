@@ -1217,7 +1217,8 @@
               gnus-directory (expand-file-name "~/Mail/news/")
               gnus-kill-files-directory gnus-directory
               gnus-startup-file (expand-file-name "~/Mail/gnus-newsrc")
-              gnus-cache-directory (expand-file-name "cache/" gnus-directory))
+              gnus-cache-directory (expand-file-name "cache/" gnus-directory)
+              gnus-verbose 10)
   :config (progn
             (eval-when-compile
               (require 'gnus-start))
