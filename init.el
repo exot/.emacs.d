@@ -1265,6 +1265,7 @@
               gnus-use-full-window nil
               gnus-always-force-window-configuration t
               gnus-fetch-old-headers nil
+              gnus-select-method '(nnnil "")
 
               gnus-visible-headers (regexp-opt '("From:"
                                                  "Newsgroups:"

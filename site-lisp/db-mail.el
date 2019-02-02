@@ -11,6 +11,77 @@
 (require 'mml-sec)
 (require 'gnus)
 
+(defcustom db/personal-gnus-filter-rules nil
+  "Default filter rules as used by Gnus for `user-mail-address’."
+  :group 'personal-settings
+  :type 'sexp)
+
+(defun db/mail-accounts--set-value (symbol value)
+  "Set SYMBOL to VALUE, as needed for `db/mail-accounts’."
+  (cl-assert (eq symbol 'db/mail-accounts)
+             "Only use `db/mail-accounts--set-value’ only for setting `db/mail-accounts’.")
+  (set-default symbol value)
+
+  ;; Set `gnus-secondary-select-methods’
+  (setq gnus-secondary-select-methods
+        (append
+         ;; immutable account definitions; TODO: move into customizable variable
+         `((nntp "etsep"
+                 (nntp-open-connection-function nntp-open-tls-stream)
+                 (nntp-port-number 563)
+                 (nntp-address "news.eternal-september.org"))
+           (nntp "gmane"
+                 (nntp-open-connection-function nntp-open-network-stream)
+                 (nntp-address "news.gmane.org"))
+           (nnimap "algebra20"
+                   (nnimap-stream shell)
+                   (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/algebra20")
+                   (nnimap-split-methods nnimap-split-fancy)
+                   (nnimap-inbox "INBOX")
+                   (nnimap-split-fancy ,db/personal-gnus-filter-rules))
+           (nnml "local"
+                 (nnmail-split-methods nnmail-split-fancy)
+                 (nnmail-split-fancy
+                  (| ("subject" ".*Tiger Auditing Report for.*" "mail.tiger")
+                     "mail.misc")))
+           (nnmaildir "archive"
+                      (directory "~/Mail/archive/")
+                      (directory-files nnheader-directory-files-safe)
+                      (nnir-search-engine notmuch)
+                      (nnir-notmuch-remove-prefix ,(expand-file-name "~/Mail/archive/"))))
+
+         ;; automatically add accounts when address is not nil and not the empty
+         ;; string
+         (remove-if #'null
+                    (mapcar (lambda (account)
+                              (let ((account-name (nth 1 account))
+                                    (account-address (nth 2 account)))
+                                (when (and account-address
+                                           (stringp account-address)
+                                           (< 0 (length account-address)))
+                                  `(nnimap ,account-name
+                                           (nnimap-address ,account-address)
+                                           (nnimap-inbox "INBOX")))))
+                            value))))
+
+  ;; Set posting styles based on existing mail addresses
+  (setq gnus-posting-styles
+        (append
+         `((".*"
+            (name ,user-full-name)
+            (address ,user-mail-address)
+            (signature-file "~/.signature")
+            ("X-Jabber-ID" ,db/jabber-id)))
+         (mapcar (lambda (account)
+                   (let ((account-name (nth 1 account))
+                         (account-address (nth 0 account)))
+                     `(,(concat account-name ":")
+                       (name ,user-full-name)
+                       (address ,account-address)
+                       (signature-file "~/.signature")
+                       ("X-Jabber-ID" ,db/jabber-id))))
+                 value))))
+
 ;; XXX: This needs some functionality for local accounts
 (defcustom db/mail-accounts nil
   "Configuration for email accounts.
@@ -26,12 +97,8 @@ parameters for one particular email address."
            (choice :tag "SMTP Stream Type"
                    (const nil) (const starttls) (const plain) (const ssl))
            (integer :tag "SMTP Service Port")
-           (string :tag "SMTP Login Name"))))
-
-(defcustom db/personal-gnus-filter-rules nil
-  "Default filter rules as used by Gnus for `user-mail-address’."
-  :group 'personal-settings
-  :type 'sexp)
+           (string :tag "SMTP Login Name")))
+  :set #'db/mail-accounts--set-value)
 
 (defun db/public-key (address &optional method)
   "Return valid public keys for ADDRESS and given METHOD.
