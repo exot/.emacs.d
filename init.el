@@ -1197,6 +1197,37 @@
 
 ;; * Mail
 
+;; XXX: This needs some functionality for local accounts
+(defcustom db/mail-accounts nil
+  "Configuration for email accounts.
+This is a list of lists, where each such list specifies necessary
+parameters for one particular email address."
+  :group 'personal-settings
+  :type '(repeat
+          (list
+           (string :tag "EMail Address")
+           (string :tag "Group Name")
+           (string :tag "IMAP Server Address")
+           (string :tag "SMTP Server Address")
+           (choice :tag "SMTP Stream Type"
+                   (const nil) (const starttls) (const plain) (const ssl))
+           (integer :tag "SMTP Service Port")
+           (string :tag "SMTP Login Name"))))
+
+(defcustom db/personal-gnus-filter-rules nil
+  "Default filter rules as used by Gnus for `user-mail-address’."
+  :group 'personal-settings
+  :type 'sexp)
+
+(use-package db-mail
+  :commands (db/public-key
+             db/encryption-possible-p
+             db/message-recipients
+             db/signencrypt-message-when-possible
+             db/gnus-save-newsrc-with-whitespace-1
+             db/gnus-summary-open-Link
+             db/gnus-html-mime-part-to-org))
+
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
   :init (setq bbdb-completion-display-record nil
@@ -1212,7 +1243,6 @@
             (run-with-timer 0 3600 #'bbdb-save)))
 
 (use-package gnus
-  :defines (gnus-init-file)
   :commands (gnus)
   :init (setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
               gnus-home-directory (expand-file-name "~/Mail/news/")
@@ -1220,12 +1250,286 @@
               gnus-kill-files-directory gnus-directory
               gnus-startup-file (expand-file-name "~/Mail/gnus-newsrc")
               gnus-cache-directory (expand-file-name "cache/" gnus-directory)
-              gnus-verbose 10)
+              gnus-verbose 10
+
+              ;; General Configuration
+
+              message-dont-reply-to-names (regexp-opt (cons user-mail-address
+                                                            db/additional-mail-addresses)
+                                                      'words)
+              gnus-ignored-from-addresses message-dont-reply-to-names
+              message-directory (expand-file-name "mail/" gnus-directory)
+              nnmail-message-id-cache-file (expand-file-name ".nnmail-cache" gnus-directory)
+              nnml-directory message-directory
+              mail-sources '((file))
+              mail-source-delete-incoming t
+              nntp-nov-is-evil t
+              nntp-connection-timeout nil
+              gnus-asynchronous t
+              gnus-save-killed-list nil
+              gnus-save-newsrc-file nil
+              gnus-read-newsrc-file nil
+              gnus-check-new-newsgroups nil
+              gnus-use-cache 'passive
+              gnus-read-active-file 'some
+              gnus-build-sparse-threads 'some
+              gnus-subscribe-newsgroup-method 'gnus-subscribe-killed
+              gnus-group-list-inactive-groups t
+              gnus-suppress-duplicates nil
+              gnus-large-newsgroup 200
+              nnmail-expiry-wait 7
+              nnmail-cache-accepted-message-ids t
+              gnus-summary-next-group-on-exit nil
+              gnus-use-full-window nil
+              gnus-always-force-window-configuration t
+              gnus-fetch-old-headers nil
+
+              gnus-visible-headers (regexp-opt '("From:"
+                                                 "Newsgroups:"
+                                                 "Subject:"
+                                                 "Date:"
+                                                 "Followup-To:"
+                                                 "Reply-To:"
+                                                 "Organization:"
+                                                 "Summary:"
+                                                 "Keywords:"
+                                                 "Mail-Copies-To:"
+                                                 "To:"
+                                                 "Cc:"
+                                                 "BCC:"
+                                                 "X-Newsreader:"
+                                                 "X-Mailer:"
+                                                 "X-Sent:"
+                                                 "Posted-To:"
+                                                 "Mail-Copies-To:"
+                                                 "Apparently-To:"
+                                                 "Gnus-Warning:"
+                                                 "Resent-From:"
+                                                 "gpg-key-ID:"
+                                                 "fingerprint:"
+                                                 "X-Jabber-ID:"
+                                                 "User-Agent:"))
+
+              ;; Appearence
+
+              gnus-group-line-format "%S%p%P%5y(%2i):%B%(%s:%G%)\n"
+              gnus-auto-select-first nil
+              gnus-auto-select-next nil
+              gnus-summary-line-format "%U%O%R%6k %(%&user-date;  %-13,13f  %B%s%)\n"
+              gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date)
+              gnus-subthread-sort-functions '(gnus-thread-sort-by-date)
+              gnus-thread-hide-subtree t
+              gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
+              gnus-sum-thread-tree-indent          "  "
+              gnus-sum-thread-tree-root            "● "
+              gnus-sum-thread-tree-false-root      "◎ "
+              gnus-sum-thread-tree-single-indent   "◯ "
+              gnus-sum-thread-tree-single-leaf "╰► "
+              gnus-sum-thread-tree-leaf-with-other "├► "
+              gnus-sum-thread-tree-vertical "│"
+              gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+
+              ;; New mark symbols (seen here:
+              ;; `https://github.com/cofi/dotfiles/blob/master/gnus.el')
+              gnus-ancient-mark ?✓
+              ;; gnus-cached-mark ?☍
+              gnus-canceled-mark ?↗
+              gnus-del-mark ?✗
+              ;; gnus-dormant-mark ?⚐
+              gnus-expirable-mark ?♻
+              gnus-forwarded-mark ?↪
+              ;; gnus-killed-mark ?☠
+              ;; gnus-process-mark ?⚙
+              gnus-read-mark ?✓
+              gnus-recent-mark ?✩
+              gnus-replied-mark ?↺
+              gnus-unread-mark ?✉
+              ;; gnus-unseen-mark ?★
+              ;; gnus-ticked-mark ?⚑
+
+              gnus-treat-hide-boring-headers 'head
+              gnus-treat-strip-multiple-blank-lines nil
+              gnus-treat-display-smileys t
+              gnus-treat-emphasize 'head
+              gnus-treat-unsplit-urls t
+
+              ;; Adaptive Scoring
+
+              gnus-use-scoring nil
+              gnus-use-adaptive-scoring nil
+              gnus-adaptive-word-length-limit 5
+              gnus-adaptive-word-no-group-words t
+              gnus-default-adaptive-score-alist
+              '((gnus-unread-mark)
+                (gnus-ticked-mark (from 4))
+                (gnus-dormant-mark (from 5))
+                (gnus-del-mark (from -4) (subject -1))
+                (gnus-read-mark (from 4) (subject 2))
+                (gnus-expirable-mark (from -1) (subject -1))
+                (gnus-killed-mark (from -1) (subject -3))
+                (gnus-kill-file-mark)
+                (gnus-ancient-mark)
+                (gnus-low-score-mark)
+                (gnus-catchup-mark (from -1) (subject -1)))
+              gnus-summary-mark-below nil
+
+              gnus-parameters '(("^nnimap.*"
+                                 (gnus-use-scoring nil))
+                                ("^nnimap.*:lists.*"
+                                 (gnus-use-scoring t)
+                                 (gnus-use-adaptive-scoring '(word line)))
+                                ("^nntp.*"
+                                 (gnus-use-scoring nil)
+                                 (gnus-summary-mark-below -1000)
+                                 (gnus-use-adaptive-scoring '(word line))))
+
+              ;; Gnus Registry
+
+              gnus-registry-split-strategy 'majority
+              gnus-registry-ignored-groups '(("^nntp" t)
+                                             ("^nnfolder" t)
+                                             ("^nnir" t)
+                                             ("^nnmaildir" t)
+                                             ("INBOX$" t))
+              gnus-registry-max-entries 40000
+              gnus-registry-track-extra '(sender subject recipient)
+              gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
+                                                         emacs-d)
+              gnus-refer-article-method 'current
+
+              ;; MIME
+
+              gnus-ignored-mime-types '("text/x-vcard")
+              message-forward-as-mime t
+              gnus-inhibit-mime-unbuttonizing nil
+              gnus-buttonized-mime-types '("multipart/signed" "multipart/encrypted")
+              gnus-inhibit-images t
+              gnus-blocked-images "."
+
+              message-citation-line-function
+              (lambda ()
+                (when message-reply-headers
+                  (insert "ghItlhpu' "
+                          (mail-header-from message-reply-headers)
+                          ":")
+                  (newline)))
+
+              ;; Signing and Encryption
+
+              mm-encrypt-option nil
+              mm-sign-option nil
+              mm-decrypt-option 'known
+              mm-verify-option 'known
+              mml-smime-use 'epg
+              ;;mml2015-encrypt-to-self t
+              mml2015-display-key-image nil
+              gnus-message-replysign t
+              gnus-message-replyencrypt t
+              gnus-message-replysignencrypted t
+              mml-secure-cache-passphrase nil
+
+              ;; Archiving: we store messages in the current group, so there is
+              ;; no need to use Gnus’ archiving method
+
+              gnus-message-archive-method nil
+              gnus-update-message-archive-method t
+              gnus-message-archive-group nil
+              gnus-gcc-mark-as-read t
+
+              ;; Searching
+
+              nnir-method-default-engines '((nnimap . imap)
+                                            (nnmaildir . notmuch)
+                                            (nntp . gmane))
+
+              ;; Agents
+
+              gnus-agent-mark-unread-after-downloaded nil
+              gnus-agent-synchronize-flags t
+              gnus-agent-go-online t)
   :config (progn
             (eval-when-compile
               (require 'gnus-start))
             (bbdb-initialize 'gnus 'message)
-            (bbdb-mua-auto-update-init 'message)))
+            (bbdb-mua-auto-update-init 'message)
+
+            ;; Ensure that whenever we compose new mail, this mail will use the
+            ;; correct posting style.  This is ensured by setting ARG of
+            ;; `gnus-group-mail’ to 1 to let it query the user for a group.
+            (defadvice gnus-group-mail (before inhibit-no-argument activate)
+              (unless (ad-get-arg 0)
+                (ad-set-arg 0 1)))
+
+            (remove-hook 'gnus-mark-article-hook
+                         'gnus-summary-mark-read-and-unread-as-read)
+            (add-hook 'gnus-mark-article-hook 'gnus-summary-mark-unread-as-read)
+
+            ;; Quit Gnus gracefully when exiting Emacs
+            (add-hook 'kill-emacs-hook #'(lambda ()
+                                           (interactive)
+                                           (when (get-buffer "*Group*")
+                                             (gnus-group-exit))))
+
+            ;; Don’t quit summary buffer when pressing `q’
+            (bind-key "q" #'gnus-summary-expand-window gnus-article-mode-map)
+
+            ;; Show topics in group buffer
+            (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+            ;; We need to do some magic as otherwise the agent does not delete
+            ;; articles from its .overview when we move them around.  Thus we
+            ;; mark articles as expireable when they have been moved to another
+            ;; group.
+            (defadvice gnus-summary-move-article (around
+                                                  no-cancel-mark
+                                                  (&optional n to-newsgroup
+                                                             select-method action)
+                                                  activate)
+              (let ((articles (gnus-summary-work-articles n))
+                    (return   ad-do-it))
+                (when (or (null action)
+                          (eq action 'move))
+                  (dolist (article articles)
+                    (gnus-summary-mark-article article gnus-expirable-mark)))
+                return))
+
+            ;; Increase score of group after reading it
+            (add-hook 'gnus-summary-exit-hook
+                      'gnus-summary-bubble-group)
+
+            ;; Use Gnus’ registry
+            (gnus-registry-initialize)
+
+            ;; Automatic encryption if all necessary keys are present
+            (add-hook 'gnus-message-setup-hook
+                      #'db/signencrypt-message-when-possible)
+
+            ;; Do some pretty printing before saving the newsrc file
+            (add-hook 'gnus-save-quick-newsrc-hook
+                      #'db/gnus-save-newsrc-with-whitespace-1)
+
+            ;; Visit group under point and immediately close it; this updates
+            ;; gnus’ registry as a side-effect
+            (bind-key "v u"
+                      '(lambda ()
+                         (interactive)
+                         (save-mark-and-excursion
+                           (when (gnus-topic-select-group)
+                             (gnus-summary-exit))))
+                      gnus-group-mode-map)
+
+            ;; Toggle visibility of News group
+            (bind-key "v c"
+                      (lambda ()
+                        (interactive)
+                        (save-mark-and-excursion
+                          (gnus-topic-jump-to-topic "News")
+                          (gnus-topic-read-group)))
+                      gnus-group-mode-map)
+
+            (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-summary-mode-map)
+            (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-article-mode-map)
+))
 
 (use-package mm-decode
   :init (setq mm-text-html-renderer 'shr
@@ -1275,6 +1579,11 @@
               (while (search-forward "\r\n" nil t)
                 (replace-match "\n"))
               t)))
+
+(use-package notmuch
+  :defer t
+  :init (progn
+          (setq notmuch-fcc-dirs nil)))
 
 
 ;; * Crypto
