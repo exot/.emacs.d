@@ -11,6 +11,9 @@
 (require 'mml-sec)
 (require 'gnus)
 
+
+;; Mail related customizations
+
 (defcustom db/personal-gnus-filter-rules nil
   "Default filter rules as used by Gnus for `user-mail-address’."
   :group 'personal-settings
@@ -20,6 +23,7 @@
   "Set SYMBOL to VALUE, as needed for `db/mail-accounts’."
   (cl-assert (eq symbol 'db/mail-accounts)
              "Only use `db/mail-accounts--set-value’ only for setting `db/mail-accounts’.")
+
   (set-default symbol value)
 
   ;; Set `gnus-secondary-select-methods’
@@ -82,7 +86,6 @@
                        ("X-Jabber-ID" ,db/jabber-id))))
                  value))))
 
-;; XXX: This needs some functionality for local accounts
 (defcustom db/mail-accounts nil
   "Configuration for email accounts.
 This is a list of lists, where each such list specifies necessary
@@ -99,6 +102,9 @@ parameters for one particular email address."
            (integer :tag "SMTP Service Port")
            (string :tag "SMTP Login Name")))
   :set #'db/mail-accounts--set-value)
+
+
+;; Functions related to email encryption
 
 (defun db/public-key (address &optional method)
   "Return valid public keys for ADDRESS and given METHOD.
@@ -161,6 +167,36 @@ METHOD specifies the encrypt method used.  Can be either
                 ;; if nothing works, sign with default method
                 (mml-secure-message (cl-first methods) 'sign)))))))))
 
+
+;; SMTP related functions
+
+(defun db/set-smtp-server-from-header (orig-fun &rest args)
+  "Choose smtp-settings dynamically, based on the From: header
+entry of the current mail."
+  (require 'mail-extr)
+  (let* ((from    (or (save-restriction
+                        (message-narrow-to-headers)
+                        (mail-fetch-field "From"))
+                      user-mail-address))
+         (address (cadr (mail-extract-address-components from)))
+         (account (assoc address db/mail-accounts)))
+    (message "Using address: %s" address)
+    (if account
+        (progn
+          (message "Sending with account for %s" address)
+          ;; XXX: these calls to `nth’ should be abstracted away
+          (let ((smtpmail-smtp-server (nth 3 account))
+                (smtpmail-stream-type (nth 4 account))
+                (smtpmail-smtp-service (nth 5 account))
+                (smtpmail-smtp-user (nth 6 account)))
+            (apply orig-fun args)))
+      (progn
+        (message "Sending with default account settings")
+        (apply orig-fun args)))))
+
+
+;; Gnus utility functions
+
 (defun db/gnus-save-newsrc-with-whitespace-1 ()
   "Save ~/.newsrc.eld with extra whitespace."
   ;; http://ding.gnus.narkive.com/pq3Z8ZjQ/pretty-printing-newsrc-eld#post3
@@ -197,30 +233,6 @@ METHOD specifies the encrypt method used.  Can be either
       (error "Error in extracting text"))
     (with-current-buffer "*Shell Command Output*"
       (kill-ring-save (point-min) (point-max)))))
-
-(defun db/set-smtp-server-from-header (orig-fun &rest args)
-  "Choose smtp-settings dynamically, based on the From: header
-entry of the current mail."
-  (require 'mail-extr)
-  (let* ((from    (or (save-restriction
-                        (message-narrow-to-headers)
-                        (mail-fetch-field "From"))
-                      user-mail-address))
-         (address (cadr (mail-extract-address-components from)))
-         (account (assoc address db/mail-accounts)))
-    (message "Using address: %s" address)
-    (if account
-        (progn
-          (message "Sending with account for %s" address)
-          ;; XXX: these calls to `nth’ should be abstracted away
-          (let ((smtpmail-smtp-server (nth 3 account))
-                (smtpmail-stream-type (nth 4 account))
-                (smtpmail-smtp-service (nth 5 account))
-                (smtpmail-smtp-user (nth 6 account)))
-            (apply orig-fun args)))
-      (progn
-        (message "Sending with default account settings")
-        (apply orig-fun args)))))
 
 (defun db/gnus-demon-scan-news-on-level-2 ()
   "Scan for news in Gnus on level 2."
