@@ -1197,8 +1197,6 @@
 
 ;; * Mail
 
-(setq send-mail-function 'smtpmail-send-it)
-
 (use-package db-mail
   :commands (db/public-key
              db/encryption-possible-p
@@ -1225,212 +1223,219 @@
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
             (run-with-timer 0 3600 #'bbdb-save)))
 
+;; General Gnus configuration
+
+(setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
+      gnus-home-directory (expand-file-name "~/Mail/news/")
+      gnus-directory (expand-file-name "~/Mail/news/")
+      gnus-kill-files-directory gnus-directory
+      gnus-startup-file (expand-file-name "~/Mail/gnus-newsrc")
+      gnus-cache-directory (expand-file-name "cache/" gnus-directory)
+      gnus-verbose 10
+
+      message-dont-reply-to-names (regexp-opt (cons user-mail-address
+                                                    db/additional-mail-addresses)
+                                              'words)
+      gnus-ignored-from-addresses message-dont-reply-to-names
+      message-directory (expand-file-name "mail/" gnus-directory)
+      nnmail-message-id-cache-file (expand-file-name ".nnmail-cache" gnus-directory)
+      nnml-directory message-directory
+      mail-sources '((file))
+      mail-source-delete-incoming t
+      nntp-nov-is-evil t
+      nntp-connection-timeout nil
+      gnus-asynchronous t
+      gnus-save-killed-list nil
+      gnus-save-newsrc-file nil
+      gnus-read-newsrc-file nil
+      gnus-check-new-newsgroups nil
+      gnus-use-cache 'passive
+      gnus-read-active-file 'some
+      gnus-build-sparse-threads 'some
+      gnus-subscribe-newsgroup-method 'gnus-subscribe-killed
+      gnus-group-list-inactive-groups t
+      gnus-suppress-duplicates nil
+      gnus-large-newsgroup 200
+      nnmail-expiry-wait 7
+      nnmail-cache-accepted-message-ids t
+      gnus-summary-next-group-on-exit nil
+      gnus-use-full-window nil
+      gnus-always-force-window-configuration t
+      gnus-fetch-old-headers nil
+      gnus-select-method '(nnnil "")
+
+      gnus-visible-headers (regexp-opt '("From:"
+                                         "Newsgroups:"
+                                         "Subject:"
+                                         "Date:"
+                                         "Followup-To:"
+                                         "Reply-To:"
+                                         "Organization:"
+                                         "Summary:"
+                                         "Keywords:"
+                                         "Mail-Copies-To:"
+                                         "To:"
+                                         "Cc:"
+                                         "BCC:"
+                                         "X-Newsreader:"
+                                         "X-Mailer:"
+                                         "X-Sent:"
+                                         "Posted-To:"
+                                         "Mail-Copies-To:"
+                                         "Apparently-To:"
+                                         "Gnus-Warning:"
+                                         "Resent-From:"
+                                         "gpg-key-ID:"
+                                         "fingerprint:"
+                                         "X-Jabber-ID:"
+                                         "User-Agent:"))
+
+      message-citation-line-function
+      (lambda ()
+        (when message-reply-headers
+          (insert "ghItlhpu' "
+                  (mail-header-from message-reply-headers)
+                  ":")
+          (newline))))
+
+;; Gnus Appearence
+
+(setq gnus-group-line-format "%S%p%P%5y(%2i):%B%(%s:%G%)\n"
+      gnus-auto-select-first nil
+      gnus-auto-select-next nil
+      gnus-summary-line-format "%U%O%R%6k %(%&user-date;  %-13,13f  %B%s%)\n"
+      gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date)
+      gnus-subthread-sort-functions '(gnus-thread-sort-by-date)
+      gnus-thread-hide-subtree t
+      gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
+      gnus-sum-thread-tree-indent "  "
+      gnus-sum-thread-tree-root "● "
+      gnus-sum-thread-tree-false-root "◎ "
+      gnus-sum-thread-tree-single-indent "◯ "
+      gnus-sum-thread-tree-single-leaf "╰► "
+      gnus-sum-thread-tree-leaf-with-other "├► "
+      gnus-sum-thread-tree-vertical "│"
+      gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+
+      ;; New mark symbols (seen here:
+      ;; `https://github.com/cofi/dotfiles/blob/master/gnus.el')
+      gnus-ancient-mark ?✓
+      ;; gnus-cached-mark ?☍
+      gnus-canceled-mark ?↗
+      gnus-del-mark ?✗
+      ;; gnus-dormant-mark ?⚐
+      gnus-expirable-mark ?♻
+      gnus-forwarded-mark ?↪
+      ;; gnus-killed-mark ?☠
+      ;; gnus-process-mark ?⚙
+      gnus-read-mark ?✓
+      gnus-recent-mark ?✩
+      gnus-replied-mark ?↺
+      gnus-unread-mark ?✉
+      ;; gnus-unseen-mark ?★
+      ;; gnus-ticked-mark ?⚑
+
+      gnus-treat-hide-boring-headers 'head
+      gnus-treat-strip-multiple-blank-lines nil
+      gnus-treat-display-smileys t
+      gnus-treat-emphasize 'head
+      gnus-treat-unsplit-urls t)
+
+;; Adaptive Scoring
+
+(setq gnus-use-scoring nil
+      gnus-use-adaptive-scoring nil
+      gnus-adaptive-word-length-limit 5
+      gnus-adaptive-word-no-group-words t
+      gnus-default-adaptive-score-alist
+      '((gnus-unread-mark)
+        (gnus-ticked-mark (from 4))
+        (gnus-dormant-mark (from 5))
+        (gnus-del-mark (from -4) (subject -1))
+        (gnus-read-mark (from 4) (subject 2))
+        (gnus-expirable-mark (from -1) (subject -1))
+        (gnus-killed-mark (from -1) (subject -3))
+        (gnus-kill-file-mark)
+        (gnus-ancient-mark)
+        (gnus-low-score-mark)
+        (gnus-catchup-mark (from -1) (subject -1)))
+      gnus-summary-mark-below nil
+
+      gnus-parameters '(("^nnimap.*"
+                         (gnus-use-scoring nil))
+                        ("^nnimap.*:lists.*"
+                         (gnus-use-scoring t)
+                         (gnus-use-adaptive-scoring '(word line)))
+                        ("^nntp.*"
+                         (gnus-use-scoring nil)
+                         (gnus-summary-mark-below -1000)
+                         (gnus-use-adaptive-scoring '(word line)))))
+
+;; Gnus Registry
+
+(setq gnus-registry-split-strategy 'majority
+      gnus-registry-ignored-groups '(("^nntp" t)
+                                     ("^nnfolder" t)
+                                     ("^nnir" t)
+                                     ("^nnmaildir" t)
+                                     ("INBOX$" t))
+      gnus-registry-max-entries 40000
+      gnus-registry-track-extra '(sender subject recipient)
+      gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
+                                                 emacs-d)
+      gnus-refer-article-method 'current)
+
+;; MIME
+
+(setq gnus-ignored-mime-types '("text/x-vcard")
+      message-forward-as-mime t
+      gnus-inhibit-mime-unbuttonizing nil
+      gnus-buttonized-mime-types '("multipart/signed" "multipart/encrypted")
+      gnus-inhibit-images t
+      gnus-blocked-images "."
+      mm-text-html-renderer 'shr
+      mm-discouraged-alternatives '("text/richtext" "text/html"))
+
+;; Signing and Encryption
+
+(setq mm-encrypt-option nil
+      mm-sign-option nil
+      mm-decrypt-option 'known
+      mm-verify-option 'known
+      mml-smime-use 'epg
+      ;;mml2015-encrypt-to-self t
+      mml2015-display-key-image nil
+      gnus-message-replysign t
+      gnus-message-replyencrypt t
+      gnus-message-replysignencrypted t
+      mml-secure-cache-passphrase nil)
+
+;; Archiving
+
+;; We store messages in the current group, so there is
+;; no need to use Gnus’ archiving method
+
+(setq gnus-message-archive-method nil
+      gnus-update-message-archive-method t
+      gnus-message-archive-group nil
+      gnus-gcc-mark-as-read t)
+
+;; Searching
+
+(setq nnir-method-default-engines '((nnimap . imap)
+                                    (nnmaildir . notmuch)
+                                    (nntp . gmane)))
+
+;; Agents
+
+(setq gnus-agent-mark-unread-after-downloaded nil
+      gnus-agent-synchronize-flags t
+      gnus-agent-go-online t)
+
+;; Package configuration
+
 (use-package gnus
   :commands (gnus)
-  :init (setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
-              gnus-home-directory (expand-file-name "~/Mail/news/")
-              gnus-directory (expand-file-name "~/Mail/news/")
-              gnus-kill-files-directory gnus-directory
-              gnus-startup-file (expand-file-name "~/Mail/gnus-newsrc")
-              gnus-cache-directory (expand-file-name "cache/" gnus-directory)
-              gnus-verbose 10
-
-              ;; General Configuration
-
-              message-dont-reply-to-names (regexp-opt (cons user-mail-address
-                                                            db/additional-mail-addresses)
-                                                      'words)
-              gnus-ignored-from-addresses message-dont-reply-to-names
-              message-directory (expand-file-name "mail/" gnus-directory)
-              nnmail-message-id-cache-file (expand-file-name ".nnmail-cache" gnus-directory)
-              nnml-directory message-directory
-              mail-sources '((file))
-              mail-source-delete-incoming t
-              nntp-nov-is-evil t
-              nntp-connection-timeout nil
-              gnus-asynchronous t
-              gnus-save-killed-list nil
-              gnus-save-newsrc-file nil
-              gnus-read-newsrc-file nil
-              gnus-check-new-newsgroups nil
-              gnus-use-cache 'passive
-              gnus-read-active-file 'some
-              gnus-build-sparse-threads 'some
-              gnus-subscribe-newsgroup-method 'gnus-subscribe-killed
-              gnus-group-list-inactive-groups t
-              gnus-suppress-duplicates nil
-              gnus-large-newsgroup 200
-              nnmail-expiry-wait 7
-              nnmail-cache-accepted-message-ids t
-              gnus-summary-next-group-on-exit nil
-              gnus-use-full-window nil
-              gnus-always-force-window-configuration t
-              gnus-fetch-old-headers nil
-              gnus-select-method '(nnnil "")
-
-              gnus-visible-headers (regexp-opt '("From:"
-                                                 "Newsgroups:"
-                                                 "Subject:"
-                                                 "Date:"
-                                                 "Followup-To:"
-                                                 "Reply-To:"
-                                                 "Organization:"
-                                                 "Summary:"
-                                                 "Keywords:"
-                                                 "Mail-Copies-To:"
-                                                 "To:"
-                                                 "Cc:"
-                                                 "BCC:"
-                                                 "X-Newsreader:"
-                                                 "X-Mailer:"
-                                                 "X-Sent:"
-                                                 "Posted-To:"
-                                                 "Mail-Copies-To:"
-                                                 "Apparently-To:"
-                                                 "Gnus-Warning:"
-                                                 "Resent-From:"
-                                                 "gpg-key-ID:"
-                                                 "fingerprint:"
-                                                 "X-Jabber-ID:"
-                                                 "User-Agent:"))
-
-              ;; Appearence
-
-              gnus-group-line-format "%S%p%P%5y(%2i):%B%(%s:%G%)\n"
-              gnus-auto-select-first nil
-              gnus-auto-select-next nil
-              gnus-summary-line-format "%U%O%R%6k %(%&user-date;  %-13,13f  %B%s%)\n"
-              gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date)
-              gnus-subthread-sort-functions '(gnus-thread-sort-by-date)
-              gnus-thread-hide-subtree t
-              gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
-              gnus-sum-thread-tree-indent          "  "
-              gnus-sum-thread-tree-root            "● "
-              gnus-sum-thread-tree-false-root      "◎ "
-              gnus-sum-thread-tree-single-indent   "◯ "
-              gnus-sum-thread-tree-single-leaf "╰► "
-              gnus-sum-thread-tree-leaf-with-other "├► "
-              gnus-sum-thread-tree-vertical "│"
-              gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
-
-              ;; New mark symbols (seen here:
-              ;; `https://github.com/cofi/dotfiles/blob/master/gnus.el')
-              gnus-ancient-mark ?✓
-              ;; gnus-cached-mark ?☍
-              gnus-canceled-mark ?↗
-              gnus-del-mark ?✗
-              ;; gnus-dormant-mark ?⚐
-              gnus-expirable-mark ?♻
-              gnus-forwarded-mark ?↪
-              ;; gnus-killed-mark ?☠
-              ;; gnus-process-mark ?⚙
-              gnus-read-mark ?✓
-              gnus-recent-mark ?✩
-              gnus-replied-mark ?↺
-              gnus-unread-mark ?✉
-              ;; gnus-unseen-mark ?★
-              ;; gnus-ticked-mark ?⚑
-
-              gnus-treat-hide-boring-headers 'head
-              gnus-treat-strip-multiple-blank-lines nil
-              gnus-treat-display-smileys t
-              gnus-treat-emphasize 'head
-              gnus-treat-unsplit-urls t
-
-              ;; Adaptive Scoring
-
-              gnus-use-scoring nil
-              gnus-use-adaptive-scoring nil
-              gnus-adaptive-word-length-limit 5
-              gnus-adaptive-word-no-group-words t
-              gnus-default-adaptive-score-alist
-              '((gnus-unread-mark)
-                (gnus-ticked-mark (from 4))
-                (gnus-dormant-mark (from 5))
-                (gnus-del-mark (from -4) (subject -1))
-                (gnus-read-mark (from 4) (subject 2))
-                (gnus-expirable-mark (from -1) (subject -1))
-                (gnus-killed-mark (from -1) (subject -3))
-                (gnus-kill-file-mark)
-                (gnus-ancient-mark)
-                (gnus-low-score-mark)
-                (gnus-catchup-mark (from -1) (subject -1)))
-              gnus-summary-mark-below nil
-
-              gnus-parameters '(("^nnimap.*"
-                                 (gnus-use-scoring nil))
-                                ("^nnimap.*:lists.*"
-                                 (gnus-use-scoring t)
-                                 (gnus-use-adaptive-scoring '(word line)))
-                                ("^nntp.*"
-                                 (gnus-use-scoring nil)
-                                 (gnus-summary-mark-below -1000)
-                                 (gnus-use-adaptive-scoring '(word line))))
-
-              ;; Gnus Registry
-
-              gnus-registry-split-strategy 'majority
-              gnus-registry-ignored-groups '(("^nntp" t)
-                                             ("^nnfolder" t)
-                                             ("^nnir" t)
-                                             ("^nnmaildir" t)
-                                             ("INBOX$" t))
-              gnus-registry-max-entries 40000
-              gnus-registry-track-extra '(sender subject recipient)
-              gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
-                                                         emacs-d)
-              gnus-refer-article-method 'current
-
-              ;; MIME
-
-              gnus-ignored-mime-types '("text/x-vcard")
-              message-forward-as-mime t
-              gnus-inhibit-mime-unbuttonizing nil
-              gnus-buttonized-mime-types '("multipart/signed" "multipart/encrypted")
-              gnus-inhibit-images t
-              gnus-blocked-images "."
-
-              message-citation-line-function
-              (lambda ()
-                (when message-reply-headers
-                  (insert "ghItlhpu' "
-                          (mail-header-from message-reply-headers)
-                          ":")
-                  (newline)))
-
-              ;; Signing and Encryption
-
-              mm-encrypt-option nil
-              mm-sign-option nil
-              mm-decrypt-option 'known
-              mm-verify-option 'known
-              mml-smime-use 'epg
-              ;;mml2015-encrypt-to-self t
-              mml2015-display-key-image nil
-              gnus-message-replysign t
-              gnus-message-replyencrypt t
-              gnus-message-replysignencrypted t
-              mml-secure-cache-passphrase nil
-
-              ;; Archiving: we store messages in the current group, so there is
-              ;; no need to use Gnus’ archiving method
-
-              gnus-message-archive-method nil
-              gnus-update-message-archive-method t
-              gnus-message-archive-group nil
-              gnus-gcc-mark-as-read t
-
-              ;; Searching
-
-              nnir-method-default-engines '((nnimap . imap)
-                                            (nnmaildir . notmuch)
-                                            (nntp . gmane))
-
-              ;; Agents
-
-              gnus-agent-mark-unread-after-downloaded nil
-              gnus-agent-synchronize-flags t
-              gnus-agent-go-online t)
   :config (progn
             (require 'db-mail)
 
@@ -1521,13 +1526,12 @@
 
 (use-package mm-decode
   :defer t
-  :init (setq mm-text-html-renderer 'shr
-              mm-discouraged-alternatives '("text/richtext" "text/html")
-              mm-automatic-display (-difference mm-automatic-display
-                                                '("text/html"
-                                                  "text/enriched"
-                                                  "text/richtext")))
   :config (progn
+            (setq mm-automatic-display (-difference mm-automatic-display
+                                                    '("text/html"
+                                                      "text/enriched"
+                                                      "text/richtext")))
+
             ;; Automatically show PGP data inline
             (add-to-list 'mm-inlined-types "application/pgp$")
             (add-to-list 'mm-inline-media-tests
@@ -1572,12 +1576,13 @@
 
 (use-package mml
   :defer t
-  :config (advice-add 'mml-attach-file
-                      :around #'db/mml-attach-file--go-to-eob))
+  :config (progn
+            ;; Move to end of message buffer before attaching a file
+            (advice-add 'mml-attach-file
+                        :around #'db/mml-attach-file--go-to-eob)))
 
-(use-package notmuch
-  :defer t
-  :init (setq notmuch-fcc-dirs nil))
+(setq notmuch-fcc-dirs nil
+      send-mail-function 'smtpmail-send-it)
 
 (use-package smtpmail
   :defer t
@@ -1599,10 +1604,8 @@
                                                             smtpmail-smtp-server))))
                        (signal (car signals-data) (cdr signals-data)))))))
 
-(use-package starttls
-  :defer t
-  :init (setq starttls-use-gnutls t
-              starttls-extra-arguments '("--strict-tofu")))
+(setq starttls-use-gnutls t
+      starttls-extra-arguments '("--strict-tofu"))
 
 
 ;; * Crypto
