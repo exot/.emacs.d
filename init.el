@@ -1226,7 +1226,8 @@ parameters for one particular email address."
              db/signencrypt-message-when-possible
              db/gnus-save-newsrc-with-whitespace-1
              db/gnus-summary-open-Link
-             db/gnus-html-mime-part-to-org))
+             db/gnus-html-mime-part-to-org
+             db/set-smtp-server-from-header))
 
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
@@ -1528,8 +1529,7 @@ parameters for one particular email address."
                       gnus-group-mode-map)
 
             (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-summary-mode-map)
-            (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-article-mode-map)
-))
+            (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-article-mode-map)))
 
 (use-package mm-decode
   :init (setq mm-text-html-renderer 'shr
@@ -1584,6 +1584,32 @@ parameters for one particular email address."
   :defer t
   :init (progn
           (setq notmuch-fcc-dirs nil)))
+
+(use-package smtpmail
+  :defer t
+  :init (setq send-mail-function 'smtpmail-send-it
+              smtpmail-stream-type 'starttls
+              smtpmail-smtp-service 587
+              smtpmail-debug-info t)
+  :config (progn
+            ;; Dynamically set smtpmail variables when sending mail
+            (advice-add 'smtpmail-via-smtp
+                        :around #'db/set-smtp-server-from-header)
+
+            ;; Show trace buffer when something goes wrong
+            (defadvice smtpmail-send-it (around display-trace-buffer disable)
+              "If an error is signalled, display the process buffer."
+              (condition-case signals-data
+                  ad-do-it
+                (error (shrink-window-if-larger-than-buffer
+                        (display-buffer (get-buffer (format "*trace of SMTP session to %s*"
+                                                            smtpmail-smtp-server))))
+                       (signal (car signals-data) (cdr signals-data)))))))
+
+(use-package starttls
+  :defer t
+  :init (setq starttls-use-gnutls t
+              starttls-extra-arguments '("--strict-tofu")))
 
 
 ;; * Crypto

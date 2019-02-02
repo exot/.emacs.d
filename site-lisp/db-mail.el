@@ -108,5 +108,29 @@ METHOD specifies the encrypt method used.  Can be either
     (with-current-buffer "*Shell Command Output*"
       (kill-ring-save (point-min) (point-max)))))
 
+(defun db/set-smtp-server-from-header (orig-fun &rest args)
+  "Choose smtp-settings dynamically, based on the From: header
+entry of the current mail."
+  (require 'mail-extr)
+  (let* ((from    (or (save-restriction
+                        (message-narrow-to-headers)
+                        (mail-fetch-field "From"))
+                      user-mail-address))
+         (address (cadr (mail-extract-address-components from)))
+         (account (assoc address db/mail-accounts)))
+    (message "Using address: %s" address)
+    (if account
+        (progn
+          (message "Sending with account for %s" address)
+          ;; XXX: these calls to `nth’ should be abstracted away
+          (let ((smtpmail-smtp-server (nth 3 account))
+                (smtpmail-stream-type (nth 4 account))
+                (smtpmail-smtp-service (nth 5 account))
+                (smtpmail-smtp-user (nth 6 account)))
+            (apply orig-fun args)))
+      (progn
+        (message "Sending with default account settings")
+        (apply orig-fun args)))))
+
 (provide 'db-mail)
 ;;; db-mail ends here

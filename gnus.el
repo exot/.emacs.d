@@ -129,58 +129,6 @@
 
 (advice-add 'mml-attach-file :around #'db/mml-attach-file--go-to-eob)
 
-
-;;; SMTP configuration
-
-(require 'smtpmail)
-(require 'starttls)
-
-(defadvice smtpmail-send-it (around display-trace-buffer disable)
-  "If an error is signalled, display the process buffer."
-  (condition-case signals-data
-      ad-do-it
-    (error (shrink-window-if-larger-than-buffer
-            (display-buffer (get-buffer (format "*trace of SMTP session to %s*"
-                                                smtpmail-smtp-server))))
-           (signal (car signals-data) (cdr signals-data)))))
-
-(setq send-mail-function 'smtpmail-send-it
-      smtpmail-stream-type 'starttls
-      smtpmail-smtp-service 587
-      starttls-use-gnutls t
-      starttls-extra-arguments '("--strict-tofu")
-      smtpmail-smtp-server (nth 3 (car db/mail-accounts))
-      smtpmail-smtp-user (nth 6 (car db/mail-accounts)))
-
-(defun db/set-smtp-server-from-header (orig-fun &rest args)
-  "Choose smtp-settings dynamically, based on the From: header
-entry of the current mail."
-  (require 'mail-extr)
-  (let* ((from    (or (save-restriction
-                        (message-narrow-to-headers)
-                        (mail-fetch-field "From"))
-                      user-mail-address))
-         (address (cadr (mail-extract-address-components from)))
-         (account (assoc address db/mail-accounts)))
-    (message "Using address: %s" address)
-    (if account
-        (progn
-          (message "Sending with account for %s" address)
-          ;; XXX: these calls to `nth’ should be abstracted away
-          (let ((smtpmail-smtp-server (nth 3 account))
-                (smtpmail-stream-type (nth 4 account))
-                (smtpmail-smtp-service (nth 5 account))
-                (smtpmail-smtp-user (nth 6 account)))
-            (apply orig-fun args)))
-      (progn
-        (message "Sending with default account settings")
-        (apply orig-fun args)))))
-
-(advice-add 'smtpmail-via-smtp
-            :around #'db/set-smtp-server-from-header)
-
-(setq smtpmail-debug-info t)
-
 ;;;
 
 t
