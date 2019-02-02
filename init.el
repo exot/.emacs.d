@@ -299,7 +299,7 @@
   :type 'string)
 
 
-;; * Builtin Variables
+;; * General configuration
 
 (setq custom-file
       (expand-file-name "private/custom.el" emacs-d))
@@ -1197,6 +1197,8 @@
 
 ;; * Mail
 
+(setq send-mail-function 'smtpmail-send-it)
+
 (use-package db-mail
   :commands (db/public-key
              db/encryption-possible-p
@@ -1568,8 +1570,7 @@
 
 (use-package smtpmail
   :defer t
-  :init (setq send-mail-function 'smtpmail-send-it
-              smtpmail-stream-type 'starttls
+  :init (setq smtpmail-stream-type 'starttls
               smtpmail-smtp-service 587
               smtpmail-debug-info t)
   :config (progn
