@@ -64,26 +64,6 @@
                           db/mail-accounts))))
 
 
-;;; Daemons
-
-(defun db/gnus-demon-scan-news-on-level-2 ()
-  "Scan for news in Gnus on level 2."
-  ;; from https://www.emacswiki.org/emacs/GnusDemon
-  (let ((win (current-window-configuration))
-        (gnus-read-active-file 'some)
-        (gnus-check-new-newsgroups nil)
-        (level 2))
-    (while-no-input
-      (unwind-protect
-           (save-window-excursion
-             (when (gnus-alive-p)
-               (with-current-buffer gnus-group-buffer
-                 (gnus-group-get-new-news level))))
-        (set-window-configuration win)))))
-
-(gnus-demon-add-handler 'db/gnus-demon-scan-news-on-level-2 5 5)
-
-
 ;;; Mail Formatting
 
 ;; XXX: This should actually be set by the customize setter of

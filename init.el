@@ -1205,7 +1205,8 @@
              db/gnus-save-newsrc-with-whitespace-1
              db/gnus-summary-open-Link
              db/gnus-html-mime-part-to-org
-             db/set-smtp-server-from-header))
+             db/set-smtp-server-from-header
+             db/gnus-demon-scan-news-on-level-2))
 
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
@@ -1486,6 +1487,9 @@
             ;; Do some pretty printing before saving the newsrc file
             (add-hook 'gnus-save-quick-newsrc-hook
                       #'db/gnus-save-newsrc-with-whitespace-1)
+
+            ;; Automatically scan for new news
+            (gnus-demon-add-handler 'db/gnus-demon-scan-news-on-level-2 5 5)
 
             ;; Visit group under point and immediately close it; this updates
             ;; gnus’ registry as a side-effect
