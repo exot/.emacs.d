@@ -1432,6 +1432,8 @@
               gnus-agent-synchronize-flags t
               gnus-agent-go-online t)
   :config (progn
+            (require 'db-mail)
+
             (eval-when-compile
               (require 'gnus-start))
             (bbdb-initialize 'gnus 'message)
