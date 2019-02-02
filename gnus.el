@@ -15,19 +15,7 @@
 
 ;; Requires
 
-(require 'dash)
-(require 'gnus)
-(require 'message)
-(require 'gnus-util)
-(require 'gnus-start)
-(require 'gnus-group)
-(require 'gnus-sum)
-(require 'gnus-art)
-(require 'gnus-score)
-(require 'nntp)
-(require 'gnus-agent)
-(require 'nnml)
-(require 'gnus-async)
+(require 'db-mail)
 
 ;; Accounts
 

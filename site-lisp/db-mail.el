@@ -10,6 +10,28 @@
 (require 'epg)
 (require 'mml-sec)
 
+;; XXX: This needs some functionality for local accounts
+(defcustom db/mail-accounts nil
+  "Configuration for email accounts.
+This is a list of lists, where each such list specifies necessary
+parameters for one particular email address."
+  :group 'personal-settings
+  :type '(repeat
+          (list
+           (string :tag "EMail Address")
+           (string :tag "Group Name")
+           (string :tag "IMAP Server Address")
+           (string :tag "SMTP Server Address")
+           (choice :tag "SMTP Stream Type"
+                   (const nil) (const starttls) (const plain) (const ssl))
+           (integer :tag "SMTP Service Port")
+           (string :tag "SMTP Login Name"))))
+
+(defcustom db/personal-gnus-filter-rules nil
+  "Default filter rules as used by Gnus for `user-mail-address’."
+  :group 'personal-settings
+  :type 'sexp)
+
 (defun db/public-key (address &optional method)
   "Return valid public keys for ADDRESS and given METHOD.
 
@@ -19,11 +41,11 @@ ADDRESS is a string containing exactly one email address."
   (unless method (setq method "pgpmime"))
   (epg-list-keys (epg-make-context
                   (cond
-                    ((string= method "smime")
-                     'CMS)
-                    ((string= method "pgpmime")
-                     'OpenPGP)
-                    (t (error "Unknown method %s" method))))
+                   ((string= method "smime")
+                    'CMS)
+                   ((string= method "pgpmime")
+                    'OpenPGP)
+                   (t (error "Unknown method %s" method))))
                  address))
 
 (defun db/encryption-possible-p (recipients method)
