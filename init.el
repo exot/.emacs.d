@@ -1208,7 +1208,8 @@
              db/gnus-summary-open-Link
              db/gnus-html-mime-part-to-org
              db/set-smtp-server-from-header
-             db/gnus-demon-scan-news-on-level-2))
+             db/gnus-demon-scan-news-on-level-2
+             db/mml-attach-file--go-to-eob))
 
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
@@ -1564,6 +1565,11 @@
               (while (search-forward "\r\n" nil t)
                 (replace-match "\n"))
               t)))
+
+(use-package mml
+  :defer t
+  :config (advice-add 'mml-attach-file
+                      :around #'db/mml-attach-file--go-to-eob))
 
 (use-package notmuch
   :defer t
