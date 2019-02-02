@@ -511,6 +511,8 @@
 
 ;; * Some essential packages
 
+(use-package dash)
+
 (use-package db-utils
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
