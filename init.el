@@ -2216,6 +2216,12 @@
             (when (package-installed-p 'elpy)
               (elpy-enable))))
 
+;; Interactive interface to sdcv, the StarDict concole version.  To use sdcv,
+;; put the dictionary data under ~/.stardict/dic.
+(use-package sdcv
+  :commands (sdcv-search-pointer
+             sdcv-search-input))
+
 (use-package semantic
   :commands (semantic-mode)
   :config (progn
