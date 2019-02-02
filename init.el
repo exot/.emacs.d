@@ -1520,6 +1520,7 @@
             (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-article-mode-map)))
 
 (use-package mm-decode
+  :defer t
   :init (setq mm-text-html-renderer 'shr
               mm-discouraged-alternatives '("text/richtext" "text/html")
               mm-automatic-display (-difference mm-automatic-display
@@ -1534,6 +1535,7 @@
             (add-to-list 'mm-automatic-display "application/pgp$")))
 
 (use-package mm-view
+  :defer t
   :config (progn
             ;; Fix: mm-view does not seem to support verifying S/MIME messages
             ;; using gpgsm, so we add a simple fix here
