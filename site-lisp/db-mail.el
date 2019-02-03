@@ -14,10 +14,25 @@
 
 ;; Mail related customizations
 
-(defcustom db/personal-gnus-filter-rules nil
-  "Default filter rules as used by Gnus for `user-mail-address’."
-  :group 'personal-settings
-  :type 'sexp)
+(defun db/-set-gnus-secondary-select-methods (other-gnus-accounts remote-mail-accounts)
+  "Set `gnus-secondary-select-methods’ from OTHER-GNUS-ACCOUNTS and REMOTE-MAIL-ACCOUNTS.
+The values of the latter two variables are usually those of
+`db/other-gnus-accounts’ and `db/mail-accounts’."
+  (setq gnus-secondary-select-methods
+        (append other-gnus-accounts
+                ;; Only add those remote accounts whose IMAP address is neither
+                ;; `nil’ nor the empty string
+                (remove-if #'null
+                           (mapcar (lambda (account)
+                                     (let ((account-name (nth 1 account))
+                                           (account-address (nth 2 account)))
+                                       (when (and account-address
+                                                  (stringp account-address)
+                                                  (< 0 (length account-address)))
+                                         `(nnimap ,account-name
+                                                  (nnimap-address ,account-address)
+                                                  (nnimap-inbox "INBOX")))))
+                                   remote-mail-accounts)))))
 
 (defun db/mail-accounts--set-value (symbol value)
   "Set SYMBOL to VALUE, as needed for `db/mail-accounts’."
@@ -27,46 +42,10 @@
   (set-default symbol value)
 
   ;; Set `gnus-secondary-select-methods’
-  (setq gnus-secondary-select-methods
-        (append
-         ;; immutable account definitions; TODO: move into customizable variable
-         `((nntp "etsep"
-                 (nntp-open-connection-function nntp-open-tls-stream)
-                 (nntp-port-number 563)
-                 (nntp-address "news.eternal-september.org"))
-           (nntp "gmane"
-                 (nntp-open-connection-function nntp-open-network-stream)
-                 (nntp-address "news.gmane.org"))
-           (nnimap "algebra20"
-                   (nnimap-stream shell)
-                   (nnimap-shell-program "/usr/lib/dovecot/imap -o mail_location=maildir:$HOME/Mail/algebra20")
-                   (nnimap-split-methods nnimap-split-fancy)
-                   (nnimap-inbox "INBOX")
-                   (nnimap-split-fancy ,db/personal-gnus-filter-rules))
-           (nnml "local"
-                 (nnmail-split-methods nnmail-split-fancy)
-                 (nnmail-split-fancy
-                  (| ("subject" ".*Tiger Auditing Report for.*" "mail.tiger")
-                     "mail.misc")))
-           (nnmaildir "archive"
-                      (directory "~/Mail/archive/")
-                      (directory-files nnheader-directory-files-safe)
-                      (nnir-search-engine notmuch)
-                      (nnir-notmuch-remove-prefix ,(expand-file-name "~/Mail/archive/"))))
-
-         ;; automatically add accounts when address is not nil and not the empty
-         ;; string
-         (remove-if #'null
-                    (mapcar (lambda (account)
-                              (let ((account-name (nth 1 account))
-                                    (account-address (nth 2 account)))
-                                (when (and account-address
-                                           (stringp account-address)
-                                           (< 0 (length account-address)))
-                                  `(nnimap ,account-name
-                                           (nnimap-address ,account-address)
-                                           (nnimap-inbox "INBOX")))))
-                            value))))
+  (db/-set-gnus-secondary-select-methods
+   ;; Don’t complain if `db/other-gnus-accounts’ is not defined yet
+   (and (boundp 'db/other-gnus-accounts) db/other-gnus-accounts)
+   value)
 
   ;; Set posting styles based on existing mail addresses
   (setq gnus-posting-styles
@@ -87,9 +66,10 @@
                  value))))
 
 (defcustom db/mail-accounts nil
-  "Configuration for email accounts.
+  "Configuration for remote email accounts.
 This is a list of lists, where each such list specifies necessary
-parameters for one particular email address."
+parameters for one particular email address.  These addresses
+will also be recognized when sending mail."
   :group 'personal-settings
   :type '(repeat
           (list
@@ -102,6 +82,25 @@ parameters for one particular email address."
            (integer :tag "SMTP Service Port")
            (string :tag "SMTP Login Name")))
   :set #'db/mail-accounts--set-value)
+
+(defun db/other-gnus-accounts--set-value (symbol value)
+  "Set SYMBOL to VALUE as needed by `db/other-gnus-accounts’"
+  (cl-assert (eq symbol 'db/other-gnus-accounts)
+             "Only use `db/other-gnus-accounts--set-value’ only for setting `db/other-gnus-accounts’.")
+
+  (set-default symbol value)
+  (db/-set-gnus-secondary-select-methods
+   value
+   ;; Don’t complain if `db/mail-accounts’ is not defined yet.
+   (and (boundp 'db/mail-accounts) db/mail-accounts)))
+
+(defcustom db/other-gnus-accounts nil
+  "Configuration for gnus accounts that are not IMAP/SMTP related.
+The value of this variable should be a valid value for `gnus-secondary-select-methods’."
+  :group 'personal-settings
+  ;; type definition for `gnus-select-method’ widget from from gnus.el
+  :type '(repeat gnus-select-method)
+  :set #'db/other-gnus-accounts--set-value)
 
 
 ;; Functions related to email encryption
