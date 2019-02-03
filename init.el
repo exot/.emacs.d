@@ -1444,8 +1444,8 @@
             (bbdb-initialize 'gnus 'message)
             (bbdb-mua-auto-update-init 'message)
 
-            ;; Ensure that whenever we compose new mail, this mail will use the
-            ;; correct posting style.  This is ensured by setting ARG of
+            ;; Ensure that whenever we compose new mail, it will use the correct
+            ;; posting style.  This is ensured by setting ARG of
             ;; `gnus-group-mail’ to 1 to let it query the user for a group.
             (defadvice gnus-group-mail (before inhibit-no-argument activate)
               (unless (ad-get-arg 0)
