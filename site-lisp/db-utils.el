@@ -574,6 +574,11 @@ it.  The bookmarks will finally be sorted by their name."
   (interactive "sURL: \nsName: ")
   (db/bookmark-add-with-handler name url #'browse-url))
 
+(defun db/bookmark-add-eww (url name)
+  "Add NAME as bookmark to URL to be opened with `eww’."
+  (interactive "sURL: \nsName: ")
+  (db/bookmark-add-with-handler name url #'eww))
+
 
 ;;; End
 
