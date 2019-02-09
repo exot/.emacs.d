@@ -1,6 +1,8 @@
 #+title: Notes on Emacs
 #+author: Daniel
 
+#+options: toc:t
+
 * Emacs Calc Tutorials
 
 By Andrew Hyatt, found here: https://github.com/ahyatt/emacs-calc-tutorials.
