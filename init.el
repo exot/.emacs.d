@@ -628,6 +628,8 @@
               org-footnote-section nil
               org-log-into-drawer "LOGBOOK"
               org-log-reschedule 'time
+              org-log-redeadline 'note
+              org-log-note-clock-out t
               org-clone-delete-id t
               org-catch-invisible-edits 'error
               org-M-RET-may-split-line '((default . nil))
