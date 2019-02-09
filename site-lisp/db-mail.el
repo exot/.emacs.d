@@ -188,10 +188,17 @@ entry of the current mail."
                 (smtpmail-stream-type (nth 4 account))
                 (smtpmail-smtp-service (nth 5 account))
                 (smtpmail-smtp-user (nth 6 account)))
+            (cl-assert (cl-notany #'null (list smtpmail-smtp-server
+                                               smtpmail-stream-type
+                                               smtpmail-smtp-service
+                                               smtpmail-smtp-user))
+                       t
+                       "Settings %s for sending mail are not complete for account %s."
+                       address)
             (apply orig-fun args)))
-      (progn
-        (message "Sending with default account settings")
-        (apply orig-fun args)))))
+      (if (yes-or-no-p "Sending with default account settings?")
+          (apply orig-fun args)
+        (message "Sending aborted as requested by user.")))))
 
 
 ;; Gnus utility functions
