@@ -106,6 +106,7 @@
   (winner-mode 1)
   (global-auto-revert-mode -1)
   (which-function-mode +1)
+  (global-eldoc-mode +1)
 
   ;; Activate modes (packages)
 
@@ -2171,7 +2172,8 @@
   :diminish lispy-mode)
 
 (use-package eldoc
-  :commands (eldoc-mode)
+  :commands (global-eldoc-mode
+             turn-on-eldoc-mode)
   :diminish eldoc-mode)
 
 ;; Lisp Dialects
@@ -2180,9 +2182,7 @@
   :defer t
   :config (progn
             (add-hook 'emacs-lisp-mode-hook 'lispy-mode)
-            (add-hook 'emacs-lisp-mode-hook 'db/add-use-package-to-imenu)
-            (add-hook 'ielm-mode-hook 'eldoc-mode)
-            (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)))
+            (add-hook 'emacs-lisp-mode-hook 'db/add-use-package-to-imenu)))
 
 (use-package geiser
   :commands (geiser-mode))
@@ -2207,8 +2207,7 @@
             (add-hook 'cider-repl-mode-hook 'subword-mode)
             (add-hook 'cider-repl-mode-hook 'lispy-mode)
             (add-hook 'cider-repl-mode-hook 'cider-repl-toggle-pretty-printing)
-            (add-hook 'cider-repl-mode-hook 'company-mode)
-            (add-hook 'cider-mode-hook 'eldoc-mode)))
+            (add-hook 'cider-repl-mode-hook 'company-mode)))
 
 (use-package clojure-mode
   :defer t
