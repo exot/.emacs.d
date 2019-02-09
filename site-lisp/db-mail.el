@@ -37,7 +37,8 @@ The values of the latter two variables are usually those of
 (defun db/mail-accounts--set-value (symbol value)
   "Set SYMBOL to VALUE, as needed for `db/mail-accounts’."
   (cl-assert (eq symbol 'db/mail-accounts)
-             "Only use `db/mail-accounts--set-value’ only for setting `db/mail-accounts’.")
+             nil
+             "Only use `db/mail-accounts--set-value’ for setting `db/mail-accounts’.")
 
   (set-default symbol value)
 
@@ -86,7 +87,8 @@ will also be recognized when sending mail."
 (defun db/other-gnus-accounts--set-value (symbol value)
   "Set SYMBOL to VALUE as needed by `db/other-gnus-accounts’"
   (cl-assert (eq symbol 'db/other-gnus-accounts)
-             "Only use `db/other-gnus-accounts--set-value’ only for setting `db/other-gnus-accounts’.")
+             nil
+             "Only use `db/other-gnus-accounts--set-value’ for setting `db/other-gnus-accounts’.")
 
   (set-default symbol value)
   (db/-set-gnus-secondary-select-methods
