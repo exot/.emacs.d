@@ -13,18 +13,14 @@
 
 ;; For customization of default org agenda files
 (defun db/update-org-agenda-files (symbol value)
-  "Set SYMBOL to VALUE and update `org-agenda-files’ afterwards."
+  "Set SYMBOL to VALUE and update `org-agenda-files’ afterwards.
+Remove the old value of SYMBOL from `org-agenda-files’ and add
+the new one instead."
+  (require 'org)
+  (when (boundp symbol)
+    (setq org-agenda-files (cl-delete (symbol-value symbol) org-agenda-files)))
   (set-default symbol value)
-  (setq org-agenda-files (cl-remove-duplicates
-                          (cl-remove-if #'string-empty-p
-                                        (mapcar (lambda (symbol)
-                                                  (when (boundp symbol)
-                                                    (symbol-value symbol)))
-                                                '(db/org-default-home-file
-                                                  db/org-default-work-file
-                                                  db/org-default-refile-file
-                                                  db/org-default-notes-file)))
-                          :test #'cl-equalp)))
+  (push value org-agenda-files))
 
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
