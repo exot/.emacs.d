@@ -119,6 +119,7 @@ will also be recognized when sending mail."
   "Choose smtp-settings dynamically, based on the From: header
 entry of the current mail."
   (require 'mail-extr)
+  (require 'smtpmail)                   ; to have the globals bound below by let
   (let* ((from    (or (save-restriction
                         (message-narrow-to-headers)
                         (mail-fetch-field "From"))
