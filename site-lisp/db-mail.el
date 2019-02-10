@@ -53,17 +53,17 @@ The values of the latter two variables are usually those of
         (append other-gnus-accounts
                 ;; Only add those remote accounts whose IMAP address is neither
                 ;; `nil’ nor the empty string
-                (remove-if #'null
-                           (mapcar (lambda (account)
-                                     (let ((account-name (nth 1 account))
-                                           (account-address (nth 2 account)))
-                                       (when (and account-address
-                                                  (stringp account-address)
-                                                  (< 0 (length account-address)))
-                                         `(nnimap ,account-name
-                                                  (nnimap-address ,account-address)
-                                                  (nnimap-inbox "INBOX")))))
-                                   remote-mail-accounts)))))
+                (cl-remove-if #'null
+                              (mapcar (lambda (account)
+                                        (let ((account-name (nth 1 account))
+                                              (account-address (nth 2 account)))
+                                          (when (and account-address
+                                                     (stringp account-address)
+                                                     (< 0 (length account-address)))
+                                            `(nnimap ,account-name
+                                                     (nnimap-address ,account-address)
+                                                     (nnimap-inbox "INBOX")))))
+                                      remote-mail-accounts)))))
 
 (defun db/mail-accounts--set-value (symbol value)
   "Set SYMBOL to VALUE, as needed for `db/mail-accounts’."
