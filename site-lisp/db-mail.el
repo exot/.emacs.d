@@ -18,17 +18,15 @@
 
 ;; When sending mail, `db/mail-accounts’ is used to determine settings of the
 ;; relevant variables from `smtpmail’ based on the current value of the "From: "
-;; header entry in the mail.  If this header entry is set correctly, send
-;; `db/set-smtp-server-from-header’ will set these variables automatically.  To
-;; make this work, however, two things have to be done:
+;; header entry in the mail.  If this header entry is set correctly, then
+;; `db/smtpmail-send-it’ will set these variables automatically.  To make this
+;; work, however, two things have to be done:
 ;;
 ;; - Ensure that the "From: " header is set correctly.  In Gnus this can be done
 ;;   by configuring `gnus-posting-style’ accordingly.
 ;;
-;; - Make sure `db/set-smtp-server-from-header’ is called when sending mail.
-;;   Currently, this function is written to be added as an around advice for
-;;   `smtpmail-via-smtp’.  In the future, this function might be changed to be a
-;;   valid value for `send-mail-function’
+;; - Make sure `db/smtpmail-send-it’ is called when sending mail.  For this set
+;;   the value `send-mail-function’ to `db/smtpmail-send-it’.
 
 ;; All this functionality is provided under "Mail related customizations".  The
 ;; other headlines provide the aforementioned utility functions.
@@ -41,6 +39,8 @@
 (require 'epg)
 (require 'mml-sec)
 (require 'gnus)
+(require 'smtpmail)                   ; to have the globals bound below by let
+(require 'message)
 
 
 ;; Mail related customizations
@@ -115,11 +115,9 @@ will also be recognized when sending mail."
            (string :tag "SMTP Login Name")))
   :set #'db/mail-accounts--set-value)
 
-(defun db/set-smtp-server-from-header (orig-fun &rest args)
-  "Choose smtp-settings dynamically, based on the From: header
-entry of the current mail."
-  (require 'mail-extr)
-  (require 'smtpmail)                   ; to have the globals bound below by let
+(defun db/smtpmail-send-it ()
+  "Send prepared message in current buffer.
+This function uses `message-smtpmail-send-it’, but sets `smtpmail-smtp-server’, `smtpmail-stream-type’, `smtpmail-smtp-service’, and `smtpmail-smtp-user’ based on the entry of the \"From: \" header and the value of `db/mail-accounts’."
   (let* ((from    (or (save-restriction
                         (message-narrow-to-headers)
                         (mail-fetch-field "From"))
@@ -142,9 +140,9 @@ entry of the current mail."
                        t
                        "Settings %s for sending mail are not complete for account %s."
                        address)
-            (apply orig-fun args)))
+            (message-smtpmail-send-it)))
       (if (yes-or-no-p "Sending with default account settings?")
-          (apply orig-fun args)
+          (message-smtpmail-send-it)
         (message "Sending aborted as requested by user.")))))
 
 

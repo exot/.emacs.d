@@ -1201,14 +1201,14 @@
 ;; * Mail
 
 (use-package db-mail
-  :commands (db/public-key
+  :commands (db/smtpmail-send-it
+             db/public-key
              db/encryption-possible-p
              db/message-recipients
              db/signencrypt-message-when-possible
              db/gnus-save-newsrc-with-whitespace-1
              db/gnus-summary-open-Link
              db/gnus-html-mime-part-to-org
-             db/set-smtp-server-from-header
              db/gnus-demon-scan-news-on-level-2
              db/mml-attach-file--go-to-eob))
 
@@ -1585,7 +1585,7 @@
                         :around #'db/mml-attach-file--go-to-eob)))
 
 (setq notmuch-fcc-dirs nil
-      send-mail-function 'smtpmail-send-it)
+      send-mail-function #'db/smtpmail-send-it)
 
 (use-package smtpmail
   :defer t
@@ -1593,10 +1593,6 @@
               smtpmail-smtp-service 587
               smtpmail-debug-info t)
   :config (progn
-            ;; Dynamically set smtpmail variables when sending mail
-            (advice-add 'smtpmail-via-smtp
-                        :around #'db/set-smtp-server-from-header)
-
             ;; Show trace buffer when something goes wrong
             (defadvice smtpmail-send-it (around display-trace-buffer disable)
               "If an error is signalled, display the process buffer."
