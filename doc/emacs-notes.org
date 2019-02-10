@@ -941,7 +941,7 @@ Result:
 
 Hope this helps you twiddle those bits in all the ways that make you happy.
 
-* Irreal
+* Irreal                                                                :NOP:
 
 A random collection of notes from [[https://irreal.org/blog][Irreal's Blog]].
 
@@ -1162,7 +1162,7 @@ use.
 
 [[http://irreal.org/blog/?p=6894][Link]]
 
-* Random Notes
+* Random Notes                                                          :NOP:
 ** How to paste then copy                                              :NOTE:
 :PROPERTIES:
 :CREATED: [2018-08-11 Sat 21:47]
@@ -1870,7 +1870,7 @@ Relevant functions:
 [2016-08-13 Sat 17:50]
 
 http://www.omps.in/blog/2016/01/20/day-10-search-and-replace-using-regex/
-** Bookmarks with Org-mode
+** Bookmarks with Org-mode                                             :NOTE:
 :PROPERTIES:
 :CREATED: [2018-07-08 Sun 09:29]
 :END:
