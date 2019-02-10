@@ -2,6 +2,37 @@
 
 ;;; Commentary:
 
+;; This package consists mostly of utility functions for sending and editing
+;; mail, fixing some issues, and extending Gnus in the way I like it.  However,
+;; the most important feature of is an abstract way to hande remote mail
+;; accounts.  Theses are stored in the variable `db/mail-accounts’ and consist
+;; of various entries denoting how to read mail via IMAP (POP not supported) and
+;; how to send mail via SMTP (server, port, protocol, …).  Based on the entries
+;; in this variable, appropriate settings of `gnus-secondary-select-methods’ are
+;; derived automatically by the custom setter of `db/mail-accounts’.  Then when
+;; inside Gnus, the mail can be read without further configuration.  Note that
+;; when the "IMAP address" of an entry in `db/mail-accounts’ is empty, it will
+;; not be included as an IMAP account in `gnus-secondary-select-methods’.  This
+;; let’s you specify mail accounts that can be used for sending mail, but that
+;; are read not directly via IMAP, but by other means (POP, offlineimap, …).
+
+;; When sending mail, `db/mail-accounts’ is used to determine settings of the
+;; relevant variables from `smtpmail’ based on the current value of the "From: "
+;; header entry in the mail.  If this header entry is set correctly, send
+;; `db/set-smtp-server-from-header’ will set these variables automatically.  To
+;; make this work, however, two things have to be done:
+;;
+;; - Ensure that the "From: " header is set correctly.  In Gnus this can be done
+;;   by configuring `gnus-posting-style’ accordingly.
+;;
+;; - Make sure `db/set-smtp-server-from-header’ is called when sending mail.
+;;   Currently, this function is written to be added as an around advice for
+;;   `smtpmail-via-smtp’.  In the future, this function might be changed to be a
+;;   valid value for `send-mail-function’
+
+;; All this functionality is provided under "Mail related customizations".  The
+;; other headlines provide the aforementioned utility functions.
+
 ;;; Code:
 
 (require 'cl-lib)
@@ -84,6 +115,40 @@ will also be recognized when sending mail."
            (string :tag "SMTP Login Name")))
   :set #'db/mail-accounts--set-value)
 
+(defun db/set-smtp-server-from-header (orig-fun &rest args)
+  "Choose smtp-settings dynamically, based on the From: header
+entry of the current mail."
+  (require 'mail-extr)
+  (let* ((from    (or (save-restriction
+                        (message-narrow-to-headers)
+                        (mail-fetch-field "From"))
+                      user-mail-address))
+         (address (cadr (mail-extract-address-components from)))
+         (account (assoc address db/mail-accounts)))
+    (message "Using address: %s" address)
+    (if account
+        (progn
+          (message "Sending with account for %s" address)
+          ;; XXX: these calls to `nth’ should be abstracted away
+          (let ((smtpmail-smtp-server (nth 3 account))
+                (smtpmail-stream-type (nth 4 account))
+                (smtpmail-smtp-service (nth 5 account))
+                (smtpmail-smtp-user (nth 6 account)))
+            (cl-assert (cl-notany #'null (list smtpmail-smtp-server
+                                               smtpmail-stream-type
+                                               smtpmail-smtp-service
+                                               smtpmail-smtp-user))
+                       t
+                       "Settings %s for sending mail are not complete for account %s."
+                       address)
+            (apply orig-fun args)))
+      (if (yes-or-no-p "Sending with default account settings?")
+          (apply orig-fun args)
+        (message "Sending aborted as requested by user.")))))
+
+
+;; Setting other Gnus accounts
+
 (defun db/other-gnus-accounts--set-value (symbol value)
   "Set SYMBOL to VALUE as needed by `db/other-gnus-accounts’"
   (cl-assert (eq symbol 'db/other-gnus-accounts)
@@ -98,9 +163,11 @@ will also be recognized when sending mail."
 
 (defcustom db/other-gnus-accounts nil
   "Configuration for gnus accounts that are not IMAP/SMTP related.
-The value of this variable should be a valid value for `gnus-secondary-select-methods’."
+Those are all accounts that are not derived from the entries in
+`db/mail-accounts’.  The value of this variable should be a valid
+value for `gnus-secondary-select-methods’."
   :group 'personal-settings
-  ;; type definition for `gnus-select-method’ widget from from gnus.el
+  ;; type definition for `gnus-select-method’ widget from gnus.el
   :type '(repeat gnus-select-method)
   :set #'db/other-gnus-accounts--set-value)
 
@@ -169,40 +236,6 @@ METHOD specifies the encrypt method used.  Can be either
                 (mml-secure-message (cl-first methods) 'sign)))))))))
 
 
-;; SMTP related functions
-
-(defun db/set-smtp-server-from-header (orig-fun &rest args)
-  "Choose smtp-settings dynamically, based on the From: header
-entry of the current mail."
-  (require 'mail-extr)
-  (let* ((from    (or (save-restriction
-                        (message-narrow-to-headers)
-                        (mail-fetch-field "From"))
-                      user-mail-address))
-         (address (cadr (mail-extract-address-components from)))
-         (account (assoc address db/mail-accounts)))
-    (message "Using address: %s" address)
-    (if account
-        (progn
-          (message "Sending with account for %s" address)
-          ;; XXX: these calls to `nth’ should be abstracted away
-          (let ((smtpmail-smtp-server (nth 3 account))
-                (smtpmail-stream-type (nth 4 account))
-                (smtpmail-smtp-service (nth 5 account))
-                (smtpmail-smtp-user (nth 6 account)))
-            (cl-assert (cl-notany #'null (list smtpmail-smtp-server
-                                               smtpmail-stream-type
-                                               smtpmail-smtp-service
-                                               smtpmail-smtp-user))
-                       t
-                       "Settings %s for sending mail are not complete for account %s."
-                       address)
-            (apply orig-fun args)))
-      (if (yes-or-no-p "Sending with default account settings?")
-          (apply orig-fun args)
-        (message "Sending aborted as requested by user.")))))
-
-
 ;; Gnus utility functions
 
 (defun db/gnus-save-newsrc-with-whitespace-1 ()
@@ -269,6 +302,7 @@ entry of the current mail."
       (widen)
       (goto-char (point-max))
       (apply orig-fun args))))
+
 
 (provide 'db-mail)
 ;;; db-mail ends here
