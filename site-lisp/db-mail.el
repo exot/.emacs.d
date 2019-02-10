@@ -3,18 +3,18 @@
 ;;; Commentary:
 
 ;; This package consists mostly of utility functions for sending and editing
-;; mail, fixing some issues, and extending Gnus in the way I like it.  However,
-;; the most important feature of is an abstract way to hande remote mail
-;; accounts.  Theses are stored in the variable `db/mail-accounts’ and consist
-;; of various entries denoting how to read mail via IMAP (POP not supported) and
-;; how to send mail via SMTP (server, port, protocol, …).  Based on the entries
-;; in this variable, appropriate settings of `gnus-secondary-select-methods’ are
-;; derived automatically by the custom setter of `db/mail-accounts’.  Then when
-;; inside Gnus, the mail can be read without further configuration.  Note that
-;; when the "IMAP address" of an entry in `db/mail-accounts’ is empty, it will
-;; not be included as an IMAP account in `gnus-secondary-select-methods’.  This
-;; let’s you specify mail accounts that can be used for sending mail, but that
-;; are read not directly via IMAP, but by other means (POP, offlineimap, …).
+;; mail and extending Gnus in the way I like it.  However, the most important
+;; feature of is an abstract way to hande remote mail accounts.  Theses are
+;; stored in the variable `db/mail-accounts’ and consist of various entries
+;; denoting how to read mail via IMAP (POP not supported) and how to send mail
+;; via SMTP (server, port, protocol, …).  Based on the entries in this variable,
+;; appropriate settings of `gnus-secondary-select-methods’ are derived
+;; automatically by the custom setter of `db/mail-accounts’.  Then when inside
+;; Gnus, the mail can be read without further configuration.  Note that when the
+;; "IMAP address" of an entry in `db/mail-accounts’ is empty, it will not be
+;; included as an IMAP account in `gnus-secondary-select-methods’.  This let’s
+;; you specify mail accounts that can be used for sending mail, but that are
+;; read not directly via IMAP, but by other means (POP, offlineimap, …).
 
 ;; When sending mail, `db/mail-accounts’ is used to determine settings of the
 ;; relevant variables from `smtpmail’ based on the current value of the "From: "
@@ -299,18 +299,6 @@ METHOD specifies the encrypt method used.  Can be either
               (with-current-buffer gnus-group-buffer
                 (gnus-group-get-new-news level))))
         (set-window-configuration win)))))
-
-
-;; Fixes
-
-;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
-(defun db/mml-attach-file--go-to-eob (orig-fun &rest args)
-  "Go to the end of buffer before attaching files."
-  (save-excursion
-    (save-restriction
-      (widen)
-      (goto-char (point-max))
-      (apply orig-fun args))))
 
 
 (provide 'db-mail)

@@ -1209,8 +1209,7 @@
              db/gnus-save-newsrc-with-whitespace-1
              db/gnus-summary-open-Link
              db/gnus-html-mime-part-to-org
-             db/gnus-demon-scan-news-on-level-2
-             db/mml-attach-file--go-to-eob))
+             db/gnus-demon-scan-news-on-level-2))
 
 (use-package bbdb
   :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
@@ -1581,6 +1580,16 @@
   :defer t
   :config (progn
             ;; Move to end of message buffer before attaching a file
+            ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
+
+            (defun db/mml-attach-file--go-to-eob (orig-fun &rest args)
+              "Go to the end of buffer before attaching files."
+              (save-excursion
+                (save-restriction
+                  (widen)
+                  (goto-char (point-max))
+                  (apply orig-fun args))))
+
             (advice-add 'mml-attach-file
                         :around #'db/mml-attach-file--go-to-eob)))
 
