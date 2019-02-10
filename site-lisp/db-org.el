@@ -20,7 +20,9 @@ the new one instead."
   (when (boundp symbol)
     (setq org-agenda-files (cl-delete (symbol-value symbol) org-agenda-files)))
   (set-default symbol value)
-  (push value org-agenda-files))
+  (push value org-agenda-files)
+  (setq-default org-agenda-files
+                (cl-delete-duplicates org-agenda-files :test #'cl-equalp)))
 
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
