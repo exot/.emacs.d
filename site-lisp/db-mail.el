@@ -117,7 +117,11 @@ will also be recognized when sending mail."
 
 (defun db/smtpmail-send-it ()
   "Send prepared message in current buffer.
-This function uses `message-smtpmail-send-it’, but sets `smtpmail-smtp-server’, `smtpmail-stream-type’, `smtpmail-smtp-service’, and `smtpmail-smtp-user’ based on the entry of the \"From: \" header and the value of `db/mail-accounts’."
+This function uses `message-smtpmail-send-it’, but sets
+`smtpmail-smtp-server’, `smtpmail-stream-type’,
+`smtpmail-smtp-service’, and `smtpmail-smtp-user’ based on the
+entry of the \"From: \" header and the value of
+`db/mail-accounts’."
   (let* ((from    (or (save-restriction
                         (message-narrow-to-headers)
                         (mail-fetch-field "From"))
@@ -125,25 +129,31 @@ This function uses `message-smtpmail-send-it’, but sets `smtpmail-smtp-server�
          (address (cadr (mail-extract-address-components from)))
          (account (assoc address db/mail-accounts)))
     (message "Using address: %s" address)
-    (if account
-        (progn
-          (message "Sending with account for %s" address)
-          ;; XXX: these calls to `nth’ should be abstracted away
-          (let ((smtpmail-smtp-server (nth 3 account))
-                (smtpmail-stream-type (nth 4 account))
-                (smtpmail-smtp-service (nth 5 account))
-                (smtpmail-smtp-user (nth 6 account)))
-            (cl-assert (cl-notany #'null (list smtpmail-smtp-server
-                                               smtpmail-stream-type
-                                               smtpmail-smtp-service
-                                               smtpmail-smtp-user))
-                       t
-                       "Settings %s for sending mail are not complete for account %s."
-                       address)
-            (message-smtpmail-send-it)))
-      (if (yes-or-no-p "Sending with default account settings?")
-          (message-smtpmail-send-it)
-        (message "Sending aborted as requested by user.")))))
+    (condition-case signal-data
+        (if account
+            (progn
+              (message "Sending with account for %s" address)
+              ;; XXX: these calls to `nth’ should be abstracted away
+              (let ((smtpmail-smtp-server (nth 3 account))
+                    (smtpmail-stream-type (nth 4 account))
+                    (smtpmail-smtp-service (nth 5 account))
+                    (smtpmail-smtp-user (nth 6 account)))
+                (cl-assert (cl-notany #'null (list smtpmail-smtp-server
+                                                   smtpmail-stream-type
+                                                   smtpmail-smtp-service
+                                                   smtpmail-smtp-user))
+                           t
+                           "Settings %s for sending mail are not complete for account %s."
+                           address)
+                (message-smtpmail-send-it)))
+          (if (yes-or-no-p "Sending with default account settings?")
+              (message-smtpmail-send-it)
+            (message "Sending aborted as requested by user.")))
+      ;; in case of error, display the SMTP trace buffer
+      (error (shrink-window-if-larger-than-buffer
+              (display-buffer (get-buffer (format "*trace of SMTP session to %s*"
+                                                  smtpmail-smtp-server))))
+             (signal (car signal-data) (cdr signal-data))))))
 
 
 ;; Setting other Gnus accounts

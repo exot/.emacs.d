@@ -1591,17 +1591,7 @@
   :defer t
   :init (setq smtpmail-stream-type 'starttls
               smtpmail-smtp-service 587
-              smtpmail-debug-info t)
-  :config (progn
-            ;; Show trace buffer when something goes wrong
-            (defadvice smtpmail-send-it (around display-trace-buffer disable)
-              "If an error is signalled, display the process buffer."
-              (condition-case signals-data
-                  ad-do-it
-                (error (shrink-window-if-larger-than-buffer
-                        (display-buffer (get-buffer (format "*trace of SMTP session to %s*"
-                                                            smtpmail-smtp-server))))
-                       (signal (car signals-data) (cdr signals-data)))))))
+              smtpmail-debug-info t))
 
 (setq starttls-use-gnutls t
       starttls-extra-arguments '("--strict-tofu"))
