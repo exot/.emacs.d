@@ -158,14 +158,28 @@ major mode MODE."
   (message org-clock-current-task))
 
 (defun db/hex-to-ascii (hex-string)
-  "Convert HEX-STRING to its ASCII equivalent."
+  "Convert HEX-STRING to its ASCII equivalent.
+Allowed characters in hex-string are hexadecimal digits and
+whitespaces.  If region is active, replace region by the
+corresponding ASCII string, otherwise query for input and display
+the result in the minibuffer."
   ;; https://stackoverflow.com/questions/12003231/how-do-i-convert-a-string-of-hex-into-ascii-using-elisp
-  (interactive "sString (hex): ")
-  (->> (string-to-list hex-string)
-       (-partition 2)
-       (--map (string-to-number (concat it) 16))
-       concat
-       message))
+  (interactive (list (if (use-region-p)
+                         (buffer-substring-no-properties (region-beginning) (region-end))
+                       (read-from-minibuffer "String (hex): "))))
+  (cl-assert (not (string-match-p "[^A-Fa-e0-9 \t\n]" hex-string))
+             "String contains invalid characters.")
+  (let ((result (->> hex-string
+                     (replace-regexp-in-string "[ \t\n]" "")
+                     (string-to-list)
+                     (-partition 2)
+                     (--map (string-to-number (concat it) 16))
+                     concat)))
+    (if (use-region-p)
+        (progn
+          (delete-region (region-beginning) (region-end))
+          (insert result))
+      (message result))))
 
 (defun db/ascii-to-hex (ascii-string)
   "Convert ASCII-STRING to its hexadecimal representation."
