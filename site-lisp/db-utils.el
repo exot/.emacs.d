@@ -181,12 +181,23 @@ the result in the minibuffer."
           (insert result))
       (message result))))
 
-(defun db/ascii-to-hex (ascii-string)
-  "Convert ASCII-STRING to its hexadecimal representation."
-  (interactive "sString (ascii): ")
-  (->> (--map (format "%2X" it) ascii-string)
-       (apply #'concat)
-       message))
+(defun db/text-to-hex (text-string)
+  "Convert TEXT-STRING to its hexadecimal representation.
+This function will return hexadecimal numbers with more than two
+digits if the input string contains wide characters.  The result
+might depend on the coding system of the current buffer."
+  (interactive (list (if (use-region-p)
+                         (buffer-substring-no-properties (region-beginning) (region-end))
+                       (read-from-minibuffer "String (ascii): "))))
+  (let ((result (->> text-string
+                     (--map (format "%2X " it))
+                     (apply #'concat)
+                     (string-trim-right))))
+    (if (use-region-p)
+        (progn
+          (delete-region (region-beginning) (region-end))
+          (insert result))
+      (message result))))
 
 (defun db/ntp-to-time (high low &optional format-string)
   "Format NTP time given by HIGH and LOW (both integer) to time as given by FORMAT-STRING.
