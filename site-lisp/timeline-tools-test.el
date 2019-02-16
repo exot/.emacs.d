@@ -6,7 +6,7 @@
 (require 'timeline-tools)
 (require 'cl-lib)
 
-;;
+;; Basic parsing tests
 
 (ert-deftest timeline-tools-test-parse-clocklines-1 ()
   "Test `timeline-tools-clocklines-in-range’ with simple setup."
@@ -101,6 +101,10 @@ CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
                      ((1515334380.0 . 1515338220.0)
                       (1515423600.0 . 1515424500.0)))))))
 
+
+
+;; Conflict resolution tests
+
 (ert-deftest timeline-tools-test-clockline-no-conflict-1 ()
   "Test `timeline-tools-clockline-no-conflict’ with complex example."
   (with-temp-buffer
@@ -135,3 +139,5 @@ CLOCK: [2018-01-11 Thu 13:33]--[2018-01-12 Fri 14:00] => 24:27
 :LOGBOOK:
 :END:
 "))))
+
+;; XXX: timeline-tools-add-clockline-to-marker (including updating current clock)
