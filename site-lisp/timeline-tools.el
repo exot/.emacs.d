@@ -669,7 +669,9 @@ not given, update clock lines in the buffer of TARGET-MARKER."
 (defun timeline-tools-clockline-no-org-agenda-conflicts ()
   "Read clock line from user and return it.
 
-Update all files in `org-agenda-files’ to update conflicting clock lines."
+Update all files in `org-agenda-files’ to update conflicting
+clock lines, without restrictions.  If `org-agenda-archive-mode’
+is set, also include archive files."
   (let* ((now (format-time-string "%H:%M"))
          (start (org-read-date t nil nil "Started: " (current-time) now))
          (end (org-read-date t nil nil "Ended: " (current-time) now)))
@@ -677,7 +679,8 @@ Update all files in `org-agenda-files’ to update conflicting clock lines."
            (org-time-string-to-seconds start)
            (org-time-string-to-seconds end)
            (mapcar #'find-file-noselect
-                   (cl-remove-if-not #'file-exists-p org-agenda-files)))))
+                   (cl-remove-if-not #'file-exists-p
+                                     (org-agenda-files t 'ifmode))))))
 
 (defun timeline-tools-copy-clocklines (source-id target-id)
   "Copy clock lines from SOURCE-ID to TARGET-ID.
