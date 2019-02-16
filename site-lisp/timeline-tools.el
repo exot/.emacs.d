@@ -182,17 +182,19 @@ Can be used as format string for `format-time’.")
 
 Insertion will be done at the beginning of the current line.
 TIME-1 and TIME-2 must be given in a format understandable by
-`format-time-string’, which see.  Saves mark and point."
+`format-time-string’, which see.  Saves mark and point.  If
+TIME-2 is nil, insert dangling clock line."
   (save-mark-and-excursion
    (beginning-of-line)
    (indent-according-to-mode)
    (insert "CLOCK: ")
    (insert (format-time-string timeline-tools-org-inactive-timestamp-format
                                time-1))
-   (insert "--")
-   (insert (format-time-string timeline-tools-org-inactive-timestamp-format
-                               time-2))
-   (org-clock-update-time-maybe)))
+   (unless (null time-2)
+    (insert "--")
+    (insert (format-time-string timeline-tools-org-inactive-timestamp-format
+                                time-2))
+    (org-clock-update-time-maybe))))
 
 (defun timeline-tools-clocklines-of-task (pom)
   "Return list of all clock lines of task under POM.
@@ -635,8 +637,24 @@ clock line."
                (kill-line)
                (timeline-tools-insert-clockline current-start new-start)))))
 
-         ;; Keep headline as they are, i.e., do nothing
-         #'ignore)))
+         ;; Update current clock when on corresponding headline
+         #'(lambda ()
+             (when (and (eq (org-clocking-buffer) (current-buffer))
+                        (eq (marker-position org-clock-hd-marker) (point)))
+               (let ((current-start (float-time org-clock-start-time))
+                     (kill-whole-line nil) ; don’t delete newlines if not asked to
+                     )
+                 (when (< current-start new-end)
+                   (save-mark-and-excursion
+                     (org-clock-find-position t)
+                     (beginning-of-line)
+                     (kill-line)
+                     (when (< current-start new-start)
+                       ;; Insert gap as separate clock line
+                       (timeline-tools-insert-clockline current-start new-start)
+                       (open-line 1))
+                     (timeline-tools-insert-clockline new-end nil)
+                     (setq org-clock-start-time (seconds-to-time new-end))))))))))
 
     ;; Return valid clockline
     (with-temp-buffer
