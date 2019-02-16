@@ -608,7 +608,6 @@
              hydra-org-agenda-view/body
              org-babel-execute:hy
              db/org-timestamp-difference
-             db/read-clockline
              db/org-capture-code-snippet
              hydra-org-clock/body
              db/make-org-capture-frame))
@@ -1020,7 +1019,7 @@
                  (file db/org-default-refile-file)
                  ,(concat "* DONE %^{What}\n"
                           ":LOGBOOK:\n"
-                          "%(db/read-clockline)\n" ; evaluated before above prompt?
+                          "%(timeline-tools-clockline-no-org-agenda-conflicts)\n" ; evaluated before above prompt?
                           ":END:\n"
                           "%?"))
                 ("j" "journal entry"
@@ -2579,7 +2578,8 @@
   :load-path "site-lisp"
   :commands (timeline-tools-format-timeline
              timeline-tools-format-timeline-of-day
-             timeline-tools-copy-clocklines))
+             timeline-tools-copy-clocklines
+             timeline-tools-clockline-no-org-agenda-conflicts))
 
 (use-package typing
   :commands (typing-of-emacs)

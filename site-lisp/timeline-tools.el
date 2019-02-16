@@ -595,56 +595,89 @@ Interactively query for the exact value of \"short\"."
 
 ;; XXX: All this needs some autoloadable frontend
 
-(defun timeline-tools-add-clockline-to-marker (target-marker start end)
-  "Add clock line to task under TARGET-MARKER from START to END.
+(defun timeline-tools-clockline-no-conflict (start end &rest buffers)
+  "Return clock line string from START to END.
+
+START and END must be suitable arguments for `float-time’.
+Update conflicting clock lines in BUFFERS before returning the
+clock line."
+  (let ((new-start (float-time start))
+        (new-end   (float-time end)))
+    (dolist (buffer buffers)
+      (with-current-buffer buffer
+        (timeline-tools-map-clocklines
+         (lambda (timestamp-1 timestamp-2)
+           (let ((current-start (org-time-string-to-seconds timestamp-1))
+                 (current-end   (org-time-string-to-seconds timestamp-2))
+                 (kill-whole-line nil)  ; don’t delete newlines if not asked to
+                 )
+             (cond
+              ;; if the current clock line is completely contained within the
+              ;; given period, delete it
+              ((and (<= new-start current-start current-end new-end))
+               (kill-whole-line))
+              ;; if the current clock line completely contains the given one,
+              ;; split it
+              ((and (<= current-start new-start new-end current-end))
+               (beginning-of-line)
+               (kill-line)
+               (timeline-tools-insert-clockline current-start new-start)
+               (open-line 1)
+               (timeline-tools-insert-clockline new-end current-end))
+              ;; New interval overlaps beginning of current line
+              ((<= new-start current-start new-end current-end)
+               (beginning-of-line)
+               (kill-line)
+               (timeline-tools-insert-clockline new-end current-end))
+              ;; New interval overlaps at end of current line
+              ((<= current-start new-start current-end new-end)
+               (beginning-of-line)
+               (kill-line)
+               (timeline-tools-insert-clockline current-start new-start)))))
+
+         ;; Keep headline as they are, i.e., do nothing
+         #'ignore)))
+
+    ;; Return valid clockline
+    (with-temp-buffer
+      (timeline-tools-insert-clockline new-start new-end)
+      (buffer-string))))
+
+(defun timeline-tools-add-clockline-to-marker
+    (target-marker start end &rest buffers)
+  "Add clock line from START to END to task under TARGET-MARKER.
 
 START and END must be given as time objects as returned by
 `encode-time’, or as an integer or float denoting seconds since
 1970-01-01.  TARGET-MARKER must be positioned on the task where
-the clock line is to be added to."
+the clock line is to be added to.  BUFFERS must be a list of
+buffers where to look for conflicting clock lines.  Those
+conflicting clock lines are updated accordingly.  If BUFFERS is
+not given, update clock lines in the buffer of TARGET-MARKER."
   (when (not (markerp target-marker))
     (user-error "Marker not valid"))
-  (let ((new-start (float-time start))
-        (new-end   (float-time end)))
-    (with-current-buffer (marker-buffer target-marker)
-      (timeline-tools-map-clocklines
-       (lambda (timestamp-1 timestamp-2)
-         (let ((current-start (org-time-string-to-seconds timestamp-1))
-               (current-end   (org-time-string-to-seconds timestamp-2))
-               (kill-whole-line nil)    ; don’t delete newlines if not asked to
-               )
-           (cond
-            ;; if the current clock line is completely contained within the
-            ;; given period, delete it
-            ((and (<= new-start current-start current-end new-end))
-             (kill-whole-line))
-            ;; if the current clock line completely contains the given one,
-            ;; split it
-            ((and (<= current-start new-start new-end current-end))
-             (beginning-of-line)
-             (kill-line)
-             (timeline-tools-insert-clockline current-start new-start)
-             (open-line 1)
-             (timeline-tools-insert-clockline new-end current-end))
-            ;; New interval overlaps beginning of current line
-            ((<= new-start current-start new-end current-end)
-             (beginning-of-line)
-             (kill-line)
-             (timeline-tools-insert-clockline new-end current-end))
-            ;; New interval overlaps at end of current line
-            ((<= current-start new-start current-end new-end)
-             (beginning-of-line)
-             (kill-line)
-             (timeline-tools-insert-clockline current-start new-start)))))
-
-       ;; Keep headline as they are, i.e., do nothing
-       #'ignore))
-
-    ;; Finally add the new clock line
+  (let ((new-start   (float-time start))
+        (new-end     (float-time end))
+        (org-buffers (if buffers buffers (list (marker-buffer target-marker)))))
     (org-with-point-at target-marker
       (org-clock-find-position nil)
       (open-line 1)
-      (timeline-tools-insert-clockline new-start new-end))))
+      (insert (apply #'timeline-tools-clockline-no-conflicts
+                     new-start new-end org-buffers)))))
+
+;;;###autoload
+(defun timeline-tools-clockline-no-org-agenda-conflicts ()
+  "Read clock line from user and return it.
+
+Update all files in `org-agenda-files’ to update conflicting clock lines."
+  (let* ((now (format-time-string "%H:%M"))
+         (start (org-read-date t nil nil "Started: " (current-time) now))
+         (end (org-read-date t nil nil "Ended: " (current-time) now)))
+    (apply #'timeline-tools-clockline-no-conflict
+           (org-time-string-to-seconds start)
+           (org-time-string-to-seconds end)
+           (mapcar #'find-file-noselect
+                   (cl-remove-if-not #'file-exists-p org-agenda-files)))))
 
 (defun timeline-tools-copy-clocklines (source-id target-id)
   "Copy clock lines from SOURCE-ID to TARGET-ID.

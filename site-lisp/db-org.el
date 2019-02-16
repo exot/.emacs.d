@@ -194,19 +194,6 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
          (m (floor (/ (- s (* 3600 h)) 60))))
     (format (if neg "-%d:%02d" "%2d:%02d") h m)))
 
-(defun db/read-clockline ()
-  "Read starting and ending time from user and return org mode
-  clock line."
-  (let* ((now      (format-time-string "%H:%M"))
-         (starting (format "[%s]" (org-read-date t nil nil "Started: "
-                                                 (current-time)
-                                                 now)))
-         (ending   (format "[%s]" (org-read-date t nil nil "Ended: "
-                                                 (current-time)
-                                                 now)))
-         (difference (db/org-timestamp-difference starting ending)))
-    (format "CLOCK: %s--%s => %s" starting ending difference)))
-
 ;; Capture Code Snippets
 ;; from http://ul.io/nb/2018/04/30/better-code-snippets-with-org-capture/
 (defun db/org-capture-code-snippet (filename)
