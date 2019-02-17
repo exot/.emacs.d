@@ -681,7 +681,7 @@ not given, update clock lines in the buffer of TARGET-MARKER."
     (org-with-point-at target-marker
       (org-clock-find-position nil)
       (open-line 1)
-      (insert (apply #'timeline-tools-clockline-no-conflicts
+      (insert (apply #'timeline-tools-clockline-no-conflict
                      new-start new-end org-buffers)))))
 
 ;;;###autoload
