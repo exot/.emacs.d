@@ -153,4 +153,42 @@ CLOCK: [2018-01-11 Thu 13:33]--[2018-01-12 Fri 14:00] => 24:27
 :END:
 "))))
 
+(ert-deftest timeline-tools-test-add-clockline-to-marker-1 ()
+  "Test `timeline-tools-add-clockline-to-marker’ without running clock."
+  (with-temp-buffer
+    (insert "
+* Task 1
+:LOGBOOK:
+CLOCK: [2018-01-07 Sun 13:15]--[2018-01-07 Sun 14:00] => 0:45
+CLOCK: [2018-01-08 Mon 16:15]--[2018-01-10 Wed 13:10] => 44:55
+CLOCK: [2018-01-10 Wed 10:07]--[2018-01-12 Fri 14:00] => 51:53
+:END:
+
+* Task 2
+:LOGBOOK:
+CLOCK: [2018-01-07 Sun 15:13]--[2018-01-07 Sun 16:17] =>  1:04
+CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
+:END:
+")
+    (org-mode)
+    (goto-char 216)
+    (let ((result (timeline-tools-add-clockline-to-marker
+                   (point-marker)
+                   (org-time-string-to-seconds "[2018-01-07 Sun 13:00]")
+                   (org-time-string-to-seconds "[2018-01-11 Thu 13:33]"))))
+
+      (should (null result))
+      (should (equal (buffer-string)
+                     "
+* Task 1
+:LOGBOOK:
+CLOCK: [2018-01-11 Thu 13:33]--[2018-01-12 Fri 14:00] => 24:27
+:END:
+
+* Task 2
+:LOGBOOK:
+CLOCK: [2018-01-07 Sun 13:00]--[2018-01-11 Thu 13:33] => 96:33
+:END:
+")))))
+
 ;; XXX: timeline-tools-add-clockline-to-marker (including updating current clock)
