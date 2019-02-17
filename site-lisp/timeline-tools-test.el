@@ -119,7 +119,83 @@ CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
     (should (equal (car result)
                    'user-error))))
 
-;; XXX: timeline-tools-timeline (after changing it to work on buffers instead of files)
+(ert-deftest timeline-tools-test-timeline-1 ()
+  "Test `timeline-tools-timeline’ with full arguments."
+  (with-temp-buffer
+    (insert "
+* Task 1
+:LOGBOOK:
+CLOCK: [2018-01-07 Sun 13:15]--[2018-01-07 Sun 14:00] => 0:45
+CLOCK: [2018-01-08 Mon 16:15]--[2018-01-10 Wed 13:10] => 44:55
+CLOCK: [2018-01-10 Wed 10:07]--[2018-01-12 Fri 14:00] => 51:53
+:END:
+
+* Task 2
+:LOGBOOK:
+CLOCK: [2018-01-07 Sun 15:13]--[2018-01-07 Sun 16:17] =>  1:04
+CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
+:END:
+")
+    (org-mode)
+    (let ((timeline (timeline-tools-timeline
+                     (org-time-string-to-seconds "[2018-01-01 Mon 00:00]")
+                     (org-time-string-to-seconds "[2018-02-01 Thu 00:00]")
+                     (list (current-buffer))))
+          (task-1   (save-excursion
+                      (goto-char 2)
+                      (point-marker)))
+          (task-2   (save-excursion
+                      (goto-char 216)
+                      (point-marker))))
+      (should (equal timeline
+                     (cl-mapcar #'(lambda (entry)
+                                    (list (org-time-string-to-seconds (nth 0 entry))
+                                          (org-time-string-to-seconds (nth 1 entry))
+                                          (nth 2 entry)))
+                                `(("[2018-01-07 Sun 13:15]" "[2018-01-07 Sun 14:00]" ,task-1)
+                                  ("[2018-01-07 Sun 15:13]" "[2018-01-07 Sun 16:17]" ,task-2)
+                                  ("[2018-01-08 Mon 16:00]" "[2018-01-08 Mon 16:15]" ,task-2)
+                                  ("[2018-01-08 Mon 16:15]" "[2018-01-10 Wed 13:10]" ,task-1)
+                                  ("[2018-01-10 Wed 10:07]" "[2018-01-12 Fri 14:00]" ,task-1))))))))
+
+(ert-deftest timeline-tools-test-timeline-2 ()
+  "Test `timeline-tools-timeline’ with restricted time."
+  (with-temp-buffer
+    (insert "
+* Task 1
+:LOGBOOK:
+CLOCK: [2018-01-07 Sun 13:15]--[2018-01-07 Sun 14:00] => 0:45
+CLOCK: [2018-01-08 Mon 16:15]--[2018-01-10 Wed 13:10] => 44:55
+CLOCK: [2018-01-10 Wed 10:07]--[2018-01-12 Fri 14:00] => 51:53
+:END:
+
+* Task 2
+:LOGBOOK:
+CLOCK: [2018-01-07 Sun 15:13]--[2018-01-07 Sun 16:17] =>  1:04
+CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
+:END:
+")
+    (org-mode)
+    (let ((timeline (timeline-tools-timeline
+                     ;; these dates should cut at start and end
+                     (org-time-string-to-seconds "[2018-01-07 Sun 15:27]")
+                     (org-time-string-to-seconds "[2018-01-11 Thu 00:00]")
+                     (list (current-buffer))))
+          (task-1   (save-excursion
+                      (goto-char 2)
+                      (point-marker)))
+          (task-2   (save-excursion
+                      (goto-char 216)
+                      (point-marker))))
+      (should (equal timeline
+                     (cl-mapcar #'(lambda (entry)
+                                    (list (org-time-string-to-seconds (nth 0 entry))
+                                          (org-time-string-to-seconds (nth 1 entry))
+                                          (nth 2 entry)))
+                                `(("[2018-01-07 Sun 15:27]" "[2018-01-07 Sun 16:17]" ,task-2)
+                                  ("[2018-01-08 Mon 16:00]" "[2018-01-08 Mon 16:15]" ,task-2)
+                                  ("[2018-01-08 Mon 16:15]" "[2018-01-10 Wed 13:10]" ,task-1)
+                                  ("[2018-01-10 Wed 10:07]" "[2018-01-11 Thu 00:00]" ,task-1))))))))
 
 
 ;; Conflict resolution tests
