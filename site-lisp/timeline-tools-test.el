@@ -3,7 +3,7 @@
 ;;; Commentary:
 
 ;; Most of the times in the test cases are not really reasonable, but if we can
-;; cope with those, reasonable one should also work ;)
+;; cope with those, reasonable ones should also work ;)
 
 ;;; Code:
 
@@ -414,4 +414,4 @@ CLOCK: [2018-01-11 Thu 13:33]
 :END:
 "))))))
 
-;; XXX: timeline-tools-add-clockline-to-marker (including updating current clock)
+;;; timeline-tools-test.el ends here
