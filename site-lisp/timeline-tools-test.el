@@ -18,7 +18,7 @@
                   (org-mode)            ; otherwise parsing won’t work
                   (timeline-tools-clocklines-in-range 1515279600.0 1515366000.0))))
     (should (equal 1 (length result)))
-    (should (equal 1 (length (car result))))
+    (should (equal 2 (length (car result))))
     (should (markerp (car (car result))))
     (should (equal (car (cdr (car result)))
                    (cons 1515327300.0 1515330000.0)))))
