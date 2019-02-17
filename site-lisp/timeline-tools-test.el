@@ -1,5 +1,10 @@
 ;;; timeline-tools-test.el -- Tests for timeline-tools -*- lexical-binding: t -*-
 
+;;; Commentary:
+
+;; Most of the times in the test cases are not really reasonable, but if we can
+;; cope with those, reasonable one should also work ;)
+
 ;;; Code:
 
 (require 'ert)
@@ -15,7 +20,7 @@
                   (insert ":LOGBOOK:\n")
                   (insert "CLOCK: [2018-01-07 Sun 13:15]--[2018-01-07 Sun 14:00] => 0:45\n")
                   (insert ":END:\n")
-                  (org-mode)            ; otherwise parsing won’t work
+                  (org-mode)
                   (timeline-tools-clocklines-in-range 1515279600.0 1515366000.0))))
     (should (equal 1 (length result)))
     (should (equal 2 (length (car result))))
@@ -70,7 +75,6 @@ CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
                       (1515575220.0 . 1515600000.0))
                      ((1515334380.0 . 1515338220.0)
                       (1515423600.0 . 1515424500.0)))))))
-
 
 (ert-deftest timeline-tools-test-parse-clocklines-4 ()
   "Test `timeline-tools-clocklines-in-range’ with extended time range."
@@ -154,7 +158,8 @@ CLOCK: [2018-01-11 Thu 13:33]--[2018-01-12 Fri 14:00] => 24:27
 "))))
 
 (ert-deftest timeline-tools-test-add-clockline-to-marker-1 ()
-  "Test `timeline-tools-add-clockline-to-marker’ without running clock."
+  "Test `timeline-tools-add-clockline-to-marker’ without running
+clock."
   (with-temp-buffer
     (insert "
 * Task 1
