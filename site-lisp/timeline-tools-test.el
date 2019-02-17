@@ -119,6 +119,8 @@ CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
     (should (equal (car result)
                    'user-error))))
 
+;; XXX: timeline-tools-timeline (after changing it to work on buffers instead of files)
+
 
 ;; Conflict resolution tests
 

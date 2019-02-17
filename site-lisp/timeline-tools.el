@@ -287,6 +287,7 @@ or END will always be in the interval [TSTART,TEND]."
            (setq times nil))))
     task-clock-times))
 
+;; XXX: make this work on buffers instead of files
 (defun timeline-tools-timeline (tstart tend &optional files)
   "Return timeline between TSTART and TEND from FILES.
 
