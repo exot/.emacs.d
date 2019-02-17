@@ -101,6 +101,19 @@ CLOCK: [2018-01-08 Mon 16:00]--[2018-01-08 Mon 16:15] =>  0:15
                      ((1515334380.0 . 1515338220.0)
                       (1515423600.0 . 1515424500.0)))))))
 
+(ert-deftest timeline-tools-test-parse-clocklines-5 ()
+  "Test `timeline-tools-clocklines-in-range’ without org-mode."
+  (let ((result (should-error (with-temp-buffer
+                                (insert "* Task 1\n")
+                                (insert ":LOGBOOK:\n")
+                                (insert "CLOCK: [2018-01-07 Sun 13:15]--[2018-01-07 Sun 14:00] => 0:45\n")
+                                (insert ":END:\n")
+                                (timeline-tools-clocklines-in-range 1515279600.0 1515366000.0))
+                              :type 'user-error)))
+    (should (equal (cadr result)
+                   "Not in Org mode buffer, cannot parse clocklines"))
+    (should (equal (car result)
+                   'user-error))))
 
 
 ;; Conflict resolution tests

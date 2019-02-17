@@ -151,26 +151,28 @@ For each headline, call HEADLINE-FN with no arguments and point
 on the start of the headline.  Traversal will be done from the
 end of the file upwards.  If the buffer is narrowed, only this
 region will be traversed."
-  (when (eq major-mode 'org-mode)
-    ;; Make sure everything is visible, as otherwise editing may produce odd
-    ;; results
-    (org-cycle '(64))
+  (unless (eq major-mode 'org-mode)
+    (user-error "Not in Org mode buffer, cannot parse clocklines"))
 
-    (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
-                       org-clock-string
-                       "[ \t]*\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)")))
-      (save-excursion
-        (goto-char (point-max))
-        (while (re-search-backward re nil t)
-          (cond
-           ((match-end 2)
-            ;; Two time stamps.
-            (save-mark-and-excursion
-             (funcall clockline-fn (match-string 2) (match-string 3))))
-           (t
-            ;; A headline
-            (save-mark-and-excursion
-             (funcall headline-fn)))))))))
+  ;; Make sure everything is visible, as otherwise editing may produce odd
+  ;; results
+  (org-cycle '(64))
+
+  (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
+                     org-clock-string
+                     "[ \t]*\\(\\[.*?\\]\\)-+\\(\\[.*?\\]\\)")))
+    (save-excursion
+      (goto-char (point-max))
+      (while (re-search-backward re nil t)
+        (cond
+         ((match-end 2)
+          ;; Two time stamps.
+          (save-mark-and-excursion
+            (funcall clockline-fn (match-string 2) (match-string 3))))
+         (t
+          ;; A headline
+          (save-mark-and-excursion
+            (funcall headline-fn))))))))
 
 (defvar timeline-tools-org-inactive-timestamp-format
   (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")
@@ -245,46 +247,45 @@ given as seconds since the epoch, as a floating point number.
 Truncation with respect to TSTART and TEND is done, i.e., START
 or END will always be in the interval [TSTART,TEND]."
   ;; adapted from `org-clock-sum’
-  (when (eq major-mode 'org-mode)
-    (let* ((tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart))
-                         ((consp tstart) (float-time tstart))
-                         (t tstart)))
-           (tend (cond ((stringp tend) (org-time-string-to-seconds tend))
-                       ((consp tend) (float-time tend))
-                       (t tend)))
-           task-clock-times times)
-      (timeline-tools-map-clocklines
-       ;; when on clock line, collect times
-       #'(lambda (start end)
-           (let* ((ts (org-time-string-to-seconds start))
-                  (te (org-time-string-to-seconds end)))
-             (when (or (<= tstart te tend)
-                       (<= tstart ts tend)
-                       (<= ts tstart tend te))
-               (push (cons (max ts tstart)
-                           (min te tend))
+  (let* ((tstart (cond ((stringp tstart) (org-time-string-to-seconds tstart))
+                       ((consp tstart) (float-time tstart))
+                       (t tstart)))
+         (tend (cond ((stringp tend) (org-time-string-to-seconds tend))
+                     ((consp tend) (float-time tend))
+                     (t tend)))
+         task-clock-times times)
+    (timeline-tools-map-clocklines
+     ;; when on clock line, collect times
+     #'(lambda (start end)
+         (let* ((ts (org-time-string-to-seconds start))
+                (te (org-time-string-to-seconds end)))
+           (when (or (<= tstart te tend)
+                     (<= tstart ts tend)
+                     (<= ts tstart tend te))
+             (push (cons (max ts tstart)
+                         (min te tend))
+                   times))))
+     ;; when on headlines, store away collected clocklines
+     #'(lambda ()
+         ;; add currently running clock if wanted
+         (when (and org-clock-report-include-clocking-task
+                    (eq (org-clocking-buffer) (current-buffer))
+                    (eq (marker-position org-clock-hd-marker) (point)))
+           (let ((current-clock-start (float-time org-clock-start-time))
+                 (current-clock-end (float-time)))
+             (when (or (<= tstart current-clock-start tend)
+                       (<= tstart current-clock-end tend)
+                       (<= current-clock-start
+                           tstart tend
+                           current-clock-end))
+               (push (cons (max current-clock-start tstart)
+                           (min current-clock-end tend))
                      times))))
-       ;; when on headlines, store away collected clocklines
-       #'(lambda ()
-           ;; add currently running clock if wanted
-           (when (and org-clock-report-include-clocking-task
-                      (eq (org-clocking-buffer) (current-buffer))
-                      (eq (marker-position org-clock-hd-marker) (point)))
-             (let ((current-clock-start (float-time org-clock-start-time))
-                   (current-clock-end (float-time)))
-               (when (or (<= tstart current-clock-start tend)
-                         (<= tstart current-clock-end tend)
-                         (<= current-clock-start
-                             tstart tend
-                             current-clock-end))
-                 (push (cons (max current-clock-start tstart)
-                             (min current-clock-end tend))
-                       times))))
-           ;; store away clocklines of current headline
-           (when (not (null times))
-             (push (cons (point-marker) times) task-clock-times)
-             (setq times nil))))
-      task-clock-times)))
+         ;; store away clocklines of current headline
+         (when (not (null times))
+           (push (cons (point-marker) times) task-clock-times)
+           (setq times nil))))
+    task-clock-times))
 
 (defun timeline-tools-timeline (tstart tend &optional files)
   "Return timeline between TSTART and TEND from FILES.
