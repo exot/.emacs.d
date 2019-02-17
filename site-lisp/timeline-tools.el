@@ -678,11 +678,16 @@ not given, update clock lines in the buffer of TARGET-MARKER."
   (let ((new-start   (float-time start))
         (new-end     (float-time end))
         (org-buffers (if buffers buffers (list (marker-buffer target-marker)))))
-    (org-with-point-at target-marker
-      (org-clock-find-position nil)
-      (open-line 1)
-      (insert (apply #'timeline-tools-clockline-no-conflict
-                     new-start new-end org-buffers)))))
+    (let ((clock-line (apply #'timeline-tools-clockline-no-conflict
+                             new-start new-end org-buffers)))
+      (org-with-point-at target-marker
+        (org-clock-find-position t)
+        ;; if there is an unclosed clock line, add new clock line after it
+        (when (and (looking-at "^CLOCK:")
+                   (not (looking-at ".* => ")))
+          (forward-line 1))
+        (open-line 1)
+        (insert clock-line)))))
 
 ;;;###autoload
 (defun timeline-tools-clockline-no-org-agenda-conflicts ()
