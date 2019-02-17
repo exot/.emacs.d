@@ -287,23 +287,35 @@ or END will always be in the interval [TSTART,TEND]."
            (setq times nil))))
     task-clock-times))
 
-;; XXX: make this work on buffers instead of files
-(defun timeline-tools-timeline (tstart tend &optional files)
-  "Return timeline between TSTART and TEND from FILES.
+(defun timeline-tools-timeline (tstart tend &optional files-or-buffers)
+  "Return timeline between TSTART and TEND from FILES-OR-BUFFERS.
 
 Each entry consists of a START-TIME, END-TIME, and MARKER are as
 returned by `timeline-tools-clocklines-in-range’, which see.
-Entries in the resulting list are sorted by START, ascending.  If
-not given, FILES defaults to `org-agenda-files’ including all
+Entries in the resulting list are sorted by START, ascending.
+TSTART and TEND must be valid time specifiers for
+`timeline-tools-clocklines-in-range’.  If not given,
+FILES-OR-BUFFERS defaults to `org-agenda-files’ including all
 archives."
   (let (timeline-of-files turned-around-timeline)
     (setq timeline-of-files
-          (->> (or files (org-agenda-files t t))
-               (cl-remove-if-not #'file-exists-p)
-               (cl-mapcan #'(lambda (file)
-                              (with-current-buffer (or (get-file-buffer file)
-                                                       (find-file-noselect file))
-                                (timeline-tools-clocklines-in-range tstart tend))))))
+          (->> (or files-or-buffers (org-agenda-files t t))
+               (cl-mapcan #'(lambda (file-or-buffer)
+                              (let ((buffer (cond
+                                             ((bufferp file-or-buffer)
+                                              file-or-buffer)
+                                             ((not (stringp file-or-buffer))
+                                              (warn "Neither valid file nor buffer: %s" file-or-buffer)
+                                              nil)
+                                             ((not (file-exists-p file-or-buffer))
+                                              (warn "File does not exist: %s" file-or-buffer)
+                                              nil)
+                                             (t (or (get-file-buffer file-or-buffer)
+                                                    (find-file-noselect file-or-buffer))))))
+                                (when buffer
+                                  (with-current-buffer buffer
+                                    (timeline-tools-clocklines-in-range tstart tend))))))))
+
     ;; collect clock-lines in timeline and convert them to proper entries
     (dolist (entry timeline-of-files)
       (dolist (clock-time (cdr entry))
