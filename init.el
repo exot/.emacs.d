@@ -858,7 +858,9 @@
   "Path to default org-mode file for private notes."
   :group 'personal-settings
   :type 'string
-  :set #'db/update-org-agenda-files)
+  ;; no custom setter, as the pensive file is usually not part of
+  ;; `org-agenda-files’
+  )
 
 (use-package org-agenda
   :commands (org-agenda)
