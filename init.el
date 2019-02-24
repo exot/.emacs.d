@@ -577,7 +577,9 @@
   :init (setq projectile-switch-project-action 'projectile-dired
               projectile-completion-system 'ivy
               projectile-ignored-project-function #'file-remote-p
-              projectile-create-missing-test-files t)
+              projectile-create-missing-test-files t
+              projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
+                                                               emacs-d))
   :config (projectile-cleanup-known-projects)
   :diminish projectile-mode)
 
@@ -1944,10 +1946,10 @@
               emms-stream-default-action "play"
               emms-track-description-function 'db/emms-track-description
               emms-playlist-default-major-mode 'emms-playlist-mode
-              emms-cache-file "~/.emacs.d/private/emms/cache"
-              emms-history-file "~/.emacs.d/private/emms/history"
-              emms-score-file "~/.emacs.d/private/emms/scores"
-              emms-stream-bookmarks-file "~/.emacs.d/private/emms/streams")
+              emms-cache-file (expand-file-name "private/emms/cache" emacs-d)
+              emms-history-file (expand-file-name "private/emms/history" emacs-d)
+              emms-score-file (expand-file-name "private/emms/scores" emacs-d)
+              emms-stream-bookmarks-file (expand-file-name "private/emms/streams" emacs-d))
   :config (progn
 
             ;; Initialization copied and adapted from `emms-setup’
@@ -2462,6 +2464,10 @@
 
 (use-package expand-region
   :commands (er/expand-region))
+
+(use-package eww
+  :defer t
+  :init (setq eww-bookmarks-directory (expand-file-name "private/" emacs-d)))
 
 (use-package flycheck
   :commands (global-flycheck-mode flycheck-mode))
