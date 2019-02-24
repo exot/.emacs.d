@@ -1943,7 +1943,11 @@
               emms-show-format "NP: %s"
               emms-stream-default-action "play"
               emms-track-description-function 'db/emms-track-description
-              emms-playlist-default-major-mode 'emms-playlist-mode)
+              emms-playlist-default-major-mode 'emms-playlist-mode
+              emms-cache-file "~/.emacs.d/private/emms/cache"
+              emms-history-file "~/.emacs.d/private/emms/history"
+              emms-score-file "~/.emacs.d/private/emms/scores"
+              emms-stream-bookmarks-file "~/.emacs.d/private/emms/streams")
   :config (progn
 
             ;; Initialization copied and adapted from `emms-setup’
