@@ -1699,8 +1699,8 @@
               (when (and (eq system-type 'windows-nt)
                          (not (package-installed-p 'w32-browser)))
                 (warn "`w32-browser’ not installed, dired will have reduced functionality."))
-              (when (and (require 'dired-open)
-                         (eq system-type 'gnu/linux))
+              (when (and (eq system-type 'gnu/linux)
+                         (require 'dired-open))
                 (bind-key "M-RET" #'dired-open-xdg dired-mode-map)))
 
             ;; Gnus support in dired
