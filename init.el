@@ -95,7 +95,8 @@
   (appt-activate +1)
   (savehist-mode 1)
 
-  (quietly-read-abbrev-file)
+  (with-demoted-errors "Cannot load abbreviations: %s"
+    (quietly-read-abbrev-file))
 
   (size-indication-mode 1)
   (display-battery-mode -1)
