@@ -95,7 +95,14 @@ The values of the latter two variables are usually those of
                        (address ,account-address)
                        (signature-file "~/.signature")
                        ("X-Jabber-ID" ,db/jabber-id))))
-                 value))))
+                 value)))
+
+  ;; Update some variables
+  (setq bbdb-user-mail-address-re (regexp-opt (mapcar #'car db/mail-accounts)
+                                              'words)
+        message-dont-reply-to-names (regexp-opt (mapcar #'car db/mail-accounts)
+                                                'words)
+        gnus-ignored-from-addresses message-dont-reply-to-names))
 
 (defcustom db/mail-accounts nil
   "Configuration for remote email accounts.

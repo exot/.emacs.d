@@ -1245,9 +1245,7 @@ search commands like `db/helm-shortcuts’."
   :init (setq bbdb-completion-display-record nil
               bbdb-complete-mail-allow-cycling t
               bbdb-mua-auto-update-p 'query
-              bbdb-default-country "Germany"
-              bbdb-user-mail-address-re (regexp-quote user-mail-address) ; XXX: set in db/mail-accounts
-              )
+              bbdb-default-country "Germany")
   :config (progn
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
@@ -1263,8 +1261,6 @@ search commands like `db/helm-shortcuts’."
       gnus-cache-directory (expand-file-name "cache/" gnus-directory)
       gnus-verbose 10
 
-      message-dont-reply-to-names (regexp-quote user-mail-address) ; XXX: set in db/mail-accounts
-      gnus-ignored-from-addresses message-dont-reply-to-names
       message-directory (expand-file-name "mail/" gnus-directory)
       nnmail-message-id-cache-file (expand-file-name ".nnmail-cache" gnus-directory)
       nnml-directory message-directory
