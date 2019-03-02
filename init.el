@@ -289,11 +289,6 @@
   :group 'help
   :tag "Personal settings")
 
-(defcustom db/additional-mail-addresses nil
-  "List of additional email addresses (apart from `user-mail-address’)."
-  :group 'personal-settings
-  :type '(repeat string))
-
 (defcustom db/jabber-id ""
   "Personal XMPP ID."
   :group 'personal-settings
@@ -1220,9 +1215,8 @@
               bbdb-complete-mail-allow-cycling t
               bbdb-mua-auto-update-p 'query
               bbdb-default-country "Germany"
-              bbdb-user-mail-address-re (regexp-opt
-                                         (cons user-mail-address
-                                               db/additional-mail-addresses)))
+              bbdb-user-mail-address-re (regexp-quote user-mail-address) ; XXX: set in db/mail-accounts
+              )
   :config (progn
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
@@ -1238,9 +1232,7 @@
       gnus-cache-directory (expand-file-name "cache/" gnus-directory)
       gnus-verbose 10
 
-      message-dont-reply-to-names (regexp-opt (cons user-mail-address
-                                                    db/additional-mail-addresses)
-                                              'words)
+      message-dont-reply-to-names (regexp-quote user-mail-address) ; XXX: set in db/mail-accounts
       gnus-ignored-from-addresses message-dont-reply-to-names
       message-directory (expand-file-name "mail/" gnus-directory)
       nnmail-message-id-cache-file (expand-file-name ".nnmail-cache" gnus-directory)
