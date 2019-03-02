@@ -123,7 +123,7 @@
       (funcall mode +1)))
 
   (unless on-windows
-    (with-demoted-errors "Error: %s"
+    (with-demoted-errors "Cannot load `pdf-tools’: %s"
       (pdf-tools-install)))
 
   ;; Global Hooks
