@@ -1466,8 +1466,10 @@ search commands like `db/helm-shortcuts’."
 
             (eval-when-compile
               (require 'gnus-start))
-            (bbdb-initialize 'gnus 'message)
-            (bbdb-mua-auto-update-init 'message)
+
+            (with-demoted-errors "Setting up BBDB failed: %s"
+              (bbdb-initialize 'gnus 'message)
+              (bbdb-mua-auto-update-init 'message))
 
             ;; Ensure that whenever we compose new mail, it will use the correct
             ;; posting style.  This is ensured by setting ARG of
