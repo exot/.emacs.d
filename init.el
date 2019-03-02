@@ -2070,10 +2070,11 @@ search commands like `db/helm-shortcuts’."
             (require 'helm-adaptive)))
 
 (use-package db-music
-  :commands (db/play-playlist))
+  :commands (db/play-playlist
+             db/update-playlist-from-directory))
 
 (defcustom db/playlist nil
-  "List of songs to include in random playlist."
+  "List of songs to include in a random playlist."
   :group 'personal-settings
   :type '(alist :value-type (choice (const :tag "Undecided" :undecided)
                                     (const :tag "Include" :include)

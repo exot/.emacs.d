@@ -30,8 +30,8 @@
 
 Files not present `db/playlist’ but that are found in DIRECTORY
 are added to `db/playlist’ with tag :undecided, to show the user
-that these files are new.  Tracks in `db/playlist’ that are not
-found in DIRECTORY are currently removed from it."
+that these files are new.  Tracks in `db/playlist’ that do not
+exist anymore are removed from it."
   (interactive (list (expand-file-name "songs/"
                                        emms-source-file-default-directory)))
   ;; First convert to hash table for performance
