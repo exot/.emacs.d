@@ -319,38 +319,12 @@ If found, imports the certificate via gpgsm."
 
 ;;; helm configuration
 
-(defcustom db/helm-frequently-used-features
-  '(("Mail"      . db/gnus)
-    ("Agenda"    . db/org-agenda)
-    ("Init File" . db/find-user-init-file)
-    ("EMMS"      . emms)
-    ("Shell"     . shell)
-    ("EShell"    . eshell)
-    ("scratch"   . db/scratch))
-  "Helm shortcuts for frequently used features."
-  :group 'personal-settings
-  :type  '(alist :key-type string :value-type sexp))
-
 (defvar db/helm-source-frequently-used-features
   '((name . "Frequently Used")
-    (candidates . db/helm-frequently-used-features)
+    (candidates . db/frequently-used-features)
     (action . (("Open" . funcall)))
     (filtered-candidate-transformer . helm-adaptive-sort))
   "Helm source for `db/helm-frequently-used-features’.")
-
-(defvar db/helm-source-frequently-visited-locations
-  '((name . "Locations")
-    (candidates . db/helm-frequently-visited-locations)
-    (action . (("Open" . (lambda (entry)
-                           (if (consp entry)
-                               (funcall (car entry) (cdr entry))
-                             (find-file entry))))))
-    (filtered-candidate-transformer . helm-adaptive-sort)))
-
-(defcustom db/important-documents-path "~/Documents/library/"
-  "Path of important documents."
-  :group 'personal-settings
-  :type 'string)
 
 (defun db/important-documents ()
   "Recursively return paths of all files found in `db/important-documents-path’.
