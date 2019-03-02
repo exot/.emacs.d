@@ -117,11 +117,10 @@
                   sml/setup
                   ivy-mode
                   which-key-mode
-                  eyebrowse-mode))
+                  eyebrowse-mode
+                  projectile-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
-
-  (projectile-mode +1)
 
   (unless on-windows
     (with-demoted-errors "Error: %s"
