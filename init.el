@@ -551,10 +551,6 @@ search commands like `db/helm-shortcuts’."
              db/turn-off-local-electric-pair-mode
              db/export-diary
              db/add-symbols-to-TeX-input-method
-             hydra-ispell/body
-             hydra-toggle/body
-             hydra-zoom/body
-             hydra-rectangle/body
              db/two-monitors-xrandr
              db/one-monitor-xrandr
              db/pretty-print-xml
@@ -564,6 +560,12 @@ search commands like `db/helm-shortcuts’."
 
 (use-package hydra
   :commands (defhydra))
+
+(use-package db-hydras
+  :commands (hydra-ispell/body
+             hydra-toggle/body
+             hydra-zoom/body
+             hydra-rectangle/body))
 
 (use-package magit
   :commands (magit-status)
