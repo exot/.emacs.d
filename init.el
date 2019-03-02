@@ -2054,8 +2054,7 @@ search commands like `db/helm-shortcuts’."
   :config (require 'emms))
 
 (use-package db-emms
-  :commands (db/play-playlist
-             db/emms-source-file-directory-tree-find
+  :commands (db/emms-source-file-directory-tree-find
              db/emms-track-description
              db/emms-playlist-mode-insert-track
              emms-control/body))
@@ -2069,6 +2068,17 @@ search commands like `db/helm-shortcuts’."
   :config (progn
             (require 'emms)
             (require 'helm-adaptive)))
+
+(use-package db-music
+  :commands (db/play-playlist))
+
+(defcustom db/playlist nil
+  "List of songs to include in random playlist."
+  :group 'personal-settings
+  :type '(alist :value-type (choice (const :tag "Undecided" :undecided)
+                                    (const :tag "Include" :include)
+                                    (const :tag "Exclude" :exclude))
+                :key-type file))
 
 
 ;; * Shells and such

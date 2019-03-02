@@ -32,30 +32,6 @@
 (declare-function emms-with-inhibit-read-only-t "emms")
 
 
-;; Custom playlist
-
-(defun db/play-playlist ()
-  "Play `db/personal-playlist’ in dedicated EMMS buffer."
-  (interactive)
-  (require 'emms)
-  (save-window-excursion
-    (let ((music-buffer-name "*EMMS Playlist* -- Misc"))
-      (unless (get-buffer music-buffer-name)
-        (emms-playlist-new music-buffer-name))
-      (with-current-buffer (get-buffer music-buffer-name)
-        (emms-stop)
-        (emms-playlist-set-playlist-buffer)
-        (emms-playlist-current-clear)
-        (emms-playlist-current-insert-source
-         'emms-insert-directory-tree
-         (expand-file-name "songs/" emms-source-file-default-directory))
-        (goto-char (point-min))
-        (emms-shuffle)
-        ;; (emms-playlist-sort-by-play-count)
-        (emms-playlist-select-first)
-        (emms-start)))))
-
-
 ;; Custom file finder
 
 (defun db/emms-source-file-directory-tree-find (dir regex)
