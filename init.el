@@ -131,7 +131,6 @@
   (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
   (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)
 
@@ -142,6 +141,8 @@
     ;; flyspell doesn’t work on windows right now, need to further investigate
     ;; what is happening here
     (add-hook 'text-mode-hook 'turn-on-flyspell))
+
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'yas-minor-mode-on)
   (add-hook 'text-mode-hook 'electric-quote-mode)
 
