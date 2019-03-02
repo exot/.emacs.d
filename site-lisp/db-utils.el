@@ -226,6 +226,14 @@ lispy."
                  (eq this-command 'pp-eval-expression)))
     (lispy-mode 1)))
 
+(defun turn-on-lispy-when-available ()
+  "Activate `lispy’ in current buffer when possible.
+Will print a warning in case of failure."
+  (interactive)
+  (with-demoted-errors "Cannot activate lispy: %s"
+    (require 'lispy)
+    (lispy-mode)))
+
 (defun db/sort-nsm-permanent-settings ()
   "Sort values in `nsm-permanent-host-settings’."
   (setq nsm-permanent-host-settings

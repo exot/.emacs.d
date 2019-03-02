@@ -133,9 +133,11 @@
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
+  (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)
+
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
-  (add-hook 'lisp-mode-hook 'lispy-mode)
+
   (unless (eq system-type 'windows-nt)
     ;; flyspell doesn’t work on windows right now, need to further investigate
     ;; what is happening here
@@ -544,6 +546,7 @@ search commands like `db/helm-shortcuts’."
              db/hex-to-ascii
              db/ascii-to-hex
              conditionally-enable-lispy
+             turn-on-lispy-when-available
              db/sort-nsm-permanent-settings
              db/update-cert-file-directory
              endless/colorize-compilation
@@ -2201,7 +2204,7 @@ search commands like `db/helm-shortcuts’."
 (use-package elisp-mode
   :defer t
   :config (progn
-            (add-hook 'emacs-lisp-mode-hook 'lispy-mode)
+            (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available)
             (add-hook 'emacs-lisp-mode-hook 'db/add-use-package-to-imenu)))
 
 (use-package geiser
@@ -2225,7 +2228,7 @@ search commands like `db/helm-shortcuts’."
               cider-cljs-lein-repl "(cemerick.piggieback/cljs-repl (cljs.repl.rhino/repl-env))")
   :config (progn
             (add-hook 'cider-repl-mode-hook 'subword-mode)
-            (add-hook 'cider-repl-mode-hook 'lispy-mode)
+            (add-hook 'cider-repl-mode-hook 'turn-on-lispy-when-available)
             (add-hook 'cider-repl-mode-hook 'cider-repl-toggle-pretty-printing)
             (add-hook 'cider-repl-mode-hook 'company-mode)))
 
@@ -2236,7 +2239,7 @@ search commands like `db/helm-shortcuts’."
               (forall 'defun)
               (exists 'defun)
               (dopar 'defun))
-            (add-hook 'clojure-mode-hook 'lispy-mode)
+            (add-hook 'clojure-mode-hook 'turn-on-lispy-when-available)
             (add-hook 'clojure-mode-hook 'clj-refactor-mode)
             (add-hook 'clojure-mode-hook 'yas-minor-mode)
             (add-hook 'clojure-mode-hook 'company-mode)))
@@ -2269,7 +2272,7 @@ search commands like `db/helm-shortcuts’."
 (use-package hy-mode
   :commands (hy-mode)
   :config (progn
-            (add-hook 'hy-mode-hook 'lispy-mode)
+            (add-hook 'hy-mode-hook 'turn-on-lispy-when-available)
             (add-hook 'hy-mode-hook 'inferior-lisp)))
 
 
