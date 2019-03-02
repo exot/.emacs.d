@@ -1238,7 +1238,10 @@ search commands like `db/helm-shortcuts’."
              db/gnus-demon-scan-news-on-level-2))
 
 (use-package bbdb
-  :commands (bbdb-search-name bbab-initialize bbdb-mua-auto-update-init bbdb-save)
+  :commands (bbdb-search-name
+             bbdb-initialize
+             bbdb-mua-auto-update-init
+             bbdb-save)
   :init (setq bbdb-completion-display-record nil
               bbdb-complete-mail-allow-cycling t
               bbdb-mua-auto-update-p 'query
