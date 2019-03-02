@@ -544,7 +544,7 @@ search commands like `db/helm-shortcuts’."
              db/run-or-hide-ansi-term
              db/helm-shortcuts
              db/hex-to-ascii
-             db/ascii-to-hex
+             db/text-to-hex
              conditionally-enable-lispy
              turn-on-lispy-when-available
              db/sort-nsm-permanent-settings
