@@ -19,9 +19,9 @@ If already in `*ansi-term*' buffer, bury it."
   (interactive)
   (if (string= "term-mode" major-mode)
       (bury-buffer)
-      (if (get-buffer "*ansi-term*")
-          (switch-to-buffer "*ansi-term*")
-          (ansi-term explicit-shell-file-name))))
+    (if (get-buffer "*ansi-term*")
+        (switch-to-buffer "*ansi-term*")
+      (ansi-term explicit-shell-file-name))))
 
 (defun db/gnus ()
   "Switch to the `*Group*' buffer, starting `gnus' if not existent."
@@ -91,7 +91,7 @@ If already in `*ansi-term*' buffer, bury it."
   (let ((url (plist-get (text-properties-at (point)) 'help-echo)))
     (if url
         (kill-new url)
-      (error "No link found."))))
+      (error "No link found"))))
 
 (defun db/test-emacs ()
   ;; from oremacs
@@ -229,7 +229,7 @@ lispy."
   (setq nsm-permanent-host-settings
         (cl-sort nsm-permanent-host-settings
                  #'string<
-                 :key #'second)))
+                 :key #'cl-second)))
 
 (defun db/update-cert-file-directory (symbol new-value)
   "Set SYMBOL to NEW-VALUE and add all certificate in it to `gnutls-trustfiles’.
@@ -275,7 +275,7 @@ are assumed to be of the form *.crt."
    (goto-char (point-min))
    (while (re-search-forward "\n[\t ]*" nil 'no-error)
      ;; In case there was a space, we have to keep at least one as a separator
-     (if (save-match-data (looking-back "[\t ]"))
+     (if (save-match-data (looking-back "[\t ]" 1))
          (replace-match " ")
        (replace-match "")))
 
