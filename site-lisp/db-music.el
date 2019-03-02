@@ -39,13 +39,31 @@ exist anymore are removed from it."
     (dolist (track db/playlist)
       (when (file-exists-p (car track))
         (puthash (car track) (cdr track) playlist-hash)))
+
     (let (new-playlist)
+      ;; iterate over files in DIRECTORY and add them to the playlist, with the
+      ;; already known state whenever possible
       (dolist (file (directory-files-recursively directory ""))
         (message "Checking %s" file)
         (push (if-let ((state (gethash file playlist-hash nil)))
                   (cons file state)
                 (cons file :undecided))
-              new-playlist))
+              new-playlist)
+        (remhash file playlist-hash))
+
+      ;; keep all other tracks that are not in DIRECTORY
+      (maphash #'(lambda (track state)
+                   (push (cons track state) new-playlist))
+               playlist-hash)
+
+      ;; sort to keep version control happy
+      (setq new-playlist
+            (sort new-playlist
+                  #'(lambda (track-1 track-2)
+                      (string< (car track-1)
+                               (car track-2)))))
+
+      ;; save it
       (customize-save-variable 'db/playlist new-playlist))))
 
 (provide 'db-music)
