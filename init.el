@@ -212,8 +212,6 @@
   (bind-key "M-=" #'count-words)
   (bind-key "M-SPC" #'cycle-spacing)
   (bind-key "M-Z" #'zap-to-char)
-  (bind-key "M-g M-g" #'avy-goto-line)
-  (bind-key "M-g g" #'avy-goto-line)
   (bind-key "M-g j b" #'dumb-jump-back)
   (bind-key "M-g j g" #'dumb-jump-go)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
@@ -245,6 +243,10 @@
 
   (when (executable-find "ag")
     (bind-key "<f5>" #'counsel-ag))
+
+  (when (package-installed-p 'avy)
+    (bind-key "M-g M-g" #'avy-goto-line)
+    (bind-key "M-g g" #'avy-goto-line))
 
   ;; Environment Variables
 
