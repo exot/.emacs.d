@@ -4,13 +4,11 @@
 
 ;;; Code:
 
-
-;; Custom playlist
+(require 'emms)
 
 (defun db/play-playlist ()
   "Start playing songs from `db/playlist’"
   (interactive)
-  (require 'emms)
   (save-window-excursion
     (let ((music-buffer-name "*EMMS Playlist* -- Personal"))
       (unless (get-buffer music-buffer-name)
