@@ -8,6 +8,8 @@
 
 ;;; Code:
 
+(require 'subr-x)
+
 
 ;;; application shortcuts
 
