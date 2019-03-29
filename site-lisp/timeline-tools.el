@@ -475,17 +475,18 @@ archives."
                                           timeline-tools--current-time-end)))
       (insert "|--|\n")
       (insert "| Category | Start | End | Duration | Task |\n")
-      (let ((last-category nil))
+      (let ((last-category nil)
+            (current-category nil))
         (dolist (line timeline)
-          (when (not (equal last-category
-                            (funcall timeline-tools-category-function
-                                     line
-                                     timeline-tools--current-time-start
-                                     timeline-tools--current-time-end)))
+          (setq current-category (funcall timeline-tools-category-function
+                                          line
+                                          timeline-tools--current-time-start
+                                          timeline-tools--current-time-end))
+          (when (not (equal last-category current-category))
             (insert "|--|\n")
-            (setq last-category (timeline-tools-entry-category line)))
+            (setq last-category current-category))
           (insert (format "| %s | %s | %s | %s min | %s | \n"
-                          (timeline-tools-entry-category line)
+                          current-category
                           (timeline-tools-format-entry-time line 'start)
                           (timeline-tools-format-entry-time line 'end)
                           (timeline-tools-entry-duration line)
