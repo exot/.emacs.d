@@ -57,6 +57,27 @@ Filter are applied in the order they are given in this list."
   :group 'timeline-tools
   :type 'integer)
 
+(defcustom timeline-tools-headline-time-format "%Y-%m-%d %H:%M"
+  "Format of time used in the headline of a timeline."
+  :group 'timeline-tools
+  :type 'string)
+
+(defcustom timeline-tools-time-format "%Y-%m-%d %H:%M"
+  "Format of time used inside a timeline."
+  :group 'timeline-tools
+  :type 'string)
+
+(defcustom timeline-tools-category-function 'timeline-tools-entry-category
+  "Function for extracting the category of an entry when formatting a timeline.
+
+This function is supposed to return a string representing the
+category of a timeline entry, as it is used when formatting the
+timeline with `timeline-tools-redraw-timeline’.  It receives
+three arguments, namly the entry itself, the start date, and the
+end date of the timeline."
+  :group 'timeline-tools
+  :type 'function)
+
 
 ;; Mode definition
 
@@ -71,12 +92,6 @@ Filter are applied in the order they are given in this list."
 
 (defvar timeline-tools--current-timeline nil
   "Currently displayed timeline in abstract form.")
-
-(defvar timeline-tools-headline-time-format "%Y-%m-%d %H:%M"
-  "Format of time used in the headline of a timeline.")
-
-(defvar timeline-tools-time-format "%Y-%m-%d %H:%M"
-  "Format of time used inside a timeline.")
 
 (defvar timeline-tools-mode-map
   (let ((map (make-sparse-keymap)))
@@ -125,7 +140,7 @@ MARKER must be a single marker."
                (timeline-tools-entry-start-time entry))
             60)))
 
-(defun timeline-tools-entry-category (entry)
+(defun timeline-tools-entry-category (entry &rest _)
   "Return ARCHIVE_CATEGORY or CATEGORY at position given by marker of ENTRY.
 Return whatever is found first."
   (let ((marker (timeline-tools-entry-marker entry)))
@@ -462,7 +477,11 @@ archives."
       (insert "| Category | Start | End | Duration | Task |\n")
       (let ((last-category nil))
         (dolist (line timeline)
-          (when (not (equal last-category (timeline-tools-entry-category line)))
+          (when (not (equal last-category
+                            (funcall timeline-tools-category-function
+                                     line
+                                     timeline-tools--current-time-start
+                                     timeline-tools--current-time-end)))
             (insert "|--|\n")
             (setq last-category (timeline-tools-entry-category line)))
           (insert (format "| %s | %s | %s | %s min | %s | \n"
