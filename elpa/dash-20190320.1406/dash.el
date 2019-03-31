@@ -3,8 +3,8 @@
 ;; Copyright (C) 2012-2016 Free Software Foundation, Inc.
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
-;; Version: 2.14.1
-;; Package-Version: 20180910.1856
+;; Version: 2.15.0
+;; Package-Version: 20190320.1406
 ;; Keywords: lists
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -86,6 +86,14 @@ the target form."
                      `(funcall form ,retval)))
                  forms)
        ,retval)))
+
+(defmacro --doto (eval-initial-value &rest forms)
+  "Anaphoric form of `-doto'.
+Note: `it' is not required in each form."
+  (declare (indent 1))
+  `(let ((it ,eval-initial-value))
+     ,@forms
+     it))
 
 (defun -each (list fn)
   "Call FN with every item in LIST. Return nil, used for side-effects only."
@@ -914,9 +922,11 @@ See also: `-drop'"
   "Rotate LIST N places to the right.  With N negative, rotate to the left.
 The time complexity is O(n)."
   (declare (pure t) (side-effect-free t))
-  (if (> n 0)
-      (append (last list n) (butlast list n))
-    (append (-drop (- n) list) (-take (- n) list))))
+  (when list
+    (let* ((len (length list))
+           (n-mod-len (mod n len))
+           (new-tail-len (- len n-mod-len)))
+      (append (-drop new-tail-len list) (-take new-tail-len list)))))
 
 (defun -insert-at (n x list)
   "Return a list with X inserted into LIST at position N.
@@ -2533,10 +2543,14 @@ the new seed."
 
 (defun -cons-pair? (con)
   "Return non-nil if CON is true cons pair.
-That is (A . B) where B is not a list."
+That is (A . B) where B is not a list.
+
+Alias: `-cons-pair-p'"
   (declare (pure t) (side-effect-free t))
   (and (listp con)
        (not (listp (cdr con)))))
+
+(defalias '-cons-pair-p '-cons-pair?)
 
 (defun -cons-to-list (con)
   "Convert a cons pair to a list with `car' and `cdr' of the pair respectively."
@@ -2942,6 +2956,7 @@ structure such as plist or alist."
                              "-unfold"
                              "--unfold"
                              "-cons-pair?"
+                             "-cons-pair-p"
                              "-cons-to-list"
                              "-value-to-list"
                              "-tree-mapreduce-from"
