@@ -1,7 +1,6 @@
 (deftheme db-dark
-    "Created 2017-12-02.")
-
-(load-theme 'solarized-dark)
+  "Created 2017-12-02. To be used as an additional theme on top
+  of a dark theme, usually `solarized-dark’.")
 
 (custom-theme-set-faces
  'db-dark
@@ -16,7 +15,7 @@
  '(org-agenda-dimmed-todo-face ((t nil)))
  '(org-agenda-structure ((t (:foreground "#93a1a1" :inverse-video nil :box (:line-width 2 :color "#002b36") :underline nil :slant normal :weight bold :height 1.1))))
  '(org-clock-overlay ((t (:background "black"))))
- '(org-column ((t (:strike-through nil :underline nil :slant normal :weight normal :height 110 :family "DejaVu Sans Mono"))))
+ '(org-column ((t (:strike-through nil :underline nil :slant normal :weight normal))))
  '(org-headline-done ((t (:foreground "#859900"))))
  '(org-level-1 ((t (:inherit default :foreground "#cb4b16" :height 1.0))))
  '(org-level-2 ((t (:inherit default :foreground "#859900" :height 1.0))))

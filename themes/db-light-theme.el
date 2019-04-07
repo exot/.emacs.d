@@ -1,7 +1,6 @@
 (deftheme db-light
-    "Created 2017-12-02.")
-
-(load-theme 'solarized-light)
+  "Created 2017-12-02. To be used as an additional theme on top
+  of a dark theme, usually `solarized-light’.")
 
 (custom-theme-set-faces
  'db-light
