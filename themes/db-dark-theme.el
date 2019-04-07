@@ -1,6 +1,6 @@
 (deftheme db-dark
-  "Created 2017-12-02. To be used as an additional theme on top
-  of a dark theme, usually `solarized-dark’.")
+  "To be used as an additional theme on top of a dark theme.
+Known to work well with the `solarized-dark’ theme.")
 
 (custom-theme-set-faces
  'db-dark
@@ -17,12 +17,6 @@
  '(org-clock-overlay ((t (:background "black"))))
  '(org-column ((t (:strike-through nil :underline nil :slant normal :weight normal))))
  '(org-headline-done ((t (:foreground "#859900"))))
- '(org-level-1 ((t (:inherit default :foreground "#cb4b16" :height 1.0))))
- '(org-level-2 ((t (:inherit default :foreground "#859900" :height 1.0))))
- '(org-level-3 ((t (:inherit default :foreground "#268bd2" :height 1.0))))
- '(org-level-4 ((t (:inherit default :foreground "#b58900" :height 1.0))))
- '(org-level-5 ((t (:inherit default :foreground "#2aa198" :height 1.0))))
- '(org-warning ((t (:foreground "#dc322f" :weight normal))))
  '(outline-4 ((t (:inherit org-level-4))))
  '(flyspell-duplicate ((t (:underline (:color "orange red" :style wave)))))
  '(flyspell-incorrect ((t (:underline (:color "orange red" :style wave)))))
