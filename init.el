@@ -1671,8 +1671,7 @@ search commands like `db/helm-shortcuts’."
 
 (use-package smart-mode-line
   :init (setq sml/mode-width 'full
-              sml/name-width 30
-              sml/theme 'respectful)
+              sml/name-width 30)
   :commands (sml/setup))
 
 
