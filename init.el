@@ -481,9 +481,7 @@
             (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
 
 (use-package ispell
-  :commands (ispell-change-directory)
-  :init (setq ispell-dictionary "en_US"
-              ispell-really-hunspell t))
+  :commands (ispell-change-directory))
 
 (use-package mailcap
   :defer t
