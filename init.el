@@ -188,7 +188,7 @@
   (bind-key "C-c c" #'org-capture)
   (bind-key "C-c d" #'define-word-at-point)
   (bind-key "C-c e" #'crux-eval-and-replace)
-  (bind-key "C-c i" #'hydra-ispell/body)
+  (bind-key "C-c i" #'ispell-change-dictionary)
   (bind-key "C-c j" #'avy-goto-char-timer)
   (bind-key "C-c l" #'org-store-link)
   (bind-key "C-c m" #'emms-control/body)
@@ -560,8 +560,7 @@ search commands like `db/helm-shortcuts’."
   :commands (defhydra))
 
 (use-package db-hydras
-  :commands (hydra-ispell/body
-             hydra-toggle/body
+  :commands (hydra-toggle/body
              hydra-zoom/body
              hydra-rectangle/body))
 

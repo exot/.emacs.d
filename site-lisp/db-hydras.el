@@ -9,19 +9,6 @@
 
 ;;; Hydras
 
-(defhydra hydra-ispell (:color blue)
-  "ispell"
-  ("g" (lambda ()
-         (interactive)
-         (setq ispell-dictionary "de_DE")
-         (ispell-change-dictionary "de_DE"))
-   "german")
-  ("e" (lambda ()
-         (interactive)
-         (setq ispell-dictionary "en_US")
-         (ispell-change-dictionary "en_US"))
-   "english"))
-
 (defhydra hydra-toggle (:color blue)
   "toggle"
   ("c" column-number-mode "column")
