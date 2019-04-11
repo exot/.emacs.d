@@ -137,11 +137,7 @@
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
 
-  (unless (eq system-type 'windows-nt)
-    ;; flyspell doesn’t work on windows right now, need to further investigate
-    ;; what is happening here
-    (add-hook 'text-mode-hook 'turn-on-flyspell))
-
+  (add-hook 'text-mode-hook 'turn-on-flyspell)
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'yas-minor-mode-on)
   (add-hook 'text-mode-hook 'electric-quote-mode)
