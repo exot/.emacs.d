@@ -196,7 +196,6 @@
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
-  (bind-key "C-s" #'isearch-forward)
   (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
   (bind-key "C-x C-d" #'dired)
   (bind-key "C-x C-r" #'revert-buffer)
@@ -229,6 +228,9 @@
     (bind-key "C-h f" #'counsel-describe-function)
     (bind-key "C-h v" #'counsel-describe-variable)
     (bind-key "C-S-s" #'counsel-grep-or-swiper))
+
+  (when (package-installed-p 'swiper)
+    (bind-key "C-s" #'swiper-isearch))
 
   (when (package-installed-p 'helm)
     (bind-key "M-y" #'helm-show-kill-ring))
