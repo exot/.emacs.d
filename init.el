@@ -114,8 +114,9 @@
   (dolist (mode '(global-undo-tree-mode
                   ace-window-display-mode
                   key-chord-mode
-                  sml/setup
                   ivy-mode
+                  sml/setup
+                  minions-mode
                   which-key-mode
                   eyebrowse-mode
                   projectile-mode))
@@ -1669,6 +1670,13 @@ search commands like `db/helm-shortcuts’."
   :init (setq sml/mode-width 'full
               sml/name-width 30)
   :commands (sml/setup))
+
+(use-package minions
+  :commands (minions-mode))
+
+(use-package moody
+  :commands (moody-replace-mode-line-buffer-identification
+             moody-replace-vc-mode))
 
 
 ;; * Dired
