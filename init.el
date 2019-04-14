@@ -115,7 +115,6 @@
                   ace-window-display-mode
                   key-chord-mode
                   ivy-mode
-                  sml/setup
                   minions-mode
                   which-key-mode
                   eyebrowse-mode
@@ -126,6 +125,10 @@
   (unless on-windows
     (with-demoted-errors "Cannot load `pdf-tools’: %s"
       (pdf-tools-install)))
+
+  (with-demoted-errors "Cannot activate moody: %s"
+    (moody-replace-mode-line-buffer-identification)
+    (moody-replace-vc-mode))
 
   ;; Global Hooks
 
