@@ -1694,7 +1694,8 @@ search commands like `db/helm-shortcuts’."
   :commands (sml/setup))
 
 (use-package minions
-  :commands (minions-mode))
+  :commands (minions-mode)
+  :init (setq minions-mode-line-lighter "…"))
 
 (use-package moody
   :commands (moody-replace-mode-line-buffer-identification
