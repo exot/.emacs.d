@@ -45,6 +45,43 @@
 
 ;; Mail related customizations
 
+;; See definition of `db/mail-accounts’ below, sorry for the scatter …
+
+(defsubst db/mail-accounts--mail-address (account)
+  "Extract account mail address from ACCOUNT.
+ACCOUNT must be a valid element of `db/mail-accounts’."
+  (nth 0 account))
+
+(defsubst db/mail-accounts--name (account)
+  "Extract account name from ACCOUNT.
+ACCOUNT must be a valid element of `db/mail-accounts’."
+  (nth 1 account))
+
+(defsubst db/mail-accounts--imap-address (account)
+  "Extract account IMAP address from ACCOUNT.
+ACCOUNT must be a valid element of `db/mail-accounts’."
+  (nth 2 account))
+
+(defsubst db/mail-accounts--smtp-server (account)
+  "Extract account SMTP server address from ACCOUNT.
+ACCOUNT must be a valid element of `db/mail-accounts’."
+  (nth 3 account))
+
+(defsubst db/mail-accounts--smtp-stream-type (account)
+  "Extract account SMTP stream type from ACCOUNT.
+ACCOUNT must be a valid element of `db/mail-accounts’."
+  (nth 4 account))
+
+(defsubst db/mail-accounts--smtp-service-port (account)
+  "Extract account SMTP port from ACCOUNT.
+ACCOUNT must be a valid element of `db/mail-accounts’."
+  (nth 5 account))
+
+(defsubst db/mail-accounts--smtp-user (account)
+  "Extract account SMTP user from ACCOUNT.
+ACCOUNT must be a valid element of `db/mail-accounts’."
+  (nth 6 account))
+
 (defun db/-set-gnus-secondary-select-methods (other-gnus-accounts remote-mail-accounts)
   "Set `gnus-secondary-select-methods’ from OTHER-GNUS-ACCOUNTS and REMOTE-MAIL-ACCOUNTS.
 The values of the latter two variables are usually those of
@@ -55,13 +92,14 @@ The values of the latter two variables are usually those of
                 ;; `nil’ nor the empty string
                 (cl-remove-if #'null
                               (mapcar (lambda (account)
-                                        (let ((account-name (nth 1 account))
-                                              (account-address (nth 2 account)))
+                                        (let ((account-name (db/mail-accounts--name account))
+                                              (account-address (db/mail-accounts--imap-address account)))
                                           (when (and account-address
                                                      (stringp account-address)
                                                      (< 0 (length account-address)))
                                             `(nnimap ,account-name
                                                      (nnimap-address ,account-address)
+                                                     (nnimap-stream starttls)
                                                      (nnimap-inbox "INBOX")))))
                                       remote-mail-accounts)))))
 
@@ -88,8 +126,8 @@ The values of the latter two variables are usually those of
             (signature-file "~/.signature")
             ("X-Jabber-ID" ,db/jabber-id)))
          (mapcar (lambda (account)
-                   (let ((account-name (nth 1 account))
-                         (account-address (nth 0 account)))
+                   (let ((account-name (db/mail-accounts--name account))
+                         (account-address (db/mail-accounts--mail-address account)))
                      `(,(concat account-name ":")
                        (name ,user-full-name)
                        (address ,account-address)
@@ -114,7 +152,7 @@ will also be recognized when sending mail."
           (list
            (string :tag "EMail Address")
            (string :tag "Group Name")
-           (string :tag "IMAP Server Address")
+           (string :tag "IMAP Server Address (StartTLS)")
            (string :tag "SMTP Server Address")
            (choice :tag "SMTP Stream Type"
                    (const nil) (const starttls) (const plain) (const ssl))
@@ -140,11 +178,10 @@ entry of the \"From: \" header and the value of
         (if account
             (progn
               (message "Sending with account for %s" address)
-              ;; XXX: these calls to `nth’ should be abstracted away
-              (let ((smtpmail-smtp-server (nth 3 account))
-                    (smtpmail-stream-type (nth 4 account))
-                    (smtpmail-smtp-service (nth 5 account))
-                    (smtpmail-smtp-user (nth 6 account)))
+              (let ((smtpmail-smtp-server (db/mail-accounts--smtp-server account))
+                    (smtpmail-stream-type (db/mail-accounts--smtp-stream-type account))
+                    (smtpmail-smtp-service (db/mail-accounts--smtp-service-port account))
+                    (smtpmail-smtp-user (db/mail-accounts--smtp-user account)))
                 (cl-assert (cl-notany #'null (list smtpmail-smtp-server
                                                    smtpmail-stream-type
                                                    smtpmail-smtp-service
