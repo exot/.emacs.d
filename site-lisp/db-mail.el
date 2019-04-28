@@ -193,10 +193,11 @@ entry of the \"From: \" header and the value of
           (if (yes-or-no-p "Sending with default account settings?")
               (message-smtpmail-send-it)
             (message "Sending aborted as requested by user.")))
-      ;; in case of error, display the SMTP trace buffer
-      (error (shrink-window-if-larger-than-buffer
-              (display-buffer (get-buffer (format "*trace of SMTP session to %s*"
-                                                  smtpmail-smtp-server))))
+      ;; in case of error, display the SMTP trace buffer if available
+      (error (when-let ((smtp-trace-buffer (get-buffer (format "*trace of SMTP session to %s*"
+                                                               smtpmail-smtp-server))))
+
+               (shrink-window-if-larger-than-buffer (display-buffer smtp-trace-buffer)))
              (signal (car signal-data) (cdr signal-data))))))
 
 
