@@ -328,7 +328,8 @@
       initial-major-mode 'fundamental-mode
       ring-bell-function #'ignore
       garbage-collection-messages nil
-      load-prefer-newer nil)            ; t breaks `org-reload'
+      load-prefer-newer nil             ; t breaks `org-reload'
+      auth-sources '("~/.authinfo.gpg"))
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
