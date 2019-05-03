@@ -141,7 +141,10 @@
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
 
-  (add-hook 'text-mode-hook 'turn-on-flyspell)
+  (unless on-windows
+    ;; spell checking is horribly slow on windows
+    (add-hook 'text-mode-hook 'turn-on-flyspell))
+
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'yas-minor-mode-on)
   (add-hook 'text-mode-hook 'electric-quote-mode)
