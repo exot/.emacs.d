@@ -578,7 +578,7 @@ search commands like `db/helm-shortcuts’."
 
 (use-package magit
   :commands (magit-status)
-  :init (setq magit-diff-refine-hunk t
+  :init (setq magit-diff-refine-hunk nil
               magit-commit-show-diff nil
               magit-popup-use-prefix-argument 'default
               magit-completing-read-function 'ivy-completing-read)
