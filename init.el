@@ -1715,7 +1715,8 @@ search commands like `db/helm-shortcuts’."
               ("z" . dired-get-size)
               ([remap beginning-of-buffer] . dired-back-to-top)
               ([remap end-of-buffer] . dired-jump-to-bottom)
-              ("<f1>" . nil))
+              ("<f1>" . nil)
+              ("<tab>" . dired-subtree-toggle))
   :init (progn
           (setq dired-dwim-target t
                 dired-listing-switches "-alh"
@@ -1820,7 +1821,10 @@ search commands like `db/helm-shortcuts’."
                    "size of all marked files: %s"
                    (progn
                      (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-                     (match-string 1))))))))
+                     (match-string 1))))))
+
+            (use-package dired-subtree
+              :commands (dired-subtree-toggle))))
 
 (use-package find-dired
   :commands (find-dired)
