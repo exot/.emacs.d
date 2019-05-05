@@ -410,6 +410,17 @@ path."
        (replace-match "\\1CLOCK: [\\4]--[\\3]")
        (org-clock-update-time-maybe)))))
 
+(defun db/find-csv-in-org (arg)
+  "Interactively CSV find file and open it as Org mode table.
+Default separator is \";\", but this can be changed interactively
+by passing a universal argument."
+  (interactive "P")
+  (let ((separator (if arg (read-from-minibuffer "Separator (regular expression): ")
+                     ";")))
+    (call-interactively #'find-file)
+    (org-mode)
+    (org-table-convert-region (point-min) (point-max) separator)))
+
 
 ;;; Calendar
 
