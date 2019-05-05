@@ -42,8 +42,7 @@
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("org" . "https://orgmode.org/elpa/")))
 
-(setq package-enable-at-startup nil
-      load-prefer-newer t)
+(setq package-enable-at-startup nil)
 
 (package-initialize)
 
