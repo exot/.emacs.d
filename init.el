@@ -1049,12 +1049,13 @@ search commands like `db/helm-shortcuts’."
                 ("in" "Interruption now"
                  entry
                  (file db/org-default-refile-file)
-                 "* DONE %^{What}\n\n%?"
+                 "* DONE %^{What}\nCLOSED: %U\n\n%?"
                  :clock-in t :clock-resume t)
                 ("ip" "Interruption previously" ; bad English vs mnemonics
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* DONE %^{What}\n"
+                          "CLOSED: %U\n"
                           ":LOGBOOK:\n"
                           "%(timeline-tools-clockline-no-org-agenda-conflicts)\n" ; evaluated before above prompt?
                           ":END:\n"
