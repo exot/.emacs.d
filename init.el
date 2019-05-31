@@ -787,6 +787,7 @@ search commands like `db/helm-shortcuts’."
             (unless (memq #'org-clock-save
                           (mapcar #'timer--function timer-list))
               (run-with-timer 0 3600 #'org-clock-save))
+
             (unless (memq #'db/export-diary
                           (mapcar #'timer--function timer-idle-list))
               (run-with-idle-timer 200 t #'db/export-diary))
