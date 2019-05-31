@@ -206,7 +206,7 @@
   (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
   (bind-key "C-x C-d" #'dired)
   (bind-key "C-x C-r" #'revert-buffer)
-  (bind-key "C-x b" #'ibuffer)
+  (bind-key "C-x C-b" #'ibuffer)
   (bind-key "C-x g" #'db/helm-shortcuts)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
   (bind-key "C-x r M" #'db/bookmark-add-url)
