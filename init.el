@@ -567,7 +567,9 @@ search commands like `db/helm-shortcuts’."
              db/pretty-print-xml
              db/bookmark-add-external
              db/bookmark-add-url
-             db/lookup-smime-key))
+             db/lookup-smime-key
+             db/org-onenote-open
+             db/org-outlook-open))
 
 (use-package hydra
   :commands (defhydra))
@@ -642,6 +644,16 @@ search commands like `db/helm-shortcuts’."
              db/org-capture-code-snippet
              hydra-org-clock/body
              db/make-org-capture-frame))
+
+(defcustom db/path-to-onenote "c:/Program Files (x86)/Microsoft Office/Office15/ONENOTE.EXE"
+  "Path to OneNote executable, for opening corresponding org-mode links."
+  :group 'personal-settings
+  :type 'file)
+
+(defcustom db/path-to-outlook "c:/Program Files (x86)/Microsoft Office/Office15/OUTLOOK.EXE"
+  "Path to Outlook executable, for opening corresponding org-mode links."
+  :group 'personal-settings
+  :type 'file)
 
 (use-package org
   :commands (org-store-link)
@@ -761,6 +773,11 @@ search commands like `db/helm-shortcuts’."
 
             (when (eq system-type 'cygwin)
               (add-to-list 'org-file-apps '(t . "cygstart %s") t))
+
+            ;; Custom link types for Windows
+            (when (eq system-type 'windows-nt)
+              (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
+              (org-link-set-parameters "outlook" :follow #'db/org-outlook-open))
 
             ;; Skip some org mode regions to be skipped by ispell
             (add-hook 'org-mode-hook #'endless/org-ispell)
