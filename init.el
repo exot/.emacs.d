@@ -569,7 +569,8 @@ search commands like `db/helm-shortcuts’."
              db/bookmark-add-url
              db/lookup-smime-key
              db/org-onenote-open
-             db/org-outlook-open))
+             db/org-outlook-open
+             db/org-rfc-open))
 
 (use-package hydra
   :commands (defhydra))
@@ -781,6 +782,9 @@ search commands like `db/helm-shortcuts’."
 
             ;; Skip some org mode regions to be skipped by ispell
             (add-hook 'org-mode-hook #'endless/org-ispell)
+
+            ;; Link type for RFCs
+            (org-link-set-parameters "rfc" :follow #'db/org-rfc-open)
 
             ;; Some timers
 
