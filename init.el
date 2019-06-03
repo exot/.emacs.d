@@ -422,7 +422,7 @@
                                    (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
                                    (holiday-float 11 4 4 "Thanksgiving"))
         diary-show-holidays-flag t
-        calendar-view-holidays-initially-flag t))
+        calendar-view-holidays-initially-flag nil))
 
 (setq-default font-lock-maximum-decoration '((t . t)))
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
