@@ -347,10 +347,7 @@ output, separated by \\n, when called with
                                 (file-readable-p entry)))
                          (split-string (shell-command-to-string command)
                                        "\n"))))
-    (if (null list-of-files)
-        (user-error "No files to display, aborting")
-      (dired (cons (format "Output of `%s’" command)
-                   list-of-files)))))
+    (dired (cons "Command output" list-of-files))))
 
 
 ;;; helm configuration
