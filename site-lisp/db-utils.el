@@ -326,6 +326,32 @@ If found, imports the certificate via gpgsm."
                 (message "Successfully imported certificate for <%s>" mail)
               (error "Could not import certificate for <%s>" mail))))))))
 
+;; https://emacs.stackexchange.com/questions/3089/how-can-i-create-a-dired-buffer-listing-all-open-files
+;; https://emacs.stackexchange.com/questions/2567/programmatically-insert-files-into-dired-buffer
+(defun db/dired-from-shell-command (command &optional directory)
+  "Run COMMAND in DIRECTORY and display resulting list of files via `dired’.
+
+COMMAND must be a shell command that produces a list of files as
+output, separated by \\n, when called with
+`shell-command-to-string’.  DIRECTORY defaults to
+`default-directory’."
+  (interactive "sCommand: ")
+  (when (and directory (not (directory-name-p directory)))
+    (user-error "Value for DIRECTORY is not a directory name: %s"
+                directory))
+  (let* ((default-directory (or directory default-directory))
+         (list-of-files (cl-remove-if-not
+                         (lambda (entry)
+                           (and (not (string-empty-p entry))
+                                (file-exists-p entry)
+                                (file-readable-p entry)))
+                         (split-string (shell-command-to-string command)
+                                       "\n"))))
+    (if (null list-of-files)
+        (user-error "No files to display, aborting")
+      (dired (cons (format "Output of `%s’" command)
+                   list-of-files)))))
+
 
 ;;; helm configuration
 

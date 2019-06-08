@@ -583,7 +583,8 @@ search commands like `db/helm-shortcuts’."
              db/lookup-smime-key
              db/org-onenote-open
              db/org-outlook-open
-             db/org-rfc-open))
+             db/org-rfc-open
+             db/dired-from-shell-command))
 
 (use-package hydra
   :commands (defhydra))
