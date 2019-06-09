@@ -67,23 +67,21 @@ This function can be used as a value for `emms-track-description-function’."
          (performer (propertize (emms-track-get track 'info-performer "")
                                 'face 'emms-browser-performer-face))
          (title     (propertize (emms-track-get track 'info-title "")
-                                'face 'emms-browser-track-face)))
+                                'face 'emms-browser-track-face))
+         (album     (propertize (emms-track-get track 'info-album "")
+                                'face 'emms-browser-album-face)))
     (if (not (seq-empty-p title))
-        (cond
-         ((not (seq-empty-p composer))
-          (if (seq-empty-p performer)
-              (format "“%s” by %s" title composer)
-            (if (string= composer performer)
-                (format "“%s” by %s"
-                        title composer)
-              (format "“%s” by %s, performed by %s"
-                      title
-                      composer
-                      performer))))
-          ((not (seq-empty-p artist))
-           (format "“%s” by %s" title artist))
-          (t
-           title))
+        (concat (format "“%s”" title)
+                (cond ((not (seq-empty-p composer))
+                       (if (seq-empty-p performer)
+                           (format " by %s" composer)
+                         (if (string= composer performer)
+                             (format " by %s" composer)
+                           (format " by %s, performed by %s" composer performer))))
+                      ((not (seq-empty-p artist))
+                       (format " by %s" artist)))
+                (and (not (seq-empty-p album))
+                     (format " (%s)" album)))
       (string-remove-prefix (expand-file-name emms-source-file-default-directory)
                             (emms-track-simple-description track)))))
 
