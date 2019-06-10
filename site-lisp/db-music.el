@@ -13,18 +13,22 @@
   :group 'convenience
   :tag "db-music")
 
-(defcustom db/playlist-play-function #'db/play-playlist-from-cache
-  "Function to use to automatically generate playlists"
+(defcustom db/auto-playlist-file-function #'db/play-playlist-from-cache
+  "Function that has to return a list of all music files that
+should be included in the auto playlist."
   :group 'db-music
   :type 'function)
 
-(defcustom db/playlist nil
-  "List of songs to include in a random playlist."
-  :group 'db-music
-  :type '(alist :value-type (choice (const :tag "Undecided" :undecided)
-                                    (const :tag "Include" :include)
-                                    (const :tag "Exclude" :exclude))
-                :key-type file))
+(defun db/play-auto-playlist ()
+  "Generate playlist using `db/auto-playlist-file-function’ and
+start playing it.
+
+Current backend is EMMS."
+  (interactive)
+  (db/-emms-playlist-from-files (funcall db/auto-playlist-file-function)))
+
+;; Idea: make this customizable, so that we can later switch to another backend
+;; if necessary
 
 (defun db/-emms-playlist-from-files (files)
   "Generate EMMS playlist from FILES.
@@ -47,16 +51,23 @@ Shuffle it and start playing it afterwards."
         (emms-playlist-select-first)
         (emms-start)))))
 
-(defun db/play-playlist-from-cache ()
-  "Start playing songs from `db/playlist’"
-  (interactive)
-  (db/-emms-playlist-from-files
-   (->> db/playlist
-        (cl-remove-if-not #'(lambda (track)
-                              (eq (cdr track) :include)))
-        (mapcar #'car))))
+(defcustom db/playlist nil
+  "List of songs to include in a random playlist."
+  :group 'db-music
+  :type '(alist :value-type (choice (const :tag "Undecided" :undecided)
+                                    (const :tag "Include" :include)
+                                    (const :tag "Exclude" :exclude))
+                :key-type file))
 
-(defun db/play-playlist-from-git-annex-find (match-expression)
+(defun db/playlist-files-from-cache ()
+  "Generate files for auto playlist from `db/playlist’ cache."
+  (interactive)
+  (->> db/playlist
+       (cl-remove-if-not #'(lambda (track)
+                             (eq (cdr track) :include)))
+       (mapcar #'car)))
+
+(defun db/playlist-files-from-git-annex-find (match-expression)
   "Generate playlist from git annex find on MATCH-EXPRESSION.
 
 Prompts for MATCH-EXPRESSION when called interactively.
@@ -65,27 +76,26 @@ are match it.  Assumes `emms-source-file-default-directory’ to be
 part of a git-annex repository, and will complain otherwise."
   (interactive "smatch expression: ")
   (let* ((default-directory emms-source-file-default-directory))
-    (db/-emms-playlist-from-files
-     (->> (split-string (with-output-to-string
-                          (with-current-buffer standard-output
-                            (let ((return-value (apply #'call-process
-                                                       "git" nil t nil
-                                                       "annex" "find"
-                                                       (split-string match-expression))))
-                              (unless (zerop return-value)
-                                (error "Call to `git-annex-find’ failed: %s"
-                                       (buffer-string))))))
-                        "\n")
-          (cl-remove-if-not #'(lambda (path)
-                                (and (not (string-empty-p path))
-                                     (file-exists-p path)
-                                     (file-readable-p path))))
-          (mapcar #'(lambda (path)
-                      (expand-file-name
-                       path
-                       emms-source-file-default-directory)))))))
+    (->> (split-string (with-output-to-string
+                         (with-current-buffer standard-output
+                           (let ((return-value (apply #'call-process
+                                                      "git" nil t nil
+                                                      "annex" "find"
+                                                      (split-string match-expression))))
+                             (unless (zerop return-value)
+                               (error "Call to `git-annex-find’ failed: %s"
+                                      (buffer-string))))))
+                       "\n")
+         (cl-remove-if-not #'(lambda (path)
+                               (and (not (string-empty-p path))
+                                    (file-exists-p path)
+                                    (file-readable-p path))))
+         (mapcar #'(lambda (path)
+                     (expand-file-name
+                      path
+                      emms-source-file-default-directory))))))
 
-(defun db/update-playlist-from-directory (directory)
+(defun db/update-playlist-cache-from-directory (directory)
   "Recursively traverse DIRECTORY and update `db/playlist’.
 
 Files not present `db/playlist’ but that are found in DIRECTORY

@@ -2145,10 +2145,14 @@ search commands like `db/helm-shortcuts’."
             (require 'helm-adaptive)))
 
 (use-package db-music
-  :init (setq db/playlist-play-function #'db/play-playlist-from-git-annex-find)
-  :commands (db/play-playlist-from-cache
-             db/play-playlist-from-git-annex-find
-             db/update-playlist-from-directory))
+  :init (setq db/auto-playlist-file-function
+              #'(lambda ()
+                  (db/playlist-files-from-git-annex-find
+                   "--metadata db-playlist=include")))
+  :commands (db/play-auto-playlist
+             db/playlist-files-from-cache
+             db/playlist-files-from-git-annex-find
+             db/update-playlist-cache-from-directory))
 
 
 ;; * Shells and such
