@@ -6,7 +6,7 @@
 
 (require 'emms)
 
-(defun db/play-playlist ()
+(defun db/play-playlist-from-cache ()
   "Start playing songs from `db/playlist’"
   (interactive)
   (save-window-excursion
