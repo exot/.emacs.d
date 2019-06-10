@@ -29,21 +29,11 @@ Shuffle it and start playing it afterwards."
 (defun db/play-playlist-from-cache ()
   "Start playing songs from `db/playlist’"
   (interactive)
-  (save-window-excursion
-    (let ((music-buffer-name "*EMMS Playlist* -- Personal"))
-      (unless (get-buffer music-buffer-name)
-        (emms-playlist-new music-buffer-name))
-      (with-current-buffer (get-buffer music-buffer-name)
-        (emms-stop)
-        (emms-playlist-set-playlist-buffer)
-        (emms-playlist-current-clear)
-        (dolist (track db/playlist)
-          (when (eq :include (cdr track))
-            (emms-playlist-current-insert-source 'emms-insert-file (car track))))
-        (goto-char (point-min))
-        (emms-shuffle)
-        (emms-playlist-select-first)
-        (emms-start)))))
+  (db/-emms-playlist-from-files
+   (->> db/playlist
+        (cl-remove-if-not #'(lambda (track)
+                              (eq (cdr track) :include)))
+        (mapcar #'car))))
 
 (defun db/play-playlist-from-git-annex-tag (match-expression)
   "Generate playlist from git annex find on MATCH-EXPRESSION.
