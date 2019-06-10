@@ -67,34 +67,6 @@ Shuffle it and start playing it afterwards."
                              (eq (cdr track) :include)))
        (mapcar #'car)))
 
-(defun db/playlist-files-from-git-annex-find (match-expression)
-  "Generate playlist from git annex find on MATCH-EXPRESSION.
-
-Prompts for MATCH-EXPRESSION when called interactively.
-Generates playlist that is comprised of exactly those files that
-are match it.  Assumes `emms-source-file-default-directory’ to be
-part of a git-annex repository, and will complain otherwise."
-  (interactive "smatch expression: ")
-  (let* ((default-directory emms-source-file-default-directory))
-    (->> (split-string (with-output-to-string
-                         (with-current-buffer standard-output
-                           (let ((return-value (apply #'call-process
-                                                      "git" nil t nil
-                                                      "annex" "find"
-                                                      (split-string match-expression))))
-                             (unless (zerop return-value)
-                               (error "Call to `git-annex-find’ failed: %s"
-                                      (buffer-string))))))
-                       "\n")
-         (cl-remove-if-not #'(lambda (path)
-                               (and (not (string-empty-p path))
-                                    (file-exists-p path)
-                                    (file-readable-p path))))
-         (mapcar #'(lambda (path)
-                     (expand-file-name
-                      path
-                      emms-source-file-default-directory))))))
-
 (defun db/update-playlist-cache-from-directory (directory)
   "Recursively traverse DIRECTORY and update `db/playlist’.
 
@@ -133,6 +105,33 @@ exist anymore are removed from it."
       ;; Save and exit
       (customize-save-variable 'db/playlist new-playlist))))
 
+(defun db/playlist-files-from-git-annex-find (match-expression)
+  "Generate playlist from git annex find on MATCH-EXPRESSION.
+
+Prompts for MATCH-EXPRESSION when called interactively.
+Generates playlist that is comprised of exactly those files that
+are match it.  Assumes `emms-source-file-default-directory’ to be
+part of a git-annex repository, and will complain otherwise."
+  (interactive "smatch expression: ")
+  (let* ((default-directory emms-source-file-default-directory))
+    (->> (split-string (with-output-to-string
+                         (with-current-buffer standard-output
+                           (let ((return-value (apply #'call-process
+                                                      "git" nil t nil
+                                                      "annex" "find"
+                                                      (split-string match-expression))))
+                             (unless (zerop return-value)
+                               (error "Call to `git-annex-find’ failed: %s"
+                                      (buffer-string))))))
+                       "\n")
+         (cl-remove-if-not #'(lambda (path)
+                               (and (not (string-empty-p path))
+                                    (file-exists-p path)
+                                    (file-readable-p path))))
+         (mapcar #'(lambda (path)
+                     (expand-file-name
+                      path
+                      emms-source-file-default-directory))))))
 (provide 'db-music)
 
 ;;; db-music ends here
