@@ -45,15 +45,17 @@ Generates playlist that is comprised of exactly those files that
 are match it.  Assumes `emms-source-file-default-directory’ to be
 part of a git-annex repository, and will complain otherwise."
   (interactive "smatch expression: ")
-  ;; XXX check for git-annex
   (let* ((default-directory emms-source-file-default-directory))
     (db/-emms-playlist-from-files
      (->> (split-string (with-output-to-string
                           (with-current-buffer standard-output
-                            (apply #'call-process
-                                   "git" nil t nil
-                                   "annex" "find"
-                                   (split-string match-expression))))
+                            (let ((return-value (apply #'call-process
+                                                       "git" nil t nil
+                                                       "annex" "find"
+                                                       (split-string match-expression))))
+                              (unless (zerop return-value)
+                                (error "Call to `git-annex-find’ failed: %s"
+                                       (buffer-string))))))
                         "\n")
           (cl-remove-if-not #'(lambda (path)
                                 (and (not (string-empty-p path))
