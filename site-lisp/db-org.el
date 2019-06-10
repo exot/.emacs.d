@@ -395,7 +395,6 @@ Current Task: %s(db/org-clock-current-task); "
   ("a" counsel-org-goto-all)
   ("o" org-clock-out)
   ("l" db/org-clock-in-last-task)
-  ("p" db/play-playlist)
   ("d" (lambda ()
          (interactive)
          (when (org-clock-is-active)

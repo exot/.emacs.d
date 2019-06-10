@@ -120,6 +120,7 @@ Playing: %s(db/emms-track-status)
   _n_: ?n?          _p_: ?p?
 _RET_: ?RET?    _M_: ?M?
   _-_: lower volume  _+_: ?+?
+  _P_: ?P?
 
 "
   ("n" emms-next         "next")
@@ -128,7 +129,9 @@ _RET_: ?RET?    _M_: ?M?
   ("s" emms-show         "show title")
   ("-" emms-volume-lower "lower volume")
   ("+" emms-volume-raise "raise volume")
-  ("M" emms              "show playlist"))
+  ("M" emms              "show playlist")
+  ("P" (funcall db/playlist-play-function)
+   "Play automatically generated playlist"))
 
 
 ;; End
