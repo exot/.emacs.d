@@ -108,6 +108,7 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
 
 (defun db/emms-track-status ()
   "Return string displaying status of currently played track."
+  (require 'emms)
   (if emms-player-playing-p
       (format "%s" (emms-track-description
                     (emms-playlist-current-selected-track)))
