@@ -2152,6 +2152,7 @@ search commands like `db/helm-shortcuts’."
   :commands (db/play-auto-playlist
              db/playlist-files-from-cache
              db/playlist-files-from-git-annex-find
+             db/play-auto-playlist-from-git-annex-find
              db/update-playlist-cache-from-directory))
 
 

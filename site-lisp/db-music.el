@@ -132,6 +132,16 @@ part of a git-annex repository, and will complain otherwise."
                      (expand-file-name
                       path
                       emms-source-file-default-directory))))))
+
+(defun db/play-auto-playlist-from-git-annex-find ()
+  "Interactively query user for a git-annex match expression and
+  play resulting list of audio files.
+
+See `db/playlist-files-from-git-annex-find’ for more details."
+  (interactive)
+  (db/-emms-playlist-from-files
+   (call-interactively #'db/playlist-files-from-git-annex-find)))
+
 (provide 'db-music)
 
 ;;; db-music ends here
