@@ -2146,7 +2146,7 @@ search commands like `db/helm-shortcuts’."
 
 (use-package db-music
   :commands (db/play-playlist-from-cache
-             db/play-playlist-from-git-annex-tag
+             db/play-playlist-from-git-annex-find
              db/update-playlist-from-directory))
 
 (defcustom db/playlist-play-function #'db/play-playlist-from-cache

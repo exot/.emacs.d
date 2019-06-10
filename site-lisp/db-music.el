@@ -35,7 +35,7 @@ Shuffle it and start playing it afterwards."
                               (eq (cdr track) :include)))
         (mapcar #'car))))
 
-(defun db/play-playlist-from-git-annex-tag (match-expression)
+(defun db/play-playlist-from-git-annex-find (match-expression)
   "Generate playlist from git annex find on MATCH-EXPRESSION.
 
 Prompts for MATCH-EXPRESSION when called interactively.
