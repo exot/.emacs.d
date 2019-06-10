@@ -11,6 +11,8 @@
   "Generate EMMS playlist from FILES.
 
 Shuffle it and start playing it afterwards."
+  (when (seq-empty-p files)
+    (user-error "List of files is empty, nothing to do"))
   (save-window-excursion
     (let ((music-buffer-name "*EMMS Playlist* -- Personal"))
       (unless (get-buffer music-buffer-name)
