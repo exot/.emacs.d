@@ -46,19 +46,23 @@ are match it.  Assumes `emms-source-file-default-directory’ to be
 part of a git-annex repository, and will complain otherwise."
   (interactive "smatch expression: ")
   ;; XXX check for git-annex
-  (let* ((default-directory emms-source-file-default-directory)
-         ;; XXX sanitize MATCH-EXPRESSION
-         (list-of-files (->> (split-string (shell-command-to-string
-                                            (concat "git annex find " match-expression))
-                                           "\n")
-                             (cl-remove-if-not #'(lambda (path)
-                                                   (and (not (string-empty-p path))
-                                                        (file-exists-p path)
-                                                        (file-readable-p path))))
-                             (mapcar #'(lambda (path)
-                                         (expand-file-name path
-                                                           emms-source-file-default-directory))))))
-    (db/-emms-playlist-from-files list-of-files)))
+  (let* ((default-directory emms-source-file-default-directory))
+    (db/-emms-playlist-from-files
+     (->> (split-string (with-output-to-string
+                          (with-current-buffer standard-output
+                            (apply #'call-process
+                                   "git" nil t nil
+                                   "annex" "find"
+                                   (split-string match-expression))))
+                        "\n")
+          (cl-remove-if-not #'(lambda (path)
+                                (and (not (string-empty-p path))
+                                     (file-exists-p path)
+                                     (file-readable-p path))))
+          (mapcar #'(lambda (path)
+                      (expand-file-name
+                       path
+                       emms-source-file-default-directory)))))))
 
 (defun db/update-playlist-from-directory (directory)
   "Recursively traverse DIRECTORY and update `db/playlist’.
