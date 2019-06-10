@@ -4,7 +4,27 @@
 
 ;;; Code:
 
+(require 'dash)
 (require 'emms)
+
+(defun db/-emms-playlist-from-files (files)
+  "Generate EMMS playlist from FILES.
+
+Shuffle it and start playing it afterwards."
+  (save-window-excursion
+    (let ((music-buffer-name "*EMMS Playlist* -- Personal"))
+      (unless (get-buffer music-buffer-name)
+        (emms-playlist-new music-buffer-name))
+      (with-current-buffer (get-buffer music-buffer-name)
+        (emms-stop)
+        (emms-playlist-set-playlist-buffer)
+        (emms-playlist-current-clear)
+        (dolist (track files)
+          (emms-playlist-current-insert-source 'emms-insert-file track))
+        (goto-char (point-min))
+        (emms-shuffle)
+        (emms-playlist-select-first)
+        (emms-start)))))
 
 (defun db/play-playlist-from-cache ()
   "Start playing songs from `db/playlist’"
@@ -24,6 +44,29 @@
         (emms-shuffle)
         (emms-playlist-select-first)
         (emms-start)))))
+
+(defun db/play-playlist-from-git-annex-tag (match-expression)
+  "Generate playlist from git annex find on MATCH-EXPRESSION.
+
+Prompts for MATCH-EXPRESSION when called interactively.
+Generates playlist that is comprised of exactly those files that
+are match it.  Assumes `emms-source-file-default-directory’ to be
+part of a git-annex repository, and will complain otherwise."
+  (interactive "smatch expression: ")
+  ;; XXX check for git-annex
+  (let* ((default-directory emms-source-file-default-directory)
+         ;; XXX sanitize MATCH-EXPRESSION
+         (list-of-files (->> (split-string (shell-command-to-string
+                                            (concat "git annex find " match-expression))
+                                           "\n")
+                             (cl-remove-if-not #'(lambda (path)
+                                                   (and (not (string-empty-p path))
+                                                        (file-exists-p path)
+                                                        (file-readable-p path))))
+                             (mapcar #'(lambda (path)
+                                         (expand-file-name path
+                                                           emms-source-file-default-directory))))))
+    (db/-emms-playlist-from-files list-of-files)))
 
 (defun db/update-playlist-from-directory (directory)
   "Recursively traverse DIRECTORY and update `db/playlist’.
