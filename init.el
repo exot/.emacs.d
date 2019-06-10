@@ -2145,22 +2145,10 @@ search commands like `db/helm-shortcuts’."
             (require 'helm-adaptive)))
 
 (use-package db-music
+  :init (setq db/playlist-play-function #'db/play-playlist-from-git-annex-find)
   :commands (db/play-playlist-from-cache
              db/play-playlist-from-git-annex-find
              db/update-playlist-from-directory))
-
-(defcustom db/playlist-play-function #'db/play-playlist-from-cache
-  "Function to use to automatically generate playlists"
-  :group 'personal-settings
-  :type 'function)
-
-(defcustom db/playlist nil
-  "List of songs to include in a random playlist."
-  :group 'personal-settings
-  :type '(alist :value-type (choice (const :tag "Undecided" :undecided)
-                                    (const :tag "Include" :include)
-                                    (const :tag "Exclude" :exclude))
-                :key-type file))
 
 
 ;; * Shells and such

@@ -7,6 +7,25 @@
 (require 'dash)
 (require 'emms)
 
+(defgroup db-music nil
+  "General configurations for music-related functionality."
+  :prefix "db-music"
+  :group 'convenience
+  :tag "db-music")
+
+(defcustom db/playlist-play-function #'db/play-playlist-from-cache
+  "Function to use to automatically generate playlists"
+  :group 'db-music
+  :type 'function)
+
+(defcustom db/playlist nil
+  "List of songs to include in a random playlist."
+  :group 'db-music
+  :type '(alist :value-type (choice (const :tag "Undecided" :undecided)
+                                    (const :tag "Include" :include)
+                                    (const :tag "Exclude" :exclude))
+                :key-type file))
+
 (defun db/-emms-playlist-from-files (files)
   "Generate EMMS playlist from FILES.
 

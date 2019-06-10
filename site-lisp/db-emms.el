@@ -130,7 +130,10 @@ _RET_: ?RET?    _M_: ?M?
   ("-" emms-volume-lower "lower volume")
   ("+" emms-volume-raise "raise volume")
   ("M" emms              "show playlist")
-  ("P" (funcall db/playlist-play-function)
+  ("P" (lambda ()
+         (interactive)
+         (require 'db-music)
+         (call-interactively db/playlist-play-function))
    "Play automatically generated playlist"))
 
 
