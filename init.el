@@ -428,6 +428,7 @@
                                  (holiday-fixed 6 6 "D-Day 1944")
                                  (holiday-fixed 6 8 "Yoneda Appreciation Day")
                                  (holiday-fixed 6 10 "Jahrestag Zerstörung von Oradour-sur-Glane 1944")
+                                 (holiday-fixed 6 10 "Jahrestag Massaker von Distomo 1944")
                                  (holiday-fixed 6 16 "Bloomsday")
                                  (holiday-fixed 7 20 "Jahrestag Attentat auf Hitler 1944")
                                  (holiday-fixed 7 21 "Jahrestag der 1. Mondlandung 1969")
