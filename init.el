@@ -960,7 +960,7 @@ search commands like `db/helm-shortcuts’."
               org-agenda-log-mode-items '(closed state)
               org-agenda-remove-tags t
               org-agenda-sticky nil
-              org-agenda-inhibit-startup t
+              org-agenda-inhibit-startup nil
               org-agenda-tags-todo-honor-ignore-options t
               org-agenda-dim-blocked-tasks nil
               org-enforce-todo-checkbox-dependencies t
