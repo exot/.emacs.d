@@ -1773,7 +1773,10 @@ search commands like `db/helm-shortcuts’."
                 diredp-hide-details-initially-flag t
 
                 wdired-create-parent-directories t
-                wdired-allow-to-change-permissions t)
+                wdired-allow-to-change-permissions t
+
+                dired-isearch-filenames 'dwim
+                dired-auto-revert-buffer t)
 
           (if on-windows
               (setq dired-guess-shell-alist-user '((".*" "cmd /c")))
