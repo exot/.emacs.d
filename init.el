@@ -699,6 +699,8 @@ search commands like `db/helm-shortcuts’."
               org-ellipsis "⤵"
               org-fontify-done-headline nil
 
+              org-duration-format '(("y") ("w") ("d") (special . h:mm))
+
               org-todo-keywords
               '((sequence "TODO(t)" "CONT(n!)" "|" "DONE(d@)")
                 (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
