@@ -879,7 +879,6 @@ search commands like `db/helm-shortcuts’."
                                                  "ATTN"))))
               org-clock-persist t
               org-clock-persist-query-resume nil
-              org-duration-format 'h:mm
               org-time-stamp-rounding-minutes '(1 1))
   :config (progn
             (org-clock-persistence-insinuate)
