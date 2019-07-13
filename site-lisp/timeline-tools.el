@@ -580,10 +580,12 @@ Interactively query for the exact value of \"short\"."
     (user-error "Not in Timeline buffer"))
   (save-mark-and-excursion
    ;; get actual entry from headline of line
-   (end-of-line)
-   (unless (looking-back " |$" nil)
+   (beginning-of-line)
+   (unless (looking-at "^| ")
      (user-error "Not in table"))
-   (org-table-previous-field)
+   ;; Move 5 columns to find the actual entry
+   (dotimes (_ 5)
+     (org-table-next-field))
    (let ((entry (get-text-property (point) 'entry)))
      (unless entry
        (user-error "Not on valid row in timeline"))
