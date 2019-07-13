@@ -485,14 +485,14 @@ archives."
           (when (not (equal last-category current-category))
             (insert "|--|\n")
             (setq last-category current-category))
-          (insert (format "| %s | %s | %s | %s min | %s | \n"
-                          current-category
-                          (timeline-tools-format-entry-time line 'start)
-                          (timeline-tools-format-entry-time line 'end)
-                          (timeline-tools-entry-duration line)
-                          (propertize (timeline-tools-entry-headline line)
-                                      'marker (timeline-tools-entry-marker line)
-                                      'entry line)))))
+          (insert
+           (propertize (format "| %s | %s | %s | %s min | %s | \n"
+                               current-category
+                               (timeline-tools-format-entry-time line 'start)
+                               (timeline-tools-format-entry-time line 'end)
+                               (timeline-tools-entry-duration line) (timeline-tools-entry-headline line))
+                       'marker (timeline-tools-entry-marker line)
+                       'entry line))))
       (insert "|--|\n")
       (org-table-align)
       (goto-char (point-min))
@@ -564,8 +564,8 @@ Interactively query for the exact value of \"short\"."
   (unless (eq major-mode 'timeline-tools-mode)
     (user-error "Not in Timeline buffer"))
   (let ((marker (save-mark-and-excursion
-                 (end-of-line)
-                 (org-table-previous-field)
+                 (beginning-of-line)
+                 (org-table-next-field)
                  (get-text-property (point) 'marker))))
     (unless marker
       (user-error "Not on headline to jump to"))
@@ -579,21 +579,19 @@ Interactively query for the exact value of \"short\"."
   (unless (eq major-mode 'timeline-tools-mode)
     (user-error "Not in Timeline buffer"))
   (save-mark-and-excursion
-   ;; get actual entry from headline of line
-   (beginning-of-line)
-   (unless (looking-at "^| ")
-     (user-error "Not in table"))
-   ;; Move 5 columns to find the actual entry
-   (dotimes (_ 5)
-     (org-table-next-field))
-   (let ((entry (get-text-property (point) 'entry)))
-     (unless entry
-       (user-error "Not on valid row in timeline"))
-     (unless (< 1 (length timeline-tools--current-timeline))
-       (user-error "Cannot delete last line"))
-     (setq-local timeline-tools--current-timeline
-                 (timeline-tools-transform-timeline
-                  (delq entry timeline-tools--current-timeline)))))
+    ;; get actual entry from headline of line
+    (beginning-of-line)
+    (unless (looking-at "^| ")
+      (user-error "Not in table"))
+    (org-table-next-field)
+    (let ((entry (get-text-property (point) 'entry)))
+      (unless entry
+        (user-error "Not on valid row in timeline"))
+      (unless (< 1 (length timeline-tools--current-timeline))
+        (user-error "Cannot delete last line"))
+      (setq-local timeline-tools--current-timeline
+                  (timeline-tools-transform-timeline
+                   (delq entry timeline-tools--current-timeline)))))
   ;; the call to `erase-buffer’ in `timeline-tools-redraw-timeline’ somehow
   ;; makes `save-mark-and-excursion’ meaningless; thus we save the number of the
   ;; current line by ourselves
