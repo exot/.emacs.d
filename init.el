@@ -1959,14 +1959,6 @@ search commands like `db/helm-shortcuts’."
               enable-recursive-minibuffers t
               ivy-magic-tilde nil
               ivy-count-format "(%d/%d) "
-              ivy-format-function #'(lambda (cands)
-                                      (ivy--format-function-generic
-                                       (lambda (str)
-                                         (concat "→ " str))
-                                       (lambda (str)
-                                         (concat "  " str))
-                                       cands
-                                       "\n"))
               ivy-initial-inputs-alist '((counsel-describe-function . "^")
                                          (counsel-describe-variable . "^")
                                          (man . "^")
