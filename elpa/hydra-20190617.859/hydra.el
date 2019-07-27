@@ -5,7 +5,7 @@
 ;; Author: Oleh Krehel <ohwoeowho@gmail.com>
 ;; Maintainer: Oleh Krehel <ohwoeowho@gmail.com>
 ;; URL: https://github.com/abo-abo/hydra
-;; Version: 0.14.0
+;; Version: 0.15.0
 ;; Keywords: bindings
 ;; Package-Requires: ((cl-lib "0.5") (lv "0"))
 
@@ -211,15 +211,33 @@ the body or the head."
 (declare-function posframe-hide "posframe")
 (declare-function posframe-poshandler-window-center "posframe")
 
+(defvar hydra-posframe-show-params
+  '(:internal-border-width 1
+    :internal-border-color "red"
+    :poshandler posframe-poshandler-window-center)
+  "List of parameters passed to `posframe-show'.")
+
+(defvar hydra--posframe-timer nil
+  "Timer for hiding posframe hint.")
+
 (defun hydra-posframe-show (str)
   (require 'posframe)
-  (posframe-show
-   " *hydra-posframe*"
-   :string str
-   :poshandler #'posframe-poshandler-window-center))
+  (when hydra--posframe-timer
+    (cancel-timer hydra--posframe-timer))
+  (setq hydra--posframe-timer nil)
+  (apply #'posframe-show
+         " *hydra-posframe*"
+         :string str
+         hydra-posframe-show-params))
 
 (defun hydra-posframe-hide ()
-  (posframe-hide " *hydra-posframe*"))
+  (require 'posframe)
+  (unless hydra--posframe-timer
+    (setq hydra--posframe-timer
+          (run-with-idle-timer
+           0 nil (lambda ()
+                   (setq hydra--posframe-timer nil)
+                   (posframe-hide " *hydra-posframe*"))))))
 
 (defvar hydra-hint-display-alist
   (list (list 'lv #'lv-message #'lv-delete-window)
@@ -315,18 +333,19 @@ Exitable only through a blue head.")
     (around hydra-around-find-function-search-for-symbol-advice
      (symbol type library) activate)
     "Navigate to hydras with `find-function-search-for-symbol'."
-    ad-do-it
-    ;; The orignial function returns (cons (current-buffer) (point))
-    ;; if it found the point.
-    (unless (cdr ad-return-value)
-      (with-current-buffer (find-file-noselect library)
-        (let ((sn (symbol-name symbol)))
-          (when (and (null type)
-                     (string-match "\\`\\(hydra-[a-z-A-Z0-9]+\\)/\\(.*\\)\\'" sn)
-                     (re-search-forward (concat "(defhydra " (match-string 1 sn))
-                                        nil t))
-            (goto-char (match-beginning 0)))
-          (cons (current-buffer) (point)))))))
+    (prog1 ad-do-it
+      (when (symbolp symbol)
+        ;; The orignial function returns (cons (current-buffer) (point))
+        ;; if it found the point.
+        (unless (cdr ad-return-value)
+          (with-current-buffer (find-file-noselect library)
+            (let ((sn (symbol-name symbol)))
+              (when (and (null type)
+                         (string-match "\\`\\(hydra-[a-z-A-Z0-9]+\\)/\\(.*\\)\\'" sn)
+                         (re-search-forward (concat "(defhydra " (match-string 1 sn))
+                                            nil t))
+                (goto-char (match-beginning 0)))
+              (cons (current-buffer) (point)))))))))
 
 ;;* Universal Argument
 (defvar hydra-base-map

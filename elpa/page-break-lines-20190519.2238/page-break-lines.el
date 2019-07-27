@@ -4,7 +4,7 @@
 
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; URL: https://github.com/purcell/page-break-lines
-;; Package-Version: 20181221.2308
+;; Package-Version: 20190519.2238
 ;; Package-X-Original-Version: 0
 ;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: convenience, faces
@@ -77,6 +77,13 @@
   :group 'page-break-lines)
 
 ;;;###autoload
+(defcustom page-break-lines-max-width nil
+  "If non-nil, maximum width (in characters) of page break indicator.
+If nil, indicator will span the width of the frame."
+  :type '(choice integer (const :tag "Full width" nil))
+  :group 'page-break-lines)
+
+;;;###autoload
 (defcustom page-break-lines-modes
   '(emacs-lisp-mode lisp-mode scheme-mode compilation-mode outline-mode help-mode)
   "Modes in which to enable `page-break-lines-mode'."
@@ -99,7 +106,7 @@ displayed as a junk character."
   "Toggle Page Break Lines mode.
 
 In Page Break mode, page breaks (^L characters) are displayed as a
-horizontal line of `page-break-string-char' characters."
+horizontal line of `page-break-lines-char' characters."
   :lighter page-break-lines-lighter
   :group 'page-break-lines
   (page-break-lines--update-display-tables))
@@ -134,6 +141,9 @@ its display table will be modified as necessary."
                                       0)))
                      (width (- (/ wwidth-pix (frame-char-width) cwidth)
                                (if (display-graphic-p) 0 1)))
+                     (width (if page-break-lines-max-width
+                                (min width page-break-lines-max-width)
+                              width))
                      (glyph (make-glyph-code page-break-lines-char 'page-break-lines))
                      (new-display-entry (vconcat (make-list width glyph))))
                 (unless (equal new-display-entry (elt buffer-display-table ?\^L))

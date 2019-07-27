@@ -20,6 +20,12 @@ Mode-line indicator for `page-break-lines-mode'.")
 
 (custom-autoload 'page-break-lines-lighter "page-break-lines" t)
 
+(defvar page-break-lines-max-width nil "\
+If non-nil, maximum width (in characters) of page break indicator.
+If nil, indicator will span the width of the frame.")
+
+(custom-autoload 'page-break-lines-max-width "page-break-lines" t)
+
 (defvar page-break-lines-modes '(emacs-lisp-mode lisp-mode scheme-mode compilation-mode outline-mode help-mode) "\
 Modes in which to enable `page-break-lines-mode'.")
 
@@ -35,7 +41,7 @@ displayed as a junk character." :group (quote page-break-lines))
 Toggle Page Break Lines mode.
 
 In Page Break mode, page breaks (^L characters) are displayed as a
-horizontal line of `page-break-string-char' characters.
+horizontal line of `page-break-lines-char' characters.
 
 \(fn &optional ARG)" t nil)
 
