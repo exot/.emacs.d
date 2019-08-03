@@ -698,6 +698,7 @@ search commands like `db/helm-shortcuts’."
               org-src-preserve-indentation t
               org-ellipsis "⤵"
               org-fontify-done-headline nil
+              org-cycle-separator-lines 0
 
               org-duration-format '(("y") ("w") ("d") (special . h:mm))
 
