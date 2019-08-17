@@ -238,10 +238,6 @@
     (bind-key "C-S-s" #'counsel-grep-or-swiper)
     (bind-key [remap bookmark-bmenu-list] #'counsel-bookmark))
 
-  (when (package-installed-p 'swiper)
-    (bind-key "C-s" #'swiper-isearch)
-    (bind-key "C-r" #'swiper-isearch))
-
   (when (package-installed-p 'helm)
     (bind-key "M-y" #'helm-show-kill-ring))
 
