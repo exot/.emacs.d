@@ -570,6 +570,8 @@ search commands like `db/helm-shortcuts’."
              endless/colorize-compilation
              db/add-use-package-to-imenu
              db/turn-off-local-electric-pair-mode
+             db/org-cleanup-continuous-clocks
+             db/find-csv-in-org
              db/export-diary
              db/add-symbols-to-TeX-input-method
              db/two-monitors-xrandr
