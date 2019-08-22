@@ -1077,21 +1077,11 @@ search commands like `db/helm-shortcuts’."
                  entry
                  (file db/org-default-refile-file)
                  "* GOTO %^{What} :DATE:\n%^{When}t\n%a%?")
-                ("i" "Interruptions")
-                ("in" "Interruption now"
+                ("i" "Interruptions"
                  entry
                  (file db/org-default-refile-file)
                  "* DONE %^{What}\nCLOSED: %U\n\n%?"
                  :clock-in t :clock-resume t)
-                ("ip" "Interruption previously" ; bad English vs mnemonics
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* DONE %^{What}\n"
-                          "CLOSED: %U\n"
-                          ":LOGBOOK:\n"
-                          "%(timeline-tools-clockline-no-org-agenda-conflicts)\n" ; evaluated before above prompt?
-                          ":END:\n"
-                          "%?"))
                 ("j" "journal entry"
                  plain
                  (file+datetree db/org-default-pensieve-file)
@@ -1121,13 +1111,6 @@ search commands like `db/helm-shortcuts’."
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* MEETING %^{What} :MEETING:\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%?")
-                 :clock-in t :clock-resume t)
-                ("p" "Phone call"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* PHONE %^{Calling} :PHONE:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%?")
                  :clock-in t :clock-resume t)
