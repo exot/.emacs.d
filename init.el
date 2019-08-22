@@ -572,6 +572,7 @@ search commands like `db/helm-shortcuts’."
              db/turn-off-local-electric-pair-mode
              db/org-cleanup-continuous-clocks
              db/find-csv-in-org
+             db/org-mark-current-default-task
              db/export-diary
              db/add-symbols-to-TeX-input-method
              db/two-monitors-xrandr
@@ -884,12 +885,7 @@ search commands like `db/helm-shortcuts’."
   :config (progn
             (org-clock-persistence-insinuate)
 
-            (add-hook 'org-clock-in-hook ; mark current default task
-                      (lambda ()
-                        (let ((current-id (org-id-get org-clock-marker)))
-                          (when (member current-id (list org-working-task-id
-                                                         org-home-task-id))
-                            (org-clock-mark-default-task)))))
+            (add-hook 'org-clock-in-hook #'db/org-mark-current-default-task)
 
             ;; Clock in default task if no other task is given
             (add-hook 'org-clock-out-hook #'db/ensure-running-clock 'append)

@@ -444,6 +444,15 @@ by passing a universal argument."
     (org-mode)
     (org-table-convert-region (point-min) (point-max) separator)))
 
+(defun db/org-mark-current-default-task ()
+  "Mark current task as default when equal to work task or home task.
+Work task and home task are determined by the current values of
+`org-working-task-id’ and `org-home-task-id’, respectively."
+  (let ((current-id (org-id-get org-clock-marker)))
+    (when (member current-id (list org-working-task-id
+                                   org-home-task-id))
+      (org-clock-mark-default-task))))
+
 
 ;;; Calendar
 
