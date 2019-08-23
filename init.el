@@ -1105,13 +1105,6 @@ search commands like `db/helm-shortcuts’."
                  ,(concat "* READ %^{Description} :READ:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%(current-kill 0)"))
-                ("m" "Meeting"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* MEETING %^{What} :MEETING:\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%?")
-                 :clock-in t :clock-resume t)
                 ("w" "Weekly Summary"
                  entry
                  (file+datetree db/org-default-pensieve-file)
