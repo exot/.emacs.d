@@ -353,10 +353,10 @@ output, separated by \\n, when called with
 ;;; helm configuration
 
 (defvar db/helm-source-frequently-used-features
-  '((name . "Frequently Used")
-    (candidates . db/frequently-used-features)
-    (action . (("Open" . funcall)))
-    (filtered-candidate-transformer . helm-adaptive-sort))
+  (helm-make-source "Frequently Used" 'helm-source-sync
+    :candidates #'db/frequently-used-features
+    :action '(("Open" . funcall))
+    :filtered-candidate-transformer #'helm-adaptive-sort)
   "Helm source for `db/helm-frequently-used-features’.")
 
 (defun db/important-documents ()
@@ -399,10 +399,10 @@ path."
     (start-process "" nil "xdg-open" path))))
 
 (defvar db/helm-source-important-documents
-  '((name . "Important files")
-    (candidates . db/important-documents)
-    (action . (("Open externally" . db/system-open)
-               ("Find file" . find-file))))
+  (helm-make-source "Important files" 'helm-source-sync
+    :candidates #'db/important-documents
+    :action '(("Open externally" . db/system-open)
+              ("Find file" . find-file)))
   "Helm source for important documents.")
 
 (defun db/helm-shortcuts (arg)
