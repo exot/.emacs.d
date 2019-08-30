@@ -1080,10 +1080,6 @@ search commands like `db/helm-shortcuts’."
                  (file db/org-default-refile-file)
                  "* DONE %^{What}\nCLOSED: %U\n\n%?"
                  :clock-in t :clock-resume t)
-                ("j" "journal entry"
-                 plain
-                 (file+datetree db/org-default-pensieve-file)
-                 "\n%i%U\n\n%?\n")
                 ("r" "respond"
                  entry
                  (file db/org-default-refile-file)
@@ -1107,7 +1103,7 @@ search commands like `db/helm-shortcuts’."
                           "\n%(current-kill 0)"))
                 ("w" "Weekly Summary"
                  entry
-                 (file+datetree db/org-default-pensieve-file)
+                 (file+olp+datetree db/org-default-pensieve-file "Reviews")
                  "* Weekly Review\n\n%?")
                 ("b" "Bookmark"
                  entry
