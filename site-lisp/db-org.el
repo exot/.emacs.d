@@ -262,7 +262,7 @@ In ~%s~:
       (org-reset-checkbox-state-subtree)))
 
 
-;; Helper Functions for Clocking
+;;; Helper Functions for Clocking
 
 (defun db/find-parent-task ()
   ;; http://doc.norang.ca/org-mode.html#Clocking
@@ -307,6 +307,14 @@ In ~%s~:
       (if (null clock-buffer)
           (insert "No running clock")
         (insert org-clock-heading)))))
+
+(defun db/org-update-frame-title-with-current-clock ()
+  "Set the frametitle of the current frame to the headline of the
+  current task."
+  (interactive)
+  (let ((clock-buffer (marker-buffer org-clock-marker)))
+    (when clock-buffer
+      (modify-frame-parameters nil `((name . , org-clock-heading))))))
 
 
 ;;; Fixes

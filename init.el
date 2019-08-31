@@ -643,6 +643,7 @@ search commands like `db/helm-shortcuts’."
              db/find-parent-task
              db/ensure-running-clock
              db/save-current-org-task-to-file
+             db/org-update-frame-title-with-current-clock
              db/org-clock-out
              db/org-clock-in-break-task
              db/org-clock-in-home-task
@@ -885,6 +886,7 @@ search commands like `db/helm-shortcuts’."
             (org-clock-persistence-insinuate)
 
             (add-hook 'org-clock-in-hook #'db/org-mark-current-default-task)
+            (add-hook 'org-clock-in-hook #'db/org-update-frame-title-with-current-clock)
 
             ;; Clock in default task if no other task is given
             (add-hook 'org-clock-out-hook #'db/ensure-running-clock 'append)
