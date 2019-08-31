@@ -357,8 +357,7 @@
       delete-trailing-lines nil
       x-underline-at-descent-line t
       search-whitespace-regexp "[ \t\r\n]+"
-      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
-      cursor-in-non-selected-windows nil)
+      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 
 (when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
   (setq x-wait-for-event-timeout nil))
@@ -368,9 +367,9 @@
   ;; matter!
   (setq inhibit-compacting-font-caches t))
 
-(setq-default cursor-type 'bar)
-
 (setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+(setq-default cursor-type 'bar
+              cursor-in-non-selected-windows nil)
 
 ;; don't let the cursor go into minibuffer prompt
 (setq minibuffer-prompt-properties '(read-only t
