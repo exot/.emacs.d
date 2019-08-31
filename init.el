@@ -530,26 +530,6 @@
 
 (use-package dash)
 
-(defcustom db/frequently-used-features
-  '(("Mail"      . db/gnus)
-    ("Agenda"    . db/org-agenda)
-    ("Init File" . db/find-user-init-file)
-    ("EMMS"      . emms)
-    ("Shell"     . shell)
-    ("EShell"    . eshell)
-    ("scratch"   . db/scratch))
-  "Mapping of frequently used features to functions implementing
-them.  Can be used in application shortcuts such as
-`db/helm-shortcuts’."
-  :group 'personal-settings
-  :type  '(alist :key-type string :value-type sexp))
-
-(defcustom db/important-documents-path "~/Documents/library/"
-  "Path to look for documents that can be listed in extended
-search commands like `db/helm-shortcuts’."
-  :group 'personal-settings
-  :type 'string)
-
 (use-package db-utils
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
@@ -559,7 +539,6 @@ search commands like `db/helm-shortcuts’."
              db/run-or-hide-shell
              db/run-or-hide-eshell
              db/run-or-hide-ansi-term
-             db/helm-shortcuts
              db/hex-to-ascii
              db/text-to-hex
              conditionally-enable-lispy
@@ -584,6 +563,29 @@ search commands like `db/helm-shortcuts’."
              db/org-outlook-open
              db/org-rfc-open
              db/dired-from-shell-command))
+
+(defcustom db/frequently-used-features
+  '(("Mail"      . db/gnus)
+    ("Agenda"    . db/org-agenda)
+    ("Init File" . db/find-user-init-file)
+    ("EMMS"      . emms)
+    ("Shell"     . shell)
+    ("EShell"    . eshell)
+    ("scratch"   . db/scratch))
+  "Mapping of frequently used features to functions implementing
+them.  Can be used in application shortcuts such as
+`db/helm-shortcuts’."
+  :group 'personal-settings
+  :type  '(alist :key-type string :value-type sexp))
+
+(defcustom db/important-documents-path "~/Documents/library/"
+  "Path to look for documents that can be listed in extended
+search commands like `db/helm-shortcuts’."
+  :group 'personal-settings
+  :type 'string)
+
+(use-package db-helm
+  :commands (db/helm-shortcuts))
 
 (use-package hydra
   :commands (defhydra))
