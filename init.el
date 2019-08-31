@@ -367,7 +367,6 @@
   ;; matter!
   (setq inhibit-compacting-font-caches t))
 
-(setq visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
 (setq-default cursor-type 'bar
               cursor-in-non-selected-windows nil)
 
