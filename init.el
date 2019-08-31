@@ -562,30 +562,8 @@
              db/org-onenote-open
              db/org-outlook-open
              db/org-rfc-open
-             db/dired-from-shell-command))
-
-(defcustom db/frequently-used-features
-  '(("Mail"      . db/gnus)
-    ("Agenda"    . db/org-agenda)
-    ("Init File" . db/find-user-init-file)
-    ("EMMS"      . emms)
-    ("Shell"     . shell)
-    ("EShell"    . eshell)
-    ("scratch"   . db/scratch))
-  "Mapping of frequently used features to functions implementing
-them.  Can be used in application shortcuts such as
-`db/helm-shortcuts’."
-  :group 'personal-settings
-  :type  '(alist :key-type string :value-type sexp))
-
-(defcustom db/important-documents-path "~/Documents/library/"
-  "Path to look for documents that can be listed in extended
-search commands like `db/helm-shortcuts’."
-  :group 'personal-settings
-  :type 'string)
-
-(use-package db-helm
-  :commands (db/helm-shortcuts))
+             db/dired-from-shell-command
+             db/system-open))
 
 (use-package hydra
   :commands (defhydra))
@@ -635,6 +613,55 @@ search commands like `db/helm-shortcuts’."
 
 (use-package exec-path-from-shell
   :commands (exec-path-from-shell-copy-envs))
+
+
+;; * Start Menu via Helm
+
+(defcustom db/frequently-used-features
+  '(("Mail"      . db/gnus)
+    ("Agenda"    . db/org-agenda)
+    ("Init File" . db/find-user-init-file)
+    ("EMMS"      . emms)
+    ("Shell"     . shell)
+    ("EShell"    . eshell)
+    ("scratch"   . db/scratch))
+  "Mapping of frequently used features to functions implementing
+them.  Can be used in application shortcuts such as
+`db/helm-shortcuts’."
+  :group 'personal-settings
+  :type  '(alist :key-type string :value-type sexp))
+
+(defcustom db/important-documents-path "~/Documents/library/"
+  "Path to look for documents that can be listed in extended
+search commands like `db/helm-shortcuts’."
+  :group 'personal-settings
+  :type 'string)
+
+(defun db/helm-shortcuts (arg)
+  "Open helm completion on common locations.
+With given ARG, display files in `db/important-document-path’."
+  (interactive "p")
+  (require 'helm-bookmark)
+  (helm :sources (list
+                  (helm-make-source "Frequently Used" 'helm-source-sync
+                    :candidates #'db/frequently-used-features
+                    :action '(("Open" . funcall))
+                    :filtered-candidate-transformer #'helm-adaptive-sort)
+
+                  helm-source-bookmarks
+                  helm-source-bookmark-set
+
+                  ;; if prefix arg is given, extrac files from
+                  ;; `db/important-documents-path’ and list them as well
+                  (when (and (= arg 4)
+                             (file-directory-p db/important-documents-path))
+                    (let ((search-path (expand-file-name db/important-documents-path)))
+                      (helm-make-source "Important files" 'helm-source-sync
+                        :candidates (mapcar #'(lambda (file)
+                                                (string-remove-prefix search-path file))
+                                            (directory-files-recursively search-path ""))
+                        :action '(("Open externally" . db/system-open)
+                                  ("Find file" . find-file))))))))
 
 
 ;; * Org
