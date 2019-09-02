@@ -658,7 +658,11 @@ With given ARG, display files in `db/important-document-path’."
                     (let ((search-path (expand-file-name db/important-documents-path)))
                       (helm-make-source "Important files" 'helm-source-sync
                         :candidates (mapcar #'(lambda (file)
-                                                (string-remove-prefix search-path file))
+                                                ;; display only relative path,
+                                                ;; but keep absolute path for
+                                                ;; actions
+                                                (cons (string-remove-prefix search-path file)
+                                                      file))
                                             (directory-files-recursively search-path ""))
                         :action '(("Open externally" . db/system-open)
                                   ("Find file" . find-file))))))))
