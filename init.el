@@ -2565,6 +2565,15 @@ With given ARG, display files in `db/important-document-path’."
               (add-to-list 'electric-pair-pairs '(?„ . ?“))
               (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
 
+(use-package eproject
+  :defer t
+  :config (progn
+            (message "Loaded eproject … done")
+            (with-eval-after-load 'message
+              (add-hook 'message-setup-hook
+                        (lambda ()
+                          (eproject-mode -1))))))
+
 (use-package expand-region
   :commands (er/expand-region))
 
