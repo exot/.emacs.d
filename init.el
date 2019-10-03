@@ -2565,6 +2565,9 @@ With given ARG, display files in `db/important-document-path’."
               (add-to-list 'electric-pair-pairs '(?„ . ?“))
               (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
 
+(use-package elpy
+  :commands (elpy-enable))
+
 (use-package eproject
   :defer t
   :config (progn
@@ -2665,8 +2668,7 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq python-indent-offset 2)
   :config (progn
             (add-hook 'python-mode-hook 'highlight-indentation-mode)
-            (when (package-installed-p 'elpy)
-              (elpy-enable))))
+            (elpy-enable)))
 
 ;; Interactive interface to sdcv, the StarDict concole version.  To use sdcv,
 ;; put the dictionary data under ~/.stardict/dic.
