@@ -3,8 +3,8 @@
 ;; Copyright (C) 2012-2016 Free Software Foundation, Inc.
 
 ;; Author: Magnar Sveen <magnars@gmail.com>
-;; Version: 2.15.0
-;; Package-Version: 20190409.1402
+;; Version: 2.16.0
+;; Package-Version: 20190920.1035
 ;; Keywords: lists
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -33,6 +33,12 @@
 ;;
 
 ;;; Code:
+
+;; TODO: `gv' was introduced in Emacs 24.3, so remove this and all
+;; calls to `defsetf' when support for earlier versions is dropped.
+(eval-when-compile
+  (unless (fboundp 'gv-define-setter)
+    (require 'cl)))
 
 (defgroup dash ()
   "Customize group for dash.el"
@@ -683,7 +689,10 @@ See also: `-third-item'.
 
 \(fn LIST)")
 
-(defalias '-third-item 'caddr
+(defalias '-third-item
+  (if (fboundp 'caddr)
+      #'caddr
+    (lambda (list) (car (cddr list))))
   "Return the third item of LIST, or nil if LIST is too short.
 
 See also: `-fourth-item'.
@@ -704,28 +713,18 @@ See also: `-last-item'."
   (declare (pure t) (side-effect-free t))
   (car (cdr (cdr (cdr (cdr list))))))
 
-;; TODO: gv was introduced in 24.3, so we can remove the if statement
-;; when support for earlier versions is dropped
-(eval-when-compile
-  (require 'cl)
-  (if (fboundp 'gv-define-simple-setter)
-      (gv-define-simple-setter -first-item setcar)
-    (require 'cl)
-    (with-no-warnings
-      (defsetf -first-item (x) (val) `(setcar ,x ,val)))))
-
 (defun -last-item (list)
   "Return the last item of LIST, or nil on an empty list."
   (declare (pure t) (side-effect-free t))
   (car (last list)))
 
-;; TODO: gv was introduced in 24.3, so we can remove the if statement
-;; when support for earlier versions is dropped
-(eval-when-compile
+;; Use `with-no-warnings' to suppress unbound `-last-item' or
+;; undefined `gv--defsetter' warnings arising from both
+;; `gv-define-setter' and `defsetf' in certain Emacs versions.
+(with-no-warnings
   (if (fboundp 'gv-define-setter)
       (gv-define-setter -last-item (val x) `(setcar (last ,x) ,val))
-    (with-no-warnings
-      (defsetf -last-item (x) (val) `(setcar (last ,x) ,val)))))
+    (defsetf -last-item (x) (val) `(setcar (last ,x) ,val))))
 
 (defun -butlast (list)
   "Return a list of all items in list except for the last."
@@ -1832,7 +1831,9 @@ kv can be any key-value store, such as plist, alist or hash-table."
 (defun dash-expand:&hash? (key source)
   "Generate extracting KEY from SOURCE for &hash? destructuring.
 Similar to &hash but check whether the map is not nil."
-  `(when ,source (gethash ,key ,source)))
+  (let ((src (make-symbol "src")))
+    `(let ((,src ,source))
+       (when ,src (gethash ,key ,src)))))
 
 (defalias 'dash-expand:&keys 'dash-expand:&plist)
 
@@ -2273,9 +2274,22 @@ The test for equality is done with `equal',
 or with `-compare-fn' if that's non-nil.
 
 Alias: `-uniq'"
-  (let (result)
-    (--each list (unless (-contains? result it) (!cons it result)))
-    (nreverse result)))
+  ;; Implementation note: The speedup gained from hash table lookup
+  ;; starts to outweigh its overhead for lists of length greater than
+  ;; 32.  See discussion in PR #305.
+  (let* ((len (length list))
+         (lut (and (> len 32)
+                   ;; Check that `-compare-fn' is a valid hash-table
+                   ;; lookup function or `nil'.
+                   (memq -compare-fn '(nil equal eq eql))
+                   (make-hash-table :test (or -compare-fn #'equal)
+                                    :size len))))
+    (if lut
+        (--filter (unless (gethash it lut)
+                    (puthash it t lut))
+                  list)
+      (--each list (unless (-contains? lut it) (!cons it lut)))
+      (nreverse lut))))
 
 (defalias '-uniq '-distinct)
 
@@ -2328,7 +2342,11 @@ or with `-compare-fn' if that's non-nil."
 
 (defun -inits (list)
   "Return all prefixes of LIST."
-  (nreverse (-map 'reverse (-tails (nreverse list)))))
+  (let ((res (list list)))
+    (setq list (reverse list))
+    (while list
+      (push (reverse (!cdr list)) res))
+    res))
 
 (defun -tails (list)
   "Return all suffixes of LIST"
