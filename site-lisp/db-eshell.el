@@ -26,15 +26,17 @@
 
 "
   (let ((head-face '(:foreground "#859900")))
-    (format (concat (propertize "┌─" 'face head-face)
-                    "%s@%s %s\n"
-                    (propertize "└─" 'face head-face)
-                    (if (zerop (user-uid)) "#" "$")
-                    (propertize " " 'face '(:weight bold)))
+    (concat (propertize "┌─" 'face head-face)
             (user-login-name)
+            "@"
             (system-name)
+            " "
             (propertize (abbreviate-file-name (eshell/pwd))
-                        'face '(:foreground "#dc322f")))))
+                        'face '(:foreground "#dc322f"))
+            "\n"
+            (propertize "└─" 'face head-face)
+            (if (zerop (user-uid)) "#" "$")
+            (propertize " " 'face '(:weight bold)))))
 
 (defun eshell/gst (&rest args)
   (magit-status (pop args) nil)
