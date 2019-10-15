@@ -648,9 +648,6 @@ With given ARG, display files in `db/important-document-path’."
                     :action '(("Open" . funcall))
                     :filtered-candidate-transformer #'helm-adaptive-sort)
 
-                  helm-source-bookmarks
-                  helm-source-bookmark-set
-
                   ;; if prefix arg is given, extrac files from
                   ;; `db/important-documents-path’ and list them as well
                   (when (and (= arg 4)
@@ -665,7 +662,10 @@ With given ARG, display files in `db/important-document-path’."
                                                       file))
                                             (directory-files-recursively search-path ""))
                         :action '(("Open externally" . db/system-open)
-                                  ("Find file" . find-file))))))))
+                                  ("Find file" . find-file)))))
+
+                  helm-source-bookmarks
+                  helm-source-bookmark-set)))
 
 
 ;; * Org
