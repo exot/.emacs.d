@@ -268,13 +268,6 @@
                                         "PERL_MB_OPT"
                                         "PERL_MM_OPT"))))
 
-  ;; Fixes
-
-  (with-eval-after-load 'enriched
-    (defun enriched-decode-display-prop (start end &optional params)
-      (ignore params)
-      (list start end)))
-
   ;; Start Server when not running already
 
   (unless (server-running-p)
@@ -458,6 +451,14 @@
 
 (setq browse-url-browser-function 'browse-url-generic
       browse-url-generic-program "firefox")
+
+
+;; * Fixes
+
+(with-eval-after-load 'enriched
+  (defun enriched-decode-display-prop (start end &optional params)
+    (ignore params)
+    (list start end)))
 
 
 ;; * Basic Builtin Packages
