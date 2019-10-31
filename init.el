@@ -147,7 +147,6 @@
 
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'yas-minor-mode-on)
-  (add-hook 'text-mode-hook 'electric-quote-mode)
 
   ;; Auto-Modes
 
