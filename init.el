@@ -573,6 +573,9 @@
              hydra-zoom/body
              hydra-rectangle/body))
 
+(use-package git-commit
+  :commands (global-git-commit-mode))
+
 (use-package magit
   :commands (magit-status)
   :init (setq magit-diff-refine-hunk nil
@@ -581,6 +584,7 @@
               magit-completing-read-function 'ivy-completing-read)
   :config (progn
             (global-magit-file-mode -1)
+            (global-git-commit-mode +1)
 
             (with-demoted-errors "Non-Fatal Error: %s"
               (eval-when-compile
