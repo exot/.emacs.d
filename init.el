@@ -970,7 +970,7 @@ With given ARG, display files in `db/important-document-path’."
   :bind (:map org-agenda-mode-map
               ("v" . hydra-org-agenda-view/body))
   :init (setq org-agenda-include-diary t
-              org-agenda-span 1
+              org-agenda-span 2
               org-agenda-diary-file db/org-default-refile-file
               org-agenda-insert-diary-strategy 'top-level
               org-catch-invisible-edits 'show
