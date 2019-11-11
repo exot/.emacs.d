@@ -2598,7 +2598,8 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package eww
   :defer t
-  :init (setq eww-bookmarks-directory (expand-file-name "private/" emacs-d)))
+  :init (setq eww-bookmarks-directory
+              (expand-file-name "private/" emacs-d)))
 
 (use-package flycheck
   :commands (global-flycheck-mode flycheck-mode))
