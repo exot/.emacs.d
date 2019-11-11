@@ -134,6 +134,9 @@
     (moody-replace-mode-line-buffer-identification)
     (moody-replace-vc-mode))
 
+  (with-demoted-errors "Cannot activate `vlf': %s"
+    (require 'vlf-setup))
+
   ;; Global Hooks
 
   (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)
@@ -2744,9 +2747,9 @@ With given ARG, display files in `db/important-document-path’."
               undo-tree-visualizer-diff t)
   :diminish undo-tree-mode)
 
-(use-package vlf-setup
-  :ensure vlf
-  :defer t)
+(use-package vlf
+  :ensure t
+  :commands (vlf))
 
 (use-package wgrep
   :ensure t
