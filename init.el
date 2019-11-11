@@ -1895,6 +1895,7 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq helm-command-prefix-key "C-c h"))
 
 (use-package helm
+  :ensure t
   :commands (helm-show-kill-ring)
   :diminish helm-mode
   :bind (:map helm-command-map
@@ -1957,6 +1958,7 @@ With given ARG, display files in `db/important-document-path’."
                          t)))
 
 (use-package ivy
+  :ensure t
   :commands (ivy-mode
              ivy-resume)
   :diminish ivy-mode
@@ -1973,6 +1975,7 @@ With given ARG, display files in `db/important-document-path’."
                        '(org-capture . completing-read-default)))
 
 (use-package counsel
+  :ensure t
   :commands (counsel-org-goto-all
              counsel-ag
              counsel-M-x
@@ -1984,6 +1987,7 @@ With given ARG, display files in `db/important-document-path’."
              counsel-recentf))
 
 (use-package swiper
+  :ensure t
   :commands (swiper
              swiper-from-isearch))
 
@@ -2000,6 +2004,7 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Navigation
 
 (use-package ace-window
+  :ensure t
   :commands (ace-window ace-window-display-mode)
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
               aw-background nil
@@ -2007,6 +2012,7 @@ With given ARG, display files in `db/important-document-path’."
               aw-scope 'frame))
 
 (use-package avy
+  :ensure t
   :commands (avy-goto-char-timer
              avy-goto-word-or-subword-1
              avy-goto-line))
@@ -2021,9 +2027,11 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq dumb-jump-selector 'helm))
 
 (use-package helm-pages
+  :ensure t
   :commands (helm-pages))
 
 (use-package eyebrowse
+  :ensure t
   :commands (eyebrowse-mode)
   :init (setq eyebrowse-keymap-prefix (kbd "C-c w")))
 
@@ -2279,6 +2287,7 @@ With given ARG, display files in `db/important-document-path’."
 ;; General Stuff first
 
 (use-package lispy
+  :ensure t
   :commands (lispy-mode)
   :diminish lispy-mode)
 
@@ -2525,6 +2534,7 @@ With given ARG, display files in `db/important-document-path’."
 ;; provide optional functionality and may redefine builtin commands.
 
 (use-package cperl-mode
+  :ensure t
   :commands (cperl-mode)
   :init (progn
           ;; replace perl-mode with cperl-mode
@@ -2539,6 +2549,7 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)))
 
 (use-package crux
+  :ensure t
   :commands (crux-eval-and-replace
              crux-smart-open-line-above
              crux-kill-whole-line
@@ -2549,13 +2560,16 @@ With given ARG, display files in `db/important-document-path’."
   :commands (projects-add-project projects-archive-project))
 
 (use-package define-word
+  :ensure t
   :commands (define-word-at-point define-word))
 
 (use-package dictcc
+  :ensure t
   :commands (dictcc)
   :config (require 'gnutls))
 
 (use-package edit-list
+  :ensure t
   :commands edit-list)
 
 (use-package electric
@@ -2570,6 +2584,7 @@ With given ARG, display files in `db/important-document-path’."
               (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
 
 (use-package elpy
+  :ensure t
   :commands (elpy-enable))
 
 (use-package eproject
@@ -2627,6 +2642,7 @@ With given ARG, display files in `db/important-document-path’."
   :commands highlight-indentation-mode)
 
 (use-package iedit
+  :ensure t
   :commands (iedit-mode))
 
 (use-package key-chord
@@ -2646,6 +2662,7 @@ With given ARG, display files in `db/important-document-path’."
   :commands (mastodon))
 
 (use-package multiple-cursors
+  :ensure t
   :commands (mc/edit-lines
              mc/mark-next-like-this
              mc/mark-previous-like-this
@@ -2716,6 +2733,7 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq toe-highscore-file nil))
 
 (use-package undo-tree
+  :ensure t
   :commands (global-undo-tree-mode
              undo
              undo-tree-redo)
@@ -2723,13 +2741,17 @@ With given ARG, display files in `db/important-document-path’."
               undo-tree-visualizer-diff t)
   :diminish undo-tree-mode)
 
-(use-package vlf-setup)
+(use-package vlf-setup
+  :ensure vlf
+  :defer t)
 
 (use-package wgrep
+  :ensure t
   :commands (wgrep-finish-edit
              wgrep-change-to-wgrep-mode))
 
 (use-package which-key
+  :ensure t
   :commands (which-key-mode)
   :diminish which-key-mode
   :init (setq which-key-side-window-max-width 0.33
@@ -2737,6 +2759,7 @@ With given ARG, display files in `db/important-document-path’."
   :config (which-key-setup-side-window-bottom))
 
 (use-package yasnippet
+  :ensure t
   :commands (yas-minor-mode-on yas-minor-mode)
   :diminish yas-minor-mode
   :config (yas-reload-all))
