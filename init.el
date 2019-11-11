@@ -2656,6 +2656,11 @@ With given ARG, display files in `db/important-document-path’."
               ldap-default-base "O=DFN-Verein,C=DE"
               ldap-ldapsearch-args '("-x" "-tt" "-H ldaps://ldap.pca.dfn.de")))
 
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode)
+  :init (setq markdown-use-pandoc-style-yaml-metadata t))
+
 (use-package mastodon
   :commands (mastodon))
 
