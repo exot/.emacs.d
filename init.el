@@ -2521,9 +2521,6 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'TeX-mode-hook
                       (lambda () (setq ispell-parser 'tex)))))
 
-(use-package ebib
-  :commands (ebib))
-
 (use-package helm-bibtex
   :commands (helm-bibtex))
 
