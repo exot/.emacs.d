@@ -2533,6 +2533,10 @@ With given ARG, display files in `db/important-document-path’."
 ;; These are packages that are not essential, but still nice to have.  They
 ;; provide optional functionality and may redefine builtin commands.
 
+(use-package company-jedi
+  :ensure t
+  :defer t)
+
 (use-package cperl-mode
   :ensure t
   :commands (cperl-mode)
@@ -2695,6 +2699,9 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq python-indent-offset 2)
   :config (progn
             (add-hook 'python-mode-hook 'highlight-indentation-mode)
+            (add-hook 'python-mode-hook #'(lambda () (eldoc-mode -1)))
+            (add-hook 'python-mode-hook #'(lambda ()
+                                            (add-to-list 'company-backends 'company-jedi)))
             (elpy-enable)))
 
 ;; Interactive interface to sdcv, the StarDict concole version.  To use sdcv,
