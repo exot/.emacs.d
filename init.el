@@ -1104,7 +1104,7 @@ With given ARG, display files in `db/important-document-path’."
               `(("t" "Todo"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* TODO %^{What}\n"
+                 ,(concat "* TODO [#B] %^{What}\n"
                           "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "%?"))
@@ -1116,16 +1116,16 @@ With given ARG, display files in `db/important-document-path’."
                 ("d" "Date"
                  entry
                  (file db/org-default-refile-file)
-                 "* GOTO %^{What} :DATE:\n%^{When}t\n%a%?")
+                 "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?")
                 ("i" "Interruptions"
                  entry
                  (file db/org-default-refile-file)
-                 "* DONE %^{What}\nCLOSED: %U\n\n%?"
+                 "* DONE [#B] %^{What}\nCLOSED: %U\n\n%?"
                  :clock-in t :clock-resume t)
                 ("r" "respond"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* TODO E-Mail: %:subject (%:from) :EMAIL:\n"
+                 ,(concat "* TODO [#B] E-Mail: %:subject (%:from) :EMAIL:\n"
                           "SCHEDULED: %^{Reply when?}t\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%a")
@@ -1133,14 +1133,14 @@ With given ARG, display files in `db/important-document-path’."
                 ("R" "read"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* READ %:subject :READ:\n"
+                 ,(concat "* READ [#B] %:subject :READ:\n"
                           ;; "DEADLINE: <%(org-read-date nil nil \"+1m\")>\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%a"))
                 ("U" "Read current content of clipboard"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* READ %^{Description} :READ:\n"
+                 ,(concat "* READ [#B] %^{Description} :READ:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%(current-kill 0)"))
                 ("w" "Weekly Summary"
