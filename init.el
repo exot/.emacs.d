@@ -1005,6 +1005,7 @@ With given ARG, display files in `db/important-document-path’."
               org-agenda-use-time-grid t
               org-agenda-persistent-filter t
               org-agenda-search-headline-for-time nil
+              org-agenda-search-view-always-boolean t
 
               org-agenda-clock-consistency-checks
               '(:max-duration 9999999
