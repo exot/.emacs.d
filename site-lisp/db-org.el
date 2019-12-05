@@ -309,12 +309,13 @@ In ~%s~:
         (insert org-clock-heading)))))
 
 (defun db/org-update-frame-title-with-current-clock ()
-  "Set the frametitle of the current frame to the headline of the
+  "Set the title of all active frames to the headline of the
   current task."
   (interactive)
   (let ((clock-buffer (marker-buffer org-clock-marker)))
     (when clock-buffer
-      (modify-frame-parameters nil `((name . , org-clock-heading))))))
+      (dolist (frame (frame-list))
+        (modify-frame-parameters frame `((name . , org-clock-heading)))))))
 
 
 ;;; Fixes
