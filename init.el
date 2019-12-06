@@ -1788,19 +1788,17 @@ With given ARG, display files in `db/important-document-path’."
                 dired-isearch-filenames 'dwim
                 dired-auto-revert-buffer t)
 
-          (if on-windows
-              (setq dired-guess-shell-alist-user '((".*" "cmd /c")))
-            (setq dired-guess-shell-alist-user
-                  '(("\\.pdf\\'" "evince")
-                    ("\\.ps\\'" "evince")
-                    ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
-                    ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
-                    ("\\.\\(?:xcf\\)\\'" "gimp")
-                    ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
-                     "vlc")
-                    ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
-                    ("\\.html?\\'" "firefox")
-                    ("\\.docx?\\'" "loffice"))))
+          (setq dired-guess-shell-alist-user
+                '(("\\.pdf\\'" "evince")
+                  ("\\.ps\\'" "evince")
+                  ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                  ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
+                  ("\\.\\(?:xcf\\)\\'" "gimp")
+                  ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
+                   "vlc")
+                  ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
+                  ("\\.html?\\'" "firefox")
+                  ("\\.docx?\\'" "loffice")))
 
           (when on-windows
             (setq directory-free-space-program nil)))
