@@ -523,11 +523,6 @@ it.  The bookmarks will finally be sorted by their name."
   (interactive "sLocation: \nsName: ")
   (db/bookmark-add-with-handler name location #'db/system-open))
 
-(defun db/bookmark-add-dired-external (location name)
-  "Add NAME as bookmark to LOCATION that is opened by `dired-open-file'."
-  (interactive "sLocation: \nsName: ")
-  (db/bookmark-add-with-handler name location #'dired-open-file))
-
 (defun db/bookmark-add-url (url name)
   "Add NAME as bookmark to URL that is opened by `browse-url’."
   (interactive "sURL: \nsName: ")
