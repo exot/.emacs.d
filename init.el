@@ -1806,13 +1806,22 @@ With given ARG, display files in `db/important-document-path’."
             (put 'dired-find-alternate-file 'disabled nil)
 
             (require 'dired-x)
-            (with-demoted-errors "Non-Fatal Error: %s"
+            (with-demoted-errors "Non-Fatal Error (dired+): %s"
               (require 'dired+)
+
+              ;; disable exaggerated fontification of dired+
+              (require 'font-lock)
+              (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
+              (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1)))
+
+            (with-demoted-errors "Non-Fatal Errors (dired-open): %s"
               (when (and (eq system-type 'windows-nt)
                          (not (package-installed-p 'w32-browser)))
                 (warn "`w32-browser’ not installed, dired will have reduced functionality."))
-              (when (and (eq system-type 'gnu/linux)
-                         (require 'dired-open))
+
+              (require 'dired-open)
+
+              (when (eq system-type 'gnu/linux)
                 (bind-key "M-RET" #'dired-open-xdg dired-mode-map)))
 
             ;; Gnus support in dired
@@ -1823,10 +1832,6 @@ With given ARG, display files in `db/important-document-path’."
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))
 
-            ;; disable exaggerated fontification of dired+
-            (require 'font-lock)
-            (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
-            (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))
 
             (defun ora-ediff-files ()
               "Compare marked files in dired with ediff."
