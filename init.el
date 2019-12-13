@@ -211,6 +211,7 @@
   (bind-key "C-x C-b" #'ibuffer)
   (bind-key "C-x g" #'db/helm-shortcuts)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
+  (bind-key "C-x r E" #'db/bookmark-add-dired-external)
   (bind-key "C-x r M" #'db/bookmark-add-url)
   (bind-key "C-x r v" #'list-registers)
   (bind-key "C-x t" #'hydra-toggle/body)
@@ -560,6 +561,7 @@
              db/one-monitor-xrandr
              db/pretty-print-xml
              db/bookmark-add-external
+             db/bookmard-add-dired-external
              db/bookmark-add-url
              db/lookup-smime-key
              db/org-onenote-open
