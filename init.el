@@ -276,6 +276,13 @@
   (unless (server-running-p)
     (server-start))
 
+  ;; Load custom code
+
+  (dolist (file db/after-init-load-files)
+    (message "Loading %s" file)
+    (with-demoted-errors "Error loading file: %s"
+      (load-file file)))
+
   ;; Finish
   
   (message "Running main initialization ... done")
@@ -298,6 +305,11 @@
   "Personal XMPP ID."
   :group 'personal-settings
   :type 'string)
+
+(defcustom db/after-init-load-files nil
+  "A list of files to be loaded by `db/run-init' as the last step."
+  :group 'personal-settings
+  :type '(repeat file))
 
 
 ;; * General configuration
