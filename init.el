@@ -1887,7 +1887,9 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
 
 (use-package dired-open
-  :config (add-to-list 'dired-open-functions #'dired-open-guess-shell-alist))
+  :ensure t
+  :config (add-to-list 'dired-open-functions
+                       #'dired-open-guess-shell-alist))
 
 (use-package gnus-dired
   :commands (turn-on-gnus-dired-mode))
