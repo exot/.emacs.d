@@ -2631,6 +2631,8 @@ With given ARG, display files in `db/important-document-path’."
               (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
 
 (use-package eproject
+  ;; This configuration is only present to inhibit eproject overriding
+  ;; keybindings in `message-mode'
   :defer t
   :config (progn
             (message "Loaded eproject … done")
