@@ -14,11 +14,13 @@ Debian GNU/Linux and Windows 10 (sigh).
 - Gnus integration, including a general setup to easily add SMTP configuration
   for multiple email accounts.
 - Extended completion support via [[https://github.com/emacs-helm/helm][helm]], [[https://github.com/abo-abo/swiper][ivy]], and [[https://company-mode.github.io/][company]].
+- [[https://magit.vc/][Magit]] and [[https://github.com/bbatsov/projectile][Projectile]].
 - A custom “start menu” based on helm (via ~C-x g~), allowing to access
   bookmarks, default applications, and files; see the documentation of
   ~db/helm-shortcuts~ for more details.
 - More or less usable integration into Windows (necessary for work, sorry for
   that).
+- A usable [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]] configuration.
 - Support for various programming languages (Emacs Lisp, Clojure, Python, LaTeX,
   Perl, Haskell, …)
 
@@ -89,7 +91,7 @@ in that order.
 
 * Known Limitations
 
-Under Windows, using Tramp using ~ssh~ from git does not seem to work because no
+Under Windows, using Tramp with ~ssh~ from git does not seem to work because no
 ~ssh-askpass~ is included.  Using passwordless authentication should work,
 though.
 
