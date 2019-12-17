@@ -95,6 +95,6 @@ though.
 
 * License
 
-ⓒ 2017–2019 Daniel Borchmann
+ⓒ 2017–2020 Daniel Borchmann
 
 This configuration is available under the MIT license, see [[LICENSE]] for details.
