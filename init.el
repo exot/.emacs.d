@@ -2549,14 +2549,36 @@ With given ARG, display files in `db/important-document-path’."
   :commands (helm-bibtex))
 
 
-;; * Various Mode Configurations
-
-;; These are packages that are not essential, but still nice to have.  They
-;; provide optional functionality and may redefine builtin commands.
+;; * Python
 
 (use-package company-jedi
   :ensure t
   :defer t)
+
+(use-package python
+  :defer t
+  :init (setq python-indent-offset 2)
+  :config (progn
+            (add-hook 'python-mode-hook 'highlight-indentation-mode)
+            (add-hook 'python-mode-hook
+                      #'(lambda ()
+                          (add-to-list 'company-backends 'company-jedi)))
+
+            ;; Somehow, `eldoc' seems to be broken in `python-mode', disable it
+            ;; for now.
+            (add-hook 'python-mode-hook #'(lambda () (eldoc-mode -1)))
+
+            (elpy-enable)))
+
+(use-package elpy
+  :ensure t
+  :commands (elpy-enable))
+
+
+;; * Various Mode Configurations
+
+;; These are packages that are not essential, but still nice to have.  They
+;; provide optional functionality and may redefine builtin commands.
 
 (use-package cperl-mode
   :ensure t
@@ -2607,10 +2629,6 @@ With given ARG, display files in `db/important-document-path’."
               (add-to-list 'electric-pair-text-pairs '(?“ . ?”))
               (add-to-list 'electric-pair-pairs '(?„ . ?“))
               (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
-
-(use-package elpy
-  :ensure t
-  :commands (elpy-enable))
 
 (use-package eproject
   :defer t
@@ -2714,16 +2732,6 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package pdf-tools
   :commands (pdf-tools-install))
-
-(use-package python
-  :defer t
-  :init (setq python-indent-offset 2)
-  :config (progn
-            (add-hook 'python-mode-hook 'highlight-indentation-mode)
-            (add-hook 'python-mode-hook #'(lambda () (eldoc-mode -1)))
-            (add-hook 'python-mode-hook #'(lambda ()
-                                            (add-to-list 'company-backends 'company-jedi)))
-            (elpy-enable)))
 
 ;; Interactive interface to sdcv, the StarDict concole version.  To use sdcv,
 ;; put the dictionary data under ~/.stardict/dic.
