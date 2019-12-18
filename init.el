@@ -314,6 +314,11 @@
 
 ;; * General configuration
 
+;; Ensure that ~/.emacs.d/private exists, because we want to store data there
+(let ((private-data-dir (expand-file-name "private/" emacs-d)))
+  (unless (file-directory-p private-data-dir)
+    (make-directory private-data-dir)))
+
 (setq custom-file
       (expand-file-name "private/custom.el" emacs-d))
 
