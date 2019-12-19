@@ -3,6 +3,9 @@
 
 #+options: toc:t
 
+This is a small collection of Emacs related posts and documentation by other
+authors that I find useful.
+
 * Workshop for Emacs Macros
 
 (By [[https://www.howardism.org/][Howard Abrams]], 2015 Nov 24)
