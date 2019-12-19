@@ -1,5 +1,5 @@
 #+title: Notes on Emacs
-#+author: Daniel
+#+author: Various
 
 #+options: toc:t
 
@@ -941,9 +941,7 @@ Result:
 
 Hope this helps you twiddle those bits in all the ways that make you happy.
 
-* Irreal                                                                :NOP:
-
-A random collection of notes from [[https://irreal.org/blog][Irreal's Blog]].
+* Random Notes                                                          :NOP:
 
 ** Insert URL from Safari                                       :IRREAL:NOTE:
 :PROPERTIES:
@@ -1162,7 +1160,6 @@ use.
 
 [[http://irreal.org/blog/?p=6894][Link]]
 
-* Random Notes                                                          :NOP:
 ** How to paste then copy                                              :NOTE:
 :PROPERTIES:
 :CREATED: [2018-08-11 Sat 21:47]
