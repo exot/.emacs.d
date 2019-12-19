@@ -1917,3 +1917,28 @@ Naturally, I used it to insert itself:
     (insert "#+begin_src emacs-lisp\n" definition "#+end_src\n")))
 #+end_src
 
+** Tramping into GCloud instances from within emacs             :IRREAL:NOTE:
+
+From https://gist.github.com/jackrusher/36c80a2fd6a8fe8ddf46bc7e408ae1f9 via [[https://irreal.org/blog/?p=8126][Irreal]].
+
+#+begin_src emacs-lisp
+;; make sure you've set your default project with:
+;; gcloud config set project <project-name>
+
+(require 'tramp)
+(add-to-list 'tramp-methods
+  '("gcssh"
+    (tramp-login-program        "gcloud compute ssh")
+    (tramp-login-args           (("%h")))
+    (tramp-async-args           (("-q")))
+    (tramp-remote-shell         "/bin/sh")
+    (tramp-remote-shell-args    ("-c"))
+    (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
+                                 ("-o" "UserKnownHostsFile=/dev/null")
+                                 ("-o" "StrictHostKeyChecking=no")))
+    (tramp-default-port         22)))
+
+;; ... after which it's as easy as:
+;;
+;; C-x C-f /gcssh:compute-instance:/path/to/filename.clj
+#+end_src
