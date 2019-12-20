@@ -72,7 +72,7 @@ configuration and future merges should pass without conflicts.
 
 The main configuration is available in the usual [[init.el]] file, with additional
 functionality distributed over files in the [[site-lisp]] directory.  Some private
-data (like customization) is outsources into a separate directory named
+data (like customization) is outsourced into a separate directory named
 =private=, and is not included in this repository.  The configuration should
 work nevertheless, even without these private files.
 
