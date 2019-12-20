@@ -395,15 +395,15 @@ forces clocking in of the default task."
 (defhydra hydra-org-clock (:color blue)
   "
 Current Task: %s(db/org-clock-current-task); "
-  ("w" (db/org-clock-in-work-task))
-  ("h" (db/org-clock-in-home-task))
-  ("b" (db/org-clock-in-break-task))
+  ("w" (db/org-clock-in-work-task) "work")
+  ("h" (db/org-clock-in-home-task) "home")
+  ("b" (db/org-clock-in-break-task) "break")
   ("i" (lambda ()
          (interactive)
-         (org-clock-in '(4))))
-  ("a" counsel-org-goto-all)
-  ("o" org-clock-out)
-  ("l" db/org-clock-in-last-task)
+         (org-clock-in '(4))) "interactive")
+  ("a" counsel-org-goto-all "goto")
+  ("o" org-clock-out "clock out")
+  ("l" db/org-clock-in-last-task "last")
   ("d" (lambda ()
          (interactive)
          (when (org-clock-is-active)
@@ -411,7 +411,8 @@ Current Task: %s(db/org-clock-current-task); "
              (org-clock-goto)
              (let ((org-inhibit-logging 'note))
                (org-todo 'done)
-               (org-save-all-org-buffers)))))))
+               (org-save-all-org-buffers)))))
+   "default"))
 
 
 ;;; Babel
