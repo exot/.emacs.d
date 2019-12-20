@@ -1922,9 +1922,6 @@ With given ARG, display files in `db/important-document-path’."
 (use-package hippie-exp
   :commands (hippie-expand))
 
-(use-package helm-config
-  :init (setq helm-command-prefix-key "C-c h"))
-
 (use-package helm
   :ensure t
   :commands (helm-show-kill-ring)
@@ -1932,7 +1929,8 @@ With given ARG, display files in `db/important-document-path’."
   :bind (:map helm-command-map
               ("#" . helm-emms)
               ("P" . helm-pages))
-  :init (setq helm-input-idle-delay 0.0
+  :init (setq helm-command-prefix-key "C-c h"
+              helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
               helm-mode-fuzzy-match t
               helm-autoresize-min-height 20
@@ -1950,6 +1948,7 @@ With given ARG, display files in `db/important-document-path’."
               helm-buffer-skip-remote-checking t)
   :config (progn
             (eval-when-compile
+              (require 'helm-config)
               (require 'helm-mode)
               (require 'helm-buffers)
               (require 'helm-ring))
