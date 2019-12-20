@@ -90,9 +90,7 @@
   (savehist-mode 1)
 
   ;; We explicitly load abbreviations here, because `abbrev-file-name’ may have
-  ;; been changed by customize.  Since customizations are only loaded via
-  ;; `after-init-hook’, relying on Emacs to automatically loading abbreviations
-  ;; would be too late.
+  ;; been changed by customize.
 
   (with-demoted-errors "Cannot load abbreviations: %s"
     (quietly-read-abbrev-file))
