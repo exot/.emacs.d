@@ -78,16 +78,14 @@ work nevertheless, even without these private files.
 
 The main =init.el= file consists mostly of variable assignments, =use-package=
 declarations, initializing the =package= subsystem, and loading customizations.
-The main lifting is done by the =db/run-init= function, which is attached to the
+The main lifting is done by the =db/run-init= function, which is attached to
 =after-init-hook= in =init.el=.  This way, all necessary local hooks and
 autoloads are set up by =init.el=, and the =db/run-init= functions only
-activates a (minimal?)  configurations needed for every session, including
-modes, keybindings, hydras, and global hooks.  It also imports some environment
-variables and starts the server when running under windows.  Any additional
-packages are only loaded when required.
-
-Lastly, ~db/run-init~ loads all files contained in ~db/after-init-load-files~,
-in that order.
+activates modes needed for every session, sets default keybindings, hydras, and
+global hooks.  It also imports some environment variables and starts the server.
+Any additional packages are only loaded when required.  Additionally, after all
+this, ~db/run-init~ loads all files contained in ~db/after-init-load-files~, in
+the order given in that list.
 
 * Known Limitations
 
