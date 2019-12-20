@@ -117,7 +117,8 @@
                   minions-mode
                   which-key-mode
                   eyebrowse-mode
-                  projectile-mode))
+                  projectile-mode
+                  yas-global-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
@@ -144,7 +145,6 @@
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
 
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
-  (add-hook 'text-mode-hook 'yas-minor-mode-on)
 
   ;; Auto-Modes
 
@@ -2367,7 +2367,6 @@ With given ARG, display files in `db/important-document-path’."
               (dopar 'defun))
             (add-hook 'clojure-mode-hook 'turn-on-lispy-when-available)
             (add-hook 'clojure-mode-hook 'clj-refactor-mode)
-            (add-hook 'clojure-mode-hook 'yas-minor-mode)
             (add-hook 'clojure-mode-hook 'company-mode)))
 
 (use-package clj-refactor
@@ -2809,7 +2808,7 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package yasnippet
   :ensure t
-  :commands (yas-minor-mode-on yas-minor-mode)
+  :commands (yas-minor-mode-on yas-minor-mode yas-global-mode)
   :diminish yas-minor-mode
   :config (yas-reload-all))
 
