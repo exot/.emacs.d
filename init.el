@@ -1947,14 +1947,7 @@ With given ARG, display files in `db/important-document-path’."
               helm-candidate-number-limit 100
               helm-follow-mode-persistent t
               helm-buffer-details-flag t
-              helm-buffer-skip-remote-checking t
-              helm-mini-default-sources '(helm-source-buffers-list
-                                          helm-source-recentf
-                                          db/helm-frequently-used-features
-                                          db/helm-frequently-visited-locations
-                                          helm-source-buffer-not-found
-                                          helm-source-bookmarks
-                                          helm-source-bookmark-set))
+              helm-buffer-skip-remote-checking t)
   :config (progn
             (eval-when-compile
               (require 'helm-mode)
