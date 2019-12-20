@@ -66,11 +66,6 @@
 
   (message "Running main initialization ...")
 
-  ;; Load customizations
-
-  (when (file-exists-p custom-file)
-    (load-file custom-file))
-
   ;; Activate modes (builtin)
 
   (show-paren-mode 1)
@@ -2817,5 +2812,11 @@ With given ARG, display files in `db/important-document-path’."
   :commands (yas-minor-mode-on yas-minor-mode)
   :diminish yas-minor-mode
   :config (yas-reload-all))
+
+
+;; * Load customizations
+
+(when (file-exists-p custom-file)
+  (load-file custom-file))
 
 ;;; init.el ends here
