@@ -1958,29 +1958,6 @@ With given ARG, display files in `db/important-document-path’."
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
             (bind-key "C-z" #'helm-select-action helm-map)))
 
-(use-package helm-org
-  :commands (helm-org-agenda-files-headings)
-  :bind (:map helm-org-headings-map
-              ("C-c c" . helm-org-clock-in-at-heading))
-  :config (progn
-            ;; Add action to clock in at current heading to
-            ;; `helm-org-agenda-files-headings’
-
-            (defun helm-org--clock-in-at-heading (marker)
-              "Clock in to current heading at MARKER."
-              (org-with-point-at marker
-                (org-clock-in)))
-
-            (defun helm-org-clock-in-at-heading ()
-              (interactive)
-              (with-helm-alive-p
-                (helm-exit-and-execute-action 'helm-org--clock-in-at-heading)))
-
-            (add-to-list 'helm-org-headings-actions
-                         '("Clock in to this heading"
-                           . helm-org--clock-in-at-heading)
-                         t)))
-
 (use-package ivy
   :ensure t
   :commands (ivy-mode
