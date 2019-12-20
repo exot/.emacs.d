@@ -89,12 +89,6 @@
   (appt-activate +1)
   (savehist-mode 1)
 
-  ;; We explicitly load abbreviations here, because `abbrev-file-name’ may have
-  ;; been changed by customize.
-
-  (with-demoted-errors "Cannot load abbreviations: %s"
-    (quietly-read-abbrev-file))
-
   (size-indication-mode 1)
   (display-battery-mode -1)
 
@@ -486,7 +480,7 @@
   :commands (winner-mode winner-undo winner-redo))
 
 (use-package abbrev
-  :commands (quietly-read-abbrev-file)
+  :defer t
   :init (progn
           (setq-default abbrev-mode t)
           (setq save-abbrevs 'silently))
