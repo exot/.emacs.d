@@ -626,7 +626,6 @@
               projectile-create-missing-test-files t
               projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
                                                                emacs-d))
-  :config (projectile-cleanup-known-projects)
   :diminish projectile-mode)
 
 (use-package counsel-projectile
