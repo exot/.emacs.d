@@ -118,7 +118,8 @@
                   which-key-mode
                   eyebrowse-mode
                   projectile-mode
-                  yas-global-mode))
+                  yas-global-mode
+                  semantic-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
