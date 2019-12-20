@@ -551,6 +551,8 @@
 
 (use-package dash)
 
+(use-package hydra)
+
 (use-package db-utils
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
@@ -585,9 +587,6 @@
              db/org-rfc-open
              db/dired-from-shell-command
              db/system-open))
-
-(use-package hydra
-  :commands (defhydra))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
