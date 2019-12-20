@@ -2807,7 +2807,6 @@ With given ARG, display files in `db/important-document-path’."
   :config (which-key-setup-side-window-bottom))
 
 (use-package yasnippet
-  :ensure t
   :commands (yas-minor-mode-on yas-minor-mode yas-global-mode)
   :diminish yas-minor-mode
   :config (yas-reload-all))
