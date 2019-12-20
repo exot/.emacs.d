@@ -643,20 +643,22 @@
 ;; * Start Menu via Helm
 
 (defcustom db/frequently-used-features
-  '(("Mail"      . db/gnus)
-    ("Agenda"    . db/org-agenda)
-    ("Init File" . db/find-user-init-file)
-    ("EMMS"      . emms)
-    ("Shell"     . shell)
-    ("EShell"    . eshell)
-    ("scratch"   . db/scratch)
-    ("Info Lookup" . counsel-info-lookup-symbol)
-    ("Unicode Lookup" . counsel-unicode-char))
+  '(("Mail" ?m db/gnus)
+    ("Agenda" ?a db/org-agenda)
+    ("Init File" ?i db/find-user-init-file)
+    ("EMMS" ?M emms)
+    ("Shell" ?s db/run-or-hide-shell)
+    ("EShell" ?e db/run-or-hide-eshell)
+    ("scratch" ?r db/scratch)
+    ("Info Lookup" ?I counsel-info-lookup-symbol)
+    ("Unicode Lookup" ?U counsel-unicode-char))
   "Mapping of frequently used features to functions implementing
 them.  Can be used in application shortcuts such as
-`db/helm-shortcuts’."
+`db/helm-shortcuts’.  Each entry is a list of three items: a
+short description, a shortcut character, and the function to
+call."
   :group 'personal-settings
-  :type  '(alist :key-type string :value-type sexp))
+  :type  '(repeat (list string character function)))
 
 (defcustom db/important-documents-path "~/Documents/library/"
   "Path to look for documents that can be listed in extended
@@ -671,8 +673,11 @@ With given ARG, display files in `db/important-document-path’."
   (require 'helm-bookmark)
   (helm :sources (list
                   (helm-make-source "Frequently Used" 'helm-source-sync
-                    :candidates #'db/frequently-used-features
-                    :action '(("Open" . funcall))
+                    :candidates (mapcar #'(lambda (entry)
+                                            (cons (car entry)
+                                                  (caddr entry)))
+                                        db/frequently-used-features)
+                    :action '(("Open" . call-interactively))
                     :filtered-candidate-transformer #'helm-adaptive-sort)
 
                   ;; if prefix arg is given, extrac files from
