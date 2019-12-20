@@ -169,8 +169,7 @@
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
-  (bind-key "<f2> i" #'counsel-info-lookup-symbol)
-  (bind-key "<f2> u" #'counsel-unicode-char)
+  (bind-key "<f2>" #'hydra-shortcuts/body)
   (bind-key "<f5>" #'rgrep)
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
@@ -591,7 +590,9 @@
 (use-package db-hydras
   :commands (hydra-toggle/body
              hydra-zoom/body
-             hydra-rectangle/body))
+             hydra-rectangle/body
+             hydra-shortcuts/body
+             db/define-hydra-from-frequently-used-features))
 
 (use-package git-commit
   :commands (global-git-commit-mode))
@@ -657,7 +658,10 @@ them.  Can be used in application shortcuts such as
 short description, a shortcut character, and the function to
 call."
   :group 'personal-settings
-  :type  '(repeat (list string character function)))
+  :type  '(repeat (list string character function))
+  :set   #'(lambda (symbol value)
+             (set symbol value)
+             (db/define-hydra-from-frequently-used-features)))
 
 (defcustom db/important-documents-path "~/Documents/library/"
   "Path to look for documents that can be listed in extended
