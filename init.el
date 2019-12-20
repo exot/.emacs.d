@@ -649,7 +649,9 @@
     ("EMMS"      . emms)
     ("Shell"     . shell)
     ("EShell"    . eshell)
-    ("scratch"   . db/scratch))
+    ("scratch"   . db/scratch)
+    ("Info Lookup" . counsel-info-lookup-symbol)
+    ("Unicode Lookup" . counsel-unicode-char))
   "Mapping of frequently used features to functions implementing
 them.  Can be used in application shortcuts such as
 `db/helm-shortcuts’."
