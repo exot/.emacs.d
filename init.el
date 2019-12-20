@@ -2013,7 +2013,8 @@ With given ARG, display files in `db/important-document-path’."
              counsel-unicode-char
              counsel-describe-variable
              counsel-describe-function
-             counsel-recentf))
+             counsel-recentf
+             counsel-shell-history))
 
 (use-package swiper
   :ensure t
@@ -2246,6 +2247,8 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package shell
   :commands (shell)
+  :bind (:map shell-mode-map
+              ("C-r" . counsel-shell-history))
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
