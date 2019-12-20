@@ -1992,7 +1992,6 @@ With given ARG, display files in `db/important-document-path’."
              ivy-resume)
   :diminish ivy-mode
   :init (setq ivy-use-virtual-buffers t
-              enable-recursive-minibuffers t
               ivy-magic-tilde nil
               ivy-count-format "(%d/%d) "
               ivy-initial-inputs-alist '((counsel-describe-function . "^")
