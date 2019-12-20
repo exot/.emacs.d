@@ -11,11 +11,11 @@
 ;; * then comes setting up all the packages that can be used by this
 ;;   configuration; most of these packages are not loaded however, and only
 ;;   configuration hooks are installed (using `use-package’); this way a user
-;;   can choose in `db/run-init’ which configruation to activate without
+;;   can choose in `db/run-init’ which configuration to activate without
 ;;   changing much of the rest of the file.
 ;; * this file also introduces a new customization group `personal-settings’
 ;;   containing variables (mostly file paths) that must be set to enable some
-;;   of the provied functionality.
+;;   of the provided functionality.
 
 ;;; Code:
 
