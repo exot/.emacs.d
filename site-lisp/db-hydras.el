@@ -20,7 +20,8 @@
   ("r" read-only-mode "read-only"))
 
 ;; zooming with single keystrokes (from oremacs)
-(defhydra hydra-zoom (:color red)
+(defhydra hydra-zoom (:color red
+                      :body-pre (require 'face-remap))
   "zoom"
   ("g" text-scale-increase "increase")
   ("l" text-scale-decrease "decrease"))
