@@ -2792,9 +2792,7 @@ With given ARG, display files in `db/important-document-path’."
 
 ;; * Load customizations
 
-(message "Loading customizations ...")
 (when (file-exists-p custom-file)
   (load-file custom-file))
-(message "Loading customizations ... done")
 
 ;;; init.el ends here
