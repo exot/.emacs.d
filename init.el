@@ -52,6 +52,10 @@
       (package-install package))
     (require package)))
 
+(add-to-list 'package-pinned-packages '("diminish" . "melpa-stable"))
+(add-to-list 'package-pinned-packages '("use-package" . "melpa-stable"))
+(add-to-list 'package-pinned-packages '("bind-key" . "melpa-stable"))
+
 (put 'use-package 'lisp-indent-function 1)
 (setq use-package-verbose t
       use-package-minimum-reported-time 0.01)
@@ -533,9 +537,11 @@
 
 ;; * Some essential packages
 
-(use-package dash)
+(use-package dash
+  :pin "melpa-stable")
 
-(use-package hydra)
+(use-package hydra
+  :pin "melpa-stable")
 
 (use-package db-utils
   :commands (endless/fill-or-unfill
@@ -621,6 +627,7 @@
   :commands counsel-projectile)
 
 (use-package exec-path-from-shell
+  :pin "melpa-stable"
   :commands (exec-path-from-shell-copy-envs))
 
 
@@ -2683,6 +2690,7 @@ With given ARG, display files in `db/important-document-path’."
   :commands (mastodon))
 
 (use-package multiple-cursors
+  :pin "melpa-stable"
   :ensure t
   :commands (mc/edit-lines
              mc/mark-next-like-this
@@ -2696,6 +2704,7 @@ With given ARG, display files in `db/important-document-path’."
             (require 'org-ref-url-utils)))
 
 (use-package page-break-lines
+  :pin "melpa-stable"
   :commands (page-break-lines-mode)
   :diminish page-break-lines-mode)
 
