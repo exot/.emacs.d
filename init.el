@@ -52,9 +52,9 @@
       (package-install package))
     (require package)))
 
-(add-to-list 'package-pinned-packages '("diminish" . "melpa-stable"))
-(add-to-list 'package-pinned-packages '("use-package" . "melpa-stable"))
-(add-to-list 'package-pinned-packages '("bind-key" . "melpa-stable"))
+(add-to-list 'package-pinned-packages '(diminish . "melpa-stable"))
+(add-to-list 'package-pinned-packages '(use-package . "melpa-stable"))
+(add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
 
 (put 'use-package 'lisp-indent-function 1)
 (setq use-package-verbose t
@@ -542,6 +542,9 @@
 
 (use-package hydra
   :pin "melpa-stable")
+
+;; `lv' is a dependency of `hydra'
+(add-to-list 'package-pinned-packages '(lv . "melpa-stable"))
 
 (use-package db-utils
   :commands (endless/fill-or-unfill
