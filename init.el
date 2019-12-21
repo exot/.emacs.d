@@ -2030,6 +2030,7 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Media
 
 (use-package emms
+  :pin "melpa-stable"
   :commands (emms
              emms-pause
              emms-stop
@@ -2136,6 +2137,7 @@ With given ARG, display files in `db/important-document-path’."
              emms-control/body))
 
 (use-package helm-emms
+  :pin "melpa-stable"
   :commands (helm-emms)
   :init (setq helm-emms-use-track-description-function t
               helm-emms-default-sources '(helm-source-emms-streams
