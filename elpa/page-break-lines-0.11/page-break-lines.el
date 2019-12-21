@@ -1,12 +1,11 @@
-;;; page-break-lines.el --- Display ^L page breaks as tidy horizontal lines
+;;; page-break-lines.el --- Display ugly ^L page breaks as tidy horizontal lines
 
 ;; Copyright (C) 2012-2015 Steve Purcell
 
 ;; Author: Steve Purcell <steve@sanityinc.com>
 ;; URL: https://github.com/purcell/page-break-lines
-;; Package-Version: 20190519.2238
-;; Package-X-Original-Version: 0
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Version: 0.11
+;; Package-X-Original-Version: DEV
 ;; Keywords: convenience, faces
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -38,7 +37,7 @@
 
 ;; If `page-break-lines-char' is displayed at a different width to
 ;; regular characters, the rule may be either too short or too long:
-;; rules may then wrap if `truncate-lines' is nil.  On some systems,
+;; rules may then wrap if `truncate-lines' is nil. On some systems,
 ;; Emacs may erroneously choose a different font for the page break
 ;; symbol, which choice can be overridden using code such as:
 
@@ -64,33 +63,22 @@
   :prefix "page-break-lines-"
   :group 'faces)
 
-;;;###autoload
 (defcustom page-break-lines-char ?─
   "Character used to render page break lines."
   :type 'character
   :group 'page-break-lines)
 
-;;;###autoload
 (defcustom page-break-lines-lighter " PgLn"
   "Mode-line indicator for `page-break-lines-mode'."
   :type '(choice (const :tag "No lighter" "") string)
   :group 'page-break-lines)
 
-;;;###autoload
-(defcustom page-break-lines-max-width nil
-  "If non-nil, maximum width (in characters) of page break indicator.
-If nil, indicator will span the width of the frame."
-  :type '(choice integer (const :tag "Full width" nil))
-  :group 'page-break-lines)
-
-;;;###autoload
 (defcustom page-break-lines-modes
   '(emacs-lisp-mode lisp-mode scheme-mode compilation-mode outline-mode help-mode)
   "Modes in which to enable `page-break-lines-mode'."
   :type '(repeat symbol)
   :group 'page-break-lines)
 
-;;;###autoload
 (defface page-break-lines
   '((t :inherit font-lock-comment-face :bold nil :italic nil))
   "Face used to colorize page break lines.
@@ -106,18 +94,25 @@ displayed as a junk character."
   "Toggle Page Break Lines mode.
 
 In Page Break mode, page breaks (^L characters) are displayed as a
-horizontal line of `page-break-lines-char' characters."
+horizontal line of `page-break-string-char' characters."
   :lighter page-break-lines-lighter
   :group 'page-break-lines
   (page-break-lines--update-display-tables))
 
 ;;;###autoload
-(define-obsolete-function-alias 'turn-on-page-break-lines-mode 'page-break-lines-mode)
+(defun turn-on-page-break-lines-mode ()
+  "Enable `page-break-lines-mode' in this buffer."
+  (page-break-lines-mode 1))
+
+;;;###autoload
+(defun turn-off-page-break-lines-mode ()
+  "Disable `page-break-lines-mode' in this buffer."
+  (page-break-lines-mode -1))
+
 
 (dolist (hook '(window-configuration-change-hook
                 window-size-change-functions
-                after-setting-font-hook
-                display-line-numbers-mode-hook))
+                after-setting-font-hook))
   (add-hook hook 'page-break-lines--update-display-tables))
 
 
@@ -127,35 +122,23 @@ horizontal line of `page-break-lines-char' characters."
 If the buffer inside WINDOW has `page-break-lines-mode' enabled,
 its display table will be modified as necessary."
   (with-current-buffer (window-buffer window)
-    (with-selected-window window
-      (if page-break-lines-mode
-          (progn
-            (unless buffer-display-table
-              (setq buffer-display-table (make-display-table)))
-            (let ((default-height (face-attribute 'default :height nil 'default)))
-              (set-face-attribute 'page-break-lines nil :height default-height)
-              (let* ((cwidth (char-width page-break-lines-char))
-                     (wwidth-pix (- (window-width nil t)
-                                    (if (bound-and-true-p display-line-numbers)
-                                        (line-number-display-width t)
-                                      0)))
-                     (width (- (/ wwidth-pix (frame-char-width) cwidth)
-                               (if (display-graphic-p) 0 1)))
-                     (width (if page-break-lines-max-width
-                                (min width page-break-lines-max-width)
-                              width))
-                     (glyph (make-glyph-code page-break-lines-char 'page-break-lines))
-                     (new-display-entry (vconcat (make-list width glyph))))
-                (unless (equal new-display-entry (elt buffer-display-table ?\^L))
-                  (aset buffer-display-table ?\^L new-display-entry)))))
-        (when (and (apply 'derived-mode-p page-break-lines-modes)
-                   buffer-display-table)
-          (aset buffer-display-table ?\^L nil))))))
+    (if page-break-lines-mode
+        (progn
+          (unless buffer-display-table
+            (setq buffer-display-table (make-display-table)))
+          (let ((default-height (face-attribute 'default :height nil 'default)))
+            (set-face-attribute 'page-break-lines nil :height default-height)
+            (let* ((width (- (window-width window) 1))
+                   (glyph (make-glyph-code page-break-lines-char 'page-break-lines))
+                   (new-display-entry (vconcat (make-list width glyph))))
+              (unless (equal new-display-entry (elt buffer-display-table ?\^L))
+                (aset buffer-display-table ?\^L new-display-entry)))))
+      (when buffer-display-table
+        (aset buffer-display-table ?\^L nil)))))
 
 (defun page-break-lines--update-display-tables  (&optional frame)
   "Function called for updating display table in windows of FRAME."
-  (unless (minibufferp)
-    (mapc 'page-break-lines--update-display-table (window-list frame 'no-minibuffer))))
+  (mapc 'page-break-lines--update-display-table (window-list frame 'no-minibuffer)))
 
 
 
@@ -171,7 +154,6 @@ When `major-mode' is listed in `page-break-lines-modes', then
 ;;;###autoload
 (define-global-minor-mode global-page-break-lines-mode
   page-break-lines-mode page-break-lines-mode-maybe
-  :require 'page-break-lines
   :group 'page-break-lines)
 
 
@@ -179,6 +161,7 @@ When `major-mode' is listed in `page-break-lines-modes', then
 
 ;; Local Variables:
 ;; coding: utf-8
+;; byte-compile-warnings: (not cl-functions)
 ;; checkdoc-minor-mode: t
 ;; End:
 

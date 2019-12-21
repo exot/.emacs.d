@@ -10,42 +10,23 @@
 ;;;;;;  0 0 0))
 ;;; Generated autoloads from page-break-lines.el
 
-(defvar page-break-lines-char 9472 "\
-Character used to render page break lines.")
-
-(custom-autoload 'page-break-lines-char "page-break-lines" t)
-
-(defvar page-break-lines-lighter " PgLn" "\
-Mode-line indicator for `page-break-lines-mode'.")
-
-(custom-autoload 'page-break-lines-lighter "page-break-lines" t)
-
-(defvar page-break-lines-max-width nil "\
-If non-nil, maximum width (in characters) of page break indicator.
-If nil, indicator will span the width of the frame.")
-
-(custom-autoload 'page-break-lines-max-width "page-break-lines" t)
-
-(defvar page-break-lines-modes '(emacs-lisp-mode lisp-mode scheme-mode compilation-mode outline-mode help-mode) "\
-Modes in which to enable `page-break-lines-mode'.")
-
-(custom-autoload 'page-break-lines-modes "page-break-lines" t)
-
-(defface page-break-lines '((t :inherit font-lock-comment-face :bold nil :italic nil)) "\
-Face used to colorize page break lines.
-If using :bold or :italic, please ensure `page-break-lines-char'
-is available in that variant of your font, otherwise it may be
-displayed as a junk character." :group (quote page-break-lines))
-
 (autoload 'page-break-lines-mode "page-break-lines" "\
 Toggle Page Break Lines mode.
 
 In Page Break mode, page breaks (^L characters) are displayed as a
-horizontal line of `page-break-lines-char' characters.
+horizontal line of `page-break-string-char' characters.
 
 \(fn &optional ARG)" t nil)
 
-(define-obsolete-function-alias 'turn-on-page-break-lines-mode 'page-break-lines-mode)
+(autoload 'turn-on-page-break-lines-mode "page-break-lines" "\
+Enable `page-break-lines-mode' in this buffer.
+
+\(fn)" nil nil)
+
+(autoload 'turn-off-page-break-lines-mode "page-break-lines" "\
+Disable `page-break-lines-mode' in this buffer.
+
+\(fn)" nil nil)
 
 (autoload 'page-break-lines-mode-maybe "page-break-lines" "\
 Enable `page-break-lines-mode' in the current buffer if desired.
@@ -76,7 +57,7 @@ See `page-break-lines-mode' for more information on Page-Break-Lines mode.
 
 \(fn &optional ARG)" t nil)
 
-(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "page-break-lines" '("page-break-lines--update-display-table")))
+(if (fboundp 'register-definition-prefixes) (register-definition-prefixes "page-break-lines" '("page-break-lines-")))
 
 ;;;***
 
