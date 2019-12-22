@@ -7,6 +7,14 @@
 This is a small collection of Emacs related posts and documentation by other
 authors that I find useful.
 
+* Emacs Features
+
+** Eshell
+
+- [[https://www.masteringemacs.org/article/complete-guide-mastering-eshell][Mastering Eshell]] by Mickey Petersen
+- [[http://www.howardism.org/Technical/Emacs/eshell-fun.html][Eschewing Zshell for Emacs Shell]] by Howard Abrams
+- [[https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org][Abrams' EShell configuration]]
+
 * Workshop for Emacs Macros
 
 (By [[https://www.howardism.org/][Howard Abrams]], 2015 Nov 24)
