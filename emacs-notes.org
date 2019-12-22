@@ -1,5 +1,6 @@
 #+title: Notes on Emacs
 #+author: Various
+#+filetags: NOTE
 
 #+options: toc:t
 
@@ -313,7 +314,7 @@ Pretty much treat the rest of this document as a text file.
   The prompt will be re-displayed, so finish the macro with 'Y'.
   Check out [[info:emacs#Keyboard%20Macro%20Query][the manual]] for details on this =C-x q= business.
 
-* Emacs Calc Tutorials                                                 :NOTE:
+* Emacs Calc Tutorials
 
 By Andrew Hyatt, found here: https://github.com/ahyatt/emacs-calc-tutorials.
 License is GPLv3.
@@ -1251,9 +1252,9 @@ Result:
 
 Hope this helps you twiddle those bits in all the ways that make you happy.
 
-* Random Notes                                                          :NOP:
+* Random Notes
 
-** Insert URL from Safari                                       :IRREAL:NOTE:
+** Insert URL from Safari                                            :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 17:44]
 :END:
@@ -1304,7 +1305,7 @@ of time.
 
 [[http://irreal.org/blog/?p=6926][Link]]
 
-** Calc for Programmers                                         :IRREAL:NOTE:
+** Calc for Programmers                                              :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-08-05 Sun 10:04]
 :END:
@@ -1333,7 +1334,7 @@ give you an idea of its power.
 
 [[http://irreal.org/blog/?p=7044][Link]]
 
-** Parsing with Org-Element                                     :IRREAL:NOTE:
+** Parsing with Org-Element                                          :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-08-10 Fri 17:55]
 :END:
@@ -1387,7 +1388,7 @@ The relevant code:
  '(("" "total:" ":=vsum(@2..@-1);T" "")))
 #+end_src
 
-** Emacs Lisp Byte-Code                                         :IRREAL:NOTE:
+** Emacs Lisp Byte-Code                                              :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-08-11 Sat 21:40]
 :END:
@@ -1411,7 +1412,7 @@ glad to have Bernstein's documentation. It's another example of the vibrant
 Emacs community.
 
 [[http://irreal.org/blog/?p=7166][Link]]
-** Formatting Tables                                            :IRREAL:NOTE:
+** Formatting Tables                                                 :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-10-28 Sun 09:13]
 :END:
@@ -1441,7 +1442,7 @@ post and see if you don't agree.
 
 [[http://irreal.org/blog/?p=7540][Link]]
 
-** Org Mode Cookbook                                            :IRREAL:NOTE:
+** Org Mode Cookbook                                                 :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 12:51]
 :END:
@@ -1470,7 +1471,7 @@ use.
 
 [[http://irreal.org/blog/?p=6894][Link]]
 
-** How to paste then copy                                              :NOTE:
+** How to paste then copy
 :PROPERTIES:
 :CREATED: [2018-08-11 Sat 21:47]
 :END:
@@ -1485,20 +1486,20 @@ Answer: use ~cua-selection-mode~!  See
 https://www.reddit.com/r/emacs/comments/8ekz0u/how_to_pastethencopy/.
 
 /Update/: turns out it doesn’t work so well, disabled it again.
-** Tramp and Telnet over non-standard ports                            :NOTE:
+** Tramp and Telnet over non-standard ports
 :PROPERTIES:
 :CREATED: [2018-12-29 Sat 15:58]
 :END:
 
 Syntax: ~/telnet:HOST#PORT:~, works also with other protocols.
 
-** Magit Walkthrough                                                   :NOTE:
+** Magit Walkthrough
 :PROPERTIES:
 :CREATED: [2018-08-11 Sat 21:05]
 :END:
 
 https://emacsair.me/2017/09/01/magit-walk-through/
-** Fractals in Emacs                                                   :NOTE:
+** Fractals in Emacs
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 13:01]
 :END:
@@ -1538,7 +1539,7 @@ From https://nullprogram.com/blog/2012/09/14/
           (insert-char (floor (* 256 (/ v 1.0 d))) 3))))
     (image-mode)))
 #+end_src
-** Introduction to Babel                                               :NOTE:
+** Introduction to Babel
 
 Tutorial from http://orgmode.org/worg/org-contrib/babel/intro.html
 
@@ -1720,7 +1721,7 @@ Does not do what I expected …
 
 Tangling with =C-c C-v t=.
 
-** Presentations with ~org-reveal~                                     :NOTE:
+** Presentations with ~org-reveal~
 
 Website: https://github.com/yjwen/org-reveal
 
@@ -1745,7 +1746,7 @@ Sample:
    | 1 | 2 | 3 |
   * Slide 3
 #+END_SRC
-** Writing a PhD thesis with Org Mode                                  :NOTE:
+** Writing a PhD thesis with Org Mode
 
 From: https://write.as/dani/writing-a-phd-thesis-with-org-mode
 
@@ -2160,7 +2161,7 @@ _s_: thesis.setup  _4_: Research 4  ^ ^
 
 (global-set-key (kbd "H-t") 'spacemacs/thesis-menu-transient-state/body)
 #+end_src
-** Gnus and notmuch                                                    :NOTE:
+** Gnus and notmuch
 
 Currently working: notmuch for nnmaildir backend.  However, I also have a local
 nnimap-backend, which uses Maildir format locally.  It would be nice to have
@@ -2173,18 +2174,18 @@ Relevant functions:
 - ~nnir-notmuch-remove-prefix~ :: a server-local variable to decide what to
      remove from the lines in ~*nnir*~.
 
-** Summary of Search and Replace Commands in Emacs                     :NOTE:
+** Summary of Search and Replace Commands in Emacs
 [2016-08-13 Sat 17:50]
 
 http://www.omps.in/blog/2016/01/20/day-10-search-and-replace-using-regex/
-** Bookmarks with Org-mode                                             :NOTE:
+** Bookmarks with Org-mode
 :PROPERTIES:
 :CREATED: [2018-07-08 Sun 09:29]
 :END:
 
 [[http://karl-voit.at/2014/08/10/bookmarks-with-orgmode/]]
 
-** Inserting a function definition                                :CHUA:NOTE:
+** Inserting a function definition                                     :CHUA:
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 17:40]
 :END:
@@ -2227,7 +2228,7 @@ Naturally, I used it to insert itself:
     (insert "#+begin_src emacs-lisp\n" definition "#+end_src\n")))
 #+end_src
 
-** Tramping into GCloud instances from within emacs             :IRREAL:NOTE:
+** Tramping into GCloud instances from within emacs                  :IRREAL:
 
 From https://gist.github.com/jackrusher/36c80a2fd6a8fe8ddf46bc7e408ae1f9 via [[https://irreal.org/blog/?p=8126][Irreal]].
 
