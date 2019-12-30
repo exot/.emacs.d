@@ -1266,9 +1266,6 @@ Hope this helps you twiddle those bits in all the ways that make you happy.
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 17:44]
 :END:
-:LOGBOOK:
-CLOCK: [2018-08-04 Sat 17:44]--[2018-08-04 Sat 17:45] =>  0:01
-:END:
 
 Responding to [[http://irreal.org/blog/?p=6924][yesterday's post]], Sacha asks if I could post the code for
 =jcs-insert-url= for others to use. I thought I'd already done that but
@@ -1316,9 +1313,6 @@ of time.
 ** Calc for Programmers                                              :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-08-05 Sun 10:04]
-:END:
-:LOGBOOK:
-CLOCK: [2018-08-05 Sun 10:04]--[2018-08-05 Sun 10:05] =>  0:01
 :END:
 
 After writing about Florian Adamsky's post on [[http://irreal.org/blog/?p=7040][acronyms in AUCTeX]], I snooped
@@ -1454,9 +1448,6 @@ post and see if you don't agree.
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 12:51]
 :END:
-:LOGBOOK:
-CLOCK: [2018-08-04 Sat 12:51]--[2018-08-04 Sat 12:54] =>  0:03
-:END:
 
 Way back in 2014, I [[http://irreal.org/blog/?p=2575][posted]] about Eric Neilsen's excellent [[http://ehneilsen.net/notebook/orgExamples/org-examples.html][Emacs org-mode
 examples and cookbook]]. I recently came across a reference to it and was reminded
@@ -1483,9 +1474,6 @@ use.
 :PROPERTIES:
 :CREATED: [2018-08-11 Sat 21:47]
 :END:
-:LOGBOOK:
-CLOCK: [2018-08-11 Sat 21:47]--[2018-08-11 Sat 21:48] =>  0:01
-:END:
 
 Question: how to set a mark such that all subsequent copy operations move their
 text to that exact mark.
@@ -1510,9 +1498,6 @@ https://emacsair.me/2017/09/01/magit-walk-through/
 ** Fractals in Emacs
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 13:01]
-:END:
-:LOGBOOK:
-CLOCK: [2018-08-04 Sat 13:01]--[2018-08-04 Sat 13:03] =>  0:02
 :END:
 
 From https://nullprogram.com/blog/2012/09/14/
@@ -2014,9 +1999,6 @@ http://www.omps.in/blog/2016/01/20/day-10-search-and-replace-using-regex/
 ** Inserting a function definition                                     :CHUA:
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 17:40]
-:END:
-:LOGBOOK:
-CLOCK: [2018-08-04 Sat 17:40]--[2018-08-04 Sat 17:42] =>  0:02
 :END:
 
 From [[http://sachachua.com/blog/2018/01/org-mode-inserting-a-function-definition/][Sacha Chua]].
