@@ -2261,3 +2261,36 @@ From https://gist.github.com/jackrusher/36c80a2fd6a8fe8ddf46bc7e408ae1f9 via [[h
 ;;
 ;; C-x C-f /gcssh:compute-instance:/path/to/filename.clj
 #+end_src
+
+** Finding the largest Emacs buffer
+
+I found this somewhere, but forget where …
+
+Approach: sort all buffers by size.
+
+#+begin_src emacs-lisp
+(mapcar (lambda (x)
+          (list x (buffer-size x)))
+        (cl-sort (buffer-list)
+                 (lambda (x y)
+                   (< (buffer-size y) (buffer-size x)))))
+#+end_src
+
+** Emacs reencode buffers with other encoding
+
+- Use the function =revert-buffer-with-coding-system= to re-open a buffer in
+  another encoding.
+
+- Customize the variable =file-coding-system-alist= to control whether certain
+  files should always be opened with a specific encoding.
+
+** Fonts and Themes
+
+Inspired by https://github.com/kunalb/poet.
+
+- To show all available fonts, use the function ~x-family-fonts~.
+
+- Load custom themes with ~customize-themes~ instead of calling ~load-theme~
+  directly.  However, this does not set ~custom-enabled-themes~ correctly
+  (Emacs 26.1), so directly customizing ~custom-enabled-themes~ seems to be the
+  best thing (although one has to know the names of the themes then).
