@@ -1342,7 +1342,7 @@ give you an idea of its power.
 
 [[http://irreal.org/blog/?p=7044][Link]]
 
-** Parsing with Org-Element                                          :IRREAL:
+** Parsing with ~org-element~                                        :IRREAL:
 :PROPERTIES:
 :CREATED: [2018-08-10 Fri 17:55]
 :END:
@@ -1989,9 +1989,9 @@ _s_: thesis.setup  _4_: Research 4  ^ ^
 #+end_src
 ** Gnus and notmuch
 
-Currently working: notmuch for nnmaildir backend.  However, I also have a local
-nnimap-backend, which uses Maildir format locally.  It would be nice to have
-this working with notmuch as well.
+Currently working: ~notmuch~ for ~nnmaildir~ backend.  However, I also have a
+local ~nnimap~-backend, which uses Maildir format locally.  It would be nice to
+have this working with ~notmuch~ as well.
 
 Relevant functions:
 - ~nnir-compose-result~ :: Goes over the results of notmuch (stored in the
