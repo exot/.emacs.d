@@ -1133,8 +1133,7 @@ With given ARG, display files in `db/important-document-path’."
                 ("n" "Note"
                  entry
                  (file db/org-default-refile-file)
-                 "* %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
-                 :clock-in t :clock-resume t)
+                 "* %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?")
                 ("d" "Date"
                  entry
                  (file db/org-default-refile-file)
