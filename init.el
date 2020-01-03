@@ -229,6 +229,7 @@
     (bind-key "C-x C-f" #'counsel-find-file)
     (bind-key "C-h f" #'counsel-describe-function)
     (bind-key "C-h v" #'counsel-describe-variable)
+    (bind-key "C-h b" #'counsel-descbinds)
     (bind-key "C-S-s" #'counsel-grep-or-swiper)
     (bind-key [remap bookmark-bmenu-list] #'counsel-bookmark))
 
@@ -1981,6 +1982,7 @@ With given ARG, display files in `db/important-document-path’."
              counsel-find-file
              counsel-info-lookup-symbol
              counsel-unicode-char
+             counsel-descbinds
              counsel-describe-variable
              counsel-describe-function
              counsel-recentf
