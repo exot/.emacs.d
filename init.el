@@ -1910,6 +1910,7 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package dired-open
   :ensure t
+  :defer t
   :init (unless (eq system-type 'gnu/linux)
           (setq dired-open-use-nohup nil))
   :config (add-to-list 'dired-open-functions
