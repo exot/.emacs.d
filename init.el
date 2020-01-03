@@ -603,8 +603,7 @@
             (global-git-commit-mode +1)
 
             (with-demoted-errors "Non-Fatal Error: %s"
-              (eval-when-compile
-                (require 'projectile))
+              (require 'projectile)
               (setq magit-repository-directories
                     (mapcar
                      (lambda (dir)
@@ -1540,9 +1539,6 @@ With given ARG, display files in `db/important-document-path’."
   :config (progn
             (require 'db-mail)
 
-            (eval-when-compile
-              (require 'gnus-start))
-
             (with-demoted-errors "Setting up BBDB failed: %s"
               (bbdb-initialize 'gnus 'message)
               (bbdb-mua-auto-update-init 'message))
@@ -1949,11 +1945,10 @@ With given ARG, display files in `db/important-document-path’."
               helm-buffer-details-flag t
               helm-buffer-skip-remote-checking t)
   :config (progn
-            (eval-when-compile
-              (require 'helm-config)
-              (require 'helm-mode)
-              (require 'helm-buffers)
-              (require 'helm-ring))
+            (require 'helm-config)
+            (require 'helm-mode)
+            (require 'helm-buffers)
+            (require 'helm-ring)
 
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
