@@ -40,7 +40,7 @@ the new one instead."
         (setq x (assoc ctf file-alist) had x)
 
         (unless x
-          (setq x (cons ctf (abbreviate-file-name buffer-file-name))))
+          (setq x (cons ctf (abbreviate-file-name value))))
         (setq file-alist (append (delq x file-alist) (list x)))
         (org-store-new-agenda-file-list (mapcar 'cdr file-alist))
         (org-install-agenda-files-menu)
