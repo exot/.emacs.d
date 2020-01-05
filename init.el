@@ -961,31 +961,31 @@ With given ARG, display files in `db/important-document-path’."
 (defcustom db/org-default-work-file nil
   "Path to default org-mode file at work."
   :group 'personal-settings
-  :type 'string
+  :type '(choice (const nil) file)
   :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-home-file nil
   "Path to default org-mode file at home."
   :group 'personal-settings
-  :type 'string
+  :type '(choice (const nil) file)
   :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-notes-file nil
   "Path to default org-mode file for notes."
   :group 'personal-settings
-  :type 'string
+  :type '(choice (const nil) file)
   :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-refile-file nil
   "Path to default org-mode file for capturing."
   :group 'personal-settings
-  :type 'string
+  :type '(choice (const nil) file)
   :set #'db/update-org-agenda-files)
 
 (defcustom db/org-default-pensieve-file nil
   "Path to default org-mode file for private notes."
   :group 'personal-settings
-  :type 'string
+  :type '(choice (const nil) file)
   ;; no custom setter, as the pensive file is usually not part of
   ;; `org-agenda-files’
   )
