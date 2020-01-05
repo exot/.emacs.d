@@ -1693,6 +1693,7 @@ With given ARG, display files in `db/important-document-path’."
                         :around #'db/mml-attach-file--go-to-eob)))
 
 (setq notmuch-fcc-dirs nil
+      message-send-mail-function #'db/smtpmail-send-it
       send-mail-function #'db/smtpmail-send-it)
 
 (use-package smtpmail
