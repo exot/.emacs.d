@@ -700,7 +700,8 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Org
 
 (use-package db-org
-  :commands (db/verify-refile-target
+  :commands (db/check-special-org-files-in-agenda
+             db/verify-refile-target
              org-reset-checkbox-state-maybe
              db/find-parent-task
              db/ensure-running-clock
@@ -1124,7 +1125,10 @@ in the main agenda view."
             ;; opening them manually
             (mapc #'find-file-noselect org-agenda-files)
 
-            (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)))
+            (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)
+
+            (advice-add 'org-agenda
+                        :before #'db/check-special-org-files-in-agenda)))
 
 ;; Capturing
 
