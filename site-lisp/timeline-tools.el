@@ -35,6 +35,7 @@
 (require 'dash)
 (require 'org)
 (require 'org-clock)
+(require 'org-id)
 
 
 ;; Customization
