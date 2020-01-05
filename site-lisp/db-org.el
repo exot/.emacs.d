@@ -16,7 +16,7 @@
 The special org-mode files are `db/org-default-work-file',
 `db/org-default-home-file', `db/org-default-notes-files', and
 `db/org-default-refile-file'."
-  (declare (ignore args))
+  (ignore args)
   (require 'org)
   (let ((agenda-files (mapcar #'file-truename (org-agenda-files t))))
     (dolist (file '(db/org-default-home-file
