@@ -44,8 +44,8 @@ the new one instead."
         (setq file-alist (append (delq x file-alist) (list x)))
         (org-store-new-agenda-file-list (mapcar 'cdr file-alist))
         (org-install-agenda-files-menu)
-        (message "File %s to %s of agenda file list"
-	         (if had "moved" "added") "end")))))
+        (message "File %s to end of agenda file list"
+	         (if had "moved" "added"))))))
 
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
