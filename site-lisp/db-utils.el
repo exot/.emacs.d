@@ -412,7 +412,7 @@ This is done only if the value of this variable is not null."
    (t
     (progn
       (org-save-all-org-buffers)
-      (let ((org-agenda-files (cl-remove-if #'string-empty-p
+      (let ((org-agenda-files (cl-remove-if #'null
                                             (list db/org-default-home-file
                                                   db/org-default-work-file)))
             (org-agenda-new-buffers nil))
