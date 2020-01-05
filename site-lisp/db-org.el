@@ -11,42 +11,6 @@
 
 ;;; Agenda Customization
 
-;; For customization of default org agenda files
-(defun db/update-org-agenda-files (symbol value)
-  "Set SYMBOL to VALUE and update `org-agenda-files’ afterwards.
-Remove the old value of SYMBOL from `org-agenda-files’ and add
-the new one instead."
-  (when (and (boundp symbol)
-             (symbol-value symbol))
-    (require 'org)
-    (org-remove-file (symbol-value symbol)))
-  (set-default symbol value)
-  (when value
-    (if (not (and (stringp value)
-                  (file-exists-p value)
-                  (file-readable-p value)))
-        (user-error "File %s does not exist or is not readable; not setting %s."
-                    value symbol)
-
-      ;; this is essentially `org-agenda-file-to-front', but using `value'
-      ;; instead of `buffer-file-name'
-      (require 'org)
-      (let ((org-agenda-skip-unavailable-files nil)
-	    (file-alist (mapcar (lambda (x)
-			          (cons (file-truename x) x))
-			        (org-agenda-files t)))
-	    (ctf (file-truename value))
-	    x had)
-        (setq x (assoc ctf file-alist) had x)
-
-        (unless x
-          (setq x (cons ctf (abbreviate-file-name value))))
-        (setq file-alist (append (delq x file-alist) (list x)))
-        (org-store-new-agenda-file-list (mapcar 'cdr file-alist))
-        (org-install-agenda-files-menu)
-        (message "File %s to end of agenda file list"
-	         (if had "moved" "added"))))))
-
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
   "Prepare agenda view that only lists upcoming deadlines.

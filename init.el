@@ -711,7 +711,6 @@ With given ARG, display files in `db/important-document-path’."
              db/org-clock-in-home-task
              db/org-clock-in-work-task
              endless/org-ispell
-             db/update-org-agenda-files
              db/org-agenda-list-deadlines
              db/org-agenda-skip-tag
              db/cmp-date-property
@@ -961,30 +960,22 @@ With given ARG, display files in `db/important-document-path’."
 (defcustom db/org-default-work-file nil
   "Path to default org-mode file at work."
   :group 'personal-settings
-  :type '(choice (const nil) file)
-  ;; :set #'db/update-org-agenda-files
-  )
+  :type '(choice (const nil) file))
 
 (defcustom db/org-default-home-file nil
   "Path to default org-mode file at home."
   :group 'personal-settings
-  :type '(choice (const nil) file)
-  ;; :set #'db/update-org-agenda-files
-  )
+  :type '(choice (const nil) file))
 
 (defcustom db/org-default-notes-file nil
   "Path to default org-mode file for notes."
   :group 'personal-settings
-  :type '(choice (const nil) file)
-  ;; :set #'db/update-org-agenda-files
-  )
+  :type '(choice (const nil) file))
 
 (defcustom db/org-default-refile-file nil
   "Path to default org-mode file for capturing."
   :group 'personal-settings
-  :type '(choice (const nil) file)
-  ;; :set #'db/update-org-agenda-files
-  )
+  :type '(choice (const nil) file))
 
 (defcustom db/org-default-pensieve-file nil
   "Path to default org-mode file for private notes."
