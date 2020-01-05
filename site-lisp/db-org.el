@@ -27,9 +27,25 @@ the new one instead."
                   (file-readable-p value)))
         (user-error "File %s does not exist or is not readable; not setting %s."
                     value symbol)
+
+      ;; this is essentially `org-agenda-file-to-front', but using `value'
+      ;; instead of `buffer-file-name'
       (require 'org)
-      (with-current-buffer (find-file-noselect value)
-        (org-agenda-file-to-front 'to-end)))))
+      (let ((org-agenda-skip-unavailable-files nil)
+	    (file-alist (mapcar (lambda (x)
+			          (cons (file-truename x) x))
+			        (org-agenda-files t)))
+	    (ctf (file-truename value))
+	    x had)
+        (setq x (assoc ctf file-alist) had x)
+
+        (unless x
+          (setq x (cons ctf (abbreviate-file-name buffer-file-name))))
+        (setq file-alist (append (delq x file-alist) (list x)))
+        (org-store-new-agenda-file-list (mapcar 'cdr file-alist))
+        (org-install-agenda-files-menu)
+        (message "File %s to %s of agenda file list"
+	         (if had "moved" "added") "end")))))
 
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
