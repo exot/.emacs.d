@@ -16,13 +16,21 @@
   "Set SYMBOL to VALUE and update `org-agenda-files’ afterwards.
 Remove the old value of SYMBOL from `org-agenda-files’ and add
 the new one instead."
-  (require 'org)
-  (when (boundp symbol)
-    (setq org-agenda-files (cl-delete (symbol-value symbol) org-agenda-files)))
+  (when (and (boundp symbol)
+             (symbol-value symbol))
+    (require 'org)
+    (org-remove-file (symbol-value symbol)))
   (set-default symbol value)
-  (push value org-agenda-files)
-  (setq-default org-agenda-files
-                (cl-delete-duplicates org-agenda-files :test #'cl-equalp)))
+  (when value
+    (if (not (and (stringp value)
+                  (file-exists-p value)
+                  (file-readable-p value)))
+        (user-error "File %s does not exist or is not readable; not setting %s."
+                    value symbol)
+      (require 'org)
+      (message "Adding: %s" value)
+      (with-current-buffer (find-file-noselect value)
+        (org-agenda-file-to-front 'to-end)))))
 
 (defun db/org-agenda-list-deadlines (&optional match)
   ;; XXX org-agenda-later does not work, fix this
