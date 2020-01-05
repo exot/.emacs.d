@@ -28,7 +28,6 @@ the new one instead."
         (user-error "File %s does not exist or is not readable; not setting %s."
                     value symbol)
       (require 'org)
-      (message "Adding: %s" value)
       (with-current-buffer (find-file-noselect value)
         (org-agenda-file-to-front 'to-end)))))
 
