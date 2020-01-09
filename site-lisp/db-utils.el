@@ -216,8 +216,9 @@ If not given, FORMAT-STRING defaults to some ISO 8601-like format."
                 (- (lsh (- high-seconds) -16))
               (lsh high-seconds -16)))
          (l (% high-seconds 65536))
-         (u (floor (* (/ low 4294967296.0) 1e6)))
-         (p (- low (floor (/ (* u 4294967296) 1e6)))))
+         (low-pseconds (* (/ low 4294967296.0) 1e12))
+         (u (floor (/ low-pseconds 1e6)))
+         (p (floor (- low-pseconds (* 1e6 u)))))
     (message
      (format-time-string (or format-string "%FT%H:%M:%S.%9NZ")
                          (list h l u p)
