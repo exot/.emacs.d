@@ -202,7 +202,7 @@ might depend on the coding system of the current buffer."
       (message result))))
 
 (defun db/ntp-to-time (high low &optional format-string)
-  "Format NTP time given by HIGH and LOW (both integer) to time as given by FORMAT-STRING.
+  "Format NTP time given by HIGH and LOW (both hex strings) to time as given by FORMAT-STRING.
 If not given, FORMAT-STRING defaults to some ISO 8601-like format."
   (interactive
    (list (string-to-number (read-string "High (hex): ") 16)
