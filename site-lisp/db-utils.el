@@ -9,6 +9,7 @@
 ;;; Code:
 
 (require 'subr-x)
+(require 'cl-lib)
 
 
 ;;; application shortcuts
@@ -204,11 +205,13 @@ might depend on the coding system of the current buffer."
 (defun db/ntp-to-time (high low &optional format-string)
   "Format NTP time given by HIGH and LOW (both hex strings) to time as given by FORMAT-STRING.
 If not given, FORMAT-STRING defaults to some ISO 8601-like format."
-  (interactive
-   (list (string-to-number (read-string "High (hex): ") 16)
-         (string-to-number (read-string "Log (hex): ") 16)))
-  (let* ((high-seconds (- high 2208992400)) ; subtract seconds between 1900-01-01 and the epoch
-         (h (lsh high-seconds -16))
+  (interactive (cl-flet ((read-hex (prompt)
+                                   (string-to-number (->> prompt
+                                                          (read-string)
+                                                          (replace-regexp-in-string "[\n\t ]" ""))
+                                                     16)))
+                 (list (read-hex "High (hex): ")
+                       (read-hex "Low (hex): "))))
   (let* ((high-seconds (- high 2208988800)) ; subtract seconds between 1900-01-01 and the epoch
          (h (if (< high-seconds 0)
                 (- (lsh (- high-seconds) -16))
