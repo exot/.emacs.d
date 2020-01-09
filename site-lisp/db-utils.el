@@ -10,6 +10,7 @@
 
 (require 'subr-x)
 (require 'cl-lib)
+(require 'dash)
 
 
 ;;; application shortcuts
@@ -170,7 +171,6 @@ the result in the minibuffer."
                        (read-from-minibuffer "String (hex): "))))
   (cl-assert (not (string-match-p "[^A-Fa-e0-9 \t\n]" hex-string))
              "String contains invalid characters.")
-  (require 'dash)
   (let ((result (->> hex-string
                      (replace-regexp-in-string "[ \t\n]" "")
                      (string-to-list)
@@ -191,7 +191,6 @@ might depend on the coding system of the current buffer."
   (interactive (list (if (use-region-p)
                          (buffer-substring-no-properties (region-beginning) (region-end))
                        (read-from-minibuffer "String (ascii): "))))
-  (require 'dash)
   (let ((result (->> text-string
                      (--map (format "%2X " it))
                      (apply #'concat)
