@@ -202,8 +202,9 @@ might depend on the coding system of the current buffer."
       (message result))))
 
 (defun db/ntp-to-time (high low &optional format-string)
-  "Format NTP time given by HIGH and LOW (both hex strings) to time as given by FORMAT-STRING.
-If not given, FORMAT-STRING defaults to some ISO 8601-like format."
+  "Format NTP time given by HIGH and LOW to time as given by FORMAT-STRING.
+HIGH and LOW must both be 8 digit hex strings.  If not given,
+FORMAT-STRING defaults to some ISO 8601-like format."
   (interactive (cl-flet ((read-hex (prompt)
                                    (string-to-number (->> prompt
                                                           (read-string)
