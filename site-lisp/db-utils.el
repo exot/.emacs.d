@@ -206,10 +206,12 @@ might depend on the coding system of the current buffer."
 HIGH and LOW must both be 8 digit hex strings.  If not given,
 FORMAT-STRING defaults to some ISO 8601-like format."
   (interactive (cl-flet ((read-hex (prompt)
-                                   (string-to-number (->> prompt
-                                                          (read-string)
-                                                          (replace-regexp-in-string "[\n\t ]" ""))
-                                                     16)))
+                                   (let ((input-proper (->> prompt
+                                                            (read-string)
+                                                            (replace-regexp-in-string "[\n\t ]" ""))))
+                                     (if (not (string-match-p "[0-9a-fA-F]\\{8\\}" input-proper))
+                                         (user-error "Input invalid, must be an 8 digit hex string.")
+                                       (string-to-number input-proper 16)))))
                  (list (read-hex "High (hex): ")
                        (read-hex "Low (hex): "))))
   (let* ((high-seconds (- high 2208988800)) ; subtract seconds between 1900-01-01 and the epoch
