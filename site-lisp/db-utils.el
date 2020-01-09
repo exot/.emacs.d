@@ -224,6 +224,8 @@ If not given, FORMAT-STRING defaults to some ISO 8601-like format."
                          (list h l u p)
                          t))))
 
+;; XXX: add test: dcd2ac0c 05c6dbac is 2017-06-26T13:28:44.022565583Z
+
 (defun conditionally-enable-lispy ()
   "Enable lispy-mode when in `eval-expression’ or in
 `pp-eval-expression’.  lispy must have been loaded for this
