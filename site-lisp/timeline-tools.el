@@ -172,7 +172,7 @@ region will be traversed."
 
   ;; Make sure everything is visible, as otherwise editing may produce odd
   ;; results
-  (org-cycle '(64))
+  (org-show-all)
 
   (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
                      org-clock-string
