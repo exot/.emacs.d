@@ -166,13 +166,12 @@ ending time as arguments and point on the beginning of the line.
 For each headline, call HEADLINE-FN with no arguments and point
 on the start of the headline.  Traversal will be done from the
 end of the file upwards.  If the buffer is narrowed, only this
-region will be traversed."
+region will be traversed.  If either CLOCKLINE-FN or HEADLINE-FN
+edit the current buffer, make sure to use `org-show-all' to show
+all insivible elements; otherwise editing may result in
+unpredictable behavior."
   (unless (eq major-mode 'org-mode)
     (user-error "Not in Org mode buffer, cannot parse clocklines"))
-
-  ;; Make sure everything is visible, as otherwise editing may produce odd
-  ;; results
-  (org-show-all)
 
   (let* ((re (concat "^\\(\\*+\\)[ \t]\\|^[ \t]*"
                      org-clock-string
@@ -642,6 +641,10 @@ clock line."
         (new-end   (float-time end)))
     (dolist (buffer buffers)
       (with-current-buffer buffer
+        ;; Make sure everything is visible, as otherwise editing may produce odd
+        ;; results
+        (org-show-all)
+
         (timeline-tools-map-clocklines
          (lambda (timestamp-1 timestamp-2)
            (let ((current-start (org-time-string-to-seconds timestamp-1))
