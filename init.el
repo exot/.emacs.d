@@ -1052,9 +1052,9 @@ in the main agenda view."
               '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
 
               org-stuck-projects
-              '("-DATE-HOLD-REGULAR-HOLD-NOTE+TODO=\"\""
+              '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP}"
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG")
-                ("NOP")
+                ()
                 "")
 
               org-agenda-prefix-format
