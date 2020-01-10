@@ -1846,14 +1846,13 @@ in the main agenda view."
               (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
               (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1)))
 
-            (with-demoted-errors "Non-Fatal Errors (dired-open): %s"
-              (when (and (eq system-type 'windows-nt)
-                         (not (package-installed-p 'w32-browser)))
-                (warn "`w32-browser’ not installed, dired will have reduced functionality."))
+            (when (and (eq system-type 'windows-nt)
+                       (not (package-installed-p 'w32-browser)))
+              (warn "`w32-browser’ not installed, dired will have reduced functionality."))
 
-              (require 'dired-open)
-
-              (when (eq system-type 'gnu/linux)
+            (unless (eq system-type 'windows-nt)
+              (with-demoted-errors "Non-Fatal Errors (dired-open): %s"
+                (require 'dired-open)
                 (bind-key "M-RET" #'dired-open-xdg dired-mode-map)))
 
             ;; Gnus support in dired
