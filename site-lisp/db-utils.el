@@ -252,17 +252,6 @@ Will print a warning in case of failure."
                  #'string<
                  :key #'cl-second)))
 
-(defun db/update-cert-file-directory (symbol new-value)
-  "Set SYMBOL to NEW-VALUE and add all certificate in it to `gnutls-trustfiles’.
-
-Assumes that NEW-VALUE points to a directory, and certificates
-are assumed to be of the form *.crt."
-  (set symbol new-value)
-  (require 'gnutls)
-  (when (file-directory-p new-value)
-    (dolist (cert-file (directory-files new-value t ".crt$"))
-      (add-to-list 'gnutls-trustfiles cert-file))))
-
 (defun endless/colorize-compilation ()
   "Colorize from `compilation-filter-start' to `point'."
   ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html

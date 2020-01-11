@@ -286,17 +286,12 @@
 
 ;; * Personal customization
 
-(defgroup personal-settings nil
-  "A bunch of functions and variables for personalizing emacs."
-  :prefix "db/"
-  :group 'convenience
-  :group 'help
-  :tag "Personal settings")
-
-(defcustom db/jabber-id ""
-  "Personal XMPP ID."
-  :group 'personal-settings
-  :type 'string)
+(use-package db-customize
+  :defines (db/jabber-id
+            db/important-documents-path
+            db/path-to-onenote
+            db/path-to-outlook
+            db/cert-file-directory))
 
 (defcustom db/after-init-load-files nil
   "A list of files to be loaded by `db/run-init' as the last step."
@@ -561,7 +556,6 @@
              conditionally-enable-lispy
              turn-on-lispy-when-available
              db/sort-nsm-permanent-settings
-             db/update-cert-file-directory
              endless/colorize-compilation
              db/add-use-package-to-imenu
              db/turn-off-local-electric-pair-mode
@@ -657,12 +651,6 @@ call."
              (set symbol value)
              (db/define-hydra-from-frequently-used-features)))
 
-(defcustom db/important-documents-path "~/Documents/library/"
-  "Path to look for documents that can be listed in extended
-search commands like `db/helm-shortcuts’."
-  :group 'personal-settings
-  :type 'string)
-
 (defun db/helm-shortcuts (arg)
   "Open helm completion on common locations.
 With given ARG, display files in `db/important-document-path’."
@@ -721,16 +709,6 @@ With given ARG, display files in `db/important-document-path’."
              db/org-capture-code-snippet
              hydra-org-clock/body
              db/make-org-capture-frame))
-
-(defcustom db/path-to-onenote "c:/Program Files (x86)/Microsoft Office/Office15/ONENOTE.EXE"
-  "Path to OneNote executable, for opening corresponding org-mode links."
-  :group 'personal-settings
-  :type 'file)
-
-(defcustom db/path-to-outlook "c:/Program Files (x86)/Microsoft Office/Office15/OUTLOOK.EXE"
-  "Path to Outlook executable, for opening corresponding org-mode links."
-  :group 'personal-settings
-  :type 'file)
 
 (use-package org
   :commands (org-store-link)
@@ -1735,12 +1713,6 @@ in the main agenda view."
   :init (setq gnutls-log-level 0        ; too noisy otherwise
               gnutls-min-prime-bits 1024
               gnutls-verify-error t))
-
-(defcustom db/cert-file-directory "~/.local/etc/certs/"
-  "Local directory with additional certificates."
-  :group 'personal-settings
-  :type 'string
-  :set #'db/update-cert-file-directory)
 
 (use-package epg
   :defer t
