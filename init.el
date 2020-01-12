@@ -391,6 +391,8 @@
       delete-old-versions             t
       vc-make-backup-files            t)
 
+(setq undo-limit 80000000)
+
 (setq-default async-shell-command-buffer 'new-buffer)
 (add-to-list 'display-buffer-alist
              '("^\*Async Shell Command*" . (display-buffer-no-window)))
