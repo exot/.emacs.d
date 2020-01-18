@@ -214,18 +214,26 @@ FORMAT-STRING defaults to some ISO 8601-like format."
                                        (string-to-number input-proper 16)))))
                  (list (read-hex "High (hex): ")
                        (read-hex "Low (hex): "))))
-  (let* ((high-seconds (- high 2208988800)) ; subtract seconds between 1900-01-01 and the epoch
-         (h (if (< high-seconds 0)
-                (- (lsh (- high-seconds) -16))
-              (lsh high-seconds -16)))
-         (l (% high-seconds 65536))
-         (low-pseconds (* (/ low 4294967296.0) 1e12))
-         (u (floor (/ low-pseconds 1e6)))
-         (p (floor (- low-pseconds (* 1e6 u)))))
-    (message
-     (format-time-string (or format-string "%FT%H:%M:%S.%9NZ")
-                         (list h l u p)
-                         t))))
+  (require 'calc-forms)
+  (let* ((unix-time (calcFunc-unixtime (calc-eval (format "%s - 2208988800 + (%s/4294967296)" high low)
+                                                  'raw)
+                                       ;; we explicitly call `calcFunc-unixtime'
+                                       ;; here to set the time zone to UTC
+                                       0)))
+    (format "%04d-%02d-%02dT%02d:%02d:%012.9fZ"
+            (calcFunc-year unix-time)
+            (calcFunc-month unix-time)
+            (calcFunc-day unix-time)
+            (calcFunc-hour unix-time)
+            (calcFunc-minute unix-time)
+            ;; `seconds' will be a floating point number, and we need to format
+            ;; it with a precision that is high enough; apparently, we need to
+            ;; truncate the number of seconds to nine digits, at least that is
+            ;; what has been done in the test example we use in the
+            ;; corresponding regression test …
+            (string-to-number
+             (calc-eval '("trunc(second($), 9)" calc-internal-prec 30)
+                        'num unix-time)))))
 
 (defun conditionally-enable-lispy ()
   "Enable lispy-mode when in `eval-expression’ or in
