@@ -228,9 +228,9 @@ FORMAT-STRING defaults to some ISO 8601-like format."
             (calcFunc-hour unix-time)
             (calcFunc-minute unix-time)
             ;; `seconds' will be a floating point number, and we need to format
-            ;; it with a precision that is high enough; apparently, we need to
-            ;; truncate the number of seconds to nine digits, at least that is
-            ;; what has been done in the test example we use in the
+            ;; it with a precision that is high enough; apparently, we also need
+            ;; to truncate the number of seconds to nine digits, at least that
+            ;; is what has been done in the test example we use in the
             ;; corresponding regression test …
             (string-to-number
              (calc-eval '("trunc(second($), 9)" calc-internal-prec 30)
