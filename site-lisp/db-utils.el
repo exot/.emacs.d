@@ -220,7 +220,8 @@ FORMAT-STRING defaults to some ISO 8601-like format."
                                        ;; we explicitly call `calcFunc-unixtime'
                                        ;; here to set the time zone to UTC
                                        0)))
-    (format "%04d-%02d-%02dT%02d:%02d:%012.9fZ"
+    (format (or format-string
+                "%04d-%02d-%02dT%02d:%02d:%012.9fZ")
             (calcFunc-year unix-time)
             (calcFunc-month unix-time)
             (calcFunc-day unix-time)
