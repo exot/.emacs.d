@@ -11,6 +11,7 @@
 (require 'subr-x)
 (require 'cl-lib)
 (require 'dash)
+(require 'db-customize)
 
 
 ;;; application shortcuts
