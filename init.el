@@ -574,7 +574,6 @@
              db/lookup-smime-key
              db/org-onenote-open
              db/org-outlook-open
-             db/org-rfc-open
              db/dired-from-shell-command
              db/system-open))
 
@@ -710,7 +709,8 @@ With given ARG, display files in `db/important-document-path’."
              db/org-timestamp-difference
              db/org-capture-code-snippet
              hydra-org-clock/body
-             db/make-org-capture-frame))
+             db/make-org-capture-frame
+             db/org-rfc-open))
 
 (use-package org
   :commands (org-store-link)

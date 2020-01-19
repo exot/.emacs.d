@@ -49,6 +49,12 @@ are assumed to be of the form *.crt."
   :type 'string
   :set #'db/update-cert-file-directory)
 
+(defcustom db/rfc-cache-path nil
+  "Path where RFC documents are automatically downloaded to when opening rfc: links.
+If this path is not set, i.e., is null, no automatic download will happen."
+  :group 'personal-settings
+  :type '(choice (const nil) file))
+
 (provide 'db-customize)
 
 ;;; db-customize ends here

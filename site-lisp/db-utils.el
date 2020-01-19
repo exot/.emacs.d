@@ -504,12 +504,6 @@ This is done only if the value of this variable is not null."
     (user-error "Path for Outlook is not executable, please customize `db/path-to-outlook’."))
   (w32-shell-execute "open" db/path-to-outlook (concat "/select outlook:" id)))
 
-(defun db/org-rfc-open (number)
-  "Open browser to show RFC of given NUMBER."
-  (unless (string-match "[1-9][0-9]*" number)
-    (user-error "Not a valid number for an RFC: %s" number))
-  (browse-url (concat "https://tools.ietf.org/html/rfc" number)))
-
 
 ;;; Bookmarks
 

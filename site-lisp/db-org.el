@@ -8,6 +8,8 @@
 
 ;;; Code:
 
+(require 'db-customize)
+
 
 ;;; Agenda Customization
 
@@ -434,6 +436,36 @@ Current Task: %s(db/org-clock-current-task); "
         (shell-command-to-string
          (format "hy %s" tempfile))
       (delete-file tempfile))))
+
+
+;;; Custom link handlers
+
+(defun db/org-rfc-open (number)
+  "Open browser to show RFC of given NUMBER.
+If `db/rfc-cache-path' is defined, download the RFC in txt format
+there and open it.  If the RFC has already been downloaded
+before, just open it.  If `db/rfc-cache-path' is not defined,
+open RFC in HTML format in the default browser."
+  (cond
+   ((not (string-match "[1-9][0-9]*" number))
+    (user-error "Not a valid number for an RFC: %s" number))
+   ((and db/rfc-cache-path
+         (file-name-absolute-p db/rfc-cache-path)
+         (file-writable-p db/rfc-cache-path))
+    (let ((rfc-path (expand-file-name (format "rfc%s.txt" number)
+                                      db/rfc-cache-path)))
+      (cond
+       ((file-exists-p rfc-path)
+        (find-file rfc-path))
+       (t
+        (with-temp-buffer
+          (url-insert-file-contents (format "https://tools.ietf.org/rfc/rfc%s.txt"
+                                            number))
+          (write-file rfc-path))
+        (find-file rfc-path)))))
+   (t
+    (warn "`db/rfc-cache-path' not defined or not an absolute writable path, opening RFC in browser.")
+    (browse-url (concat "https://tools.ietf.org/html/rfc" number)))))
 
 
 ;;; End
