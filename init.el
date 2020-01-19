@@ -1687,7 +1687,8 @@ in the main agenda view."
 
 (setq notmuch-fcc-dirs nil
       message-send-mail-function #'db/smtpmail-send-it
-      send-mail-function #'db/smtpmail-send-it)
+      send-mail-function #'db/smtpmail-send-it
+      mail-user-agent 'gnus-user-agent)
 
 (use-package smtpmail
   :defer t
