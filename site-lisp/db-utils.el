@@ -491,19 +491,6 @@ This is done only if the value of this variable is not null."
   (call-process "xrandr" nil nil nil
                 "--output" "HDMI-3" "--off"))
 
-(defun db/org-onenote-open (path)
-  "Visit OneNote document on PATH."
-  (unless (file-executable-p db/path-to-onenote)
-    (user-error "Path for OneNote is not executable, please customize `db/path-to-onenote’."))
-  (start-process "OneNote" nil db/path-to-onenote "/hyperlink" path))
-
-(defun db/org-outlook-open (id)
-  "Open the Outlook item identified by ID.
-  ID should be an Outlook GUID."
-  (unless (file-executable-p db/path-to-outlook)
-    (user-error "Path for Outlook is not executable, please customize `db/path-to-outlook’."))
-  (w32-shell-execute "open" db/path-to-outlook (concat "/select outlook:" id)))
-
 
 ;;; Bookmarks
 
