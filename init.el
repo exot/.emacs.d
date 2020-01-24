@@ -2625,8 +2625,6 @@ in the main agenda view."
 
 (use-package haskell-mode
   :defer t
-  :defines (haskell-program-name)
-  :init (setq haskell-program-name "ghci")
   :config (progn
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
