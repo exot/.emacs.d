@@ -502,6 +502,32 @@ current values of the relevant buffer local variables."
       (goto-char (point-min))
       (timeline-tools-next-line))))
 
+(defun timeline-tools-next-line ()
+  "Move point to next line in timetable, if possible."
+  (interactive)
+  (unless (eq major-mode 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+  (beginning-of-line)
+  (let ((point (point)))
+    (when (looking-at "^| ")
+      (forward-line))
+    (unless (re-search-forward "^| " nil 'no-error)
+      (goto-char point)
+      (user-error "No next line"))
+    (beginning-of-line)))
+
+(defun timeline-tools-previous-line ()
+  "Move point to previous line in timetable, if possible."
+  (interactive)
+  (unless (eq major-mode 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+  (beginning-of-line)
+  (let ((point (point)))
+    (unless (re-search-backward "^| " nil 'no-error)
+      (goto-char point)
+      (user-error "No previous line"))
+    (beginning-of-line)))
+
 (defun timeline-tools--get-timeline-from-buffer ()
   "Extract current timeline from buffer and return it.
 This function expects the individual lines of a timeline to be
@@ -588,32 +614,6 @@ Updates category properties before constructing the new timeline."
     (timeline-tools-redraw-timeline)
     (goto-char (point-min))
     (forward-line (1- linenum))))
-
-(defun timeline-tools-next-line ()
-  "Move point to next line in timetable, if possible."
-  (interactive)
-  (unless (eq major-mode 'timeline-tools-mode)
-    (user-error "Not in Timeline buffer"))
-  (beginning-of-line)
-  (let ((point (point)))
-    (when (looking-at "^| ")
-      (forward-line))
-    (unless (re-search-forward "^| " nil 'no-error)
-      (goto-char point)
-      (user-error "No next line"))
-    (beginning-of-line)))
-
-(defun timeline-tools-previous-line ()
-  "Move point to previous line in timetable, if possible."
-  (interactive)
-  (unless (eq major-mode 'timeline-tools-mode)
-    (user-error "Not in Timeline buffer"))
-  (beginning-of-line)
-  (let ((point (point)))
-    (unless (re-search-backward "^| " nil 'no-error)
-      (goto-char point)
-      (user-error "No previous line"))
-    (beginning-of-line)))
 
 
 ;;; Manipulating Clocklines
