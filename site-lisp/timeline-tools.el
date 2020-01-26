@@ -91,9 +91,6 @@ end date of the timeline."
 (defvar timeline-tools--current-files nil
   "Files from which the current timeline has been extracted.")
 
-(defvar timeline-tools--current-timeline nil
-  "Currently displayed timeline in abstract form.")
-
 (defvar timeline-tools-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map [remap self-insert-command] 'undefined)
@@ -434,10 +431,10 @@ interactively, START and END are queried with `org-read-date’."
       (setq-local timeline-tools--current-time-start (org-time-string-to-seconds tstart))
       (setq-local timeline-tools--current-time-end (org-time-string-to-seconds tend))
       (setq-local timeline-tools--current-files files)
-      (setq-local timeline-tools--current-timeline nil)
       (setq-local timeline-tools-time-format timeline-tools-time-format)
       (setq-local timeline-tools-headline-time-format timeline-tools-headline-time-format)
       (hl-line-mode)
+      (buffer-enable-undo)
       (timeline-tools-redraw-timeline 'force))
     (pop-to-buffer target-buffer)
     t))
@@ -466,45 +463,64 @@ current values of the relevant buffer local variables."
   (interactive)
   (if (not (eq major-mode 'timeline-tools-mode))
       (user-error "Not in Timeline buffer")
-    (when force
-      (setq-local timeline-tools--current-timeline
-                  (timeline-tools-transform-timeline
-                   (timeline-tools-timeline
-                    timeline-tools--current-time-start
-                    timeline-tools--current-time-end
-                    timeline-tools--current-files))))
-    (erase-buffer)
-    (insert (format "* Timeline from [%s] to [%s]\n\n"
-                    (format-time-string timeline-tools-headline-time-format
-                                        timeline-tools--current-time-start)
-                    (format-time-string timeline-tools-headline-time-format
-                                        timeline-tools--current-time-end)))
-    (insert "|--|\n")
-    (insert "| Category | Start | End | Duration | Task |\n")
-    (let ((last-category nil)
-          (current-category nil))
-      (dolist (line timeline-tools--current-timeline)
-        (setq current-category (funcall timeline-tools-category-function
-                                        line
-                                        timeline-tools--current-time-start
-                                        timeline-tools--current-time-end))
-        (when (not (equal last-category current-category))
-          (insert "|--|\n")
-          (setq last-category current-category))
-        (insert
-         (propertize (format "| %s | %s | %s | %s min | %s | \n"
-                             current-category
-                             (timeline-tools-format-entry-time line 'start)
-                             (timeline-tools-format-entry-time line 'end)
-                             (timeline-tools-entry-duration line)
-                             (timeline-tools-entry-headline line))
-                     'marker (timeline-tools-entry-marker line)
-                     'entry line))))
-    (insert "|--|\n")
-    (org-table-align)
-    (goto-char (point-min))
-    (timeline-tools-next-line)
-    (buffer-enable-undo)))
+    (let ((timeline (if force
+                        (timeline-tools-transform-timeline
+                         (timeline-tools-timeline
+                          timeline-tools--current-time-start
+                          timeline-tools--current-time-end
+                          timeline-tools--current-files))
+                      (timeline-tools--get-timeline-from-buffer))))
+      (erase-buffer)
+      (insert (format "* Timeline from [%s] to [%s]\n\n"
+                      (format-time-string timeline-tools-headline-time-format
+                                          timeline-tools--current-time-start)
+                      (format-time-string timeline-tools-headline-time-format
+                                          timeline-tools--current-time-end)))
+      (insert "|--|\n")
+      (insert "| Category | Start | End | Duration | Task |\n")
+      (let ((last-category nil)
+            (current-category nil))
+        (dolist (line timeline)
+          (setq current-category (funcall timeline-tools-category-function
+                                          line
+                                          timeline-tools--current-time-start
+                                          timeline-tools--current-time-end))
+          (when (not (equal last-category current-category))
+            (insert "|--|\n")
+            (setq last-category current-category))
+          (insert
+           (propertize (format "| %s | %s | %s | %s min | %s | \n"
+                               current-category
+                               (timeline-tools-format-entry-time line 'start)
+                               (timeline-tools-format-entry-time line 'end)
+                               (timeline-tools-entry-duration line)
+                               (timeline-tools-entry-headline line))
+                       'marker (timeline-tools-entry-marker line)
+                       'entry line))))
+      (insert "|--|\n")
+      (org-table-align)
+      (goto-char (point-min))
+      (timeline-tools-next-line))))
+
+(defun timeline-tools--get-timeline-from-buffer ()
+  "Extract current timeline from buffer and return it.
+This function expects the individual lines of a timeline to be
+text properties under the keyword `entry' in the current buffer,
+as it is done by `timeline-tools-redraw-timeline'."
+  (if (not (eq major-mode 'timeline-tools-mode))
+      (user-error "Not in Timeline buffer")
+    (let (timeline)
+      (save-mark-and-excursion
+        (goto-char (point-min))
+        (while (zerop (forward-line))
+          ;; scan line for a text property named `entry'
+          (while (and (not (eolp))
+                      (not (get-text-property (point) 'entry)))
+            (forward-char))
+          ;; if not at the end, we have found something … add it
+          (unless (eolp)
+            (push (get-text-property (point) 'entry) timeline)))
+        (nreverse timeline)))))
 
 (defun timeline-tools-reparse-timeline ()
   "Parse timeline from files again and redraw current display.
@@ -564,11 +580,7 @@ Updates category properties before constructing the new timeline."
     (let ((entry (get-text-property (point) 'entry)))
       (unless entry
         (user-error "Not on valid row in timeline"))
-      (unless (< 1 (length timeline-tools--current-timeline))
-        (user-error "Cannot delete last line"))
-      (setq-local timeline-tools--current-timeline
-                  (timeline-tools-transform-timeline
-                   (delq entry timeline-tools--current-timeline)))))
+      (kill-line)))
   ;; the call to `erase-buffer’ in `timeline-tools-redraw-timeline’ somehow
   ;; makes `save-mark-and-excursion’ meaningless; thus we save the number of the
   ;; current line by ourselves
