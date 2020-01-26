@@ -439,7 +439,7 @@ interactively, START and END are queried with `org-read-date’."
       (setq-local timeline-tools-time-format timeline-tools-time-format)
       (setq-local timeline-tools-headline-time-format timeline-tools-headline-time-format)
       (hl-line-mode)
-      (timeline-tools-redraw-timeline))
+      (timeline-tools-redraw-timeline 'force))
     (pop-to-buffer target-buffer)
     t))
 
@@ -459,16 +459,15 @@ archives."
                                                   (org-time-string-to-time date))
                                    files)))
 
-(defun timeline-tools-redraw-timeline ()
+(defun timeline-tools-redraw-timeline (&optional force)
   "Redraw timeline of current buffer.
-If the current timeline is `nil' (via the buffer local variable
-`timeline-tools--current-timeline', reparse the timeline using
+If `force' is non-nil, reparse the timeline using
 `timeline-tools-timeline' within the time span given by the
 current values of the relevant buffer local variables."
   (interactive)
   (if (not (eq major-mode 'timeline-tools-mode))
       (user-error "Not in Timeline buffer")
-    (unless timeline-tools--current-timeline
+    (when force
       (setq-local timeline-tools--current-timeline
                   (timeline-tools-transform-timeline
                    (timeline-tools-timeline
@@ -515,8 +514,7 @@ Updates category properties before constructing the new timeline."
   (dolist (file timeline-tools--current-files)
     (with-current-buffer (get-file-buffer file)
       (org-refresh-category-properties)))
-  (setq-local timeline-tools--current-timeline nil)
-  (timeline-tools-redraw-timeline))
+  (timeline-tools-redraw-timeline 'force))
 
 (defun timeline-tools-forward-day ()
   "Display timeline of next day."
@@ -525,9 +523,7 @@ Updates category properties before constructing the new timeline."
       (user-error "Not in Timeline buffer")
     (setq-local timeline-tools--current-time-start (+ 86400 timeline-tools--current-time-start))
     (setq-local timeline-tools--current-time-end (+ 86400 timeline-tools--current-time-end))
-    ;; Set current timeline to nil to trigger reparsing
-    (setq-local timeline-tools--current-timeline nil)
-    (timeline-tools-redraw-timeline)))
+    (timeline-tools-redraw-timeline 'force)))
 
 (defun timeline-tools-backward-day ()
   "Display timeline of next day."
@@ -538,9 +534,7 @@ Updates category properties before constructing the new timeline."
                 (- timeline-tools--current-time-start 86400))
     (setq-local timeline-tools--current-time-end
                 (- timeline-tools--current-time-end 86400))
-    ;; Set current timeline to nil to trigger reparsing
-    (setq-local timeline-tools--current-timeline nil)
-    (timeline-tools-redraw-timeline)))
+    (timeline-tools-redraw-timeline 'force)))
 
 (defun timeline-tools-skip-short-entries ()
   "Skip entries in current timeline that are too short.
