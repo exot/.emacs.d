@@ -101,7 +101,6 @@ end date of the timeline."
     (define-key map "R" #'timeline-tools-reparse-timeline)
     (define-key map "f" #'timeline-tools-forward-day)
     (define-key map "b" #'timeline-tools-backward-day)
-    (define-key map "s" #'timeline-tools-skip-short-entries)
     (define-key map (kbd "RET") #'timeline-tools-jump-to-headline)
     (define-key map "q" #'quit-window)
     (define-key map (kbd "C-k") #'timeline-tools-kill-line)
@@ -535,19 +534,6 @@ Updates category properties before constructing the new timeline."
     (setq-local timeline-tools--current-time-end
                 (- timeline-tools--current-time-end 86400))
     (timeline-tools-redraw-timeline 'force)))
-
-(defun timeline-tools-skip-short-entries ()
-  "Skip entries in current timeline that are too short.
-Interactively query for the exact value of \"short\"."
-  (interactive)
-  (when (not (eq major-mode 'timeline-tools-mode))
-    (user-error "Not in Timeline buffer"))
-  (let ((threshold (string-to-number
-                    (read-from-minibuffer "Maximum time for short entries (in seconds): "))))
-    (setq-local timeline-tools--current-timeline
-                (timeline-tools-remove-short-entries
-                 timeline-tools--current-timeline threshold))
-    (timeline-tools-redraw-timeline)))
 
 (defun timeline-tools-jump-to-headline ()
   "Jump to headline of current entry, if available."
