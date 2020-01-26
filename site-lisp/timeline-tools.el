@@ -464,13 +464,13 @@ current values of the relevant buffer local variables."
   (interactive)
   (if (not (eq major-mode 'timeline-tools-mode))
       (user-error "Not in Timeline buffer")
-    (let ((timeline (if force
-                        (timeline-tools-transform-timeline
+    (let ((timeline (timeline-tools-transform-timeline
+                     (if force
                          (timeline-tools-timeline
                           timeline-tools--current-time-start
                           timeline-tools--current-time-end
-                          timeline-tools--current-files))
-                      (timeline-tools--get-timeline-from-buffer))))
+                          timeline-tools--current-files)
+                       (timeline-tools--get-timeline-from-buffer)))))
       (erase-buffer)
       (insert (format "* Timeline from [%s] to [%s]\n\n"
                       (format-time-string timeline-tools-headline-time-format
