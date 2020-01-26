@@ -416,6 +416,9 @@ Filtering is done by applying all functions from
                 timeline
                 timeline-tools-filter-functions))
 
+
+;; Interactive functions
+
 ;;;###autoload
 (defun timeline-tools-format-timeline (tstart tend &optional files)
   "Display timeline of tasks between TSTART and TEND from FILES.
@@ -426,21 +429,19 @@ value of `timeline-tools-filter-functions’.  When called
 interactively, START and END are queried with `org-read-date’."
   (interactive (list (org-read-date nil nil nil "Start time: ")
                      (org-read-date nil nil nil "End time: ")))
-  (let* ((timeline (timeline-tools-transform-timeline
-                    (timeline-tools-timeline tstart tend files))))
-    (let ((target-buffer (get-buffer-create " *Org Timeline*")))
-      (with-current-buffer target-buffer
-        (timeline-tools-mode)
-        (setq-local timeline-tools--current-time-start (org-time-string-to-seconds tstart))
-        (setq-local timeline-tools--current-time-end (org-time-string-to-seconds tend))
-        (setq-local timeline-tools--current-files files)
-        (setq-local timeline-tools--current-timeline timeline)
-        (setq-local timeline-tools-time-format timeline-tools-time-format)
-        (setq-local timeline-tools-headline-time-format timeline-tools-headline-time-format)
-        (hl-line-mode)
-        (timeline-tools-redraw-timeline))
-      (pop-to-buffer target-buffer)
-      t)))
+  (let ((target-buffer (get-buffer-create " *Org Timeline*")))
+    (with-current-buffer target-buffer
+      (timeline-tools-mode)
+      (setq-local timeline-tools--current-time-start (org-time-string-to-seconds tstart))
+      (setq-local timeline-tools--current-time-end (org-time-string-to-seconds tend))
+      (setq-local timeline-tools--current-files files)
+      (setq-local timeline-tools--current-timeline nil)
+      (setq-local timeline-tools-time-format timeline-tools-time-format)
+      (setq-local timeline-tools-headline-time-format timeline-tools-headline-time-format)
+      (hl-line-mode)
+      (timeline-tools-redraw-timeline))
+    (pop-to-buffer target-buffer)
+    t))
 
 ;;;###autoload
 (defun timeline-tools-format-timeline-of-day (date &optional files)
@@ -458,45 +459,54 @@ archives."
                                                   (org-time-string-to-time date))
                                    files)))
 
-
-;; Interactive functions
-
 (defun timeline-tools-redraw-timeline ()
-  "Redraw timeline of current buffer."
+  "Redraw timeline of current buffer.
+If the current timeline is `nil' (via the buffer local variable
+`timeline-tools--current-timeline', reparse the timeline using
+`timeline-tools-timeline' within the time span given by the
+current values of the relevant buffer local variables."
   (interactive)
   (if (not (eq major-mode 'timeline-tools-mode))
       (user-error "Not in Timeline buffer")
-    (let ((timeline timeline-tools--current-timeline))
-      (erase-buffer)
-      (insert (format "* Timeline from [%s] to [%s]\n\n"
-                      (format-time-string timeline-tools-headline-time-format
-                                          timeline-tools--current-time-start)
-                      (format-time-string timeline-tools-headline-time-format
-                                          timeline-tools--current-time-end)))
-      (insert "|--|\n")
-      (insert "| Category | Start | End | Duration | Task |\n")
-      (let ((last-category nil)
-            (current-category nil))
-        (dolist (line timeline)
-          (setq current-category (funcall timeline-tools-category-function
-                                          line
-                                          timeline-tools--current-time-start
-                                          timeline-tools--current-time-end))
-          (when (not (equal last-category current-category))
-            (insert "|--|\n")
-            (setq last-category current-category))
-          (insert
-           (propertize (format "| %s | %s | %s | %s min | %s | \n"
-                               current-category
-                               (timeline-tools-format-entry-time line 'start)
-                               (timeline-tools-format-entry-time line 'end)
-                               (timeline-tools-entry-duration line) (timeline-tools-entry-headline line))
-                       'marker (timeline-tools-entry-marker line)
-                       'entry line))))
-      (insert "|--|\n")
-      (org-table-align)
-      (goto-char (point-min))
-      (timeline-tools-next-line))))
+    (unless timeline-tools--current-timeline
+      (setq-local timeline-tools--current-timeline
+                  (timeline-tools-transform-timeline
+                   (timeline-tools-timeline
+                    timeline-tools--current-time-start
+                    timeline-tools--current-time-end
+                    timeline-tools--current-files))))
+    (erase-buffer)
+    (insert (format "* Timeline from [%s] to [%s]\n\n"
+                    (format-time-string timeline-tools-headline-time-format
+                                        timeline-tools--current-time-start)
+                    (format-time-string timeline-tools-headline-time-format
+                                        timeline-tools--current-time-end)))
+    (insert "|--|\n")
+    (insert "| Category | Start | End | Duration | Task |\n")
+    (let ((last-category nil)
+          (current-category nil))
+      (dolist (line timeline-tools--current-timeline)
+        (setq current-category (funcall timeline-tools-category-function
+                                        line
+                                        timeline-tools--current-time-start
+                                        timeline-tools--current-time-end))
+        (when (not (equal last-category current-category))
+          (insert "|--|\n")
+          (setq last-category current-category))
+        (insert
+         (propertize (format "| %s | %s | %s | %s min | %s | \n"
+                             current-category
+                             (timeline-tools-format-entry-time line 'start)
+                             (timeline-tools-format-entry-time line 'end)
+                             (timeline-tools-entry-duration line)
+                             (timeline-tools-entry-headline line))
+                     'marker (timeline-tools-entry-marker line)
+                     'entry line))))
+    (insert "|--|\n")
+    (org-table-align)
+    (goto-char (point-min))
+    (timeline-tools-next-line)
+    (buffer-enable-undo)))
 
 (defun timeline-tools-reparse-timeline ()
   "Parse timeline from files again and redraw current display.
@@ -505,12 +515,7 @@ Updates category properties before constructing the new timeline."
   (dolist (file timeline-tools--current-files)
     (with-current-buffer (get-file-buffer file)
       (org-refresh-category-properties)))
-  (setq-local timeline-tools--current-timeline
-              (timeline-tools-transform-timeline
-               (timeline-tools-timeline
-                timeline-tools--current-time-start
-                timeline-tools--current-time-end
-                timeline-tools--current-files)))
+  (setq-local timeline-tools--current-timeline nil)
   (timeline-tools-redraw-timeline))
 
 (defun timeline-tools-forward-day ()
@@ -520,12 +525,8 @@ Updates category properties before constructing the new timeline."
       (user-error "Not in Timeline buffer")
     (setq-local timeline-tools--current-time-start (+ 86400 timeline-tools--current-time-start))
     (setq-local timeline-tools--current-time-end (+ 86400 timeline-tools--current-time-end))
-    (setq-local timeline-tools--current-timeline
-                (timeline-tools-transform-timeline
-                 (timeline-tools-timeline
-                  timeline-tools--current-time-start
-                  timeline-tools--current-time-end
-                  timeline-tools--current-files)))
+    ;; Set current timeline to nil to trigger reparsing
+    (setq-local timeline-tools--current-timeline nil)
     (timeline-tools-redraw-timeline)))
 
 (defun timeline-tools-backward-day ()
@@ -537,12 +538,8 @@ Updates category properties before constructing the new timeline."
                 (- timeline-tools--current-time-start 86400))
     (setq-local timeline-tools--current-time-end
                 (- timeline-tools--current-time-end 86400))
-    (setq-local timeline-tools--current-timeline
-                (timeline-tools-transform-timeline
-                 (timeline-tools-timeline
-                  timeline-tools--current-time-start
-                  timeline-tools--current-time-end
-                  timeline-tools--current-files)))
+    ;; Set current timeline to nil to trigger reparsing
+    (setq-local timeline-tools--current-timeline nil)
     (timeline-tools-redraw-timeline)))
 
 (defun timeline-tools-skip-short-entries ()
