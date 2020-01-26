@@ -111,7 +111,9 @@ end date of the timeline."
 
 (define-derived-mode timeline-tools-mode
   org-mode "Timeline"
-  "Major mode to display org-mode timelines.")
+  "Major mode to display org-mode timelines."
+  (hl-line-mode)
+  (buffer-enable-undo))
 
 
 ;; Model
@@ -434,8 +436,6 @@ interactively, START and END are queried with `org-read-date’."
       (setq-local timeline-tools--current-files files)
       (setq-local timeline-tools-time-format timeline-tools-time-format)
       (setq-local timeline-tools-headline-time-format timeline-tools-headline-time-format)
-      (hl-line-mode)
-      (buffer-enable-undo)
       (timeline-tools-redraw-timeline 'force))
     (pop-to-buffer target-buffer)
     t))
