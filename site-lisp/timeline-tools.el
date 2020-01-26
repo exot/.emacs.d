@@ -95,6 +95,7 @@ end date of the timeline."
   (let ((map (make-sparse-keymap)))
     (define-key map [remap self-insert-command] 'undefined)
     (define-key map "r" #'timeline-tools-redraw-timeline)
+    (define-key map "g" #'timeline-tools-redraw-timeline)
     (define-key map "R" #'timeline-tools-reparse-timeline)
     (define-key map "f" #'timeline-tools-forward-day)
     (define-key map "b" #'timeline-tools-backward-day)
