@@ -764,8 +764,8 @@ With given ARG, display files in `db/important-document-path’."
                 org-todo-state-tags-triggers
                 '(("WAIT" ("WAIT" . t))
                   ("HOLD" ("HOLD" . t))
-                  (done ("HOLD") ("WAIT") ("DATE") ("NO_EXPORT" . t))
-                  ("TODO" ("HOLD") ("WAIT") ("NO_EXPORT"))
+                  (done ("HOLD") ("WAIT") ("DATE"))
+                  ("TODO" ("HOLD") ("WAIT"))
                   ("READ" ("READ" . t) ("HOLD") ("WAIT"))
                   ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
                   ("CONT" ("HOLD") ("WAIT"))
