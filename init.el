@@ -727,7 +727,7 @@ With given ARG, display files in `db/important-document-path’."
                 org-image-actual-width nil
                 org-footnote-section nil
                 org-log-into-drawer "LOGBOOK"
-                org-log-reschedule 'time
+                org-log-reschedule 'note
                 org-log-redeadline 'note
                 org-log-note-clock-out nil
                 org-log-done 'time
