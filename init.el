@@ -762,10 +762,10 @@ With given ARG, display files in `db/important-document-path’."
                             "|" "CANC(c@/!)" "PHONE" "MEETING"))
 
                 org-todo-state-tags-triggers
-                '(("WAIT" ("WAIT" . t))
-                  ("HOLD" ("HOLD" . t))
-                  (done ("HOLD") ("WAIT") ("DATE"))
-                  ("TODO" ("HOLD") ("WAIT"))
+                '(("WAIT" ("HOLD") ("WAIT" . t))
+                  ("HOLD" ("HOLD" . t) ("WAIT"))
+                  (done ("HOLD") ("WAIT"))
+                  (todo ("HOLD") ("WAIT") ("DATE") ("READ"))
                   ("READ" ("READ" . t) ("HOLD") ("WAIT"))
                   ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
                   ("CONT" ("HOLD") ("WAIT"))
