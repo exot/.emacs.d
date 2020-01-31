@@ -778,7 +778,8 @@ With given ARG, display files in `db/important-document-path’."
                   ("FUN" . ?f)
                   ("UNTAGGED" . ?u)
                   (:endgroup . nil)
-                  ("NOTE" . ?n))
+                  ("NOTE" . ?n)
+                  ("PERIODIC" . ?p))
 
                 org-fast-tag-selection-single-key 'expert)
 

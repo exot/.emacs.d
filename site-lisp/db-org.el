@@ -282,8 +282,9 @@ In ~%s~:
            (org-back-to-heading t))
        (while (and (not parent-task)
                    (org-up-heading-safe))
-         (let ((tags (nth 5 (org-heading-components))))
-           (unless (and tags (member "NOP" (split-string tags ":" t)))
+         (let ((tags (org-get-tags nil 'local)))
+           (unless (or (member "NOP" tags)
+                       (member "PERIODIC" tags))
              (setq parent-task (point)))))
        parent-task))))
 
