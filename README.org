@@ -90,8 +90,8 @@ the order given in that list.
 * Known Limitations
 
 Under Windows, using Tramp with ~ssh~ from git does not seem to work because no
-~ssh-askpass~ is included.  Using passwordless authentication should work,
-though.
+~ssh-askpass~ is included.  Use ~plink~ instead, TRAMP has builtin support for
+it.
 
 * License
 
