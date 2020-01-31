@@ -730,7 +730,7 @@ With given ARG, display files in `db/important-document-path’."
                 org-log-reschedule 'note
                 org-log-redeadline 'note
                 org-log-note-clock-out nil
-                org-log-done 'time
+                org-log-done 'note
                 org-clone-delete-id t
                 org-catch-invisible-edits 'error
                 org-M-RET-may-split-line '((default . nil))
