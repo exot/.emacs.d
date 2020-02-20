@@ -2564,7 +2564,8 @@ in the main agenda view."
           (setq cperl-hairy nil
                 cperl-invalid-face 'default
                 cperl-electric-keywords nil
-                cperl-lazy-help-time 2))
+                cperl-lazy-help-time 2
+                cperl-highlight-variables-indiscriminately t))
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
