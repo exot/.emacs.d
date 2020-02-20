@@ -2560,10 +2560,18 @@ in the main agenda view."
              (if (eq (cdr pair) 'perl-mode)
                  (setcdr pair 'cperl-mode)))
            (append auto-mode-alist interpreter-mode-alist))
-          (setq cperl-hairy nil))
+
+          (setq cperl-hairy nil
+                cperl-invalid-face 'default
+                cperl-electric-keywords nil
+                cperl-lazy-help-time 2))
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
-            (add-hook 'cperl-mode-hook 'prettify-symbols-mode)))
+            (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
+
+            ;; enable display of help messages after a short period of time, as
+            ;; controlled by the value of `cperl-lazy-help-time'
+            (add-hook 'cperl-mode-hook 'cperl-lazy-install)))
 
 (use-package crux
   :ensure t
