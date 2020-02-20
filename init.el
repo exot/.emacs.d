@@ -142,6 +142,7 @@
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
 
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'text-mode-hook 'abbrev-mode)
 
   ;; Auto-Modes
 
@@ -484,7 +485,6 @@
 (use-package abbrev
   :defer t
   :init (progn
-          (setq-default abbrev-mode t)
           (setq save-abbrevs 'silently))
   :diminish abbrev-mode)
 
