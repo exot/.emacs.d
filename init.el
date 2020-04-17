@@ -2684,7 +2684,8 @@ in the main agenda view."
 (use-package markdown-mode
   :ensure t
   :commands (markdown-mode)
-  :init (setq markdown-use-pandoc-style-yaml-metadata t))
+  :init (setq markdown-use-pandoc-style-yaml-metadata t
+              markdown-command "pandoc -f markdown -t html"))
 
 (use-package mastodon
   :commands (mastodon))
