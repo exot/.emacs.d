@@ -14,7 +14,7 @@
 (require 'db-customize)
 
 
-;;; application shortcuts
+;;; Application Shortcuts
 
 (defun db/run-or-hide-ansi-term ()
   "Find `*ansi-term*' or run `ansi-term' with `explicit-shell-file-name'.
@@ -86,7 +86,7 @@ If already in `*ansi-term*' buffer, bury it."
     (shell)))
 
 
-;;; general utilities
+;;; General Utilities
 
 (defun db/get-url-from-link ()
   "Copy url of link under point into clipboard."
