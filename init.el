@@ -573,7 +573,9 @@
              db/bookmark-add-url
              db/lookup-smime-key
              db/dired-from-shell-command
-             db/system-open))
+             db/system-open
+             db/switch-to-dark-theme
+             db/switch-to-light-theme))
 
 (use-package db-hydras
   :commands (hydra-toggle/body

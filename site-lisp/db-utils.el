@@ -526,6 +526,21 @@ it.  The bookmarks will finally be sorted by their name."
   (db/bookmark-add-with-handler name url #'eww))
 
 
+;;; Appearance
+
+(defun db/switch-to-dark-theme ()
+  "Switch to dark theme.
+This is `db-dark' and `solarized-dark'."
+  (interactive)
+  (custom-set-variables '(custom-enabled-themes '(db-dark solarized-dark))))
+
+(defun db/switch-to-light-theme ()
+  "Switch to dark theme.
+This is `db-light' and `solarized-light'."
+  (interactive)
+  (custom-set-variables '(custom-enabled-themes '(db-light solarized-light))))
+
+
 ;;; End
 
 (provide 'db-utils)
