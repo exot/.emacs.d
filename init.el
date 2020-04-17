@@ -358,7 +358,9 @@
       delete-trailing-lines nil
       x-underline-at-descent-line t
       search-whitespace-regexp "[ \t\r\n]+"
-      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow))
+      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
+      history-delete-duplicates t
+      track-eol t)
 
 (when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
   (setq x-wait-for-event-timeout nil))
