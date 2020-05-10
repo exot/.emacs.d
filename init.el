@@ -549,8 +549,6 @@
 (use-package db-utils
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
-             db/go-dark
-             db/go-light
              db/show-current-org-task
              db/run-or-hide-shell
              db/run-or-hide-eshell
