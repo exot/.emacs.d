@@ -715,6 +715,7 @@ With given ARG, display files in `db/important-document-path’."
              db/org-rfc-open))
 
 (use-package org
+  :pin "gnu"
   :commands (org-store-link)
   :bind (:map org-mode-map
               ([remap org-return] . org-return-indent))
