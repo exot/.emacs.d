@@ -831,10 +831,10 @@ With given ARG, display files in `db/important-document-path’."
             ;; Reset checkboxes if the RESET_CHECK_BOXES property is set
             (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
 
-            ;; Color links to file according to whether they exist or not
-            (org-link-set-parameters
-             "file"
-             :face (lambda (path) (if (file-exists-p path) 'org-link 'org-warning)))
+            ;; Statically color links sponding to whether the file exists, but
+            ;; this turns out to be slow on Windows; we can use `org-lint' for
+            ;; this when necessary)
+            (org-link-set-parameters "file" :face 'org-link)
 
             ;; File Apps
 
