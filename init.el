@@ -666,7 +666,10 @@ With given ARG, display files in `db/important-document-path’."
                     :action '(("Open" . call-interactively))
                     :filtered-candidate-transformer #'helm-adaptive-sort)
 
-                  ;; if prefix arg is given, extrac files from
+                  ;; taken from `helm-buffers-list'
+                  (helm-make-source "Buffers" 'helm-source-buffers)
+
+                  ;; if prefix arg is given, extract files from
                   ;; `db/important-documents-path’ and list them as well
                   (when (and (= arg 4)
                              (file-directory-p db/important-documents-path))
@@ -683,6 +686,8 @@ With given ARG, display files in `db/important-document-path’."
                                   ("Find file" . find-file)))))
 
                   helm-source-bookmarks
+
+                  helm-source-buffer-not-found
                   helm-source-bookmark-set)))
 
 
