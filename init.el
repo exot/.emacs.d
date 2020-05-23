@@ -575,7 +575,8 @@
              db/dired-from-shell-command
              db/system-open
              db/switch-to-dark-theme
-             db/switch-to-light-theme))
+             db/switch-to-light-theme
+             db/org-copy-template-for-periodic-task))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
