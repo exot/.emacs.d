@@ -414,22 +414,23 @@ headline of the periodic task, i.e., of the parent of the current
 item at point.  The body of the template item, without any
 drawers, will be copied to point."
   (interactive)
-  (let ((template (save-mark-and-excursion
-                    (let ((template-element (progn
-                                              (outline-up-heading 1 'invisible-ok)
-                                              (outline-next-heading)
-                                              (org-element-at-point))))
-                      (unless (string-equal (org-element-property :title template-element)
-                                            "Template")
-                        (assert "Template must be first headline in periodic task."))
-                      ;; XXX: trying to get the contents of the current item, without any
-                      ;; drawers, by going to the end of the template item and marking the
-                      ;; element at point, which, incidentally, seems to be the content we are
-                      ;; looking for; this feels hackish, there must be a better way to do it.
-                      (goto-char (org-element-property :contents-end template-element))
-                      (org-mark-element)
-                      (buffer-substring-no-properties (region-beginning)
-                                                      (region-end))))))
+  (let ((template (save-restriction
+                    (save-mark-and-excursion
+                      (let ((template-element (progn
+                                                (outline-up-heading 1 'invisible-ok)
+                                                (outline-next-heading)
+                                                (org-element-at-point))))
+                        (unless (string-equal (org-element-property :title template-element)
+                                              "Template")
+                          (assert "Template must be first headline in periodic task."))
+                        ;; XXX: trying to get the contents of the current item, without any
+                        ;; drawers, by going to the end of the template item and marking the
+                        ;; element at point, which, incidentally, seems to be the content we are
+                        ;; looking for; this feels hackish, there must be a better way to do it.
+                        (goto-char (org-element-property :contents-end template-element))
+                        (org-mark-element)
+                        (buffer-substring-no-properties (region-beginning)
+                                                        (region-end)))))))
     (insert template)
     (org-update-statistics-cookies nil)))
 
