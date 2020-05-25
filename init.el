@@ -819,6 +819,7 @@ With given ARG, display files in `db/important-document-path’."
           (setq org-refile-targets '((org-agenda-files . (:maxlevel . 9))
                                      (nil . (:maxlevel . 9)))
                 org-refile-use-outline-path 'file
+                org-refile-use-cache t
                 org-refile-allow-creating-parent-nodes 'confirm
                 org-indirect-buffer-display 'current-window
                 org-outline-path-complete-in-steps nil
