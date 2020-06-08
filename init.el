@@ -1069,10 +1069,6 @@ in the main agenda view."
                    ((org-agenda-overriding-header "Deadlines")
                     (org-agenda-sorting-strategy '(deadline-up priority-down))
                     (org-deadline-warning-days 30)))
-                  (tags-todo "-NOAGENDA/WAIT|DELG"
-                             ((org-agenda-overriding-header "Waiting-fors")
-                              (org-agenda-todo-ignore-deadlines t)
-                              (org-agenda-todo-ignore-scheduled t)))
                   (tags "REFILE"
                         ((org-agenda-files (list db/org-default-refile-file))
                          (org-agenda-overriding-header "Things to refile")))))
