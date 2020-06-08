@@ -916,29 +916,36 @@ With given ARG, display files in `db/important-document-path’."
 (use-package org-clock
   :defer t
   :commands (org-clock-save)
-  :init (setq org-clock-history-length 23
-              org-clock-in-resume t
-              org-clock-into-drawer t
-              org-clock-idle-time nil
-              org-clock-out-remove-zero-time-clocks t
-              org-clock-out-when-done '("DONE" "CANC" "WAIT" "HOLD")
-              org-clock-auto-clock-resolution 'when-no-clock-is-running
-              org-clock-mode-line-total 'auto
-              org-clock-report-include-clocking-task t
-              org-clock-in-switch-to-state (lambda (_)
-                                             (when (not
-                                                    (and (boundp 'org-capture-mode)
-                                                         org-capture-mode))
-                                               (cond
-                                                ((member (org-get-todo-state)
-                                                         (list "TODO" "READ"))
-                                                 "CONT")
-                                                ((member (org-get-todo-state)
-                                                         (list "GOTO"))
-                                                 "ATTN"))))
-              org-clock-persist t
-              org-clock-persist-query-resume nil
-              org-time-stamp-rounding-minutes '(1 1))
+  :init (progn
+          (setq org-clock-history-length 23
+                org-clock-in-resume t
+                org-clock-into-drawer t
+                org-clock-idle-time nil
+                org-clock-out-remove-zero-time-clocks t
+                org-clock-out-when-done '("DONE" "CANC" "WAIT" "HOLD")
+                org-clock-auto-clock-resolution 'when-no-clock-is-running
+                org-clock-mode-line-total 'auto
+                org-clock-report-include-clocking-task t
+                org-clock-in-switch-to-state (lambda (_)
+                                               (when (not
+                                                      (and (boundp 'org-capture-mode)
+                                                           org-capture-mode))
+                                                 (cond
+                                                  ((member (org-get-todo-state)
+                                                           (list "TODO" "READ"))
+                                                   "CONT")
+                                                  ((member (org-get-todo-state)
+                                                           (list "GOTO"))
+                                                   "ATTN"))))
+                org-clock-persist t
+                org-clock-persist-query-resume nil
+                org-time-stamp-rounding-minutes '(1 1))
+
+          ;; On Windows, we don't have dbus to show notifications; default to
+          ;; `message' instead
+          (when on-windows
+            (setq org-show-notification-handler #'message)))
+
   :config (progn
             (org-clock-persistence-insinuate)
 
