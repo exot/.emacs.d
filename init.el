@@ -1215,6 +1215,28 @@ in the main agenda view."
   :config (setf (alist-get :results org-babel-default-header-args)
                 "output code replace"))
 
+(use-package ob-sql
+  :defer t
+  :config (progn
+
+            (defun db/ob-sql-oracle-ask-for-password (orig-fun
+                                                      host port user password database)
+              "Ask for PASSWORD if not given, and call ORIG-FUN with arguments afterwards."
+              (cond
+               ((not (or (and user database host port)
+                         (and user database)))
+                (user-error "Insufficient login credentials given, aborting."))
+               (password
+                (funcall orig-fun host port user password database))
+               (t
+                (funcall orig-fun
+                         host port user
+                         (password-read (format "Password for %s@%s: " user database))
+                         database))))
+
+            (advice-add #'org-babel-sql-dbstring-oracle
+                        :around #'db/ob-sql-oracle-ask-for-password)))
+
 ;; Exporting
 
 (use-package ox-icalendar
