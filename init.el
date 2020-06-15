@@ -2153,8 +2153,7 @@ in the main agenda view."
   :pin "melpa-stable"
   :commands (helm-emms)
   :init (setq helm-emms-use-track-description-function t
-              helm-emms-default-sources '(helm-source-emms-streams
-                                          helm-source-emms-dired
+              helm-emms-default-sources '(helm-source-emms-dired
                                           helm-source-emms-files))
   :config (progn
             (require 'emms)
