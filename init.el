@@ -1055,7 +1055,7 @@ in the main agenda view."
 
               org-stuck-projects
               '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP}"
-                ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG")
+                ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
                 ()
                 "")
 
