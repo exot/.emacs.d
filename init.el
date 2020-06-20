@@ -221,6 +221,7 @@
   (bind-key [insert] nil)
   (bind-key [kp-insert] nil)
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
+  (unbind-key "C-x C-c" global-map)
 
   ;; Overwrite certain keybindings only if packages are avilable
 
