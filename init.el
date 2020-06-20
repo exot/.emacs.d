@@ -216,10 +216,10 @@
   (bind-key "M-g j b" #'dumb-jump-back)
   (bind-key "M-g j g" #'dumb-jump-go)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
-  (bind-key "M-o" nil)
+  (unbind-key "M-o" global-map)
   (bind-key "M-z" #'zap-up-to-char)
-  (bind-key [insert] nil)
-  (bind-key [kp-insert] nil)
+  (unbind-key "<insert>" global-map)
+  (unbind-key "<kp-insert>" global-map)
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
   (unbind-key "C-x C-c" global-map)
 
