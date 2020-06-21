@@ -1180,12 +1180,6 @@ in the main agenda view."
                  entry
                  (file+olp+datetree db/org-default-pensieve-file "Reviews")
                  "* Weekly Review\n\n%?")
-                ("b" "Bookmark"
-                 entry
-                 (file+headline db/org-default-notes-file "Bookmarks")
-                 ,(concat "* [[%^{Link}][%^{Caption}]]\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n\n")
-                 :immediate-finish t)
                 ("s" "Code Snippet"
                  entry
                  (file db/org-default-refile-file)
