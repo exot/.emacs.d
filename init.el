@@ -1194,7 +1194,16 @@ in the main agenda view."
                  plain
                  (clock)
                  "%c"
-                 :immediate-finish t :empty-lines 1)))
+                 :immediate-finish t :empty-lines 1)
+                ("T" "Record new ticket with first task"
+                 entry
+                 (file db/org-default-refile-file)
+                 ,(concat "* Ticket #%^{Ticket Number}: %^{Ticket Description}\n"
+                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "\nReference: %^{Reference}\n"
+                          "\n** %^{First Task}\n"
+                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "\n%?"))))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
