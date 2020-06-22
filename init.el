@@ -1135,13 +1135,31 @@ in the main agenda view."
   :commands (org-capture)
   :init (setq org-capture-use-agenda-date nil
               org-capture-templates
-              `(("t" "Todo"
+              `(("t" "Things to do")
+                ("tt" "Single Task"
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* TODO [#B] %^{What}\n"
                           "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "%?"))
+                ("tc" "Record new complex task with first item"
+                 entry
+                 (file db/org-default-refile-file)
+                 ,(concat "* %^{Task Description}\n"
+                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "\n** %^{First Thing to Do}\n"
+                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "\n%?"))
+                ("tT" "Record new ticket with first item"
+                 entry
+                 (file db/org-default-refile-file)
+                 ,(concat "* Ticket #%^{Ticket Number}: %^{Ticket Description}\n"
+                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "\nReference: %^{Reference}\n"
+                          "\n** %^{First Task}\n"
+                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "\n%?"))
                 ("n" "Note"
                  entry
                  (file db/org-default-refile-file)
@@ -1194,16 +1212,7 @@ in the main agenda view."
                  plain
                  (clock)
                  "%c"
-                 :immediate-finish t :empty-lines 1)
-                ("T" "Record new ticket with first task"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* Ticket #%^{Ticket Number}: %^{Ticket Description}\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\nReference: %^{Reference}\n"
-                          "\n** %^{First Task}\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%?"))))
+                 :immediate-finish t :empty-lines 1)))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
