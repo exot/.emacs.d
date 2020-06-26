@@ -13,7 +13,7 @@ compile: $(ELC) $(TESTC)
 
 timelinetools-test.elc: timeline-tools.elc
 
-test: $(TESTC)
+test: $(ELC) $(TESTC)
 	@echo "Testing $(TESTC)"
 	@$(EMACS) -Q --batch $(LDFLAGS) $(patsubst %,-l %, $(TESTC)) -f ert-run-tests-batch
 
