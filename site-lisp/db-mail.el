@@ -33,14 +33,20 @@
 
 ;;; Code:
 
+(require 'subr-x)
 (require 'cl-lib)
 (require 'cl-macs)
 (require 'mail-extr)
 (require 'epg)
 (require 'mml-sec)
 (require 'gnus)
+(require 'gnus-start)
 (require 'smtpmail)                   ; to have the globals bound below by let
 (require 'message)
+(require 'db-customize)
+
+(declare-function gnus-summary-select-article-buffer "gnus-sum")
+(declare-function gnus-mime-pipe-part "gnus-art")
 
 
 ;; Mail related customizations
@@ -103,6 +109,12 @@ The values of the latter two variables are usually those of
                                                      (nnimap-inbox "INBOX")))))
                                       remote-mail-accounts)))))
 
+;; Let's make the byte-compiler happy
+(defvar gnus-posting-styles)
+(defvar bbdb-user-mail-address-re)
+(defvar message-dont-reply-to-names)
+(defvar gnus-ignored-from-addresses)
+
 (defun db/mail-accounts--set-value (symbol value)
   "Set SYMBOL to VALUE, as needed for `db/mail-accounts’."
   (cl-assert (eq symbol 'db/mail-accounts)
@@ -136,10 +148,8 @@ The values of the latter two variables are usually those of
                  value)))
 
   ;; Update some variables
-  (setq bbdb-user-mail-address-re (regexp-opt (mapcar #'car db/mail-accounts)
-                                              'words)
-        message-dont-reply-to-names (regexp-opt (mapcar #'car db/mail-accounts)
-                                                'words)
+  (setq bbdb-user-mail-address-re (regexp-opt (mapcar #'car value) 'words)
+        message-dont-reply-to-names (regexp-opt (mapcar #'car value) 'words)
         gnus-ignored-from-addresses message-dont-reply-to-names))
 
 (defcustom db/mail-accounts nil
@@ -233,7 +243,7 @@ value for `gnus-secondary-select-methods’."
 
 METHOD can be \"smime\" or \"pgpmime\"; defaults to \"pgpmime\".
 ADDRESS is a string containing exactly one email address."
-  (check-type address string)
+  (cl-check-type address string)
   (unless method (setq method "pgpmime"))
   (epg-list-keys (epg-make-context
                   (cond
@@ -332,7 +342,6 @@ METHOD specifies the encrypt method used.  Can be either
 (defun db/gnus-demon-scan-news-on-level-2 ()
   "Scan for news in Gnus on level 2."
   ;; from https://www.emacswiki.org/emacs/GnusDemon
-  (require 'gnus-start)                 ; load global variables
   (let ((win (current-window-configuration))
         (gnus-read-active-file 'some)
         (gnus-check-new-newsgroups nil)
