@@ -10,6 +10,7 @@
 
 (require 'org)
 (require 'org-agenda)
+(require 'org-clock)
 (require 'hydra)
 (require 'db-customize)
 
