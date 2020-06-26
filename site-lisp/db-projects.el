@@ -6,9 +6,13 @@
 
 ;;; Code:
 
+(declare-function projectile-add-known-project "projectile")
+(declare-function projectile-cleanup-known-projects "projectile")
+
 (require 'subr-x)
 (require 'cl-lib)
 (require 'dash)
+(require 'bookmark)
 
 (defgroup projects nil
   "Simple directory-based project management"
@@ -17,11 +21,13 @@
 
 (defcustom projects-main-project-directory "~/Documents/projects/"
   "Main directory to host projects."
-  :group 'projects)
+  :group 'projects
+  :type 'directory)
 
-(defcustom projects-archive-directory "~/Documents/projects/.archive"
+(defcustom projects-archive-directory "~/Documents/projects/.archive/"
   "Directory to archive projects into"
-  :group 'projects)
+  :group 'projects
+  :type 'directory)
 
 (defun projects-project-exists-p (short-name)
   "Check whether a project named SHORT-NAME already exists"

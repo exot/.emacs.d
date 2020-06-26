@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(require 'gnutls)
+
 (defgroup personal-settings nil
   "A bunch of functions and variables for personalizing emacs."
   :prefix "db/"
@@ -38,7 +40,6 @@ search commands like `db/helm-shortcuts’."
 Assumes that NEW-VALUE points to a directory, and certificates
 are assumed to be of the form *.crt."
   (set symbol new-value)
-  (require 'gnutls)
   (when (file-directory-p new-value)
     (dolist (cert-file (directory-files new-value t ".crt$"))
       (add-to-list 'gnutls-trustfiles cert-file))))

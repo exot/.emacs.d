@@ -8,7 +8,13 @@
 
 ;;; Code:
 
+(require 'org)
+(require 'org-agenda)
+(require 'hydra)
 (require 'db-customize)
+
+(declare-function counsel-org-goto-all "counsel")
+(declare-function which-function "which-func")
 
 
 ;;; Agenda Customization
@@ -117,7 +123,7 @@ If OTHERS is true, skip all entries that do not correspond to TAG."
 
 If a is before b, return -1. If a is after b, return 1. If they
 are equal return nil."
-  (lexical-let ((prop prop))
+  (let ((prop prop))
     #'(lambda (a b)
         (let* ((a-pos (get-text-property 0 'org-marker a))
                (b-pos (get-text-property 0 'org-marker b))

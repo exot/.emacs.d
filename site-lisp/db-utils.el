@@ -12,6 +12,7 @@
 (require 'cl-lib)
 (require 'dash)
 (require 'db-customize)
+(require 'bookmark)
 
 
 ;;; Application Shortcuts
@@ -422,7 +423,7 @@ drawers, will be copied to point."
                                                 (org-element-at-point))))
                         (unless (string-equal (org-element-property :title template-element)
                                               "Template")
-                          (assert "Template must be first headline in periodic task."))
+                          (user-error "Template must be first headline in periodic task."))
                         ;; XXX: trying to get the contents of the current item, without any
                         ;; drawers, by going to the end of the template item and marking the
                         ;; element at point, which, incidentally, seems to be the content we are

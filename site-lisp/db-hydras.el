@@ -4,6 +4,8 @@
 
 ;;; Code:
 
+(declare-function rectangle-exchange-point-and-mark "rect")
+
 (require 'hydra)
 
 (defhydra hydra-toggle (:color blue)
