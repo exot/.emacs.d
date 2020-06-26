@@ -56,6 +56,80 @@ If this path is not set, i.e., is null, no automatic download will happen."
   :group 'personal-settings
   :type '(choice (const nil) file))
 
+(defcustom db/after-init-load-files nil
+  "A list of files to be loaded by `db/run-init' as the last step."
+  :group 'personal-settings
+  :type '(repeat file))
+
+
+
+(defcustom org-working-task-id ""
+  "Task ID of default working task."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom org-break-task-id ""
+  "Task ID of default break task."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom org-home-task-id ""
+  "Task ID of default home task."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/org-clock-current-task-file "~/.org-current-task"
+  "File to save the currently clocked in task to."
+  :group 'personal-settings
+  :type 'string)
+
+
+
+;; NB: some of those files should also be elements of `org-agenda-files', but
+;; this is not done automatically.  The reason is that automatically changing
+;; `org-agenda-files' when setting those variables may conflict with the
+;; customization of `org-agenda-files' itself.  Thus, when setting one of those
+;; variables would update `org-agenda-files' (possibly saving the customiztion),
+;; the original value of `org-agenda-files' would be gone.  Conversely, loading
+;; the customization for `org-agenda-files' would overwrite the work done by
+;; custom setters.  Thus, the only reasonable thing to do is to not update
+;; `org-agenda-files' automatically and leave it to the user to update it.
+
+(defcustom db/org-default-work-file nil
+  "Path to default org-mode file at work.
+You may also want to add this file to `org-agenda-files'."
+  :group 'personal-settings
+  :type '(choice (const nil) file))
+
+(defcustom db/org-default-home-file nil
+  "Path to default org-mode file at home.
+You may also want to add this file to `org-agenda-files'."
+  :group 'personal-settings
+  :type '(choice (const nil) file))
+
+(defcustom db/org-default-notes-file nil
+  "Path to default org-mode file for notes.
+You may also want to add this file to `org-agenda-files'."
+  :group 'personal-settings
+  :type '(choice (const nil) file))
+
+(defcustom db/org-default-refile-file nil
+  "Path to default org-mode file for capturing.
+This file is used by `org-agenda' to query for tasks that need to
+be refiled, independently of whether it's part of
+`org-agenda-files' or not.  You may still want to add this file
+to `org-agenda-files' to have appointments, deadlines, etc shown
+in the main agenda view."
+  :group 'personal-settings
+  :type '(choice (const nil) file))
+
+(defcustom db/org-default-pensieve-file nil
+  "Path to default org-mode file for private notes."
+  :group 'personal-settings
+  :type '(choice (const nil) file))
+
+
+
 (provide 'db-customize)
 
 ;;; db-customize ends here
