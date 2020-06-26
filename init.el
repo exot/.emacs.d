@@ -2138,10 +2138,8 @@ With given ARG, display files in `db/important-document-path’."
                   (db/playlist-files-from-git-annex-find
                    "--metadata db-playlist=include")))
   :commands (db/play-auto-playlist
-             db/playlist-files-from-cache
              db/playlist-files-from-git-annex-find
-             db/play-auto-playlist-from-git-annex-find
-             db/update-playlist-cache-from-directory))
+             db/play-auto-playlist-from-git-annex-find))
 
 
 ;; * Shells and such

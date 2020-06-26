@@ -16,7 +16,7 @@
   :group 'convenience
   :tag "db-music")
 
-(defcustom db/auto-playlist-file-function #'db/play-playlist-from-cache
+(defcustom db/auto-playlist-file-function #'db/play-auto-playlist-from-git-annex-find
   "Function that has to return a list of all music files that
 should be included in the auto playlist."
   :group 'db-music
@@ -53,60 +53,6 @@ Shuffle it and start playing it afterwards."
         (emms-shuffle)
         (emms-playlist-select-first)
         (emms-start)))))
-
-(defcustom db/playlist nil
-  "List of songs to include in a random playlist."
-  :group 'db-music
-  :type '(alist :value-type (choice (const :tag "Undecided" :undecided)
-                                    (const :tag "Include" :include)
-                                    (const :tag "Exclude" :exclude))
-                :key-type file))
-
-(defun db/playlist-files-from-cache ()
-  "Generate files for auto playlist from `db/playlist’ cache."
-  (interactive)
-  (->> db/playlist
-       (cl-remove-if-not #'(lambda (track)
-                             (eq (cdr track) :include)))
-       (mapcar #'car)))
-
-(defun db/update-playlist-cache-from-directory (directory)
-  "Recursively traverse DIRECTORY and update `db/playlist’.
-
-Files not present `db/playlist’ but that are found in DIRECTORY
-are added to `db/playlist’ with tag :undecided, to show the user
-that these files are new.  Tracks in `db/playlist’ that do not
-exist anymore are removed from it."
-  (interactive (list (expand-file-name "songs/"
-                                       emms-source-file-default-directory)))
-  ;; First convert to hash table for performance
-  (let ((playlist-hash (make-hash-table :test #'equal)))
-    (dolist (track db/playlist)
-      (when (file-exists-p (car track))
-        (puthash (car track) (cdr track) playlist-hash)))
-
-    (let (new-playlist)
-      ;; Iterate over files in DIRECTORY and add them to the playlist, with the
-      ;; already known state whenever possible
-      (dolist (file (directory-files-recursively directory ""))
-        (message "Checking %s" file)
-        (push (cons file (gethash file playlist-hash :undecided))
-              new-playlist)
-        (remhash file playlist-hash))
-
-      ;; Keep all other tracks that are not in DIRECTORY
-      (maphash #'(lambda (track state)
-                   (push (cons track state) new-playlist))
-               playlist-hash)
-
-      ;; Sort to keep version control happy
-      (setq new-playlist
-            (sort new-playlist
-                  #'(lambda (track-1 track-2)
-                      (string< (car track-1) (car track-2)))))
-
-      ;; Save and exit
-      (customize-save-variable 'db/playlist new-playlist))))
 
 (defun db/playlist-files-from-git-annex-find (match-expression)
   "Generate playlist from git annex find on MATCH-EXPRESSION.
