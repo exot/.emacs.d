@@ -4,32 +4,13 @@
 
 ;;; Code:
 
-(declare-function emms-shuffle "emms")
-(declare-function emms-mode-line "emms-mode-line")
-(declare-function emms-playlist-new "emms")
-(declare-function emms-stop "emms")
-(declare-function emms-playlist-set-playlist-buffer "emms")
-(declare-function emms-playlist-current-clear "emms")
-(declare-function emms-playlist-current-insert-source "emms")
-(declare-function emms-playlist-select-first "emms")
-(declare-function emms-start "emms")
-(declare-function emms-track-get "emms")
-(declare-function emms-track-simple-description "emms")
-(declare-function emms-playlist-ensure-playlist-buffer "emms")
-(declare-function emms-propertize "emms-compat")
-(declare-function emms-track-force-description "emms")
-(declare-function emms-playlist-selected-track-at-p "emms")
-(declare-function emms-playlist-mode-overlay-selected "emms-playlist-mode")
-(declare-function emms-track-description "emms")
-(declare-function emms-playlist-current-selected-track "emms")
-(declare-function emms-next "emms")
-(declare-function emms-previous "emms")
-(declare-function emms-pause "emms")
-(declare-function emms-show "emms")
-(declare-function emms "emms-playlist-mode")
-(declare-function emms-cache-save "emms-cache")
-(declare-function string-remove-prefix "subr-x")
-(declare-function emms-with-inhibit-read-only-t "emms")
+(require 'subr-x)
+(require 'seq)
+(require 'emms)
+(require 'emms-source-file)
+(require 'emms-playlist-mode)
+(require 'emms-volume)
+(require 'hydra)
 
 
 ;; Custom file finder
