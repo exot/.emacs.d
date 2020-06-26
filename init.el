@@ -556,7 +556,6 @@
              db/delete-trailing-whitespace-maybe
              db/show-current-org-task
              db/run-or-hide-shell
-             db/run-or-hide-eshell
              db/run-or-hide-ansi-term
              db/hex-to-ascii
              db/text-to-hex
@@ -2201,7 +2200,8 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'shell-mode-hook 'with-editor-export-editor)))
 
 (use-package db-eshell
-  :commands (eshell-clear-buffer
+  :commands (db/run-or-hide-eshell
+             eshell-clear-buffer
              eshell/default-prompt-function
              eshell/gst
              eshell-insert-history

@@ -8,15 +8,43 @@
 
 ;;; Code:
 
+(require 'subr-x)
 (require 'seq)
 (require 'eshell)
 (require 'em-basic)
 (require 'em-dirs)
 (require 'em-hist)
 (autoload 'magit-status "magit")
+(autoload 'db/find-window-by-buffer-mode "db-utils")
 
 
 ;; Various
+
+(defun db/run-or-hide-eshell (arg)
+  "Opens an eshell buffer if not already in one, and otherwise
+  returns to where we have been before."
+  ;; idea to split the current window is from
+  ;; http://howardism.org/Technical/Emacs/eshell-fun.html
+  (interactive "P")
+  (if (string= "eshell-mode" major-mode)
+      ;; bury buffer; reopen with current working directory if arg is given
+      (progn
+        (bury-buffer)
+        (delete-window)
+        (and arg (db/run-or-hide-eshell arg)))
+    (if-let ((eshell-window (db/find-window-by-buffer-mode 'eshell-mode)))
+        (select-window eshell-window)
+      ;; open eshell
+      (let ((current-dir (expand-file-name default-directory))
+            (height      (/ (window-total-height) 3)))
+        (split-window-vertically (- height))
+        (other-window 1)
+        (eshell 1)
+        (when arg
+          (end-of-line)
+          (eshell-kill-input)
+          (insert (format "cd '%s'" current-dir))
+          (eshell-send-input))))))
 
 (defun eshell-clear-buffer ()
   "Clear terminal."
