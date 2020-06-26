@@ -471,6 +471,109 @@ open RFC in HTML format in the default browser."
     (warn "`db/rfc-cache-path' not defined or not an absolute writable path, opening RFC in browser.")
     (browse-url (concat "https://tools.ietf.org/html/rfc" number)))))
 
+
+
+;;; Org Utilities
+
+(defun db/org-cleanup-continuous-clocks ()
+  "Join continuous clock lines in the current buffer."
+  (interactive)
+  (let* ((inactive-timestamp (org-re-timestamp 'inactive))
+         (clock-line (concat "\\(^ *\\)CLOCK: " inactive-timestamp "--" inactive-timestamp " => .*"
+                             "\n"
+                             " *CLOCK: " inactive-timestamp "--\\[\\2\\] => .*$")))
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward-regexp clock-line nil t)
+       (replace-match "\\1CLOCK: [\\4]--[\\3]")
+       (org-clock-update-time-maybe)))))
+
+(defun db/find-csv-in-org (arg)
+  "Interactively CSV find file and open it as Org mode table.
+Default separator is \";\", but this can be changed interactively
+by passing a universal argument."
+  (interactive "P")
+  (let ((separator (if arg (read-from-minibuffer "Separator (regular expression): ")
+                     ";")))
+    (call-interactively #'find-file)
+    (org-mode)
+    (org-table-convert-region (point-min) (point-max) separator)))
+
+(defun db/org-mark-current-default-task ()
+  "Mark current task as default when equal to work task or home task.
+Work task and home task are determined by the current values of
+`org-working-task-id’ and `org-home-task-id’, respectively."
+  (let ((current-id (org-id-get org-clock-marker)))
+    (when (member current-id (list org-working-task-id
+                                   org-home-task-id))
+      (org-clock-mark-default-task))))
+
+(defun db/org-copy-template-for-periodic-task ()
+  "Copy template of the enclosing periodic task to item at point.
+The template must be placed into an item titled 'Template',
+called the template item.  The template item must be the first
+headline of the periodic task, i.e., of the parent of the current
+item at point.  The body of the template item, without any
+drawers, will be copied to point."
+  (interactive)
+  (let ((template (save-restriction
+                    (save-mark-and-excursion
+                      (let ((template-element (progn
+                                                (outline-up-heading 1 'invisible-ok)
+                                                (outline-next-heading)
+                                                (org-element-at-point))))
+                        (unless (string-equal (org-element-property :title template-element)
+                                              "Template")
+                          (user-error "Template must be first headline in periodic task."))
+                        ;; XXX: trying to get the contents of the current item, without any
+                        ;; drawers, by going to the end of the template item and marking the
+                        ;; element at point, which, incidentally, seems to be the content we are
+                        ;; looking for; this feels hackish, there must be a better way to do it.
+                        (goto-char (org-element-property :contents-end template-element))
+                        (org-mark-element)
+                        (buffer-substring-no-properties (region-beginning)
+                                                        (region-end)))))))
+    (insert template)
+    (org-update-statistics-cookies nil)))
+
+
+;;; Calendar
+
+(defun db/export-diary ()
+  "Export diary.org as ics file to the current value of `org-icalendar-combined-agenda-file’.
+This is done only if the value of this variable is not null."
+  (interactive)
+  (require 'ox-icalendar)
+  (cond
+   ((null org-icalendar-combined-agenda-file)
+    (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
+   ((not (file-name-absolute-p org-icalendar-combined-agenda-file))
+    (user-error "`org-icalendar-combined-agenda-file’ not an absolute path, aborting."))
+   (t
+    (progn
+      (org-save-all-org-buffers)
+      (let ((org-agenda-files (cl-remove-if #'null
+                                            (list db/org-default-home-file
+                                                  db/org-default-work-file)))
+            (org-agenda-new-buffers nil))
+        ;; check whether we need to do something
+        (when (cl-some (lambda (org-file)
+                         (file-newer-than-file-p org-file
+                                                 org-icalendar-combined-agenda-file))
+                       org-agenda-files)
+          (message "Exporting diary ...")
+          ;; open files manually to avoid polluting `org-agenda-new-buffers’; we
+          ;; don’t want these buffers to be closed after exporting
+          (mapc #'find-file-noselect org-agenda-files)
+          ;; actual export; calls `org-release-buffers’ and may thus close
+          ;; buffers we want to keep around … which is why we set
+          ;; `org-agenda-new-buffers’ to nil
+          (when (file-exists-p org-icalendar-combined-agenda-file)
+            (delete-file org-icalendar-combined-agenda-file)
+            (sit-for 3))
+          (org-icalendar-combine-agenda-files)
+          (message "Exporting diary ... done.")))))))
+
 
 ;;; End
 

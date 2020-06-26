@@ -565,10 +565,6 @@
              endless/colorize-compilation
              db/add-use-package-to-imenu
              db/turn-off-local-electric-pair-mode
-             db/org-cleanup-continuous-clocks
-             db/find-csv-in-org
-             db/org-mark-current-default-task
-             db/export-diary
              db/add-symbols-to-TeX-input-method
              db/two-monitors-xrandr
              db/one-monitor-xrandr
@@ -579,8 +575,7 @@
              db/dired-from-shell-command
              db/system-open
              db/switch-to-dark-theme
-             db/switch-to-light-theme
-             db/org-copy-template-for-periodic-task))
+             db/switch-to-light-theme))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
@@ -721,7 +716,12 @@ With given ARG, display files in `db/important-document-path’."
              db/make-org-capture-frame
              db/org-onenote-open
              db/org-outlook-open
-             db/org-rfc-open))
+             db/org-rfc-open
+             db/org-cleanup-continuous-clocks
+             db/find-csv-in-org
+             db/org-mark-current-default-task
+             db/export-diary
+             db/org-copy-template-for-periodic-task))
 
 (use-package org
   :pin "gnu"
