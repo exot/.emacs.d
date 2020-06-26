@@ -112,7 +112,7 @@ If OTHERS is true, skip all entries that do not correspond to TAG."
                                (save-mark-and-excursion
                                  ;; remember to also consider invisible headings
                                  (org-back-to-heading t))))
-         (has-tag          (member tag (org-get-tags-at current-headline))))
+         (has-tag          (member tag (org-get-tags current-headline))))
     (if (or (and others (not has-tag))
             (and (not others) has-tag))
         next-headline
