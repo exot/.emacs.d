@@ -8,6 +8,13 @@
 
 ;;; Code:
 
+(require 'seq)
+(require 'eshell)
+(require 'em-basic)
+(require 'em-dirs)
+(require 'em-hist)
+(autoload 'magit-status "magit")
+
 
 ;; Various
 
