@@ -710,7 +710,6 @@ With given ARG, display files in `db/important-document-path’."
              endless/org-ispell
              db/org-agenda-list-deadlines
              db/org-agenda-skip-tag
-             db/cmp-date-property
              hydra-org-agenda-view/body
              org-babel-execute:hy
              db/org-timestamp-difference
