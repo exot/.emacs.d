@@ -36,6 +36,7 @@
 (require 'org)
 (require 'org-clock)
 (require 'org-id)
+(require 'org-element)
 
 
 ;; Customization
