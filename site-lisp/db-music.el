@@ -5,7 +5,10 @@
 ;;; Code:
 
 (require 'dash)
+(require 'subr-x)
+(require 'seq)
 (require 'emms)
+(require 'emms-source-file)
 
 (defgroup db-music nil
   "General configurations for music-related functionality."
