@@ -13,6 +13,19 @@
 (require 'dash)
 (require 'db-customize)
 (require 'bookmark)
+(require 'term)
+(require 'nsm)
+(require 'compile)
+
+(autoload 'async-start "async")
+(autoload 'lispy-mode "lispy")
+(autoload 'ldap-search "ldap")
+(autoload 'calcFunc-unixtime "calc-forms")
+(autoload 'calcFunc-year "calc-forms")
+(autoload 'calcFunc-month "calc-forms")
+(autoload 'calcFunc-day "calc-forms")
+(autoload 'calcFunc-hour "calc-forms")
+(autoload 'calcFunc-minute "calc-forms")
 
 
 ;;; Application Shortcuts
@@ -185,7 +198,6 @@ FORMAT-STRING defaults to some ISO 8601-like format."
                                        (string-to-number input-proper 16)))))
                  (list (read-hex "High (hex): ")
                        (read-hex "Low (hex): "))))
-  (require 'calc-forms)
   (let* ((unix-time (calcFunc-unixtime (calc-eval (format "%s - 2208988800 + (%s/4294967296)" high low)
                                                   'raw)
                                        ;; we explicitly call `calcFunc-unixtime'
