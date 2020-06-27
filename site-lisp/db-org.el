@@ -13,6 +13,7 @@
 (require 'org-clock)
 (require 'hydra)
 (require 'db-customize)
+(require 'ox-icalendar)
 
 (autoload 'counsel-org-goto-all "counsel")
 (autoload 'which-function "which-func")
@@ -551,7 +552,6 @@ drawers, will be copied to point."
   "Export diary.org as ics file to the current value of `org-icalendar-combined-agenda-file’.
 This is done only if the value of this variable is not null."
   (interactive)
-  (require 'ox-icalendar)
   (cond
    ((null org-icalendar-combined-agenda-file)
     (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
