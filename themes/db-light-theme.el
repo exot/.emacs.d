@@ -28,6 +28,8 @@
  '(gnus-summary-high-unread ((t (:foreground "#839496" :weight normal))))
  '(gnus-summary-low-ancient ((t (:foreground "dim gray"))))
  '(gnus-summary-low-unread ((t (:foreground "dim gray"))))
- '(default ((t (:height 108)))))
+ '(default ((t (:height 115 :family "DejaVu Sans Mono"))))
+ '(fixed-pitch ((t (:family "DejaVu Sans Mono"))))
+ '(variable-pitch ((t (:weight normal :height 1.3 :family "Bitstream Vera Serif")))))
 
 (provide-theme 'db-light)
