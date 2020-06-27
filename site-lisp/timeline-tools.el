@@ -119,14 +119,22 @@ end date of the timeline."
 
 ;; Model
 
-(defalias 'timeline-tools-entry-start-time 'car
-  "Start time of ENTRY.")
+(defun timeline-tools-entry-start-time (entry)
+  "Start time of ENTRY."
+  (car entry))
 
-(defalias 'timeline-tools-entry-end-time 'cadr
-  "End time of ENTRY.")
+(defun timeline-tools-entry-end-time (entry)
+  "End time of ENTRY."
+  (cadr entry))
 
-(defalias 'timeline-tools-entry-marker 'caddr
-  "Marker to org task of ENTRY.")
+(defun timeline-tools-entry-marker (entry)
+  "Marker to org task of ENTRY."
+  (caddr entry))
+
+(gv-define-setter timeline-tools-entry-start-time
+    (time entry) `(setcar ,entry ,time))
+(gv-define-setter timeline-tools-entry-end-time
+    (time entry) `(setcar (cdr ,entry) ,time))
 
 (defun timeline-tools-make-entry (start-time end-time marker)
   "Return a timeline entry made up of START-TIME, END-TIME, and MARKER.
