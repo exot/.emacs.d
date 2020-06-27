@@ -16,16 +16,12 @@
 (require 'term)
 (require 'nsm)
 (require 'compile)
+(require 'calc)
+(require 'calc-forms)
 
 (autoload 'async-start "async")
 (autoload 'lispy-mode "lispy")
 (autoload 'ldap-search "ldap")
-(autoload 'calcFunc-unixtime "calc-forms")
-(autoload 'calcFunc-year "calc-forms")
-(autoload 'calcFunc-month "calc-forms")
-(autoload 'calcFunc-day "calc-forms")
-(autoload 'calcFunc-hour "calc-forms")
-(autoload 'calcFunc-minute "calc-forms")
 
 
 ;;; Application Shortcuts
@@ -198,7 +194,8 @@ FORMAT-STRING defaults to some ISO 8601-like format."
                                        (string-to-number input-proper 16)))))
                  (list (read-hex "High (hex): ")
                        (read-hex "Low (hex): "))))
-  (let* ((unix-time (calcFunc-unixtime (calc-eval (format "%s - 2208988800 + (%s/4294967296)" high low)
+  (let* ((calc-internal-prec 30)
+         (unix-time (calcFunc-unixtime (calc-eval (format "%s - 2208988800 + (%s/4294967296)" high low)
                                                   'raw)
                                        ;; we explicitly call `calcFunc-unixtime'
                                        ;; here to set the time zone to UTC
@@ -216,8 +213,7 @@ FORMAT-STRING defaults to some ISO 8601-like format."
             ;; is what has been done in the test example we use in the
             ;; corresponding regression test …
             (string-to-number
-             (calc-eval '("trunc(second($), 9)" calc-internal-prec 30)
-                        'num unix-time)))))
+             (calc-eval "trunc(second($), 9)" 'num unix-time)))))
 
 (defun conditionally-enable-lispy ()
   "Enable lispy-mode when in `eval-expression’ or in
