@@ -23,6 +23,8 @@
 (autoload 'lispy-mode "lispy")
 (autoload 'ldap-search "ldap")
 
+(declare-function w32-shell-execute "w32fns.c")
+
 
 ;;; Application Shortcuts
 

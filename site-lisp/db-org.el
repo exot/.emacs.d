@@ -16,6 +16,7 @@
 
 (declare-function counsel-org-goto-all "counsel")
 (declare-function which-function "which-func")
+(declare-function w32-shell-execute "w32fns.c")
 
 
 ;;; Agenda Customization
