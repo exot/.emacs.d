@@ -14,8 +14,10 @@
 (require 'hydra)
 (require 'db-customize)
 
-(declare-function counsel-org-goto-all "counsel")
-(declare-function which-function "which-func")
+(autoload 'counsel-org-goto-all "counsel")
+(autoload 'which-function "which-func")
+(autoload 'org-element-property "org-element")
+
 (declare-function w32-shell-execute "w32fns.c")
 
 

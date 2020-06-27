@@ -4,7 +4,7 @@
 
 ;;; Code:
 
-(declare-function rectangle-exchange-point-and-mark "rect")
+(autoload 'rectangle-exchange-point-and-mark "rect")
 
 (require 'hydra)
 
