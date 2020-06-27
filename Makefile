@@ -5,7 +5,7 @@
 EMACS = emacs
 LDFLAGS = -L site-lisp $(patsubst %,-L %, $(wildcard elpa/*/))
 EL = site-lisp/timeline-tools.el site-lisp/db-customize.el site-lisp/db-emms.el site-lisp/db-eshell.el site-lisp/db-hydras.el site-lisp/db-mail.el site-lisp/db-music.el site-lisp/db-org.el site-lisp/db-projects.el site-lisp/db-utils.el site-lisp/db-utils-test.el site-lisp/timeline-tools.el
-TEST = site-lisp/timeline-tools-test.el
+TEST = $(wildcard site-lisp/*-test.el)
 ELC = $(EL:.el=.elc)
 TESTC = $(TEST:.el=.elc)
 
