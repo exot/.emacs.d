@@ -9,6 +9,8 @@
 (require 'seq)
 (require 'emms)
 (require 'emms-source-file)
+(require 'hydra)
+(require 'db-emms)
 
 (defgroup db-music nil
   "General configurations for music-related functionality."
@@ -90,6 +92,26 @@ See `db/playlist-files-from-git-annex-find’ for more details."
   (interactive)
   (db/-emms-playlist-from-files
    (call-interactively #'db/playlist-files-from-git-annex-find)))
+
+(defhydra music-control (:color red :hint none)
+  "
+Playing: %s(db/emms-track-status)
+
+  _n_: ?n?          _p_: ?p?
+_RET_: ?RET?    _M_: ?M?
+  _-_: lower volume  _+_: ?+?
+  _P_: ?P?
+
+"
+  ("n" emms-next         "next")
+  ("p" emms-previous     "previous")
+  ("RET" emms-pause      "play/pause")
+  ("s" emms-show         "show title")
+  ("-" emms-volume-lower "lower volume")
+  ("+" emms-volume-raise "raise volume")
+  ("M" emms              "show playlist")
+  ("P" (db/play-auto-playlist)
+   "Play automatically generated playlist"))
 
 (provide 'db-music)
 

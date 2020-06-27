@@ -10,7 +10,6 @@
 (require 'emms-source-file)
 (require 'emms-playlist-mode)
 (require 'emms-volume)
-(require 'hydra)
 
 
 ;; Custom file finder
@@ -84,9 +83,6 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
    (unless no-newline
      (insert "\n"))))
 
-
-;; Hydra
-
 (defun db/emms-track-status ()
   "Return string displaying status of currently played track."
   (require 'emms)
@@ -94,26 +90,6 @@ When NO-NEWLINE is non-nil, do not insert a newline after the track."
       (format "%s" (emms-track-description
                     (emms-playlist-current-selected-track)))
     "«nothing»"))
-
-(defhydra emms-control (:color red :hint none)
-  "
-Playing: %s(db/emms-track-status)
-
-  _n_: ?n?          _p_: ?p?
-_RET_: ?RET?    _M_: ?M?
-  _-_: lower volume  _+_: ?+?
-  _P_: ?P?
-
-"
-  ("n" emms-next         "next")
-  ("p" emms-previous     "previous")
-  ("RET" emms-pause      "play/pause")
-  ("s" emms-show         "show title")
-  ("-" emms-volume-lower "lower volume")
-  ("+" emms-volume-raise "raise volume")
-  ("M" emms              "show playlist")
-  ("P" (db/play-auto-playlist)
-   "Play automatically generated playlist"))
 
 
 ;; End

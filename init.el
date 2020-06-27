@@ -191,7 +191,7 @@
   (bind-key "C-c i" #'ispell-change-dictionary)
   (bind-key "C-c j" #'avy-goto-char-timer)
   (bind-key "C-c l" #'org-store-link)
-  (bind-key "C-c m" #'emms-control/body)
+  (bind-key "C-c m" #'music-control/body)
   (bind-key "C-c o" #'hydra-org-clock/body)
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-h C-f" #'find-function)
@@ -2094,8 +2094,7 @@ With given ARG, display files in `db/important-document-path’."
 (use-package db-emms
   :commands (db/emms-source-file-directory-tree-find
              db/emms-track-description
-             db/emms-playlist-mode-insert-track
-             emms-control/body))
+             db/emms-playlist-mode-insert-track))
 
 (use-package helm-emms
   :pin "melpa-stable"
@@ -2114,7 +2113,8 @@ With given ARG, display files in `db/important-document-path’."
                    "--metadata db-playlist=include")))
   :commands (db/play-auto-playlist
              db/playlist-files-from-git-annex-find
-             db/play-auto-playlist-from-git-annex-find))
+             db/play-auto-playlist-from-git-annex-find
+             music-control/body))
 
 
 ;; * Shells and such
