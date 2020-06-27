@@ -438,13 +438,15 @@ it.  The bookmarks will finally be sorted by their name."
   "Switch to dark theme.
 This is `db-dark' and `solarized-dark'."
   (interactive)
-  (custom-set-variables '(custom-enabled-themes '(db-dark solarized-dark))))
+  (load-theme 'solarized-dark)
+  (load-theme 'db-dark))
 
 (defun db/switch-to-light-theme ()
   "Switch to dark theme.
 This is `db-light' and `solarized-light'."
   (interactive)
-  (custom-set-variables '(custom-enabled-themes '(db-light solarized-light))))
+  (load-theme 'solarized-light)
+  (load-theme 'db-light))
 
 
 ;;; End
