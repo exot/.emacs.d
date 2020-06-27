@@ -6,6 +6,8 @@
 
 (require 'gnutls)
 
+
+
 (defgroup personal-settings nil
   "A bunch of functions and variables for personalizing emacs."
   :prefix "db/"
@@ -127,6 +129,25 @@ in the main agenda view."
   "Path to default org-mode file for private notes."
   :group 'personal-settings
   :type '(choice (const nil) file))
+
+(defcustom db/frequently-used-features
+  '(("Mail" ?m db/gnus)
+    ("Agenda" ?a db/org-agenda)
+    ("Init File" ?i db/find-user-init-file)
+    ("EMMS" ?M emms)
+    ("Shell" ?s db/run-or-hide-shell)
+    ("EShell" ?e db/run-or-hide-eshell)
+    ("scratch" ?r db/scratch)
+    ("Info Lookup" ?I counsel-info-lookup-symbol)
+    ("Unicode Lookup" ?U counsel-unicode-char))
+  "Mapping of frequently used features to functions implementing
+them.  Can be used in application shortcuts such as
+`db/helm-shortcuts’.  Each entry is a list of three items: a
+short description, a shortcut character, and the function to
+call.  Customizing this variable redefines the global
+`hydra-shortcuts' mapping."
+  :group 'personal-settings
+  :type  '(repeat (list string character function)))
 
 
 

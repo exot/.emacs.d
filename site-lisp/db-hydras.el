@@ -52,24 +52,5 @@ _h_   _l_   _o_k        _y_ank
   ("e" rectangle-exchange-point-and-mark nil)
   ("o" nil nil))
 
-(defun hydra-shortcuts/body ()
-  "Dummy default value for shortcuts hydra.  Will simply barf."
-  (interactive)
-  (user-error "Shortcuts Hydra not defined yet."))
-
-(defun db/define-hydra-from-frequently-used-features ()
-  "Defines `hydra-shortcuts/body' based on the current value of
-`db/frequently-used-features'.  Raises an error if the latter is
-not bound."
-  (if (not (boundp 'db/frequently-used-features))
-      (user-error "Variable `db/frequently-used-features' is not defined, please set that variable first.")
-    (eval
-     `(defhydra hydra-shortcuts (:color blue)
-        ""
-        ,@(mapcar (lambda (entry)
-                    (pcase-let ((`(,description ,shortcut ,function) entry))
-                      (list (string shortcut) function description)))
-                  db/frequently-used-features)))))
-
 (provide 'db-hydras)
 ;; db-hydras.el ends here
