@@ -315,6 +315,11 @@ In ~%s~:
       (dolist (frame (frame-list))
         (modify-frame-parameters frame `((name . , org-clock-heading)))))))
 
+(defun db/show-current-org-task ()
+  "Show title of currently clock in task in modeline."
+  (interactive)
+  (message org-clock-current-task))
+
 
 ;;; Fixes
 

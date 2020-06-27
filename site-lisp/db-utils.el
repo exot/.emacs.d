@@ -130,11 +130,6 @@ major mode MODE."
                   (eq major-mode mode)))
               (window-list-1)))
 
-(defun db/show-current-org-task ()
-  "Show title of currently clock in task in modeline."
-  (interactive)
-  (message org-clock-current-task))
-
 (defun db/hex-to-ascii (hex-string)
   "Convert HEX-STRING to its ASCII equivalent.
 Allowed characters in hex-string are hexadecimal digits and

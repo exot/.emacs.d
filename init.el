@@ -554,7 +554,6 @@
 (use-package db-utils
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
-             db/show-current-org-task
              db/run-or-hide-shell
              db/run-or-hide-ansi-term
              db/hex-to-ascii
@@ -705,6 +704,7 @@ With given ARG, display files in `db/important-document-path’."
              db/org-clock-in-break-task
              db/org-clock-in-home-task
              db/org-clock-in-work-task
+             db/show-current-org-task
              endless/org-ispell
              db/org-agenda-list-deadlines
              db/org-agenda-skip-tag
