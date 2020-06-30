@@ -1048,15 +1048,15 @@ With given ARG, display files in `db/important-document-path’."
   :commands (org-capture)
   :init (setq org-capture-use-agenda-date nil
               org-capture-templates
-              `(("t" "Things to do")
-                ("tt" "Single Task"
+              `(("t" "Simple Task"
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* TODO [#B] %^{What}\n"
                           "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "%?"))
-                ("tc" "Record new complex task with first item"
+                ("T" "Complex Tasks")
+                ("TC" "Record new complex task with first item"
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* %^{Task Description}\n"
@@ -1064,7 +1064,7 @@ With given ARG, display files in `db/important-document-path’."
                           "\n** %^{First Thing to Do}\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%?"))
-                ("tT" "Record new ticket with first item"
+                ("TT" "Record new ticket with first item"
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* Ticket #%^{Ticket Number}: %^{Ticket Description}\n"
