@@ -394,11 +394,6 @@ forces clocking in of the default task."
     (org-with-point-at clock-in-to-task
       (org-clock-in nil))))
 
-(defun db/org-clock-current-task ()
-  "Return currently clocked in task."
-  (require 'org-clock)
-  org-clock-current-task)
-
 (defhydra hydra-org-clock (:color blue)
   ;; Quote %, as otherwise they would be misinterpreted as format characters
   "\nCurrent Task: %s(replace-regexp-in-string \"%\" \"%%\" org-clock-current-task); "
