@@ -400,8 +400,8 @@ forces clocking in of the default task."
   org-clock-current-task)
 
 (defhydra hydra-org-clock (:color blue)
-  "
-Current Task: %s(db/org-clock-current-task); "
+  ;; Quote %, as otherwise they would be misinterpreted as format characters
+  "\nCurrent Task: %s(replace-regexp-in-string \"%\" \"%%\" org-clock-current-task); "
   ("w" (db/org-clock-in-work-task) "work")
   ("h" (db/org-clock-in-home-task) "home")
   ("b" (db/org-clock-in-break-task) "break")
