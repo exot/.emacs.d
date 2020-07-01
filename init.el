@@ -162,6 +162,7 @@
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
+  (bind-key "<f2>" #'hydra-feature-shortcuts/body)
   (bind-key "<f5>" #'rgrep)
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
@@ -554,6 +555,10 @@
   :commands (endless/fill-or-unfill
              db/delete-trailing-whitespace-maybe
              db/run-or-hide-shell
+             db/gnus
+             db/org-agenda
+             db/scratch
+             db/find-user-init-file
              db/run-or-hide-ansi-term
              db/hex-to-ascii
              db/text-to-hex
@@ -578,7 +583,8 @@
 (use-package db-hydras
   :commands (hydra-toggle/body
              hydra-zoom/body
-             hydra-rectangle/body))
+             hydra-rectangle/body
+             hydra-feature-shortcuts/body))
 
 (use-package git-commit
   :commands (global-git-commit-mode))

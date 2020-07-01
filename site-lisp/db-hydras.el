@@ -7,6 +7,7 @@
 (autoload 'rectangle-exchange-point-and-mark "rect")
 
 (require 'hydra)
+(require 'db-customize)
 
 (defhydra hydra-toggle (:color blue)
   "toggle"
@@ -51,6 +52,14 @@ _h_   _l_   _o_k        _y_ank
   ("p" kill-rectangle nil)
   ("e" rectangle-exchange-point-and-mark nil)
   ("o" nil nil))
+
+(eval
+ `(defhydra hydra-feature-shortcuts (:color blue)
+    ""
+    ,@(mapcar (lambda (entry)
+                (pcase-let ((`(,description ,shortcut ,function) entry))
+                  (list (string shortcut) function description)))
+              db/frequently-used-features)))
 
 (provide 'db-hydras)
 ;; db-hydras.el ends here
