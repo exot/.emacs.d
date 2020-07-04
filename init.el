@@ -1008,7 +1008,7 @@ With given ARG, display files in `db/important-document-path’."
                               (org-agenda-prefix-format '((tags . "%-12c %-4e ")))))))
 
                 ("U" "Unsupervised (Waiting, Unscheduled, Stuck, Hold)"
-                 ((tags-todo "/WAIT"
+                 ((tags-todo "WAIT"
                              ((org-agenda-overriding-header "Tasks requiring response/input")))
                   (tags-todo "-HOLD-READ-SOMEWHEN/-DONE"
                              ((org-agenda-overriding-header "Things not being scheduled or deadlined")
