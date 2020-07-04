@@ -760,6 +760,7 @@ With given ARG, display files in `db/important-document-path’."
                   ("HOLD" ("HOLD" . t) ("WAIT"))
                   (done ("HOLD") ("WAIT"))
                   (todo ("DATE") ("READ"))
+                  ("TODO" ("HOLD") ("WAIT"))
                   ("READ" ("READ" . t) ("HOLD") ("WAIT"))
                   ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
                   ("CONT" ("HOLD") ("WAIT"))
