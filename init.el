@@ -1029,6 +1029,10 @@ With given ARG, display files in `db/important-document-path’."
                               (org-agenda-todo-ignore-with-date t)
                               (org-tags-match-list-sublevels nil)))))
 
+                ("P" "Current Projects"
+                 tags "TODO=\"\"-TAGS={NOP}-PERIODIC-NOTE-DATE"
+                 ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE)")))
+
                 ("W" "Weekly Review"
                  ((agenda ""
                           ((org-agenda-span 7)
