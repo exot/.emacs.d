@@ -980,7 +980,7 @@ With given ARG, display files in `db/important-document-path’."
                 "")
 
               org-agenda-prefix-format
-              '((agenda . "%11s%?-12t")
+              '((agenda . "%11s%?-12t%-4e ")
                 (todo . "%-8c ")
                 (tags . "%-8c ")
                 (search . "%-8c "))
