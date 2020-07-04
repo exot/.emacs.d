@@ -1007,7 +1007,7 @@ With given ARG, display files in `db/important-document-path’."
                               (org-agenda-sorting-strategy '(deadline-down priority-down))
                               (org-agenda-prefix-format '((tags . "%-12c %-4e ")))))))
 
-                ("U" "Unsupervised (Waiting, Unscheduled, Stuck)"
+                ("U" "Unsupervised (Waiting, Unscheduled, Stuck, Hold)"
                  ((tags-todo "/WAIT"
                              ((org-agenda-overriding-header "Tasks requiring response/input")))
                   (tags-todo "-HOLD-READ-SOMEWHEN/-DONE"
@@ -1018,7 +1018,7 @@ With given ARG, display files in `db/important-document-path’."
                                '(priority-down time-up category-keep))))
                   (stuck ""
                          ((org-agenda-overriding-header "Stuck Tasks")))
-                  (tags-todo "/HOLD"
+                  (tags-todo "HOLD"
                              ((org-agenda-overriding-header "Tasks on Hold")))))
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
