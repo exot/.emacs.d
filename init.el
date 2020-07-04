@@ -1017,15 +1017,15 @@ With given ARG, display files in `db/important-document-path’."
                               (org-agenda-sorting-strategy
                                '(priority-down time-up category-keep))))
                   (stuck ""
-                         ((org-agenda-overriding-header "Stuck Tasks")))))
+                         ((org-agenda-overriding-header "Stuck Tasks")))
+                  (tags-todo "/HOLD"
+                             ((org-agenda-overriding-header "Tasks on Hold")))))
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
                  ((tags-todo "SOMEWHEN/-CANC-DONE|READ/-CANC-DONE"
                              ((org-agenda-overriding-header "Things to do or read somewhen")
                               (org-agenda-todo-ignore-with-date t)
-                              (org-tags-match-list-sublevels nil)))
-                  (tags-todo "/HOLD"
-                             ((org-agenda-overriding-header "Tasks on Hold")))))
+                              (org-tags-match-list-sublevels nil)))))
 
                 ("W" "Weekly Review"
                  ((agenda ""
