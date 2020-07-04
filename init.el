@@ -986,7 +986,7 @@ With given ARG, display files in `db/important-document-path’."
                 (search . "%-8c "))
 
               org-agenda-custom-commands
-              `(("A" "Main List"
+              `(("A" "Main Agenda"
                  ((agenda
                    ""
                    ((org-agenda-entry-types '(:timestamp :sexp :scheduled :deadline))
@@ -998,8 +998,15 @@ With given ARG, display files in `db/important-document-path’."
                     (org-deadline-warning-days 30)))
                   (tags "REFILE"
                         ((org-agenda-files (list db/org-default-refile-file))
-                         (org-agenda-overriding-header "Things to refile")))))
-                ("E" "Everything"
+                         (org-agenda-overriding-header "Things to refile (make it empty!)")))))
+
+                ("O" "Open, non-periodic TODOs"
+                 ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR"
+                             ((org-agenda-overriding-header "List of open, non-periodic TODO items")
+                              (org-use-tag-inheritance t)
+                              (org-agenda-sorting-strategy '(deadline-down priority-down))))))
+
+                ("U" "Unsupervised (Waiting, Unscheduled, Stuck)"
                  ((tags-todo "/WAIT"
                              ((org-agenda-overriding-header "Tasks requiring response/input")))
                   (tags-todo "-HOLD-READ-SOMEWHEN/-DONE"
@@ -1010,34 +1017,22 @@ With given ARG, display files in `db/important-document-path’."
                                '(priority-down time-up category-keep))))
                   (stuck ""
                          ((org-agenda-overriding-header "Stuck Tasks")))))
-                ("S" "Somewhen"
+
+                ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
                  ((tags-todo "SOMEWHEN/-CANC-DONE|READ/-CANC-DONE"
                              ((org-agenda-overriding-header "Things to do or read somewhen")
                               (org-agenda-todo-ignore-with-date t)
                               (org-tags-match-list-sublevels nil)))
                   (tags-todo "/HOLD"
                              ((org-agenda-overriding-header "Tasks on Hold")))))
+
                 ("W" "Weekly Review"
                  ((agenda ""
                           ((org-agenda-span 7)
                            (org-agenda-archives-mode t)
                            (org-agenda-dim-blocked-tasks nil)
-                           (org-agenda-skip-deadline-prewarning-if-scheduled t)))))
-                ("M" "Monthly Preview"
-                 ((db/org-agenda-list-deadlines
-                   ""
-                   ((org-agenda-overriding-header "Deadlines")
-                    (org-agenda-sorting-strategy '(deadline-up priority-down))
-                    (org-deadline-warning-days 90)))
-                  (agenda ""
-                          ((org-agenda-span 'month)
-                           (org-agenda-dim-blocked-tasks nil)
-                           (org-deadline-warning-days 0) ; covered by display above
-                           ))))
-                ("N" "Notes" tags "NOTE"
-                 ((org-agenda-overriding-header "Notes")
-                  (org-use-tag-inheritance nil)
-                  (org-agenda-prefix-format '((tags . "  ")))))))
+                           (org-agenda-skip-deadline-prewarning-if-scheduled t)))))))
+
   :config (progn
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
