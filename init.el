@@ -1004,7 +1004,8 @@ With given ARG, display files in `db/important-document-path’."
                  ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
                               (org-use-tag-inheritance t)
-                              (org-agenda-sorting-strategy '(deadline-down priority-down))))))
+                              (org-agenda-sorting-strategy '(deadline-down priority-down))
+                              (org-agenda-prefix-format '((tags . "%-8c %-4e ")))))))
 
                 ("U" "Unsupervised (Waiting, Unscheduled, Stuck)"
                  ((tags-todo "/WAIT"
