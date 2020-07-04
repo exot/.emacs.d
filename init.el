@@ -1001,7 +1001,7 @@ With given ARG, display files in `db/important-document-path’."
                          (org-agenda-overriding-header "Things to refile (make it empty!)")))))
 
                 ("O" "Open, non-periodic TODOs"
-                 ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR"
+                 ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
                               (org-use-tag-inheritance t)
                               (org-agenda-sorting-strategy '(deadline-down priority-down))
