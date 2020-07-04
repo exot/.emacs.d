@@ -245,11 +245,16 @@ In ~%s~:
 
 ;;; Refiling
 
-;; Exclude DONE state tasks from refile targets (from bh)
 (defun db/verify-refile-target ()
-  "Exclude todo keywords with a done state from refile targets"
-  (not (member (nth 2 (org-heading-components))
-               org-done-keywords)))
+  "Verify that a certain location is eligible as a refile target.
+In other words, exclude tasks with a done state and those with
+tag PERIODIC."
+  (and
+   ;; Exclude DONE state tasks from refile targets (from bh)
+   (not (member (nth 2 (org-heading-components))
+                org-done-keywords))
+   ;; Don't refile to elements of periodic tasks
+   (not (member "PERIODIC" (org-get-tags)))))
 
 
 ;;; Reset checklists
