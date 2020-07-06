@@ -765,7 +765,8 @@ With given ARG, display files in `db/important-document-path’."
                   ("READ" ("READ" . t) ("HOLD") ("WAIT"))
                   ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
                   ("CONT" ("HOLD") ("WAIT"))
-                  ("ATTN" ("HOLD") ("WAIT")))
+                  ("ATTN" ("HOLD") ("WAIT"))
+                  ("" ("HOLD") ("WAIT") ("DATE") ("READ")))
 
                 org-tag-alist
                 '((:startgroup . nil)
