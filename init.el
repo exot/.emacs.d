@@ -2695,8 +2695,7 @@ With given ARG, display files in `db/important-document-path’."
   :commands (semantic-mode)
   :init (setq semantic-default-submodes
               '(global-semantic-idle-scheduler-mode
-                global-semanticdb-minor-mode
-                global-semantic-idle-summary-mode))
+                global-semanticdb-minor-mode))
   :config (progn
             (require 'semantic/ia)
             (require 'semantic/bovine/el)
