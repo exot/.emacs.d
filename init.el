@@ -2504,10 +2504,6 @@ With given ARG, display files in `db/important-document-path’."
                       #'(lambda ()
                           (add-to-list 'company-backends 'company-jedi)))
 
-            ;; Somehow, `eldoc' seems to be broken in `python-mode', disable it
-            ;; for now.
-            (add-hook 'python-mode-hook #'(lambda () (eldoc-mode -1)))
-
             (elpy-enable)))
 
 (use-package elpy
