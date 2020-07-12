@@ -2503,12 +2503,14 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'python-mode-hook
                       #'(lambda ()
                           (add-to-list 'company-backends 'company-jedi)))
+            (add-hook 'python-mode-hook #'flycheck-mode)
 
             (elpy-enable)))
 
 (use-package elpy
   :ensure t
-  :commands (elpy-enable))
+  :commands (elpy-enable)
+  :config (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
 
 
 ;; * Various Mode Configurations
