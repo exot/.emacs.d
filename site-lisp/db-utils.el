@@ -62,14 +62,13 @@ If already in `*ansi-term*' buffer, bury it."
   (find-file user-init-file))
 
 (defun db/run-or-hide-shell ()
-  "Opens an shell buffer if not already in one, and otherwise
-  returns to where we have been before."
+  "Opens an shell buffer if not already in one, and closes it
+otherwise."
   (interactive "")
-  (if (string= "shell-mode" major-mode)
-      (progn
-        (bury-buffer)
-        (other-window -1))
-    (shell)))
+  (if (not (eq 'shell-mode major-mode))
+      (shell)
+    (bury-buffer)
+    (delete-window)))
 
 
 ;;; General Utilities
