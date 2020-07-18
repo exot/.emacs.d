@@ -540,8 +540,9 @@ drawers, will be copied to point."
                         ;; looking for; this feels hackish, there must be a better way to do it.
                         (goto-char (org-element-property :contents-end template-element))
                         (org-mark-element)
-                        (buffer-substring-no-properties (region-beginning)
-                                                        (region-end)))))))
+                        (string-trim-right
+                         (buffer-substring-no-properties (region-beginning)
+                                                         (region-end))))))))
     (insert template)
     (org-update-statistics-cookies nil)))
 
