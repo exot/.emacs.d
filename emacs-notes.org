@@ -852,6 +852,11 @@ Approach: sort all buffers by size.
   files should always be opened with a specific encoding.
 
 * Tutorials
+
+** Online
+
+- [[https://github.com/alphapapa/emacs-package-dev-handbook][Emacs Package Developer's Cookbook]]
+
 ** Workshop for Emacs Macros
 
 (By [[https://www.howardism.org/][Howard Abrams]], 2015 Nov 24)
