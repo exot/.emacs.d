@@ -2141,7 +2141,7 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package term
   :commands (term-send-string)
-  :init (setq explicit-shell-file-name shell-file-name)
+  :init (setq explicit-shell-file-name "/bin/bash")
   :config (progn
             (add-hook 'term-exec-hook   ; oremacs.com
                       (lambda ()
