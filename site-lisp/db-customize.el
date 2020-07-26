@@ -138,6 +138,7 @@ in the main agenda view."
     ("Shell" ?s db/run-or-hide-shell)
     ("EShell" ?e db/run-or-hide-eshell)
     ("scratch" ?r db/scratch)
+    ("Org Clock Goto" ?c org-clock-goto)
     ("Info Lookup" ?I counsel-info-lookup-symbol)
     ("Unicode Lookup" ?U counsel-unicode-char))
   "Mapping of frequently used features to functions implementing
