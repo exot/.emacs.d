@@ -106,7 +106,8 @@ The values of the latter two variables are usually those of
                                             `(nnimap ,account-name
                                                      (nnimap-address ,account-address)
                                                      (nnimap-stream starttls)
-                                                     (nnimap-inbox "INBOX")))))
+                                                     (nnimap-inbox "INBOX")
+                                                     (nnimap-fetch-partial-articles "text/")))))
                                       remote-mail-accounts)))))
 
 ;; Let's make the byte-compiler happy
