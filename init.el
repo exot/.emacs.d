@@ -161,7 +161,7 @@
 
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
-  (bind-key "<f1>" #'db/run-or-hide-shell)
+  (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
   (bind-key "<f5>" #'rgrep)
   (bind-key "<f6>" #'hydra-zoom/body)
