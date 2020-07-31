@@ -92,6 +92,7 @@ ACCOUNT must be a valid element of `db/mail-accounts’."
   "Set `gnus-secondary-select-methods’ from OTHER-GNUS-ACCOUNTS and REMOTE-MAIL-ACCOUNTS.
 The values of the latter two variables are usually those of
 `db/other-gnus-accounts’ and `db/mail-accounts’."
+  ;; XXX: this does not check whether accounts are added multiple times
   (setq gnus-secondary-select-methods
         (append other-gnus-accounts
                 ;; Only add those remote accounts whose IMAP address is neither
