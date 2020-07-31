@@ -61,14 +61,31 @@ If already in `*ansi-term*' buffer, bury it."
   (interactive)
   (find-file user-init-file))
 
-(defun db/run-or-hide-shell ()
-  "Opens an shell buffer if not already in one, and closes it
-otherwise."
-  (interactive "")
-  (if (not (eq 'shell-mode major-mode))
-      (shell)
-    (bury-buffer)
-    (delete-window)))
+(defun db/run-or-hide-shell (arg)
+  "Opens a shell buffer in new window if not already in one.
+  Otherwise, closes the current shell window.  With ARG, switch
+  to `default-directory' first."
+  ;; idea to split the current window is from
+  ;; http://howardism.org/Technical/Emacs/eshell-fun.html
+  (interactive "P")
+  (if (derived-mode-p 'shell-mode)
+      ;; bury buffer; reopen with current working directory if arg is given
+      (progn
+        (bury-buffer)
+        (delete-window)
+        (and arg (db/run-or-hide-shell arg)))
+    (if-let ((shell-window (db/find-window-by-buffer-mode 'shell-mode)))
+        (select-window shell-window)
+      ;; open shell
+      (let ((current-dir (expand-file-name default-directory))
+            (height      (/ (window-total-height) 3)))
+        (shell)
+        (enlarge-window (- height (window-total-height)))
+        (when arg
+          (end-of-line)
+          (comint-kill-input)
+          (insert (format "cd '%s'" current-dir))
+          (comint-send-input))))))
 
 
 ;;; General Utilities
