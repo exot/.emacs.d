@@ -91,25 +91,29 @@ ACCOUNT must be a valid element of `db/mail-accounts’."
 (defun db/-set-gnus-secondary-select-methods (other-gnus-accounts remote-mail-accounts)
   "Set `gnus-secondary-select-methods’ from OTHER-GNUS-ACCOUNTS and REMOTE-MAIL-ACCOUNTS.
 The values of the latter two variables are usually those of
-`db/other-gnus-accounts’ and `db/mail-accounts’."
-  ;; XXX: this does not check whether accounts are added multiple times
-  (setq gnus-secondary-select-methods
-        (append other-gnus-accounts
-                ;; Only add those remote accounts whose IMAP address is neither
-                ;; `nil’ nor the empty string
-                (cl-remove-if #'null
-                              (mapcar (lambda (account)
-                                        (let ((account-name (db/mail-accounts--name account))
-                                              (account-address (db/mail-accounts--imap-address account)))
-                                          (when (and account-address
-                                                     (stringp account-address)
-                                                     (< 0 (length account-address)))
-                                            `(nnimap ,account-name
-                                                     (nnimap-address ,account-address)
-                                                     (nnimap-stream starttls)
-                                                     (nnimap-inbox "INBOX")
-                                                     (nnimap-fetch-partial-articles "text/")))))
-                                      remote-mail-accounts)))))
+`db/other-gnus-accounts’ and `db/mail-accounts’.  If multiple
+accounts exist with the same (equalp) account name, only the
+first will be added to `gnus-secondary-select-methods'."
+  (let ((select-methods (append other-gnus-accounts
+                                ;; Only add those remote accounts whose IMAP address is neither
+                                ;; `nil’ nor the empty string
+                                (cl-remove-if #'null
+                                              (mapcar (lambda (account)
+                                                        (let ((account-name (db/mail-accounts--name account))
+                                                              (account-address (db/mail-accounts--imap-address account)))
+                                                          (when (and account-address
+                                                                     (stringp account-address)
+                                                                     (< 0 (length account-address)))
+                                                            `(nnimap ,account-name
+                                                                     (nnimap-address ,account-address)
+                                                                     (nnimap-stream starttls)
+                                                                     (nnimap-inbox "INBOX")
+                                                                     (nnimap-fetch-partial-articles "text/")))))
+                                                      remote-mail-accounts)))))
+    (setq gnus-secondary-select-methods
+          (cl-remove-duplicates select-methods
+                                :key #'cl-second ; account name is second element
+                                :test #'equalp))))
 
 ;; Let's make the byte-compiler happy
 (defvar gnus-posting-styles)
