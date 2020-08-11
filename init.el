@@ -47,12 +47,11 @@
 (package-initialize)
 
 (eval-when-compile
-  (dolist (package '(diminish use-package bind-key))
+  (dolist (package '(bind-key use-package))
     (unless (package-installed-p package)
       (package-install package))
     (require package)))
 
-(add-to-list 'package-pinned-packages '(diminish . "melpa-stable"))
 (add-to-list 'package-pinned-packages '(use-package . "melpa-stable"))
 (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
 
