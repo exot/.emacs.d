@@ -2106,16 +2106,6 @@ With given ARG, display files in `db/important-document-path’."
              db/emms-track-description
              db/emms-playlist-mode-insert-track))
 
-(use-package helm-emms
-  :pin "melpa-stable"
-  :commands (helm-emms)
-  :init (setq helm-emms-use-track-description-function t
-              helm-emms-default-sources '(helm-source-emms-dired
-                                          helm-source-emms-files))
-  :config (progn
-            (require 'emms)
-            (require 'helm-adaptive)))
-
 (use-package db-music
   :init (setq db/auto-playlist-file-function
               #'(lambda ()
