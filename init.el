@@ -1890,7 +1890,7 @@ With given ARG, display files in `db/important-document-path’."
   :commands (helm-show-kill-ring)
   :diminish helm-mode
   :bind (:map helm-command-map
-              ("#" . helm-emms)
+              ("#" . db/play-radio-stations)
               ("P" . helm-pages))
   :init (setq helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
@@ -2124,7 +2124,8 @@ With given ARG, display files in `db/important-document-path’."
   :commands (db/play-auto-playlist
              db/playlist-files-from-git-annex-find
              db/play-auto-playlist-from-git-annex-find
-             music-control/body))
+             music-control/body
+             db/play-radio-stations))
 
 
 ;; * Shells and such

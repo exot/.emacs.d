@@ -18,6 +18,9 @@
   :group 'convenience
   :tag "db-music")
 
+
+;; Autogeneration of Playlist
+
 (defcustom db/auto-playlist-file-function #'db/play-auto-playlist-from-git-annex-find
   "Function that has to return a list of all music files that
 should be included in the auto playlist."
@@ -112,6 +115,49 @@ _RET_: ?RET?    _M_: ?M?
   ("M" emms              "show playlist")
   ("P" (db/play-auto-playlist)
    "Play automatically generated playlist"))
+
+
+
+;; Radio Stations
+
+(defcustom db/radio-stations
+  '(("RBB RadioEins" .
+     "http://rbb-radioeins-live.cast.addradio.de/rbb/radioeins/live/mp3/48/stream.mp3")
+    ("Deutschlandfunk" .
+     "http://st01.dlf.de/dlf/01/64/mp3/stream.mp3")
+    ("Deutschlandradio Kultur" .
+     "https://st02.sslstream.dlf.de/dlf/02/64/mp3/stream.mp3")
+    ("Deutschlandfunk Nova" .
+     "https://st03.sslstream.dlf.de/dlf/03/64/mp3/stream.mp3")
+    ("DR P7" .
+     "http://live-icy.gss.dr.dk/A/A21L.mp3.m3u")
+    ("BBC1 -- Mainstream" .
+     "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1_mf_p")
+    ("BBC2 -- Adult Contemporary" .
+     "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio2_mf_p")
+    ("BBC4 -- Info, Drama, Documentation" .
+     "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio4fm_mf_p")
+    ("BBC6 -- Music" .
+     "http://bbcmedia.ic.llnwd.net/stream/bbcmedia_6music_mf_p")
+    ("BBC World Service" .
+     "http://bbcwssc.ic.llnwd.net/stream/bbcwssc_mp1_ws-eieuk")
+    ("NDR1 Niedersachsen" .
+     "https://ndr-ndr1niedersachsen-hannover.sslcast.addradio.de/ndr/ndr1niedersachsen/hannover/mp3/128/stream.mp3"))
+  "An alist of radio station names and a corresponding URL."
+  :group 'db-music
+  :type '(alist :key-type (string :tag "Radio Station")
+                :value-type (string :tag "URL")))
+
+(defun db/play-radio-stations ()
+  "Prompt for radio station and play the corresponding URL using EMMS.
+Candidates are taken from `db/radio-stations'."
+  (interactive)
+  (-> (completing-read "Station: " db/radio-stations nil t)
+      (assoc db/radio-stations)
+      cdr
+      emms-play-url))
+
+
 
 (provide 'db-music)
 
