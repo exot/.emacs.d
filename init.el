@@ -109,6 +109,7 @@
                   ace-window-display-mode
                   key-chord-mode
                   ivy-mode
+                  helm-mode
                   minions-mode
                   which-key-mode
                   eyebrowse-mode
@@ -1887,7 +1888,7 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package helm
   :ensure t
-  :commands (helm-show-kill-ring)
+  :defer t
   :diminish helm-mode
   :bind (:map helm-command-map
               ("#" . db/play-radio-stations)
@@ -1917,6 +1918,9 @@ With given ARG, display files in `db/important-document-path’."
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
             (bind-key "C-z" #'helm-select-action helm-map)))
+
+(use-package helm-ring
+  :commands (helm-show-kill-ring))
 
 (use-package ivy
   :ensure t
