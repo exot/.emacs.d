@@ -1893,7 +1893,8 @@ With given ARG, display files in `db/important-document-path’."
   :bind (:map helm-command-map
               ("#" . db/play-radio-stations)
               ("P" . helm-pages))
-  :init (setq helm-input-idle-delay 0.0
+  :init (setq helm-command-prefix-key "C-c h"
+              helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
               helm-mode-fuzzy-match t
               helm-autoresize-min-height 20
