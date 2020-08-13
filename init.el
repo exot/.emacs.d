@@ -593,8 +593,7 @@
   :commands (magit-status)
   :init (setq magit-diff-refine-hunk nil
               magit-commit-show-diff nil
-              magit-popup-use-prefix-argument 'default
-              magit-completing-read-function 'ivy-completing-read)
+              magit-popup-use-prefix-argument 'default)
   :config (progn
             (global-magit-file-mode -1)
             (global-git-commit-mode +1)
