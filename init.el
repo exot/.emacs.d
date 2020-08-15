@@ -32,19 +32,9 @@
 
 ;; * Packages
 
-(require 'package)
-
-(setq package-user-dir (expand-file-name "elpa" emacs-d))
-
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("org" . "https://orgmode.org/elpa/")))
-
-(setq package-enable-at-startup nil)
-
-(package-initialize)
+(when (< emacs-major-version 27)
+  (load-file (expand-file-name "early-init.el" emacs-d))
+  (package-initialize))
 
 (eval-when-compile
   (dolist (package '(bind-key use-package))
