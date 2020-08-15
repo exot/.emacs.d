@@ -158,6 +158,54 @@ Candidates are taken from `db/radio-stations'."
       emms-play-url))
 
 
+;; Playlist management
+
+(cl-defun db/write-m3u-playlist-from-git-annex-find
+    (file name match-expression
+          &optional (base-dir emms-source-file-default-directory) overwrite)
+  "Write an M3U playlist to FILE with NAME containing all files
+found by git-annex-find using MATCH-EXPRESSION.  NAME will be
+written to the M3U playlist using the non-standard ”#PLAYLIST:”
+directive.  Conduct search with git-annex-find in BASE-DIR.
+Query for overwrite if FILE already exists, unless OVERWRITE is
+non-nil."
+  (interactive "FFile name of playlist: \nsPlaylist name: \nsgit annex match-expression: ")
+  (let ((base-dir (expand-file-name base-dir)))
+    (unless (file-accessible-directory-p base-dir)
+      (user-error "Error: “%s” is not a valid directory" base-dir))
+    (unless (or (not (file-exists-p file))
+                overwrite
+                (yes-or-no-p (format "File %s already exists, overwrite?" file)))
+      (user-error "Error: %s exists and shall not be overwritten, aborting." file))
+    (let ((default-directory base-dir))
+      (with-temp-buffer
+        (insert "#EXTM3U\n")
+        (insert (format "#PLAYLIST: %s\n" name))
+        (let* ((return-code nil)
+               (output (with-output-to-string
+                         (with-current-buffer standard-output
+                           (setq return-code (apply #'call-process
+                                                    "git" nil t nil
+                                                    "annex" "find"
+                                                    (split-string match-expression)))))))
+          (if (not (zerop return-code))
+              (error "%s" output)
+            (insert output)
+            (write-file file)))))))
+
+(defun db/update-playlist-files ()
+  "Update personal playlist files."
+  (interactive)
+  (message "Update favorites playlist")
+  (db/write-m3u-playlist-from-git-annex-find
+   "~/Documents/media/audio/others/daniels-favorite.m3u" "Daniel's Favorites"
+   "../songs/ --metadata rating-daniel>=0.9" "~/Documents/media/audio/others/" t)
+  (message "Update work playlist")
+  (db/write-m3u-playlist-from-git-annex-find
+   "~/Documents/media/audio/others/daniels-work-list.m3u" "Daniel's Work Music"
+   "../songs/ --metadata db-work=include" "~/Documents/media/audio/others/" t))
+
+
 
 (provide 'db-music)
 
