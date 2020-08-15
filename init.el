@@ -615,7 +615,7 @@
   :defines (projectile-known-projects)
   :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
   :init (setq projectile-switch-project-action 'projectile-dired
-              projectile-completion-system 'ivy
+              projectile-completion-system 'helm
               projectile-ignored-project-function #'file-remote-p
               projectile-create-missing-test-files t
               projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
