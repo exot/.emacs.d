@@ -103,7 +103,6 @@
                   ace-window-display-mode
                   key-chord-mode
                   ivy-mode
-                  helm-mode
                   minions-mode
                   which-key-mode
                   eyebrowse-mode
@@ -112,6 +111,8 @@
                   semantic-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
+
+  (require 'helm)
 
   (unless on-windows
     (with-demoted-errors "Cannot load `pdf-tools’: %s"
@@ -1881,7 +1882,6 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package helm
   :ensure t
-  :defer t
   :diminish helm-mode
   :bind (:map helm-command-map
               ("#" . db/play-radio-stations)
