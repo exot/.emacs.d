@@ -112,8 +112,6 @@
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
-  (require 'helm)
-
   (unless on-windows
     (with-demoted-errors "Cannot load `pdf-tools’: %s"
       (pdf-tools-install)))
@@ -217,6 +215,12 @@
   (unbind-key "<kp-insert>" global-map)
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
   (unbind-key "C-x C-c" global-map)
+
+  ;; Custom helm bindings
+
+  (require 'helm)
+  (bind-key "#" #'db/play-radio-stations helm-command-map)
+  (bind-key "P" #'helm-pages helm-command-map)
 
   ;; Overwrite certain keybindings only if packages are avilable
 
@@ -1883,9 +1887,6 @@ With given ARG, display files in `db/important-document-path’."
 (use-package helm
   :ensure t
   :diminish helm-mode
-  :bind (:map helm-command-map
-              ("#" . db/play-radio-stations)
-              ("P" . helm-pages))
   :init (setq helm-command-prefix-key "C-c h"
               helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
