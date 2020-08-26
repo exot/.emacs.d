@@ -215,6 +215,7 @@
   (unbind-key "<kp-insert>" global-map)
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
   (unbind-key "C-x C-c" global-map)
+  (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
 
   ;; Custom helm bindings
 
@@ -577,7 +578,8 @@
              db/dired-from-shell-command
              db/system-open
              db/switch-to-dark-theme
-             db/switch-to-light-theme))
+             db/switch-to-light-theme
+             keyboard-quit-context+))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
