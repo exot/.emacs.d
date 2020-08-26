@@ -2177,16 +2177,16 @@ With given ARG, display files in `db/important-document-path’."
   :commands (shell)
   :bind (:map shell-mode-map
               ("C-r" . counsel-shell-history))
-  :init (progn
-          ;; We may want to use readline support in bash, don't inhibit this with
-          ;; explicit command line arguments;
-          ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
-          (setq explicit-bash-args
-                (delete "--noediting" explicit-bash-args)))
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-            (add-hook 'shell-mode-hook 'with-editor-export-editor)))
+            (add-hook 'shell-mode-hook 'with-editor-export-editor)
+
+            ;; We may want to use readline support in bash, don't inhibit this
+            ;; with explicit command line arguments;
+            ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
+            (setq explicit-bash-args
+                  (delete "--noediting" explicit-bash-args))))
 
 (use-package db-eshell
   :commands (db/run-or-hide-eshell
