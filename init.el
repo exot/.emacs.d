@@ -2128,7 +2128,12 @@ With given ARG, display files in `db/important-document-path’."
               comint-scroll-show-maximum-output t
               comint-completion-addsuffix t
               comint-buffer-maximum-size 100000
-              comint-input-ring-size 5000))
+              comint-input-ring-size 5000)
+  :config (progn
+            ;; Never let bash know that we are inside Emacs;
+            ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
+            (advice-add 'comint-term-environment
+                        :filter-return #'(lambda (env) (cons "INSIDE_EMACS" env)))))
 
 (use-package term
   :commands (term-send-string)
@@ -2172,6 +2177,12 @@ With given ARG, display files in `db/important-document-path’."
   :commands (shell)
   :bind (:map shell-mode-map
               ("C-r" . counsel-shell-history))
+  :init (progn
+          ;; We may want to use readline support in bash, don't inhibit this with
+          ;; explicit command line arguments;
+          ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
+          (setq explicit-bash-args
+                (delete "--noediting" explicit-bash-args)))
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
