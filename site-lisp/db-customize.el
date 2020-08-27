@@ -97,6 +97,12 @@ If this path is not set, i.e., is null, no automatic download will happen."
 ;; custom setters.  Thus, the only reasonable thing to do is to not update
 ;; `org-agenda-files' automatically and leave it to the user to update it.
 
+(defcustom db/org-default-org-file nil
+  "Path to default org-mode file for general use.
+You may also want to add this file to `org-agenda-files'."
+  :group 'personal-settings
+  :type '(choice (const nil) file))
+
 (defcustom db/org-default-work-file nil
   "Path to default org-mode file at work.
 You may also want to add this file to `org-agenda-files'."
@@ -134,8 +140,7 @@ in the main agenda view."
   '(("Mail" ?m db/gnus)
     ("Agenda" ?a db/org-agenda)
     ("Init File" ?i db/find-user-init-file)
-    ("Home Org File" ?h #'(lambda () (interactive) (find-file db/org-default-home-file)))
-    ("Work Org File" ?w #'(lambda () (interactive) (find-file db/org-default-work-file)))
+    ("Main Org File" ?o #'(lambda () (interactive) (find-file db/org-default-org-file)))
     ("EMMS" ?M emms)
     ("Shell" ?s db/run-or-hide-shell)
     ("EShell" ?e db/run-or-hide-eshell)

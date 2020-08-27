@@ -297,6 +297,7 @@
             org-break-task-id
             org-home-task-id
             db/org-clock-current-task-file
+            db/org-default-org-file
             db/org-default-work-file
             db/org-default-home-file
             db/org-default-notes-file

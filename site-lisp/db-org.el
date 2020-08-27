@@ -26,13 +26,14 @@
 
 (defun db/check-special-org-files-in-agenda (&rest args)
   "Check whether the special org-mode files are part of `org-agenda-files', ignoring ARGS.
-The special org-mode files are `db/org-default-work-file',
-`db/org-default-home-file', `db/org-default-notes-files', and
-`db/org-default-refile-file'."
+The special org-mode files are `db/org-default-org-file',
+`db/org-default-work-file', `db/org-default-home-file',
+`db/org-default-notes-files', and `db/org-default-refile-file'."
   (ignore args)
   (require 'org)
   (let ((agenda-files (mapcar #'file-truename (org-agenda-files t))))
-    (dolist (file '(db/org-default-home-file
+    (dolist (file '(db/org-default-org-file
+                    db/org-default-home-file
                     db/org-default-work-file
                     db/org-default-notes-file
                     db/org-default-refile-file))
@@ -562,7 +563,8 @@ This is done only if the value of this variable is not null."
     (progn
       (org-save-all-org-buffers)
       (let ((org-agenda-files (cl-remove-if #'null
-                                            (list db/org-default-home-file
+                                            (list db/org-default-org-file
+                                                  db/org-default-home-file
                                                   db/org-default-work-file)))
             (org-agenda-new-buffers nil))
         ;; check whether we need to do something
