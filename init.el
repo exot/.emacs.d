@@ -33,9 +33,8 @@
 ;; * Packages
 
 (when (< emacs-major-version 27)
-  ;; Before Emacs 27.1, we have to do package initialization ourselves.  In
-  ;; Emacs 27.1 and later, it's done in early-init.el, and calling
-  ;; `package-initialize' is not necessary anymore.  See
+  ;; Before Emacs 27.1, we had to do package initialization ourselves.  In Emacs
+  ;; 27.1 and later, it's done in early-init.el.  See
   ;; https://www.gnu.org/software/emacs/news/NEWS.27.1
   (load-file (expand-file-name "early-init.el" emacs-d))
   (package-initialize))
