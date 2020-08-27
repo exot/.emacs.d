@@ -123,6 +123,10 @@
   (with-demoted-errors "Cannot activate `vlf': %s"
     (require 'vlf-setup))
 
+  ;; Explicitly require helm, because autoloading is difficult with helm's
+  ;; separate `helm-command-prefix-key' mechanism.
+  (require 'helm)
+
   ;; Global Hooks
 
   (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)
@@ -217,12 +221,6 @@
   (unbind-key "C-x C-c" global-map)
   (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
   (bind-key "C-z" #'dired-recent-open)
-
-  ;; Custom helm bindings
-
-  (require 'helm)
-  (bind-key "#" #'db/play-radio-stations helm-command-map)
-  (bind-key "P" #'helm-pages helm-command-map)
 
   ;; Overwrite certain keybindings only if packages are avilable
 
@@ -1921,6 +1919,9 @@ With given ARG, display files in `db/important-document-path’."
             (require 'helm-mode)
             (require 'helm-buffers)
             (require 'helm-ring)
+
+            (bind-key "#" #'db/play-radio-stations helm-command-map)
+            (bind-key "P" #'helm-pages helm-command-map)
 
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
