@@ -2602,6 +2602,7 @@ With given ARG, display files in `db/important-document-path’."
                           (eproject-mode -1))))))
 
 (use-package expand-region
+  :ensure t
   :commands (er/expand-region))
 
 (use-package eww
