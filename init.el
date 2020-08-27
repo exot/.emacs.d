@@ -216,6 +216,7 @@
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
   (unbind-key "C-x C-c" global-map)
   (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
+  (bind-key "C-z" #'dired-recent-open)
 
   ;; Custom helm bindings
 
@@ -1807,6 +1808,9 @@ With given ARG, display files in `db/important-document-path’."
                 (require 'dired-open)
                 (bind-key "M-RET" #'dired-open-xdg dired-mode-map)))
 
+            (with-demoted-errors "Non-Fatal Errors (dired-recent): %s"
+              (dired-recent-mode +1))
+
             ;; Gnus support in dired
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
@@ -1876,6 +1880,12 @@ With given ARG, display files in `db/important-document-path’."
           (setq dired-open-use-nohup nil))
   :config (add-to-list 'dired-open-functions
                        #'dired-open-guess-shell-alist))
+
+(use-package dired-recent
+  :ensure t
+  :init (setq dired-recent-max-directories nil)
+  :commands (dired-recent-mode
+             dired-recent-open))
 
 (use-package gnus-dired
   :commands (turn-on-gnus-dired-mode))
