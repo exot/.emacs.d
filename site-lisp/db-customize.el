@@ -134,6 +134,8 @@ in the main agenda view."
   '(("Mail" ?m db/gnus)
     ("Agenda" ?a db/org-agenda)
     ("Init File" ?i db/find-user-init-file)
+    ("Home Org File" ?h #'(lambda () (interactive) (find-file db/org-default-home-file)))
+    ("Work Org File" ?w #'(lambda () (interactive) (find-file db/org-default-work-file)))
     ("EMMS" ?M emms)
     ("Shell" ?s db/run-or-hide-shell)
     ("EShell" ?e db/run-or-hide-eshell)
