@@ -2722,7 +2722,7 @@ With given ARG, display files in `db/important-document-path’."
                                                     nil))
                      use-package))))
 
-(use-package sh-scripts
+(use-package sh-script
   :defer t
   :init (setq sh-basic-offset 2
               sh-indentation 2))
