@@ -2640,9 +2640,6 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'haskell-mode-hook
                       'interactive-haskell-mode)))
 
-(use-package ivy-pages
-  :commands (ivy-pages))
-
 (use-package highlight-indentation
   :commands highlight-indentation-mode)
 
@@ -2668,9 +2665,6 @@ With given ARG, display files in `db/important-document-path’."
   :commands (markdown-mode)
   :init (setq markdown-use-pandoc-style-yaml-metadata t
               markdown-command "pandoc -f markdown -t html"))
-
-(use-package mastodon
-  :commands (mastodon))
 
 (use-package multiple-cursors
   :pin "melpa-stable"
