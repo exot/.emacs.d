@@ -126,6 +126,11 @@
   ;; separate `helm-command-prefix-key' mechanism.
   (require 'helm)
 
+  (when (package-installed-p 'org-roam)
+    (if (executable-find "sqlite3")
+        (org-roam-mode +1)
+      (warn "Cannot activate org-roam: sqlite3 not found.")))
+
   ;; Global Hooks
 
   (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)
@@ -191,6 +196,8 @@
   (bind-key "C-c m" #'music-control/body)
   (bind-key "C-c o" #'hydra-org-clock/body)
   (bind-key "C-c s" #'synonyms)
+  (bind-key "C-c n i" #'org-roam-insert)
+  (bind-key "C-c n I" #'org-roam-insert-immediate)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
   (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
@@ -2673,6 +2680,14 @@ With given ARG, display files in `db/important-document-path’."
              mc/mark-next-like-this
              mc/mark-previous-like-this
              mc/mark-all-like-this))
+
+(use-package org-roam
+  :commands (org-roam-find-file)
+  :custom (org-roam-directory "~/Documents/zettelkasten/")
+  :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph-show))))
 
 (use-package org-ref
   :defer t
