@@ -2687,7 +2687,23 @@ With given ARG, display files in `db/important-document-path’."
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph-show))))
+               ("C-c n g" . org-roam-graph-show)))
+  :config (progn
+
+            ;; There seems to be a problem when capturing notes with the capture
+            ;; template.  More precisely, `org-roam-current-title' does not get
+            ;; set correctly (is it my setup or a general bug?)  This causes
+            ;; `org-roam--update-file-name-on-title-change' to get a nil
+            ;; argument, on which it barfs.  Let's intercept this case and don't
+            ;; do anything.  This effectively disables the auto-rename
+            ;; functionality when using org-capture to add notes.
+
+            (defun db/org-roam--no-titlechange-if-title-is-nil (orig-fun &rest args)
+              (unless (cl-some #'null args)
+                (apply orig-fun args)))
+
+            (advice-add 'org-roam--update-file-name-on-title-change
+                        :around #'db/org-roam--no-titlechange-if-title-is-nil)))
 
 (use-package org-ref
   :defer t
