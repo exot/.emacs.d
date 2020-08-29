@@ -2683,7 +2683,7 @@ With given ARG, display files in `db/important-document-path’."
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph-show)))
+               ("C-c n g" . org-roam-graph)))
   :config (progn
 
             ;; There seems to be a problem when capturing notes with the capture
