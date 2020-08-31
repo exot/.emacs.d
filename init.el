@@ -656,6 +656,8 @@ With given ARG, display files in `db/important-document-path’."
                   ;; taken from `helm-buffers-list'
                   (helm-make-source "Buffers" 'helm-source-buffers)
 
+                  helm-source-recentf
+
                   ;; if prefix arg is given, extract files from
                   ;; `db/important-documents-path’ and list them as well
                   (when (and (= arg 4)
