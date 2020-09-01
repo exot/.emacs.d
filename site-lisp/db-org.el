@@ -535,15 +535,20 @@ drawers, will be copied to point."
                         (unless (string-equal (org-element-property :title template-element)
                                               "Template")
                           (user-error "Template must be first headline in periodic task."))
-                        ;; XXX: trying to get the contents of the current item, without any
-                        ;; drawers, by going to the end of the template item and marking the
-                        ;; element at point, which, incidentally, seems to be the content we are
-                        ;; looking for; this feels hackish, there must be a better way to do it.
-                        (goto-char (org-element-property :contents-end template-element))
-                        (org-mark-element)
-                        (string-trim-right
-                         (buffer-substring-no-properties (region-beginning)
-                                                         (region-end))))))))
+                        ;; Starting from the end of the last element in the
+                        ;; subtree, we go up until we find a drawer or a
+                        ;; headline; everything in between is considered to be the template
+                        (let ((content-end (org-element-property :contents-end template-element))
+                              content-begin current-element)
+                          (goto-char content-end)
+                          (while (progn
+                                   (setq current-element (org-element-at-point))
+                                   (not (memq (org-element-type current-element)
+                                              '(drawer property-drawer headline))))
+                            (setq content-begin (org-element-property :begin current-element))
+                            (goto-char (1- content-begin)))
+                          (string-trim-right
+                           (buffer-substring-no-properties content-begin content-end))))))))
     (insert template)
     (org-update-statistics-cookies nil)))
 
