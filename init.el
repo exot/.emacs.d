@@ -551,7 +551,8 @@
                     #'db/add-symbols-to-TeX-input-method))
 
 (use-package server
-  :commands (server-running-p server-start))
+  :commands (server-running-p server-start)
+  :init (setq server-log t))
 
 (use-package bookmark
   :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
