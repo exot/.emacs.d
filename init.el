@@ -657,6 +657,7 @@
 With given ARG, display files in `db/important-document-path’."
   (interactive "p")
   (require 'helm-bookmark)
+  (require 'helm-for-files)
   (helm :sources (list
                   (helm-make-source "Frequently Used" 'helm-source-sync
                     :candidates (mapcar #'(lambda (entry)
