@@ -281,9 +281,10 @@
   ;; present, we really don't have to do anything.  Furthermore, calling
   ;; `db/run-init' again in a running Emacs will not restart the server (but
   ;; then, why whould one want to do this?).
-  (unless (and (boundp 'server-process) server-process)
-    (require 'server)
+  (if (and (boundp 'server-process) server-process)
+      (message "Server already running, not restarting.")
 
+    (require 'server)
     (let ((server-file (expand-file-name server-name
                                          (if server-use-tcp server-auth-dir server-socket-dir))))
       (if (file-exists-p server-file)
