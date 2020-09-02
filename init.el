@@ -272,8 +272,20 @@
 
   ;; Start Server when not running already
 
-  (unless (server-running-p)
-    (server-start))
+  (unless (and (boundp 'server-process) server-process)
+    (require 'server)
+
+    (let ((server-file (expand-file-name server-name
+                                         (if server-use-tcp server-auth-dir server-socket-dir))))
+      (if (file-exists-p server-file)
+          (warn "Server file already exists, but no server process is running.  Check %s and restart server manually."
+                server-file)
+
+        (server-start)
+        (ecase (server-running-p)
+          ((t) t)                       ; server is running
+          (nil (warn "Server not running, check logs and restart manually."))
+          (t (warn "`server-running-p' returned neither nil nor t.  Check and restart server manually if required."))))))
 
   ;; Load custom code
 
