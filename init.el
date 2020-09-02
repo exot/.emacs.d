@@ -272,6 +272,15 @@
 
   ;; Start Server when not running already
 
+  ;; The following condition should actually always be false, since we have
+  ;; neither loaded the server package yet nor have explicitly started the
+  ;; server process.  Also the --daemon command line switches will start the
+  ;; server only later, after initialization (and they do so unconditionally,
+  ;; thus restarting the server we have started here).  However, for robustness,
+  ;; we keep the condition nevertheless, since when a server process is already
+  ;; present, we really don't have to do anything.  Furthermore, calling
+  ;; `db/run-init' again in a running Emacs will not restart the server (but
+  ;; then, why whould one want to do this?).
   (unless (and (boundp 'server-process) server-process)
     (require 'server)
 
