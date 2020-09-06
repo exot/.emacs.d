@@ -810,7 +810,8 @@ With given ARG, display files in `db/important-document-path’."
                   ("NOTE" . ?n)
                   ("PERIODIC" . ?p)
                   ("REGULAR" . ?r)
-                  ("NOP" . ?o))
+                  ("NOP" . ?o)
+                  ("TOPIC" . ?t))
 
                 org-fast-tag-selection-single-key 'expert)
 
@@ -1011,7 +1012,7 @@ With given ARG, display files in `db/important-document-path’."
               '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
 
               org-stuck-projects
-              '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP}"
+              '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP\\|TOPIC}"
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
                 ()
                 "")
@@ -1065,7 +1066,7 @@ With given ARG, display files in `db/important-document-path’."
                               (org-tags-match-list-sublevels nil)))))
 
                 ("P" "Current Projects"
-                 tags "TODO=\"\"-TAGS={NOP}-PERIODIC-NOTE-DATE"
+                 tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE"
                  ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE)")))
 
                 ("W" "Weekly Review"
