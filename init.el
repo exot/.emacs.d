@@ -914,6 +914,9 @@ With given ARG, display files in `db/important-document-path’."
                   ;; This is different in the original implementation
                   (org-entry-get pom property))))))
 
+(use-package org-id
+  :custom (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id))
+
 (use-package org-clock
   :defer t
   :commands (org-clock-save)
