@@ -32,4 +32,6 @@
  '(fixed-pitch ((t (:family "DejaVu Sans Mono"))))
  '(variable-pitch ((t (:weight normal :height 1.3 :family "Bitstream Vera Serif")))))
 
+(message "Loaded db-light theme.")
+
 (provide-theme 'db-light)

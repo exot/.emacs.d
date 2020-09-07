@@ -32,4 +32,6 @@ Known to work well with the `solarized-dark’ theme.")
  '(fixed-pitch ((t (:family "DejaVu Sans Mono"))))
  '(variable-pitch ((t (:weight normal :height 1.3 :family "Bitstream Vera Serif")))))
 
+(message "Loaded db-dark theme.")
+
 (provide-theme 'db-dark)
