@@ -1828,19 +1828,15 @@ With given ARG, display files in `db/important-document-path’."
             (put 'dired-find-alternate-file 'disabled nil)
 
             (require 'dired-x)
+
             (with-demoted-errors "Non-Fatal Error (dired+): %s"
-              (require 'dired+)
+              (require 'dired+))
 
-              ;; disable exaggerated fontification of dired+
-              (require 'font-lock)
-              (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
-              (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1)))
-
-            (when (and (eq system-type 'windows-nt)
-                       (not (package-installed-p 'w32-browser)))
-              (warn "`w32-browser’ not installed, dired will have reduced functionality."))
-
-            (unless (eq system-type 'windows-nt)
+            (if (eq system-type 'windows-nt)
+                (with-demoted-errors "Non-Fatal Error (w32-browser): %s"
+                  (require 'w32-browser)
+                  (bind-key "M-RET" #'dired-w32-browser dired-mode-map)
+                  (bind-key "<C-return>" #'dired-w32explore dired-mode-map))
               (with-demoted-errors "Non-Fatal Errors (dired-open): %s"
                 (require 'dired-open)
                 (bind-key "M-RET" #'dired-open-xdg dired-mode-map)))
@@ -1926,6 +1922,14 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package gnus-dired
   :commands (turn-on-gnus-dired-mode))
+
+(use-package dired+
+  :defer t
+  :config (progn
+            ;; disable exaggerated fontification of dired+
+            (require 'font-lock)
+            (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
+            (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))))
 
 
 ;; * Completion
