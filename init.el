@@ -989,7 +989,7 @@ With given ARG, display files in `db/important-document-path’."
               org-agenda-skip-scheduled-if-deadline-is-shown 'not-today
               org-agenda-tags-todo-honor-ignore-options t
               org-agenda-start-with-log-mode nil
-              org-agenda-log-mode-items '(closed state)
+              org-agenda-log-mode-items '(closed clock)
               org-agenda-remove-tags t
               org-agenda-sticky nil
               org-agenda-inhibit-startup nil
