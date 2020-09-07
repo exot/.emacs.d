@@ -473,8 +473,14 @@ it.  The bookmarks will finally be sorted by their name."
   (setq bookmark-alist (cl-sort bookmark-alist #'string-lessp :key #'car)))
 
 (defun db/bookmark-add-external (location name)
-  "Add NAME as bookmark to LOCATION that is opened by the operating system."
-  (interactive "sLocation: \nsName: ")
+  "Add NAME as bookmark to LOCATION that is opened by the operating system.
+Offers simple completing from the list of recently opened files.
+In dired, offer all marked files or the currently selected file
+as completing instead."
+  (interactive (list (completing-read "Location: " (if (derived-mode-p 'dired-mode)
+                                                       (dired-get-marked-files)
+                                                     recentf-list))
+                     (read-string "Name: ")))
   (db/bookmark-add-with-handler name location #'db/system-open))
 
 (defun db/bookmark-add-url (url name)
