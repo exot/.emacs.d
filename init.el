@@ -753,6 +753,7 @@ With given ARG, display files in `db/important-document-path’."
                 org-edit-timestamp-down-means-later t
                 org-archive-location "%s_archive.gpg::"
                 org-image-actual-width nil
+                org-imenu-depth 10
                 org-footnote-section nil
                 org-log-into-drawer "LOGBOOK"
                 org-log-reschedule 'note
