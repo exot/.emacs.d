@@ -543,6 +543,14 @@
 
             (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
 
+(use-package imenu
+  :init (setq imenu-use-markers t
+              imenu-auto-rescan t
+              imenu-auto-rescan-maxout 600000
+              imenu-max-item-length 100
+              imenu-use-popup-menu nil
+              imenu-eager-completion-buffer t))
+
 (use-package ispell
   :commands (ispell-change-directory))
 
