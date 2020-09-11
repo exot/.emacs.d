@@ -40,6 +40,8 @@
   (package-initialize))
 
 (eval-when-compile
+  (setq use-package-enable-imenu-support t)
+
   (dolist (package '(bind-key use-package))
     (unless (package-installed-p package)
       (package-install package))
@@ -595,7 +597,6 @@
              turn-on-lispy-when-available
              db/sort-nsm-permanent-settings
              endless/colorize-compilation
-             db/add-use-package-to-imenu
              db/turn-off-local-electric-pair-mode
              db/add-symbols-to-TeX-input-method
              db/two-monitors-xrandr
@@ -2321,9 +2322,7 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package elisp-mode
   :defer t
-  :config (progn
-            (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'emacs-lisp-mode-hook 'db/add-use-package-to-imenu)))
+  :config (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available))
 
 (use-package geiser
   :commands (geiser-mode))

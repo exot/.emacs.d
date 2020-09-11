@@ -270,13 +270,6 @@ Will print a warning in case of failure."
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region compilation-filter-start (point))))
 
-(defun db/add-use-package-to-imenu ()
-  "Add `use-package’ statements to `imenu-generic-expression."
-  (add-to-list 'imenu-generic-expression
-               '("Used Packages"
-                 "\\(^\\s-*(use-package +\\)\\(\\_<.+\\_>\\)"
-                 2)))
-
 (defun db/turn-off-local-electric-pair-mode ()
   "Locally turn off electric pair mode."
   (interactive)
