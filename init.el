@@ -360,6 +360,7 @@
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 (setq inhibit-startup-message t
+      frame-inhibit-implied-resize t
       initial-scratch-message nil
       initial-major-mode 'fundamental-mode
       ring-bell-function #'ignore
