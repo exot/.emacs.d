@@ -571,6 +571,10 @@
   :config (add-hook 'input-method-activate-hook
                     #'db/add-symbols-to-TeX-input-method))
 
+(use-package isearch
+  :defer t
+  :init (setq isearch-allow-scroll t))
+
 (use-package server
   :commands (server-running-p server-start)
   :init (setq server-log t))
