@@ -351,8 +351,11 @@
 
 ;; * General configuration
 
-(use-package cl-lib)
-(use-package subr-x)
+(use-package cl-lib
+  :demand t)
+
+(use-package subr-x
+  :demand t)
 
 (set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
