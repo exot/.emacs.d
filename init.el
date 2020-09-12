@@ -20,7 +20,7 @@
 ;;; Code:
 
 
-;; * Constants
+;; * Preliminaries (constants and path settings)
 
 (defconst emacs-d (file-name-directory
                    (file-chase-links load-file-name))
@@ -28,6 +28,16 @@
 
 (defconst on-windows (memq system-type '(windows-nt cygwin))
   "Non-nil if and only if this instance of Emacs runs on Windows.")
+
+(setq custom-file (expand-file-name "private/custom.el" emacs-d)
+      custom-theme-directory (expand-file-name "themes/" emacs-d))
+
+(add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
+
+;; Ensure that ~/.emacs.d/private exists, because we want to store data there
+(let ((private-data-dir (expand-file-name "private/" emacs-d)))
+  (unless (file-directory-p private-data-dir)
+    (make-directory private-data-dir)))
 
 
 ;; * Packages
@@ -54,19 +64,6 @@
 (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
 
 (put 'use-package 'lisp-indent-function 1)
-
-
-;; * Paths
-
-(setq custom-file (expand-file-name "private/custom.el" emacs-d)
-      custom-theme-directory (expand-file-name "themes/" emacs-d))
-
-(add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
-
-;; Ensure that ~/.emacs.d/private exists, because we want to store data there
-(let ((private-data-dir (expand-file-name "private/" emacs-d)))
-  (unless (file-directory-p private-data-dir)
-    (make-directory private-data-dir)))
 
 
 ;; * Mode activation
