@@ -757,7 +757,6 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package org
   :pin "gnu"
-  :commands (org-store-link)
   :bind (:map org-mode-map
               ([remap org-return] . org-return-indent))
   :init (progn
@@ -932,6 +931,10 @@ With given ARG, display files in `db/important-document-path’."
                     (org-entry-get pom property 'inherit)
                   ;; This is different in the original implementation
                   (org-entry-get pom property))))))
+
+(use-package ol
+  :init (setq org-link-keep-stored-after-insertion t)
+  :commands (org-store-link))
 
 (use-package org-id
   :custom (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id))
