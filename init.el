@@ -63,6 +63,11 @@
 
 (add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
 
+;; Ensure that ~/.emacs.d/private exists, because we want to store data there
+(let ((private-data-dir (expand-file-name "private/" emacs-d)))
+  (unless (file-directory-p private-data-dir)
+    (make-directory private-data-dir)))
+
 
 ;; * Mode activation
 
@@ -345,11 +350,6 @@
 
 
 ;; * General configuration
-
-;; Ensure that ~/.emacs.d/private exists, because we want to store data there
-(let ((private-data-dir (expand-file-name "private/" emacs-d)))
-  (unless (file-directory-p private-data-dir)
-    (make-directory private-data-dir)))
 
 (use-package cl-lib)
 (use-package subr-x)
