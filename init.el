@@ -610,6 +610,71 @@
   :pin "melpa-stable"
   :commands (exec-path-from-shell-copy-envs))
 
+(use-package crux
+  :ensure t
+  :commands (crux-eval-and-replace
+             crux-smart-open-line-above
+             crux-kill-whole-line
+             crux-cleanup-buffer-or-region
+             crux-delete-buffer-and-file))
+
+
+;; * Text editing
+
+(use-package electric
+  :commands (electric-quote-mode))
+
+(use-package elec-pair
+  :commands (electric-pair-mode)
+  :config   (progn
+              (add-to-list 'electric-pair-pairs '(?“ . ?”))
+              (add-to-list 'electric-pair-text-pairs '(?“ . ?”))
+              (add-to-list 'electric-pair-pairs '(?„ . ?“))
+              (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
+
+(use-package flyspell
+  :commands (flyspell-mode turn-on-flyspell)
+  :config (progn
+            (unbind-key "C-M-i" flyspell-mode-map)
+            (unbind-key "C-c $" flyspell-mode-map)))
+
+(use-package key-chord
+  :commands (key-chord-mode)
+  :config (progn
+            (key-chord-define-global "``" "“")
+            (key-chord-define-global "''" "”")
+            (key-chord-define-global ",," "„")))
+
+(use-package multiple-cursors
+  :pin "melpa-stable"
+  :ensure t
+  :commands (mc/edit-lines
+             mc/mark-next-like-this
+             mc/mark-previous-like-this
+             mc/mark-all-like-this))
+
+(use-package synonyms
+  :commands (synonyms))
+
+(use-package undo-tree
+  :ensure t
+  :commands (global-undo-tree-mode
+             undo
+             undo-tree-redo)
+  :init (setq undo-tree-visualizer-timestamps t
+              undo-tree-visualizer-diff t)
+  :diminish undo-tree-mode)
+
+(use-package wgrep
+  :ensure t
+  :commands (wgrep-finish-edit
+             wgrep-change-to-wgrep-mode))
+
+(use-package yasnippet
+  :commands (yas-minor-mode-on yas-minor-mode yas-global-mode)
+  :diminish yas-minor-mode
+  :config (yas-reload-all))
+
 
 ;; * Org
 
@@ -1330,6 +1395,40 @@
 
 (use-package counsel-projectile
   :commands counsel-projectile)
+
+(use-package highlight-indentation
+  :commands highlight-indentation-mode)
+
+(use-package iedit
+  :ensure t
+  :commands (iedit-mode))
+
+(use-package page-break-lines
+  :pin "melpa-stable"
+  :commands (page-break-lines-mode)
+  :diminish page-break-lines-mode)
+
+(use-package semantic
+  :commands (semantic-mode)
+  :init (setq semantic-default-submodes
+              '(global-semantic-idle-scheduler-mode
+                global-semanticdb-minor-mode))
+  :config (progn
+            (require 'semantic/ia)
+            (require 'semantic/bovine/el)
+
+            ;; recognize `use-package' as include statement; the function seems
+            ;; to have to be a byte-compiled function, for otherwise it just
+            ;; won’t work … ?
+            (eval `(semantic-elisp-setup-form-parser
+                       ,(lambda (form start end)
+                          (ignore start end)
+                          (semantic-tag-new-include (symbol-name (nth 1 form))
+                                                    nil))
+                     use-package))))
+
+(use-package flycheck
+  :commands (global-flycheck-mode flycheck-mode))
 
 
 ;; * Mail
@@ -2703,14 +2802,6 @@ With given ARG, display files in `db/important-document-path’."
             ;; controlled by the value of `cperl-lazy-help-time'
             (add-hook 'cperl-mode-hook 'cperl-lazy-install)))
 
-(use-package crux
-  :ensure t
-  :commands (crux-eval-and-replace
-             crux-smart-open-line-above
-             crux-kill-whole-line
-             crux-cleanup-buffer-or-region
-             crux-delete-buffer-and-file))
-
 (use-package db-projects
   :commands (projects-add-project projects-archive-project))
 
@@ -2727,16 +2818,9 @@ With given ARG, display files in `db/important-document-path’."
   :ensure t
   :commands edit-list)
 
-(use-package electric
-  :commands (electric-quote-mode))
-
-(use-package elec-pair
-  :commands (electric-pair-mode)
-  :config   (progn
-              (add-to-list 'electric-pair-pairs '(?“ . ?”))
-              (add-to-list 'electric-pair-text-pairs '(?“ . ?”))
-              (add-to-list 'electric-pair-pairs '(?„ . ?“))
-              (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
+(use-package expand-region
+  :ensure t
+  :commands (er/expand-region))
 
 (use-package eproject
   ;; This configuration is only present to inhibit eproject overriding
@@ -2748,22 +2832,9 @@ With given ARG, display files in `db/important-document-path’."
                         (lambda ()
                           (eproject-mode -1))))))
 
-(use-package expand-region
-  :ensure t
-  :commands (er/expand-region))
-
 (use-package eww
   :init (setq eww-bookmarks-directory
               (expand-file-name "private/" emacs-d)))
-
-(use-package flycheck
-  :commands (global-flycheck-mode flycheck-mode))
-
-(use-package flyspell
-  :commands (flyspell-mode turn-on-flyspell)
-  :config (progn
-            (unbind-key "C-M-i" flyspell-mode-map)
-            (unbind-key "C-c $" flyspell-mode-map)))
 
 (use-package haskell-mode
   :config (progn
@@ -2785,20 +2856,6 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'haskell-mode-hook
                       'interactive-haskell-mode)))
 
-(use-package highlight-indentation
-  :commands highlight-indentation-mode)
-
-(use-package iedit
-  :ensure t
-  :commands (iedit-mode))
-
-(use-package key-chord
-  :commands (key-chord-mode)
-  :config (progn
-            (key-chord-define-global "``" "“")
-            (key-chord-define-global "''" "”")
-            (key-chord-define-global ",," "„")))
-
 (use-package ldap
   :commands (ldap-search)
   :init (setq ldap-default-host ""
@@ -2810,19 +2867,6 @@ With given ARG, display files in `db/important-document-path’."
   :commands (markdown-mode)
   :init (setq markdown-use-pandoc-style-yaml-metadata t
               markdown-command "pandoc -f markdown -t html"))
-
-(use-package multiple-cursors
-  :pin "melpa-stable"
-  :ensure t
-  :commands (mc/edit-lines
-             mc/mark-next-like-this
-             mc/mark-previous-like-this
-             mc/mark-all-like-this))
-
-(use-package page-break-lines
-  :pin "melpa-stable"
-  :commands (page-break-lines-mode)
-  :diminish page-break-lines-mode)
 
 (use-package pdf-occur
   :commands (pdf-occur-global-minor-mode))
@@ -2843,31 +2887,9 @@ With given ARG, display files in `db/important-document-path’."
   :commands (sdcv-search-pointer
              sdcv-search-input))
 
-(use-package semantic
-  :commands (semantic-mode)
-  :init (setq semantic-default-submodes
-              '(global-semantic-idle-scheduler-mode
-                global-semanticdb-minor-mode))
-  :config (progn
-            (require 'semantic/ia)
-            (require 'semantic/bovine/el)
-
-            ;; recognize `use-package' as include statement; the function seems
-            ;; to have to be a byte-compiled function, for otherwise it just
-            ;; won’t work … ?
-            (eval `(semantic-elisp-setup-form-parser
-                       ,(lambda (form start end)
-                          (ignore start end)
-                          (semantic-tag-new-include (symbol-name (nth 1 form))
-                                                    nil))
-                     use-package))))
-
 (use-package sh-script
   :init (setq sh-basic-offset 2
               sh-indentation 2))
-
-(use-package synonyms
-  :commands (synonyms))
 
 (use-package timeline-tools
   :load-path "site-lisp"
@@ -2880,23 +2902,9 @@ With given ARG, display files in `db/important-document-path’."
   :commands (typing-of-emacs)
   :init (setq toe-highscore-file nil))
 
-(use-package undo-tree
-  :ensure t
-  :commands (global-undo-tree-mode
-             undo
-             undo-tree-redo)
-  :init (setq undo-tree-visualizer-timestamps t
-              undo-tree-visualizer-diff t)
-  :diminish undo-tree-mode)
-
 (use-package vlf
   :ensure t
   :commands (vlf))
-
-(use-package wgrep
-  :ensure t
-  :commands (wgrep-finish-edit
-             wgrep-change-to-wgrep-mode))
 
 (use-package which-key
   :ensure t
@@ -2905,11 +2913,6 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq which-key-side-window-max-width 0.33
               which-key-side-window-max-height 0.25)
   :config (which-key-setup-side-window-bottom))
-
-(use-package yasnippet
-  :commands (yas-minor-mode-on yas-minor-mode yas-global-mode)
-  :diminish yas-minor-mode
-  :config (yas-reload-all))
 
 
 ;; * Load customizations
