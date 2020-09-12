@@ -320,6 +320,7 @@
 ;; * Personal customization
 
 (use-package db-customize
+  :demand t
   :defines (db/jabber-id
             db/important-documents-path
             db/path-to-onenote
