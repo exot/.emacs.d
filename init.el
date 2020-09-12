@@ -203,8 +203,10 @@
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
+  (bind-key "C-x 4 C-j" #'dired-jump-other-window)
   (bind-key "C-x C-b" #'ibuffer)
   (bind-key "C-x C-d" #'dired)
+  (bind-key "C-x C-j" #'dired-jump)
   (bind-key "C-x C-r" #'revert-buffer)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
   (bind-key "C-x g" #'db/helm-shortcuts)
@@ -1918,10 +1920,15 @@ With given ARG, display files in `db/important-document-path’."
                    "size of all marked files: %s"
                    (progn
                      (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-                     (match-string 1))))))
+                     (match-string 1))))))))
 
-            (use-package dired-subtree
-              :commands (dired-subtree-toggle))))
+(use-package dired-x
+  :commands (dired-jump dired-jump-other-window)
+  :init (setq dired-clean-confirm-killing-deleted-buffers t
+              dired-x-hands-off-my-keys t
+              dired-bind-man nil
+              dired-bind-info nil
+              dired-clean-up-buffers-too t))
 
 (use-package dired-subtree
   :commands (dired-subtree-toggle))
