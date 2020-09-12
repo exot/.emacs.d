@@ -173,7 +173,9 @@
   (bind-key "<f5>" #'rgrep)
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
-  (bind-key "<f8>" #'counsel-locate)
+  (bind-key "<f8>" #'bm-toggle)
+  (bind-key "<C-f8>" #'bm-next)
+  (bind-key "<C-S-f8>" #'bm-previous)
   (bind-key "<f9>" #'helm-org-agenda-files-headings)
   (bind-key "C-," #'mc/skip-to-previous-like-this)
   (bind-key "C-." #'mc/skip-to-next-like-this)
@@ -2114,6 +2116,25 @@ With given ARG, display files in `db/important-document-path’."
   :commands (avy-goto-char-timer
              avy-goto-word-or-subword-1
              avy-goto-line))
+
+(use-package bm
+  ;; Taken from https://protesilaos.com/dotemacs/ and slightly adapted
+  :ensure t
+  :commands (bm-toggle bm-next bm-previous bm-toggle-buffer-persistence)
+  :init (setq bm-restore-repository-on-load t
+              bm-annotate-on-create nil
+              bm-buffer-persistence t
+              bm-cycle-all-buffers t
+              bm-goto-position nil
+              bm-highlight-style 'bm-highlight-line-and-fringe
+              bm-marker 'bm-marker-right
+              bm-in-lifo-order nil
+              bm-recenter t
+              bm-repository-file "~/.emacs.d/bm-bookmarks"
+              bm-repository-size 100
+              bm-show-annotations t
+              bm-wrap-immediately t
+              bm-wrap-search t)
 
 (use-package dumb-jump
   :commands (dumb-jump-go-other-window
