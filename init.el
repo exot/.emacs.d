@@ -452,6 +452,11 @@
     (ignore params)
     (list start end)))
 
+;; Disable gconf settings, as it might interfere with ours.  Cf.
+;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25228 and
+;; https://emacs.stackexchange.com/questions/32641/something-changes-the-default-face-in-my-emacs.
+(define-key special-event-map [config-changed-event] 'ignore)
+
 
 ;; * Builtin Packages
 
