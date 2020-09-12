@@ -212,7 +212,6 @@
   (bind-key "C-x r M" #'db/bookmark-add-url)
   (bind-key "C-x r v" #'list-registers)
   (bind-key "C-x t" #'hydra-toggle/body)
-  (bind-key "C-z" #'undo)
   (bind-key "M-/" #'hippie-expand)
   (bind-key "M-:" #'pp-eval-expression)
   (bind-key "M-=" #'count-words)
@@ -228,7 +227,6 @@
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
   (unbind-key "C-x C-c" global-map)
   (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
-  (bind-key "C-z" #'dired-recent-open)
 
   ;; Overwrite certain keybindings only if packages are avilable
 
