@@ -170,7 +170,7 @@
   (bind-key "<f12>" #'db/helm-shortcuts)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
-  (bind-key "<f5>" #'rgrep)
+  (bind-key "<f5>" (if (executable-find "ag") #'counsel-ag #'rgrep))
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
   (bind-key "<f8>" #'bm-toggle)
@@ -255,9 +255,6 @@
 
   (when (package-installed-p 'ace-window)
     (bind-key "C-x o" #'ace-window))
-
-  (when (executable-find "ag")
-    (bind-key "<f5>" #'counsel-ag))
 
   (when (package-installed-p 'avy)
     (bind-key "M-g M-g" #'avy-goto-line)
