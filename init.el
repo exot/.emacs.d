@@ -688,50 +688,6 @@
   :commands (exec-path-from-shell-copy-envs))
 
 
-;; * Start Menu via Helm
-
-(defun db/helm-shortcuts (arg)
-  "Open helm completion on common locations.
-With given ARG, display files in `db/important-document-path’."
-  (interactive "p")
-  (require 'helm-bookmark)
-  (require 'helm-for-files)             ; for helm-source-recentf
-  (helm :sources (list
-                  (helm-make-source "Frequently Used" 'helm-source-sync
-                    :candidates (mapcar #'(lambda (entry)
-                                            (cons (car entry)
-                                                  (caddr entry)))
-                                        db/frequently-used-features)
-                    :action '(("Open" . call-interactively))
-                    :filtered-candidate-transformer #'helm-adaptive-sort)
-
-                  ;; taken from `helm-buffers-list'
-                  (helm-make-source "Buffers" 'helm-source-buffers)
-
-                  helm-source-recentf
-
-                  ;; if prefix arg is given, extract files from
-                  ;; `db/important-documents-path’ and list them as well
-                  (when (and (= arg 4)
-                             (file-directory-p db/important-documents-path))
-                    (let ((search-path (expand-file-name db/important-documents-path)))
-                      (helm-make-source "Important files" 'helm-source-sync
-                        :candidates (mapcar #'(lambda (file)
-                                                ;; display only relative path,
-                                                ;; but keep absolute path for
-                                                ;; actions
-                                                (cons (string-remove-prefix search-path file)
-                                                      file))
-                                            (directory-files-recursively search-path ""))
-                        :action '(("Open externally" . db/system-open)
-                                  ("Find file" . find-file)))))
-
-                  helm-source-bookmarks
-
-                  helm-source-buffer-not-found
-                  helm-source-bookmark-set)))
-
-
 ;; * Org
 
 (use-package db-org
@@ -2107,6 +2063,47 @@ With given ARG, display files in `db/important-document-path’."
 
 
 ;; * Navigation
+
+(defun db/helm-shortcuts (arg)
+  "Open helm completion on common locations.
+With given ARG, display files in `db/important-document-path’."
+  (interactive "p")
+  (require 'helm-bookmark)
+  (require 'helm-for-files)             ; for helm-source-recentf
+  (helm :sources (list
+                  (helm-make-source "Frequently Used" 'helm-source-sync
+                    :candidates (mapcar #'(lambda (entry)
+                                            (cons (car entry)
+                                                  (caddr entry)))
+                                        db/frequently-used-features)
+                    :action '(("Open" . call-interactively))
+                    :filtered-candidate-transformer #'helm-adaptive-sort)
+
+                  ;; taken from `helm-buffers-list'
+                  (helm-make-source "Buffers" 'helm-source-buffers)
+
+                  helm-source-recentf
+
+                  ;; if prefix arg is given, extract files from
+                  ;; `db/important-documents-path’ and list them as well
+                  (when (and (= arg 4)
+                             (file-directory-p db/important-documents-path))
+                    (let ((search-path (expand-file-name db/important-documents-path)))
+                      (helm-make-source "Important files" 'helm-source-sync
+                        :candidates (mapcar #'(lambda (file)
+                                                ;; display only relative path,
+                                                ;; but keep absolute path for
+                                                ;; actions
+                                                (cons (string-remove-prefix search-path file)
+                                                      file))
+                                            (directory-files-recursively search-path ""))
+                        :action '(("Open externally" . db/system-open)
+                                  ("Find file" . find-file)))))
+
+                  helm-source-bookmarks
+
+                  helm-source-buffer-not-found
+                  helm-source-bookmark-set)))
 
 (use-package ace-window
   :ensure t
