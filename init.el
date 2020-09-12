@@ -41,7 +41,9 @@
 
 (eval-when-compile
   (setq use-package-enable-imenu-support t
-        use-package-always-defer t)
+        use-package-always-defer t
+        use-package-verbose t
+        use-package-minimum-reported-time 0.01)
 
   (dolist (package '(bind-key use-package))
     (unless (package-installed-p package)
@@ -52,8 +54,6 @@
 (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
 
 (put 'use-package 'lisp-indent-function 1)
-(setq use-package-verbose t
-      use-package-minimum-reported-time 0.01)
 
 
 ;; * Paths
