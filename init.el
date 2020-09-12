@@ -525,7 +525,6 @@
   :commands (winner-mode winner-undo winner-redo))
 
 (use-package abbrev
-  :defer t
   :init (progn
           (setq save-abbrevs 'silently))
   :diminish abbrev-mode)
@@ -535,7 +534,6 @@
   :init (setq appt-display-mode-line nil))
 
 (use-package ediff
-  :defer t
   :init (setq ediff-diff-options "-w"
               ediff-window-setup-function 'ediff-setup-windows-plain
               ediff-split-window-function 'split-window-horizontally)
@@ -559,7 +557,6 @@
   :commands (ispell-change-directory))
 
 (use-package mailcap
-  :defer t
   :config (progn
             ;; Remove doc-view so pdf will open with default viewer
             (setcdr
@@ -571,12 +568,10 @@
                      (cdr (assoc "application" mailcap-mime-data))))))
 
 (use-package quail
-  :defer t
   :config (add-hook 'input-method-activate-hook
                     #'db/add-symbols-to-TeX-input-method))
 
 (use-package isearch
-  :defer t
   :init (setq isearch-allow-scroll t))
 
 (use-package server
@@ -941,7 +936,6 @@ With given ARG, display files in `db/important-document-path’."
   :custom (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id))
 
 (use-package org-clock
-  :defer t
   :commands (org-clock-save)
   :init (progn
           (setq org-clock-history-length 23
@@ -1209,13 +1203,11 @@ With given ARG, display files in `db/important-document-path’."
 ;; Babel
 
 (use-package ob-core
-  :defer t
   :init (setq org-export-use-babel nil)
   :config (setf (alist-get :results org-babel-default-header-args)
                 "output code replace"))
 
 (use-package ob-sql
-  :defer t
   :config (progn
 
             (defun db/ob-sql-oracle-ask-for-password (orig-fun
@@ -1248,7 +1240,6 @@ With given ARG, display files in `db/important-document-path’."
               org-icalendar-exclude-tags '("NO_EXPORT")))
 
 (use-package ox
-  :defer t
   :init (setq org-export-with-broken-links 'mark
               org-export-with-sub-superscripts '{}
               org-export-with-author nil
@@ -1267,7 +1258,6 @@ With given ARG, display files in `db/important-document-path’."
             (require 'ox-pandoc)))
 
 (use-package ox-latex
-  :defer t
   :init (setq org-latex-default-class "scrartcl"
               org-latex-listings t
               org-latex-compiler "lualatex")
@@ -1322,11 +1312,9 @@ With given ARG, display files in `db/important-document-path’."
                          '("" "xcolor"))))
 
 (use-package ox-html
-  :defer t
   :init (setq org-html-postamble nil))
 
 (use-package ox-reveal
-  :defer t
   :config (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js/3.0.0/"
                 org-reveal-mathjax t
                 org-reveal-transition "none"))
@@ -1377,7 +1365,6 @@ With given ARG, display files in `db/important-document-path’."
                         :around #'db/org-roam--no-titlechange-if-title-is-nil)))
 
 (use-package org-ref
-  :defer t
   :config (progn
             (require 'org-ref-pdf)
             (require 'org-ref-url-utils)))
@@ -1709,7 +1696,6 @@ With given ARG, display files in `db/important-document-path’."
             (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-article-mode-map)))
 
 (use-package mm-decode
-  :defer t
   :config (progn
             (setq mm-automatic-display (-difference mm-automatic-display
                                                     '("text/html"
@@ -1723,7 +1709,6 @@ With given ARG, display files in `db/important-document-path’."
             (add-to-list 'mm-automatic-display "application/pgp$")))
 
 (use-package mm-view
-  :defer t
   :config (progn
             ;; Fix: mm-view does not seem to support verifying S/MIME messages
             ;; using gpgsm, so we add a simple fix here
@@ -1759,7 +1744,6 @@ With given ARG, display files in `db/important-document-path’."
               t)))
 
 (use-package mml
-  :defer t
   :config (progn
             ;; Move to end of message buffer before attaching a file
             ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
@@ -1781,7 +1765,6 @@ With given ARG, display files in `db/important-document-path’."
       mail-user-agent 'gnus-user-agent)
 
 (use-package smtpmail
-  :defer t
   :init (setq smtpmail-stream-type 'starttls
               smtpmail-smtp-service 587
               smtpmail-debug-info t))
@@ -1793,7 +1776,6 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Crypto
 
 (use-package nsm
-  :defer t
   :init (setq network-security-level 'high
               nsm-save-host-names t
               nsm-settings-file (expand-file-name
@@ -1802,13 +1784,11 @@ With given ARG, display files in `db/important-document-path’."
                       :before #'db/sort-nsm-permanent-settings))
 
 (use-package gnutls
-  :defer t
   :init (setq gnutls-log-level 0        ; too noisy otherwise
               gnutls-min-prime-bits 1024
               gnutls-verify-error t))
 
 (use-package epg
-  :defer t
   :init (setq epg-debug t
               epg-gpg-program "gpg"))
 
@@ -1834,7 +1814,6 @@ With given ARG, display files in `db/important-document-path’."
                          mode-line-end-spaces))
 
 (use-package solarized-theme
-  :defer t
   :init (setq solarized-use-less-bold t
               solarized-emphasize-indicators t
               solarized-use-variable-pitch nil))
@@ -1856,7 +1835,6 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Dired
 
 (use-package dired
-  :defer t
   :bind (:map dired-mode-map
               ("e" . ora-ediff-files)
               ("z" . dired-get-size)
@@ -1997,7 +1975,6 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package dired-open
   :ensure t
-  :defer t
   :init (unless (eq system-type 'gnu/linux)
           (setq dired-open-use-nohup nil))
   :config (add-to-list 'dired-open-functions
@@ -2013,7 +1990,6 @@ With given ARG, display files in `db/important-document-path’."
   :commands (turn-on-gnus-dired-mode))
 
 (use-package dired+
-  :defer t
   :config (progn
             ;; disable exaggerated fontification of dired+
             (require 'font-lock)
@@ -2150,7 +2126,6 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq eyebrowse-keymap-prefix (kbd "C-c w")))
 
 (use-package goto-last-change
-  :defer t
   :commands goto-last-change)
 
 
@@ -2254,7 +2229,6 @@ With given ARG, display files in `db/important-document-path’."
 ;; Make sure emms is up and running when we call functions such as
 ;; `emms-play-dired’ etc.
 (use-package emms-source-file
-  :defer t
   :config (require 'emms))
 
 (use-package db-emms
@@ -2277,7 +2251,6 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Shells and such
 
 (use-package comint
-  :defer t
   :init (setq comint-scroll-to-bottom-on-input t
               comint-scroll-to-bottom-on-output nil
               comint-scroll-show-maximum-output t
@@ -2421,7 +2394,6 @@ With given ARG, display files in `db/important-document-path’."
 ;; Lisp Dialects
 
 (use-package elisp-mode
-  :defer t
   :config (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available))
 
 (use-package geiser
@@ -2450,7 +2422,6 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'cider-repl-mode-hook 'company-mode)))
 
 (use-package clojure-mode
-  :defer t
   :config (progn
             (define-clojure-indent
               (forall 'defun)
@@ -2502,7 +2473,6 @@ With given ARG, display files in `db/important-document-path’."
                          '(reftex-citation . nil))))
 
 (use-package tex
-  :defer t
   :init (setq TeX-auto-save t
               TeX-save-query nil
               TeX-parse-self t
@@ -2647,11 +2617,9 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Python
 
 (use-package company-jedi
-  :ensure t
-  :defer t)
+  :ensure t)
 
 (use-package python
-  :defer t
   :init (setq python-indent-offset 2)
   :config (progn
             (add-hook 'python-mode-hook 'highlight-indentation-mode)
@@ -2735,7 +2703,6 @@ With given ARG, display files in `db/important-document-path’."
 (use-package eproject
   ;; This configuration is only present to inhibit eproject overriding
   ;; keybindings in `message-mode'
-  :defer t
   :config (progn
             (message "Loaded eproject … done")
             (with-eval-after-load 'message
@@ -2748,7 +2715,6 @@ With given ARG, display files in `db/important-document-path’."
   :commands (er/expand-region))
 
 (use-package eww
-  :defer t
   :init (setq eww-bookmarks-directory
               (expand-file-name "private/" emacs-d)))
 
@@ -2762,7 +2728,6 @@ With given ARG, display files in `db/important-document-path’."
             (unbind-key "C-c $" flyspell-mode-map)))
 
 (use-package haskell-mode
-  :defer t
   :config (progn
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
@@ -2853,7 +2818,6 @@ With given ARG, display files in `db/important-document-path’."
                      use-package))))
 
 (use-package sh-script
-  :defer t
   :init (setq sh-basic-offset 2
               sh-indentation 2))
 
