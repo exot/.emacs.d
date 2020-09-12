@@ -585,7 +585,7 @@
                                                       emacs-d)))
 
 
-;; * Some essential packages
+;; * Essential external packages
 
 (use-package dash
   :pin "melpa-stable")
@@ -630,58 +630,6 @@
              hydra-zoom/body
              hydra-rectangle/body
              hydra-feature-shortcuts/body))
-
-(use-package git-commit
-  :commands (global-git-commit-mode)
-  :init (setq git-commit-style-convention-checks '(non-empty-second-line
-                                                   overlong-summary-line)
-              git-commit-known-pseudo-headers '("Signed-off-by"
-                                                "Acked-by"
-                                                "Modified-by"
-                                                "Cc"
-                                                "Suggested-by"
-                                                "Reported-by"
-                                                "Tested-by"
-                                                "Reviewed-by")))
-
-(use-package magit
-  :commands (magit-status)
-  :init (setq magit-diff-refine-hunk nil
-              magit-commit-show-diff nil
-              magit-popup-use-prefix-argument 'default)
-  :config (progn
-            (global-magit-file-mode -1)
-            (global-git-commit-mode +1)
-
-            (with-demoted-errors "Non-Fatal Error: %s"
-              (require 'projectile)
-              (setq magit-repository-directories
-                    (mapcar
-                     (lambda (dir)
-                       (cons (substring dir 0 -1) 0))
-                     (cl-remove-if-not
-                      (lambda (project)
-                        (unless (file-remote-p project)
-                          (file-exists-p (concat project "/.git"))))
-                      projectile-known-projects))))))
-
-(use-package magit-repos
-  :commands (magit-list-repositories))
-
-(use-package projectile
-  :commands (projectile-mode)
-  :defines (projectile-known-projects)
-  :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
-  :init (setq projectile-switch-project-action 'projectile-dired
-              projectile-completion-system 'helm
-              projectile-ignored-project-function #'file-remote-p
-              projectile-create-missing-test-files t
-              projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
-                                                               emacs-d))
-  :diminish projectile-mode)
-
-(use-package counsel-projectile
-  :commands counsel-projectile)
 
 (use-package exec-path-from-shell
   :pin "melpa-stable"
@@ -1339,6 +1287,61 @@
   :config (progn
             (require 'org-ref-pdf)
             (require 'org-ref-url-utils)))
+
+
+;; * General Programming
+
+(use-package git-commit
+  :commands (global-git-commit-mode)
+  :init (setq git-commit-style-convention-checks '(non-empty-second-line
+                                                   overlong-summary-line)
+              git-commit-known-pseudo-headers '("Signed-off-by"
+                                                "Acked-by"
+                                                "Modified-by"
+                                                "Cc"
+                                                "Suggested-by"
+                                                "Reported-by"
+                                                "Tested-by"
+                                                "Reviewed-by")))
+
+(use-package magit
+  :commands (magit-status)
+  :init (setq magit-diff-refine-hunk nil
+              magit-commit-show-diff nil
+              magit-popup-use-prefix-argument 'default)
+  :config (progn
+            (global-magit-file-mode -1)
+            (global-git-commit-mode +1)
+
+            (with-demoted-errors "Non-Fatal Error: %s"
+              (require 'projectile)
+              (setq magit-repository-directories
+                    (mapcar
+                     (lambda (dir)
+                       (cons (substring dir 0 -1) 0))
+                     (cl-remove-if-not
+                      (lambda (project)
+                        (unless (file-remote-p project)
+                          (file-exists-p (concat project "/.git"))))
+                      projectile-known-projects))))))
+
+(use-package magit-repos
+  :commands (magit-list-repositories))
+
+(use-package projectile
+  :commands (projectile-mode)
+  :defines (projectile-known-projects)
+  :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
+  :init (setq projectile-switch-project-action 'projectile-dired
+              projectile-completion-system 'helm
+              projectile-ignored-project-function #'file-remote-p
+              projectile-create-missing-test-files t
+              projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
+                                                               emacs-d))
+  :diminish projectile-mode)
+
+(use-package counsel-projectile
+  :commands counsel-projectile)
 
 
 ;; * Mail
