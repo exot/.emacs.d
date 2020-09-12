@@ -2350,7 +2350,8 @@ With given ARG, display files in `db/important-document-path’."
               eshell-destroy-buffer-when-process-dies t
               eshell-prompt-function #'eshell/default-prompt-function
               eshell-prompt-regexp "└─[$#] "
-              eshell-highlight-prompt nil)
+              eshell-highlight-prompt nil
+              eshell-cd-on-directory t)
   :config (progn (require 'em-prompt)
                  (require 'em-term)
                  (require 'em-cmpl)
