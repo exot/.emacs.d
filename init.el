@@ -442,15 +442,6 @@
 
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
 
-(setq tramp-save-ad-hoc-proxies t)
-
-;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
-(setq math-additional-units
-      '((bit nil "Bit")
-        (byte "8 * bit" "Byte")
-        (bps "bit / s" "Bit per second"))
-      math-units-table nil)
-
 (setq default-input-method "TeX")
 
 
@@ -462,7 +453,7 @@
     (list start end)))
 
 
-;; * Basic Builtin Packages
+;; * Builtin Packages
 
 (use-package misc
   :commands (zap-up-to-char zap-to-char))
@@ -558,6 +549,17 @@
 (use-package browser-url
   :init (setq browse-url-browser-function 'browse-url-generic
               browse-url-generic-program "firefox"))
+
+(use-package tramp
+  :init (setq tramp-save-ad-hoc-proxies t))
+
+(use-package calc
+  ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
+  :init (setq math-additional-units
+              '((bit nil "Bit")
+                (byte "8 * bit" "Byte")
+                (bps "bit / s" "Bit per second"))
+              math-units-table nil))
 
 
 ;; * Essential external packages
