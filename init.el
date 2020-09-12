@@ -1352,6 +1352,36 @@ With given ARG, display files in `db/important-document-path’."
               ("<C-right>" . org-tree-slide-move-next-tree)
               ("<C-left>" . org-tree-slide-move-previous-tree)))
 
+(use-package org-roam
+  :commands (org-roam-find-file)
+  :custom (org-roam-directory "~/Documents/zettelkasten/")
+  :bind (:map org-roam-mode-map
+              (("C-c n l" . org-roam)
+               ("C-c n f" . org-roam-find-file)
+               ("C-c n g" . org-roam-graph)))
+  :config (progn
+
+            ;; There seems to be a problem when capturing notes with the capture
+            ;; template.  More precisely, `org-roam-current-title' does not get
+            ;; set correctly (is it my setup or a general bug?)  This causes
+            ;; `org-roam--update-file-name-on-title-change' to get a nil
+            ;; argument, on which it barfs.  Let's intercept this case and don't
+            ;; do anything.  This effectively disables the auto-rename
+            ;; functionality when using org-capture to add notes.
+
+            (defun db/org-roam--no-titlechange-if-title-is-nil (orig-fun &rest args)
+              (unless (cl-some #'null args)
+                (apply orig-fun args)))
+
+            (advice-add 'org-roam--update-file-name-on-title-change
+                        :around #'db/org-roam--no-titlechange-if-title-is-nil)))
+
+(use-package org-ref
+  :defer t
+  :config (progn
+            (require 'org-ref-pdf)
+            (require 'org-ref-url-utils)))
+
 
 ;; * Mail
 
@@ -2785,36 +2815,6 @@ With given ARG, display files in `db/important-document-path’."
              mc/mark-next-like-this
              mc/mark-previous-like-this
              mc/mark-all-like-this))
-
-(use-package org-roam
-  :commands (org-roam-find-file)
-  :custom (org-roam-directory "~/Documents/zettelkasten/")
-  :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph)))
-  :config (progn
-
-            ;; There seems to be a problem when capturing notes with the capture
-            ;; template.  More precisely, `org-roam-current-title' does not get
-            ;; set correctly (is it my setup or a general bug?)  This causes
-            ;; `org-roam--update-file-name-on-title-change' to get a nil
-            ;; argument, on which it barfs.  Let's intercept this case and don't
-            ;; do anything.  This effectively disables the auto-rename
-            ;; functionality when using org-capture to add notes.
-
-            (defun db/org-roam--no-titlechange-if-title-is-nil (orig-fun &rest args)
-              (unless (cl-some #'null args)
-                (apply orig-fun args)))
-
-            (advice-add 'org-roam--update-file-name-on-title-change
-                        :around #'db/org-roam--no-titlechange-if-title-is-nil)))
-
-(use-package org-ref
-  :defer t
-  :config (progn
-            (require 'org-ref-pdf)
-            (require 'org-ref-url-utils)))
 
 (use-package page-break-lines
   :pin "melpa-stable"
