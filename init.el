@@ -1806,11 +1806,13 @@ With given ARG, display files in `db/important-document-path’."
               ("<tab>" . dired-subtree-toggle))
   :init (progn
           (setq dired-dwim-target t
-                dired-listing-switches "-alh"
+                dired-listing-switches "-aGFhlv --group-directories-first --time-style=long-iso"
                 dired-hide-details-hide-information-lines t
                 dired-hide-details-hide-symlink-targets t
                 dired-recursive-copies 'top
                 dired-recursive-deletes 'top
+                dired-create-destination-dirs 'ask
+                dired-vc-rename-file t
 
                 ;; Don’t use obsolete diredx local variables
                 dired-enable-local-variables nil
@@ -1862,11 +1864,14 @@ With given ARG, display files in `db/important-document-path’."
             ;; Gnus support in dired
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
+            ;; Highlight current line more prominently
+            (add-hook 'dired-mode-hook 'hl-line-mode)
+
             ;; omitting files
             (add-hook 'dired-mode-hook 'dired-omit-mode)
+            (add-hook 'dired-mode-hook 'dired-hide-details-mode)
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))
-
 
             (defun ora-ediff-files ()
               "Compare marked files in dired with ediff."
