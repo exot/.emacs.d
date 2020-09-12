@@ -1803,7 +1803,8 @@ With given ARG, display files in `db/important-document-path’."
               ([remap beginning-of-buffer] . dired-back-to-top)
               ([remap end-of-buffer] . dired-jump-to-bottom)
               ("<f1>" . nil)
-              ("<tab>" . dired-subtree-toggle))
+              ("<tab>" . dired-subtree-toggle)
+              ("<C-tab>" . dired-subtree-cycle))
   :init (progn
           (setq dired-dwim-target t
                 dired-listing-switches "-aGFhlv --group-directories-first --time-style=long-iso"
@@ -1921,6 +1922,9 @@ With given ARG, display files in `db/important-document-path’."
 
             (use-package dired-subtree
               :commands (dired-subtree-toggle))))
+
+(use-package dired-subtree
+  :commands (dired-subtree-toggle))
 
 (use-package find-dired
   :commands (find-dired)
