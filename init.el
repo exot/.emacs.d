@@ -1962,6 +1962,14 @@ With given ARG, display files in `db/important-document-path’."
             (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
             (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))))
 
+(use-package trashed
+  ;; A simple dired-like interface to the system trash bin
+  ;; Configuration taken from https://protesilaos.com/dotemacs
+  :init (setq trashed-action-confirmer 'y-or-n-p
+              trashed-use-header-line t
+              trashed-sort-key '("Date deleted" . t)
+              trashed-date-format "%Y-%m-%d %H:%M:%S"))
+
 
 ;; * Completion
 
