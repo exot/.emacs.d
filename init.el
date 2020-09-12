@@ -212,6 +212,7 @@
   (bind-key "C-x r M" #'db/bookmark-add-url)
   (bind-key "C-x r v" #'list-registers)
   (bind-key "C-x t" #'hydra-toggle/body)
+  (bind-key "C-z" #'goto-last-change)
   (bind-key "M-/" #'hippie-expand)
   (bind-key "M-:" #'pp-eval-expression)
   (bind-key "M-=" #'count-words)
@@ -2064,6 +2065,10 @@ With given ARG, display files in `db/important-document-path’."
   :ensure t
   :commands (eyebrowse-mode)
   :init (setq eyebrowse-keymap-prefix (kbd "C-c w")))
+
+(use-package goto-last-change
+  :defer t
+  :commands goto-last-change)
 
 
 ;; * Media
