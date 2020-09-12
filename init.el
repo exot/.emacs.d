@@ -351,10 +351,6 @@
 (use-package cl-lib)
 (use-package subr-x)
 
-(use-package warnings
-  :config (cl-pushnew '(undo discard-info) warning-suppress-types
-                      :test #'equal))
-
 (set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -444,47 +440,10 @@
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(use-package calender
-  :init (setq calendar-date-style 'iso
-              calendar-week-start-day 1 ; Monday
-              calendar-bahai-all-holidays-flag nil
-              calendar-chinese-all-holidays-flag nil
-              calendar-christian-all-holidays-flag t
-              calendar-islamic-all-holidays-flag nil
-              calendar-hebrew-all-holidays-flag nil
-              holiday-general-holidays '((holiday-fixed 1 1 "New Year's Day")
-                                         (holiday-fixed 2 14 "Valentine's Day")
-                                         (holiday-fixed 4 1 "April Fools' Day")
-                                         (holiday-fixed 5 1 "Labour Day")
-                                         (holiday-fixed 10 3 "German Unity Day")
-                                         (holiday-fixed 10 31 "Reformation Day")
-                                         (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
-                                         (holiday-float 11 4 4 "Thanksgiving"))
-              holiday-other-holidays '((holiday-fixed 2 13 "Jahrestag Zerstörung Dresden 1945")
-                                       (holiday-fixed 5 25 "Towel Day")
-                                       (holiday-fixed 6 4 "Tiananmen Massacre 1989")
-                                       (holiday-fixed 6 5 "Snowden-Veröffentlichungen 2013")
-                                       (holiday-fixed 6 6 "D-Day 1944")
-                                       (holiday-fixed 6 8 "Yoneda Appreciation Day")
-                                       (holiday-fixed 6 10 "Jahrestag Zerstörung von Oradour-sur-Glane 1944")
-                                       (holiday-fixed 6 10 "Jahrestag Massaker von Distomo 1944")
-                                       (holiday-fixed 6 16 "Bloomsday")
-                                       (holiday-fixed 7 20 "Jahrestag Attentat auf Hitler 1944")
-                                       (holiday-fixed 7 21 "Jahrestag der 1. Mondlandung 1969")
-                                       (holiday-fixed 7 21 "Jahrestag Massaker von Vassieux-en-Vercors 1944")
-                                       (holiday-fixed 7 28 "Start WWI 1914")
-                                       (holiday-fixed 11 11 "End WWI 1918"))
-              diary-show-holidays-flag t
-              calendar-view-holidays-initially-flag nil))
-
 (setq-default font-lock-maximum-decoration '((t . t)))
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
 
 (setq tramp-save-ad-hoc-proxies t)
-
-(use-package re-builder
-  :commands (re-builder)
-  :init (setq reb-re-syntax 'string))
 
 (setq lisp-indent-function #'lisp-indent-function)
 
@@ -498,9 +457,6 @@
       math-units-table nil)
 
 (setq default-input-method "TeX")
-
-(setq browse-url-browser-function 'browse-url-generic
-      browse-url-generic-program "firefox")
 
 
 ;; * Fixes
@@ -534,27 +490,6 @@
   :commands (appt-activate)
   :init (setq appt-display-mode-line nil))
 
-(use-package ediff
-  :init (setq ediff-diff-options "-w"
-              ediff-window-setup-function 'ediff-setup-windows-plain
-              ediff-split-window-function 'split-window-horizontally
-              ediff-show-clashes-only t)
-  :config (progn
-            (add-hook 'ediff-keymap-setup-hook
-                      '(lambda ()
-                        (bind-key "j" #'ediff-next-difference ediff-mode-map)
-                        (bind-key "k" #'ediff-previous-difference ediff-mode-map)))
-
-            (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
-
-(use-package imenu
-  :init (setq imenu-use-markers t
-              imenu-auto-rescan t
-              imenu-auto-rescan-maxout 600000
-              imenu-max-item-length 100
-              imenu-use-popup-menu nil
-              imenu-eager-completion-buffer t))
-
 (use-package ispell
   :commands (ispell-change-directory))
 
@@ -583,6 +518,51 @@
 (use-package bookmark
   :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
                                                       emacs-d)))
+
+(use-package warnings
+  :config (cl-pushnew '(undo discard-info) warning-suppress-types
+                      :test #'equal))
+
+(use-package calender
+  :init (setq calendar-date-style 'iso
+              calendar-week-start-day 1 ; Monday
+              calendar-bahai-all-holidays-flag nil
+              calendar-chinese-all-holidays-flag nil
+              calendar-christian-all-holidays-flag t
+              calendar-islamic-all-holidays-flag nil
+              calendar-hebrew-all-holidays-flag nil
+              holiday-general-holidays '((holiday-fixed 1 1 "New Year's Day")
+                                         (holiday-fixed 2 14 "Valentine's Day")
+                                         (holiday-fixed 4 1 "April Fools' Day")
+                                         (holiday-fixed 5 1 "Labour Day")
+                                         (holiday-fixed 10 3 "German Unity Day")
+                                         (holiday-fixed 10 31 "Reformation Day")
+                                         (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
+                                         (holiday-float 11 4 4 "Thanksgiving"))
+              holiday-other-holidays '((holiday-fixed 2 13 "Jahrestag Zerstörung Dresden 1945")
+                                       (holiday-fixed 5 25 "Towel Day")
+                                       (holiday-fixed 6 4 "Tiananmen Massacre 1989")
+                                       (holiday-fixed 6 5 "Snowden-Veröffentlichungen 2013")
+                                       (holiday-fixed 6 6 "D-Day 1944")
+                                       (holiday-fixed 6 8 "Yoneda Appreciation Day")
+                                       (holiday-fixed 6 10 "Jahrestag Zerstörung von Oradour-sur-Glane 1944")
+                                       (holiday-fixed 6 10 "Jahrestag Massaker von Distomo 1944")
+                                       (holiday-fixed 6 16 "Bloomsday")
+                                       (holiday-fixed 7 20 "Jahrestag Attentat auf Hitler 1944")
+                                       (holiday-fixed 7 21 "Jahrestag der 1. Mondlandung 1969")
+                                       (holiday-fixed 7 21 "Jahrestag Massaker von Vassieux-en-Vercors 1944")
+                                       (holiday-fixed 7 28 "Start WWI 1914")
+                                       (holiday-fixed 11 11 "End WWI 1918"))
+              diary-show-holidays-flag t
+              calendar-view-holidays-initially-flag nil))
+
+(use-package re-builder
+  :commands (re-builder)
+  :init (setq reb-re-syntax 'string))
+
+(use-package browser-url
+  :init (setq browse-url-browser-function 'browse-url-generic
+              browse-url-generic-program "firefox"))
 
 
 ;; * Essential external packages
@@ -1290,6 +1270,19 @@
 
 
 ;; * General Programming
+
+(use-package ediff
+  :init (setq ediff-diff-options "-w"
+              ediff-window-setup-function 'ediff-setup-windows-plain
+              ediff-split-window-function 'split-window-horizontally
+              ediff-show-clashes-only t)
+  :config (progn
+            (add-hook 'ediff-keymap-setup-hook
+                      '(lambda ()
+                        (bind-key "j" #'ediff-next-difference ediff-mode-map)
+                        (bind-key "k" #'ediff-previous-difference ediff-mode-map)))
+
+            (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
 
 (use-package git-commit
   :commands (global-git-commit-mode)
@@ -2134,6 +2127,14 @@ With given ARG, display files in `db/important-document-path’."
 (use-package helm-pages
   :ensure t
   :commands (helm-pages))
+
+(use-package imenu
+  :init (setq imenu-use-markers t
+              imenu-auto-rescan t
+              imenu-auto-rescan-maxout 600000
+              imenu-max-item-length 100
+              imenu-use-popup-menu nil
+              imenu-eager-completion-buffer t))
 
 (use-package eyebrowse
   :ensure t
