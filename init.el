@@ -630,7 +630,17 @@
              hydra-feature-shortcuts/body))
 
 (use-package git-commit
-  :commands (global-git-commit-mode))
+  :commands (global-git-commit-mode)
+  :init (setq git-commit-style-convention-checks '(non-empty-second-line
+                                                   overlong-summary-line)
+              git-commit-known-pseudo-headers '("Signed-off-by"
+                                                "Acked-by"
+                                                "Modified-by"
+                                                "Cc"
+                                                "Suggested-by"
+                                                "Reported-by"
+                                                "Tested-by"
+                                                "Reviewed-by"))
 
 (use-package magit
   :commands (magit-status)
