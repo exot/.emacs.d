@@ -55,6 +55,12 @@
 (setq use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
+
+;; * Paths
+
+(setq custom-file (expand-file-name "private/custom.el" emacs-d)
+      custom-theme-directory (expand-file-name "themes/" emacs-d))
+
 (add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
 
 
@@ -344,9 +350,6 @@
   (unless (file-directory-p private-data-dir)
     (make-directory private-data-dir)))
 
-(setq custom-file
-      (expand-file-name "private/custom.el" emacs-d))
-
 (use-package cl-lib)
 (use-package subr-x)
 
@@ -439,8 +442,6 @@
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
 
 (setq tramp-save-ad-hoc-proxies t)
-
-(setq custom-theme-directory (expand-file-name "themes/" emacs-d))
 
 ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
 (setq math-additional-units
