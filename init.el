@@ -2808,6 +2808,13 @@ With given ARG, display files in `db/important-document-path’."
 (use-package pdf-tools
   :commands (pdf-tools-install))
 
+(use-package shr
+  :init (setq shr-use-fonts nil
+              shr-use-colors nil
+              shr-max-image-proportion 0.7
+              shr-image-animate nil
+              shr-width (current-fill-column)))
+
 ;; Interactive interface to sdcv, the StarDict concole version.  To use sdcv,
 ;; put the dictionary data under ~/.stardict/dic.
 (use-package sdcv
