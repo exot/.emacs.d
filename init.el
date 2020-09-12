@@ -443,36 +443,38 @@
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(setq calendar-date-style 'iso
-      calendar-bahai-all-holidays-flag nil
-      calendar-chinese-all-holidays-flag nil
-      calendar-christian-all-holidays-flag t
-      calendar-islamic-all-holidays-flag nil
-      calendar-hebrew-all-holidays-flag nil
-      holiday-general-holidays '((holiday-fixed 1 1 "New Year's Day")
-                                 (holiday-fixed 2 14 "Valentine's Day")
-                                 (holiday-fixed 4 1 "April Fools' Day")
-                                 (holiday-fixed 5 1 "Labour Day")
-                                 (holiday-fixed 10 3 "German Unity Day")
-                                 (holiday-fixed 10 31 "Reformation Day")
-                                 (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
-                                 (holiday-float 11 4 4 "Thanksgiving"))
-      holiday-other-holidays '((holiday-fixed 2 13 "Jahrestag Zerstörung Dresden 1945")
-                               (holiday-fixed 5 25 "Towel Day")
-                               (holiday-fixed 6 4 "Tiananmen Massacre 1989")
-                               (holiday-fixed 6 5 "Snowden-Veröffentlichungen 2013")
-                               (holiday-fixed 6 6 "D-Day 1944")
-                               (holiday-fixed 6 8 "Yoneda Appreciation Day")
-                               (holiday-fixed 6 10 "Jahrestag Zerstörung von Oradour-sur-Glane 1944")
-                               (holiday-fixed 6 10 "Jahrestag Massaker von Distomo 1944")
-                               (holiday-fixed 6 16 "Bloomsday")
-                               (holiday-fixed 7 20 "Jahrestag Attentat auf Hitler 1944")
-                               (holiday-fixed 7 21 "Jahrestag der 1. Mondlandung 1969")
-                               (holiday-fixed 7 21 "Jahrestag Massaker von Vassieux-en-Vercors 1944")
-                               (holiday-fixed 7 28 "Start WWI 1914")
-                               (holiday-fixed 11 11 "End WWI 1918"))
-      diary-show-holidays-flag t
-      calendar-view-holidays-initially-flag nil)
+(use-package calender
+  :init (setq calendar-date-style 'iso
+              calendar-week-start-day 1 ; Monday
+              calendar-bahai-all-holidays-flag nil
+              calendar-chinese-all-holidays-flag nil
+              calendar-christian-all-holidays-flag t
+              calendar-islamic-all-holidays-flag nil
+              calendar-hebrew-all-holidays-flag nil
+              holiday-general-holidays '((holiday-fixed 1 1 "New Year's Day")
+                                         (holiday-fixed 2 14 "Valentine's Day")
+                                         (holiday-fixed 4 1 "April Fools' Day")
+                                         (holiday-fixed 5 1 "Labour Day")
+                                         (holiday-fixed 10 3 "German Unity Day")
+                                         (holiday-fixed 10 31 "Reformation Day")
+                                         (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
+                                         (holiday-float 11 4 4 "Thanksgiving"))
+              holiday-other-holidays '((holiday-fixed 2 13 "Jahrestag Zerstörung Dresden 1945")
+                                       (holiday-fixed 5 25 "Towel Day")
+                                       (holiday-fixed 6 4 "Tiananmen Massacre 1989")
+                                       (holiday-fixed 6 5 "Snowden-Veröffentlichungen 2013")
+                                       (holiday-fixed 6 6 "D-Day 1944")
+                                       (holiday-fixed 6 8 "Yoneda Appreciation Day")
+                                       (holiday-fixed 6 10 "Jahrestag Zerstörung von Oradour-sur-Glane 1944")
+                                       (holiday-fixed 6 10 "Jahrestag Massaker von Distomo 1944")
+                                       (holiday-fixed 6 16 "Bloomsday")
+                                       (holiday-fixed 7 20 "Jahrestag Attentat auf Hitler 1944")
+                                       (holiday-fixed 7 21 "Jahrestag der 1. Mondlandung 1969")
+                                       (holiday-fixed 7 21 "Jahrestag Massaker von Vassieux-en-Vercors 1944")
+                                       (holiday-fixed 7 28 "Start WWI 1914")
+                                       (holiday-fixed 11 11 "End WWI 1918"))
+              diary-show-holidays-flag t
+              calendar-view-holidays-initially-flag nil))
 
 (setq-default font-lock-maximum-decoration '((t . t)))
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
