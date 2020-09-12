@@ -663,6 +663,9 @@
                           (file-exists-p (concat project "/.git"))))
                       projectile-known-projects))))))
 
+(use-package magit-repos
+  :commands (magit-list-repositories))
+
 (use-package projectile
   :commands (projectile-mode)
   :defines (projectile-known-projects)
