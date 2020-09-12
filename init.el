@@ -984,6 +984,7 @@ With given ARG, display files in `db/important-document-path’."
 (use-package org-agenda
   :commands (org-agenda)
   :bind (:map org-agenda-mode-map
+              ("i" . org-agenda-clock-in)
               ("v" . hydra-org-agenda-view/body))
   :init (setq org-agenda-include-diary t
               org-agenda-span 1
