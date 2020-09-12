@@ -404,9 +404,6 @@
   ;; matter!
   (setq inhibit-compacting-font-caches t))
 
-(setq-default cursor-type 'bar
-              cursor-in-non-selected-windows nil)
-
 ;; don't let the cursor go into minibuffer prompt
 (setq minibuffer-prompt-properties '(read-only t
                                      face minibuffer-prompt
@@ -439,7 +436,6 @@
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(setq-default font-lock-maximum-decoration '((t . t)))
 (setq-default savehist-file (expand-file-name "savehist" emacs-d))
 
 (setq tramp-save-ad-hoc-proxies t)
@@ -1758,6 +1754,10 @@
 
 
 ;; * Appearance
+
+(setq-default cursor-type 'bar
+              cursor-in-non-selected-windows nil
+              font-lock-maximum-decoration '((t . t)))
 
 (setq mode-line-format '((ace-window-display-mode
                           (:eval
