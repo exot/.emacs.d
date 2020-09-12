@@ -640,7 +640,7 @@
                                                 "Suggested-by"
                                                 "Reported-by"
                                                 "Tested-by"
-                                                "Reviewed-by"))
+                                                "Reviewed-by")))
 
 (use-package magit
   :commands (magit-status)
