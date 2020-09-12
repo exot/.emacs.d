@@ -2131,7 +2131,7 @@ With given ARG, display files in `db/important-document-path’."
               bm-repository-size 100
               bm-show-annotations t
               bm-wrap-immediately t
-              bm-wrap-search t)
+              bm-wrap-search t))
 
 (use-package dumb-jump
   :commands (dumb-jump-go-other-window
