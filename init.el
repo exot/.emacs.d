@@ -433,7 +433,7 @@
 
 (setq-default async-shell-command-buffer 'new-buffer)
 (add-to-list 'display-buffer-alist
-             '("^\*Async Shell Command*" . (display-buffer-no-window)))
+             '("^\\*Async Shell Command*" . (display-buffer-no-window)))
 
 (put 'set-goal-column 'disabled nil)
 (put 'upcase-region 'disabled nil)
