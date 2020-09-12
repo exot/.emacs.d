@@ -40,7 +40,8 @@
   (package-initialize))
 
 (eval-when-compile
-  (setq use-package-enable-imenu-support t)
+  (setq use-package-enable-imenu-support t
+        use-package-always-defer t)
 
   (dolist (package '(bind-key use-package))
     (unless (package-installed-p package)
