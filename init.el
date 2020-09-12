@@ -444,8 +444,6 @@
 
 (setq tramp-save-ad-hoc-proxies t)
 
-(setq lisp-indent-function #'lisp-indent-function)
-
 (setq custom-theme-directory (expand-file-name "themes/" emacs-d))
 
 ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
@@ -2415,6 +2413,9 @@ With given ARG, display files in `db/important-document-path’."
 ;; * Lisp
 
 ;; General Stuff first
+
+(use-package lisp-mode
+  :init (setq lisp-indent-function #'lisp-indent-function))
 
 (use-package lispy
   :ensure t
