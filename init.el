@@ -1917,7 +1917,7 @@
               ("<C-tab>" . dired-subtree-cycle))
   :init (progn
           (setq dired-dwim-target t
-                dired-listing-switches "-aGFhlv --group-directories-first --time-style=long-iso"
+                dired-listing-switches (if on-windows "-aGFhlv" "-aGFhlv --group-directories-first --time-style=long-iso")
                 dired-hide-details-hide-information-lines t
                 dired-hide-details-hide-symlink-targets t
                 dired-recursive-copies 'top
