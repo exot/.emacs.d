@@ -1014,7 +1014,7 @@
               `(("A" "Main Agenda"
                  ((agenda
                    ""
-                   ((org-agenda-entry-types '(:timestamp :sexp :scheduled :deadline))
+                   ((org-agenda-entry-types '(:timestamp :sexp :scheduled))
                     (org-deadline-warning-days 0)))
                   (db/org-agenda-list-deadlines
                    ""
