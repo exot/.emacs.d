@@ -44,10 +44,13 @@ The special org-mode files are `db/org-default-org-file',
               file)))))
 
 (defun db/org-agenda-list-deadlines (&optional match)
-  ;; XXX org-agenda-later does not work, fix this
   "Prepare agenda view that only lists upcoming deadlines.
 
-Ignores MATCH."
+Ignores MATCH.  Date is always today, no forward or backward is
+supported.  Consequently, no date is shown.  Also does not
+support any of the usual key bindings, e.g., showing a
+clockreport.  It is, plainly speaking, just listing all active
+deadlines."
   (interactive "P")
   (catch 'exit
     (org-agenda-prepare "Deadlines")
