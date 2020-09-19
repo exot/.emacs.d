@@ -140,7 +140,7 @@ in the main agenda view."
   '(("Mail" ?m db/gnus)
     ("Agenda" ?a db/org-agenda)
     ("Init File" ?i db/find-user-init-file)
-    ("Main Org File" ?o #'(lambda () (interactive) (find-file db/org-default-org-file)))
+    ("Main Org File" ?o (lambda () (interactive) (find-file db/org-default-org-file)))
     ("EMMS" ?M emms)
     ("Shell" ?s db/run-or-hide-shell)
     ("EShell" ?e db/run-or-hide-eshell)
