@@ -155,7 +155,12 @@ short description, a shortcut character, and the function to
 call.  Customizing this variable redefines the global
 `hydra-shortcuts' mapping."
   :group 'personal-settings
-  :type  '(repeat (list string character function)))
+  :type  '(repeat (list string character function))
+  :set #'(lambda (symbol value)
+           (set-default symbol value)
+           ;; Update hydra when already possible available
+           (when (fboundp 'db/define-feature-shortcuts-hydra)
+             (db/define-feature-shortcuts-hydra))))
 
 
 

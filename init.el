@@ -611,6 +611,7 @@
   :commands (hydra-toggle/body
              hydra-zoom/body
              hydra-rectangle/body
+             db/define-feature-shortcuts-hydra
              hydra-feature-shortcuts/body))
 
 (use-package exec-path-from-shell

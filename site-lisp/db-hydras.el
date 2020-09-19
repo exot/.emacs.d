@@ -53,13 +53,23 @@ _h_   _l_   _o_k        _y_ank
   ("e" rectangle-exchange-point-and-mark nil)
   ("o" nil nil))
 
-(eval
- `(defhydra hydra-feature-shortcuts (:color blue)
-    ""
-    ,@(mapcar (lambda (entry)
-                (pcase-let ((`(,description ,shortcut ,function) entry))
-                  (list (string shortcut) function description)))
-              db/frequently-used-features)))
+;; The hydra for our frequently used features should be defined here, but should
+;; also be redefined every time `db/frequently-used-features' is redefined via
+;; customize.  To this end, we provide a special function here that defines this
+;; hydra, that can also be called in the setter of
+;; `db/frequently-used-features'.
+
+(defun db/define-feature-shortcuts-hydra ()
+  "Globally define `hydra-feature-shortcuts' for feature shortcuts."
+  (eval
+   `(defhydra hydra-feature-shortcuts (:color blue)
+      ""
+      ,@(mapcar (lambda (entry)
+                  (pcase-let ((`(,description ,shortcut ,function) entry))
+                    (list (string shortcut) function description)))
+                db/frequently-used-features))))
+
+(db/define-feature-shortcuts-hydra)
 
 (provide 'db-hydras)
 ;; db-hydras.el ends here
