@@ -153,9 +153,11 @@ them.  Can be used in application shortcuts such as
 `db/helm-shortcuts’.  Each entry is a list of three items: a
 short description, a shortcut character, and the function to
 call.  Customizing this variable redefines the global
-`hydra-shortcuts' mapping."
+`hydra-feature-shortcuts'.  Instead of a shortcut character, nil
+can be chosen, in which case no entry in the
+`hydra-feature-shortcuts' will be generated."
   :group 'personal-settings
-  :type  '(repeat (list string character function))
+  :type  '(repeat (list string (choice character (const nil)) function))
   :set #'(lambda (symbol value)
            (set-default symbol value)
            ;; Update hydra when already possible available

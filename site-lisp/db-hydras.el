@@ -60,14 +60,19 @@ _h_   _l_   _o_k        _y_ank
 ;; `db/frequently-used-features'.
 
 (defun db/define-feature-shortcuts-hydra ()
-  "Globally define `hydra-feature-shortcuts' for feature shortcuts."
+  "Globally define `hydra-feature-shortcuts' for feature shortcuts.
+If instead of a shortcut character nil is provided, no entry in
+the hydra will be generated.  See documentation of
+`db/frequently-used-features' for details."
   (eval
    `(defhydra hydra-feature-shortcuts (:color blue)
       ""
       ,@(mapcar (lambda (entry)
                   (pcase-let ((`(,description ,shortcut ,function) entry))
                     (list (string shortcut) function description)))
-                db/frequently-used-features))))
+                (cl-remove-if #'(lambda (entry)
+                                  (null (cl-second entry)))
+                              db/frequently-used-features)))))
 
 (db/define-feature-shortcuts-hydra)
 
