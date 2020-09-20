@@ -80,8 +80,7 @@ with some standard information like title and creation date."
     (if-let ((git-executable (executable-find "git")))
         (call-process git-executable nil nil nil "init")
       (write-region "" nil (expand-file-name ".projectile")))
-    (when (require 'projectile nil 'no-error)
-      (projectile-add-known-project project-directory))))
+    (projectile-add-known-project project-directory)))
 
 (defun projects--find-bookmarks-for-path (path)
   "Find all bookmark names that point into PATH."
@@ -106,24 +105,26 @@ project, and updating projectile's cache."
   (unless (projects-project-exists-p short-name)
     (user-error "Project %s does not exist, exiting" short-name))
 
-  ;; Remove bookmarks first
-  (mapc #'bookmark-delete (projects--find-bookmarks-for-path
-                           (expand-file-name short-name projects-main-project-directory)))
+  (let ((project-path (expand-file-name short-name projects-main-project-directory))
+        (archive-path (expand-file-name short-name projects-archive-directory)))
 
-  ;; Move project directory into archive
-  (unless (file-exists-p projects-archive-directory)
-    (make-directory projects-archive-directory))
-  (rename-file (expand-file-name short-name projects-main-project-directory)
-               (expand-file-name short-name projects-archive-directory)
-               nil)
+    (when (file-exists-p archive-path)
+      (user-error "Archived project named %s already exists, aborting" short-name))
 
-  ;; Update projectile’s cache
-  (projectile-remove-known-project
-   (expand-file-name short-name
-                     projects-main-project-directory)))
+    ;; Remove bookmarks first
+    (mapc #'bookmark-delete (projects--find-bookmarks-for-path project-path))
+
+    ;; Move project directory into archive
+    (unless (file-exists-p projects-archive-directory)
+      (make-directory projects-archive-directory))
+    (rename-file project-path archive-path nil)
+
+    ;; Update projectile’s cache
+    (projectile-cleanup-known-projects)))
 
 (defun projects--org-files ()
-  "Return all Org Mode files in all known projects, recursively."
+  "Return all Org Mode files in all known projects, recursively.
+Paths returned are absolute, but may not be canonical."
   (mapcan #'(lambda (dir)
               (directory-files-recursively (expand-file-name dir projects-main-project-directory)
                                            ".*\\.org" nil))
@@ -159,7 +160,7 @@ not have a corresponding bookmark."
                                                           "projekttagebuch.org")
                                                   projects-main-project-directory)))
         (when (file-exists-p project-diary-path)
-          (puthash project-diary-path project projects))))
+          (puthash (file-truename project-diary-path) project projects))))
 
     ;; Delete all those diary links that have a bookmark
     (dolist (bmkn (bookmark-all-names))
