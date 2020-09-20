@@ -6,13 +6,11 @@
 
 ;;; Code:
 
-(declare-function projectile-add-known-project "projectile")
-(declare-function projectile-cleanup-known-projects "projectile")
-
 (require 'subr-x)
 (require 'cl-lib)
 (require 'dash)
 (require 'bookmark)
+(require 'projectile)
 
 (defgroup projects nil
   "Simple directory-based project management"
