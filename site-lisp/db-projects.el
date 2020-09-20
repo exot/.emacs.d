@@ -149,11 +149,11 @@ whether it is included in `org-agenda-text-search-extra-files'."
   "Check that all known projects have a bookmark to their diary.
 Return list of short names of projects whose project diary does
 not have a corresponding bookmark."
+  ;; Make hash table of all diary paths to all known projects; as values we
+  ;; keep the short names, because these are the ones we want to return in the
+  ;; end
   (let ((projects (make-hash-table :test #'equal)))
 
-    ;; Make hash table of all diary paths to all known projects; as values we
-    ;; keep the short names, because these are the ones we want to return in the
-    ;; end
     (dolist (project (projects-existing-projects))
       (let ((project-diary-path (expand-file-name (concat (file-name-as-directory project)
                                                           "projekttagebuch.org")
