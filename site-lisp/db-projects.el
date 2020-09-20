@@ -49,7 +49,8 @@
 (defun projects-existing-projects ()
   "Return list of all short-names of existing projects."
   (cl-remove-if-not #'projects-project-exists-p
-                    (directory-files projects-main-project-directory)))
+                    (directory-files projects-main-project-directory
+                                     nil "^[^.]")))
 
 ;;;###autoload
 (defun projects-add-project (short-name long-name)
