@@ -148,7 +148,7 @@ whether it is included in `org-agenda-text-search-extra-files'."
 
 (defun projects-check-project-diary-bookmarks ()
   "Check that all known projects have a bookmark to their diary.
-Return list of short names of projects whose project diary does
+Return list of short names of projects whose project diaries do
 not have a corresponding bookmark."
   ;; Make hash table of all diary paths to all known projects; as values we
   ;; keep the short names, because these are the ones we want to return in the
