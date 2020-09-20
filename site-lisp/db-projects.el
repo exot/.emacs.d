@@ -171,6 +171,28 @@ not have a corresponding bookmark."
     ;; bookmark yet
     (hash-table-values projects)))
 
+;;;###autoload
+(defun projects-lint-projects ()
+  "Check all known projects for proper configuration.
+This includes checking whether all bookmarks are in place and
+whether `org-agenda-text-search-extra-files' is set up to search
+through all included Org Mode files."
+  (interactive)
+  (with-current-buffer (get-buffer-create " *projects lint results*")
+
+    (erase-buffer)
+
+    (when-let ((unsearched-org-files (projects-find-unsearched-org-files)))
+      (insert "The following Org Mode files are not included in `org-agenda-text-search-extra-files'; you may want to add them.")
+      (dolist (file unsearched-org-files)
+        (insert "\n  " file))
+      (insert "\n\n"))
+
+    (when-let ((missing-bookmarks (projects-check-project-diary-bookmarks)))
+      (insert "The following projects do not have a project diary bookmark: " (apply #'concat missing-bookmarks)))
+
+    (display-buffer (current-buffer))))
+
 (provide 'db-projects)
 
 ;;; db-projects.el ends here
