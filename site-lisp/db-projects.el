@@ -130,18 +130,21 @@ Paths returned are absolute, but may not be canonical."
                                            ".*\\.org" nil))
           (projects-existing-projects)))
 
-(defvar org-agenda-text-search-extra-files) ; to keep the byte-compiler happy
+;; Let's keep the byte compiler happy
+(defvar org-agenda-text-search-extra-files)
+(defvar org-agenda-files)
 
 (defun projects-find-unsearched-org-files ()
   "Find Org Mode files in known projects that are not searched by default.
 This is done by checking all org Mode files in every project
-whether it is included in `org-agenda-text-search-extra-files'."
+whether it is included in `org-agenda-text-search-extra-files' or
+in `org-agenda-files'."
   (require 'org)
   (let ((extra-files (make-hash-table :test #'equal)))
     (mapc #'(lambda (entry)
               (when (stringp entry)
                 (puthash (file-truename entry) t extra-files)))
-          org-agenda-text-search-extra-files)
+          (append org-agenda-files org-agenda-text-search-extra-files))
     (cl-remove-if #'(lambda (org-file)
                       (gethash (file-truename org-file) extra-files nil))
                   (projects--org-files))))
