@@ -27,15 +27,14 @@
 (defun db/check-special-org-files-in-agenda (&rest args)
   "Check whether the special org-mode files are part of `org-agenda-files', ignoring ARGS.
 The special org-mode files are `db/org-default-org-file',
-`db/org-default-work-file', `db/org-default-home-file',
-`db/org-default-notes-files', and `db/org-default-refile-file'."
+`db/org-default-work-file', `db/org-default-home-file', and
+`db/org-default-refile-file'."
   (ignore args)
   (require 'org)
   (let ((agenda-files (mapcar #'file-truename (org-agenda-files t))))
     (dolist (file '(db/org-default-org-file
                     db/org-default-home-file
                     db/org-default-work-file
-                    db/org-default-notes-file
                     db/org-default-refile-file))
       (when (and (symbol-value file)
                  (not (member (file-truename (symbol-value file))
