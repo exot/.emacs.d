@@ -2,6 +2,18 @@
 
 ;;; Commentary:
 
+;; A project is simply a directory under `projects-main-project-directory'
+;; containing either .git or .projectile.  This little collection of functions
+;; helps to manage these project directories and also integration them
+;; consistently with the projectile package.
+
+;; To start, first customize `projects-main-project-directory' and
+;; `projects-archive-directory' as needed.  Then use `projects-add-project' to
+;; add new projects and `projects-archive-project' to archive them (i.e., move
+;; them to `projects-archive-directory').  This package does not offer to remove
+;; projects; this has to be done manually.
+
+;; XXX: check known projects for missing bookmarks
 
 ;;; Code:
 
