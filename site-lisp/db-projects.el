@@ -2,7 +2,7 @@
 
 ;;; Commentary:
 
-;; XXX: check that newly created projects aren’t name the same as archived projects
+;; XXX: update org-agenda-text-search-extra-files when creating and removing projects
 
 ;;; Code:
 
@@ -52,6 +52,9 @@ with some standard information like title and creation date."
   (interactive "sShort Name: \nsLong Name: ")
   (when (projects-project-exists-p short-name)
     (user-error "Project %s already exists, exiting" short-name))
+  (when (file-exists-p (expand-file-name short-name
+                                         projects-archive-directory))
+    (user-error "Project %s already exists as archived project, exiting" short-name))
   (let* ((project-directory (expand-file-name short-name
                                               projects-main-project-directory))
          (default-directory project-directory))
