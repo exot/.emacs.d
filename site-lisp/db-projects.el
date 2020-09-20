@@ -42,6 +42,7 @@
   (cl-remove-if-not #'projects-project-exists-p
                     (directory-files projects-main-project-directory)))
 
+;;;###autoload
 (defun projects-add-project (short-name long-name)
   "Add new project with SHORT-NAME and LONG-NAME.
 The project directory will be located under
@@ -73,6 +74,7 @@ with some standard information like title and creation date."
     (when (require 'projectile nil 'no-error)
       (projectile-add-known-project project-directory))))
 
+;;;###autoload
 (defun projects-archive-project (short-name)
   "Archive existing project identified by SHORT-NAME.
 This amounts to moving the project directory SHORT-NAME under
