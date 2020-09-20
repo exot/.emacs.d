@@ -98,8 +98,9 @@
                nil)
 
   ;; Update projectile’s cache
-  (when (require 'projectile nil 'no-error)
-    (projectile-cleanup-known-projects)))
+  (projectile-remove-known-project
+   (expand-file-name short-name
+                     projects-main-project-directory)))
 
 
 (provide 'db-projects)
