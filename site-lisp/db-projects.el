@@ -85,35 +85,32 @@ with some standard information like title and creation date."
     (when (require 'projectile nil 'no-error)
       (projectile-add-known-project project-directory))))
 
+(defun projects--find-bookmarks-for-path (path)
+  "Find all bookmark names that point into PATH."
+  (unless (file-name-absolute-p path)
+    (user-error "Given path %s is not absolute" path))
+  (let ((path (file-truename path)))
+    (cl-remove-if-not #'(lambda (bmk)
+                          (let ((filename (bookmark-get-filename bmk)))
+                            (and (not (file-remote-p filename))
+                                 (string-prefix-p path (file-truename filename)))))
+                      (bookmark-all-names))))
+
 ;;;###autoload
 (defun projects-archive-project (short-name)
   "Archive existing project identified by SHORT-NAME.
 This amounts to moving the project directory SHORT-NAME under
 `projects-main-project-directory' to
-`projects-archive-directory', deleting the bookmark to the
-project diary, and updating projectile's cache."
+`projects-archive-directory', deleting all bookmarks into the
+project, and updating projectile's cache."
   (interactive
    (list (completing-read "Short Name: " (projects-existing-projects) nil t)))
   (unless (projects-project-exists-p short-name)
     (user-error "Project %s does not exist, exiting" short-name))
 
-  ;; Remove bookmark first
-  (let* ((notebook-path (expand-file-name (concat
-                                           (file-name-as-directory short-name)
-                                           "projekttagebuch.org")
-                                          projects-main-project-directory))
-         (bookmark-entry (cl-find-if (lambda (entry)
-                                       (let ((filename (->> entry
-                                                            cdr
-                                                            (cl-assoc 'filename)
-                                                            cdr)))
-                                         (and (not (file-remote-p filename))
-                                              (file-equal-p notebook-path
-                                                            filename))))
-                                     bookmark-alist)))
-    (if (null bookmark-entry)
-        (warn "No bookmark for project notebook of %s found." short-name)
-      (bookmark-delete (car bookmark-entry))))
+  ;; Remove bookmarks first
+  (mapc #'bookmark-delete (projects--find-bookmarks-for-path
+                           (expand-file-name short-name projects-main-project-directory)))
 
   ;; Move project directory into archive
   (unless (file-exists-p projects-archive-directory)
