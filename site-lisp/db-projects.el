@@ -23,12 +23,12 @@
   :type 'directory)
 
 (defcustom projects-archive-directory "~/Documents/projects/.archive/"
-  "Directory to archive projects into"
+  "Directory to archive projects into."
   :group 'projects
   :type 'directory)
 
 (defun projects-project-exists-p (short-name)
-  "Check whether a project named SHORT-NAME already exists"
+  "Check whether a project named SHORT-NAME already exists."
   (or
    (file-exists-p (expand-file-name (concat (file-name-as-directory short-name)
                                             ".git")
@@ -38,12 +38,17 @@
                                     projects-main-project-directory))))
 
 (defun projects-existing-projects ()
-  "Return list of all short-names of existing projects"
+  "Return list of all short-names of existing projects."
   (cl-remove-if-not #'projects-project-exists-p
                     (directory-files projects-main-project-directory)))
 
 (defun projects-add-project (short-name long-name)
-  "Add new project."
+  "Add new project with SHORT-NAME and LONG-NAME.
+The project directory will be located under
+`projects-main-project-directory' within a directory named
+SHORT-NAME.  A bookmark to the project diary will be created,
+using the given LONG-NAME.  The project diary will be pre-filled
+with some standard information like title and creation date."
   (interactive "sShort Name: \nsLong Name: ")
   (when (projects-project-exists-p short-name)
     (user-error "Project %s already exists, exiting" short-name))
@@ -66,7 +71,11 @@
       (projectile-add-known-project project-directory))))
 
 (defun projects-archive-project (short-name)
-  "Archive existing project."
+  "Archive existing project identified by SHORT-NAME.
+This amounts to moving the project directory SHORT-NAME under
+`projects-main-project-directory' to
+`projects-archive-directory', deleting the bookmark to the
+project diary, and updating projectile's cache."
   (interactive
    (list (completing-read "Short Name: " (projects-existing-projects) nil t)))
   (unless (projects-project-exists-p short-name)
