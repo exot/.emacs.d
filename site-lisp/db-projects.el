@@ -13,8 +13,6 @@
 ;; them to `projects-archive-directory').  This package does not offer to remove
 ;; projects; this has to be done manually.
 
-;; XXX: check known projects for missing bookmarks
-
 ;;; Code:
 
 (require 'subr-x)
@@ -146,6 +144,31 @@ whether it is included in `org-agenda-text-search-extra-files'."
     (cl-remove-if #'(lambda (org-file)
                       (gethash (file-truename org-file) extra-files nil))
                   (projects--org-files))))
+
+(defun projects-check-project-diary-bookmarks ()
+  "Check that all known projects have a bookmark to their diary.
+Return list of short names of projects whose project diary does
+not have a corresponding bookmark."
+  (let ((projects (make-hash-table :test #'equal)))
+
+    ;; Make hash table of all diary paths to all known projects; as values we
+    ;; keep the short names, because these are the ones we want to return in the
+    ;; end
+    (dolist (project (projects-existing-projects))
+      (let ((project-diary-path (expand-file-name (concat (file-name-as-directory project)
+                                                          "projekttagebuch.org")
+                                                  projects-main-project-directory)))
+        (when (file-exists-p project-diary-path)
+          (puthash project-diary-path project projects))))
+
+    ;; Delete all those diary links that have a bookmark
+    (dolist (bmkn (bookmark-all-names))
+      (unless (file-remote-p (bookmark-get-filename bmkn))
+        (remhash (file-truename (bookmark-get-filename bmkn)) projects)))
+
+    ;; Return remaining short names; those are the ones that do not have a
+    ;; bookmark yet
+    (hash-table-values projects)))
 
 (provide 'db-projects)
 
