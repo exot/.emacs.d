@@ -2811,7 +2811,8 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'cperl-mode-hook 'cperl-lazy-install)))
 
 (use-package db-projects
-  :commands (projects-add-project projects-archive-project))
+  :commands (projects-add-project
+             projects-archive-project))
 
 (use-package define-word
   :ensure t
