@@ -2,17 +2,24 @@
 
 ;;; Commentary:
 
-;; XXX: check that newly created projects aren’t name the same as archived projects
+;; A project is simply a directory under `projects-main-project-directory'
+;; containing either .git or .projectile.  This little collection of functions
+;; helps to manage these project directories and also integration them
+;; consistently with the projectile package.
+
+;; To start, first customize `projects-main-project-directory' and
+;; `projects-archive-directory' as needed.  Then use `projects-add-project' to
+;; add new projects and `projects-archive-project' to archive them (i.e., move
+;; them to `projects-archive-directory').  This package does not offer to remove
+;; projects; this has to be done manually.
 
 ;;; Code:
-
-(declare-function projectile-add-known-project "projectile")
-(declare-function projectile-cleanup-known-projects "projectile")
 
 (require 'subr-x)
 (require 'cl-lib)
 (require 'dash)
 (require 'bookmark)
+(require 'projectile)
 
 (defgroup projects nil
   "Simple directory-based project management"
@@ -25,12 +32,12 @@
   :type 'directory)
 
 (defcustom projects-archive-directory "~/Documents/projects/.archive/"
-  "Directory to archive projects into"
+  "Directory to archive projects into."
   :group 'projects
   :type 'directory)
 
 (defun projects-project-exists-p (short-name)
-  "Check whether a project named SHORT-NAME already exists"
+  "Check whether a project named SHORT-NAME already exists."
   (or
    (file-exists-p (expand-file-name (concat (file-name-as-directory short-name)
                                             ".git")
@@ -40,15 +47,25 @@
                                     projects-main-project-directory))))
 
 (defun projects-existing-projects ()
-  "Return list of all short-names of existing projects"
+  "Return list of all short-names of existing projects."
   (cl-remove-if-not #'projects-project-exists-p
-                    (directory-files projects-main-project-directory)))
+                    (directory-files projects-main-project-directory
+                                     nil "^[^.]")))
 
+;;;###autoload
 (defun projects-add-project (short-name long-name)
-  "Add new project."
+  "Add new project with SHORT-NAME and LONG-NAME.
+The project directory will be located under
+`projects-main-project-directory' within a directory named
+SHORT-NAME.  A bookmark to the project diary will be created,
+using the given LONG-NAME.  The project diary will be pre-filled
+with some standard information like title and creation date."
   (interactive "sShort Name: \nsLong Name: ")
   (when (projects-project-exists-p short-name)
     (user-error "Project %s already exists, exiting" short-name))
+  (when (file-exists-p (expand-file-name short-name
+                                         projects-archive-directory))
+    (user-error "Project %s already exists as archived project, exiting" short-name))
   (let* ((project-directory (expand-file-name short-name
                                               projects-main-project-directory))
          (default-directory project-directory))
@@ -64,45 +81,121 @@
     (if-let ((git-executable (executable-find "git")))
         (call-process git-executable nil nil nil "init")
       (write-region "" nil (expand-file-name ".projectile")))
-    (when (require 'projectile nil 'no-error)
-      (projectile-add-known-project project-directory))))
+    (projectile-add-known-project project-directory)))
 
+(defun projects--find-bookmarks-for-path (path)
+  "Find all bookmark names that point into PATH."
+  (unless (file-name-absolute-p path)
+    (user-error "Given path %s is not absolute" path))
+  (let ((path (file-truename path)))
+    (cl-remove-if-not #'(lambda (bmk)
+                          (let ((filename (bookmark-get-filename bmk)))
+                            (and (not (file-remote-p filename))
+                                 (string-prefix-p path (file-truename filename)))))
+                      (bookmark-all-names))))
+
+;;;###autoload
 (defun projects-archive-project (short-name)
-  "Archive existing project."
+  "Archive existing project identified by SHORT-NAME.
+This amounts to moving the project directory SHORT-NAME under
+`projects-main-project-directory' to
+`projects-archive-directory', deleting all bookmarks into the
+project, and updating projectile's cache."
   (interactive
    (list (completing-read "Short Name: " (projects-existing-projects) nil t)))
   (unless (projects-project-exists-p short-name)
     (user-error "Project %s does not exist, exiting" short-name))
 
-  ;; Remove bookmark first
-  (let* ((notebook-path (expand-file-name (concat
-                                           (file-name-as-directory short-name)
-                                           "projekttagebuch.org")
-                                          projects-main-project-directory))
-         (bookmark-entry (cl-find-if (lambda (entry)
-                                       (let ((filename (->> entry
-                                                            cdr
-                                                            (cl-assoc 'filename)
-                                                            cdr)))
-                                         (and (not (file-remote-p filename))
-                                              (file-equal-p notebook-path
-                                                            filename))))
-                                     bookmark-alist)))
-    (if (null bookmark-entry)
-        (warn "No bookmark for project notebook of %s found." short-name)
-      (bookmark-delete (car bookmark-entry))))
+  (let ((project-path (expand-file-name short-name projects-main-project-directory))
+        (archive-path (expand-file-name short-name projects-archive-directory)))
 
-  ;; Move project directory into archive
-  (unless (file-exists-p projects-archive-directory)
-    (make-directory projects-archive-directory))
-  (rename-file (expand-file-name short-name projects-main-project-directory)
-               (expand-file-name short-name projects-archive-directory)
-               nil)
+    (when (file-exists-p archive-path)
+      (user-error "Archived project named %s already exists, aborting" short-name))
 
-  ;; Update projectile’s cache
-  (when (require 'projectile nil 'no-error)
+    ;; Remove bookmarks first
+    (mapc #'bookmark-delete (projects--find-bookmarks-for-path project-path))
+
+    ;; Move project directory into archive
+    (unless (file-exists-p projects-archive-directory)
+      (make-directory projects-archive-directory))
+    (rename-file project-path archive-path nil)
+
+    ;; Update projectile’s cache
     (projectile-cleanup-known-projects)))
 
+(defun projects--org-files ()
+  "Return all Org Mode files in all known projects, recursively.
+Paths returned are absolute, but may not be canonical."
+  (mapcan #'(lambda (dir)
+              (directory-files-recursively (expand-file-name dir projects-main-project-directory)
+                                           ".*\\.org" nil))
+          (projects-existing-projects)))
+
+;; Let's keep the byte compiler happy
+(defvar org-agenda-text-search-extra-files)
+(defvar org-agenda-files)
+
+(defun projects-find-unsearched-org-files ()
+  "Find Org Mode files in known projects that are not searched by default.
+This is done by checking all org Mode files in every project
+whether it is included in `org-agenda-text-search-extra-files' or
+in `org-agenda-files'."
+  (require 'org)
+  (let ((extra-files (make-hash-table :test #'equal)))
+    (mapc #'(lambda (entry)
+              (when (stringp entry)
+                (puthash (file-truename entry) t extra-files)))
+          (append org-agenda-files org-agenda-text-search-extra-files))
+    (cl-remove-if #'(lambda (org-file)
+                      (gethash (file-truename org-file) extra-files nil))
+                  (projects--org-files))))
+
+(defun projects-check-project-diary-bookmarks ()
+  "Check that all known projects have a bookmark to their diary.
+Return list of short names of projects whose project diaries do
+not have a corresponding bookmark."
+  ;; Make hash table of all diary paths to all known projects; as values we
+  ;; keep the short names, because these are the ones we want to return in the
+  ;; end
+  (let ((projects (make-hash-table :test #'equal)))
+
+    (dolist (project (projects-existing-projects))
+      (let ((project-diary-path (expand-file-name (concat (file-name-as-directory project)
+                                                          "projekttagebuch.org")
+                                                  projects-main-project-directory)))
+        (when (file-exists-p project-diary-path)
+          (puthash (file-truename project-diary-path) project projects))))
+
+    ;; Delete all those diary links that have a bookmark
+    (dolist (bmkn (bookmark-all-names))
+      (unless (file-remote-p (bookmark-get-filename bmkn))
+        (remhash (file-truename (bookmark-get-filename bmkn)) projects)))
+
+    ;; Return remaining short names; those are the ones that do not have a
+    ;; bookmark yet
+    (hash-table-values projects)))
+
+;;;###autoload
+(defun projects-lint-projects ()
+  "Check all known projects for proper configuration.
+This includes checking whether all bookmarks are in place and
+whether `org-agenda-text-search-extra-files' is set up to search
+through all included Org Mode files."
+  (interactive)
+  (with-current-buffer (get-buffer-create " *projects lint results*")
+
+    (erase-buffer)
+
+    (when-let ((unsearched-org-files (projects-find-unsearched-org-files)))
+      (insert "The following Org Mode files are not included in `org-agenda-text-search-extra-files'; you may want to add them.")
+      (dolist (file unsearched-org-files)
+        (insert "\n  " file))
+      (insert "\n\n"))
+
+    (when-let ((missing-bookmarks (projects-check-project-diary-bookmarks)))
+      (insert "The following projects do not have a project diary bookmark: " (apply #'concat missing-bookmarks)))
+
+    (display-buffer (current-buffer))))
 
 (provide 'db-projects)
 
