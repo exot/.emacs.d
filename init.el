@@ -2812,7 +2812,8 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package db-projects
   :commands (projects-add-project
-             projects-archive-project))
+             projects-archive-project
+             projects-lint-projects))
 
 (use-package define-word
   :ensure t
