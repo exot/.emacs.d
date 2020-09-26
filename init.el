@@ -185,7 +185,7 @@
   (bind-key "<f8>" #'bm-toggle)
   (bind-key "<C-f8>" #'bm-next)
   (bind-key "<C-S-f8>" #'bm-previous)
-  (bind-key "<f9>" #'helm-org-agenda-files-headings)
+  (bind-key "<f9>" #'db/org-find-links-to-current-item)
   (bind-key "C-," #'mc/skip-to-previous-like-this)
   (bind-key "C-." #'mc/skip-to-next-like-this)
   (bind-key "C-;" #'iedit-mode)
@@ -715,7 +715,8 @@
              db/find-csv-in-org
              db/org-mark-current-default-task
              db/export-diary
-             db/org-copy-template-for-periodic-task))
+             db/org-copy-template-for-periodic-task
+             db/org-find-links-to-current-item))
 
 (use-package org
   :pin "gnu"
@@ -1333,7 +1334,19 @@
                 (apply orig-fun args)))
 
             (advice-add 'org-roam--update-file-name-on-title-change
-                        :around #'db/org-roam--no-titlechange-if-title-is-nil)))
+                        :around #'db/org-roam--no-titlechange-if-title-is-nil)
+
+            ;; `org-roam--id-link-face' apparently changes the matching data,
+            ;; resulting in `org-finalize-agenda' to fail while applying text
+            ;; properties to ID links; let's warp `save-match-data' around calls
+            ;; to it.
+
+            (defun db/save-match-data (orig-fun &rest args)
+              (save-match-data
+                (apply orig-fun args)))
+
+            (advice-add 'org-roam--id-link-face
+                        :around #'db/save-match-data)))
 
 (use-package org-ref
   :config (progn
