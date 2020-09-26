@@ -613,9 +613,11 @@ not."
     (user-error "CUSTOM_ID must consist of alphanumeric charaters only"))
 
   (let ((query (cond
-                ((and id custom-id) (format "{\\[\\[id:%s\\]\\|\\[\\[#%s\\]}" id custom-id))
+                ((and id custom-id) (format "{\\[\\[id:%s\\]\\|\\[\\[file:[^]]*::#%s\\]\\|\\[#%s\\]}"
+                                            id custom-id custom-id))
                 (id (format "[[id:%s]" id))
-                (custom-id (format "[[#%s]" custom-id))
+                (custom-id (format "{\\[file:[^]]*::#%s\\]\\|\\[#%s\\]}"
+                                   custom-id custom-id))
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
