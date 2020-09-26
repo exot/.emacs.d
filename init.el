@@ -715,7 +715,8 @@
              db/find-csv-in-org
              db/org-mark-current-default-task
              db/export-diary
-             db/org-copy-template-for-periodic-task))
+             db/org-copy-template-for-periodic-task
+             db/org-find-items-linking-to-id))
 
 (use-package org
   :pin "gnu"
