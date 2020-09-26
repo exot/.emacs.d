@@ -1333,7 +1333,19 @@
                 (apply orig-fun args)))
 
             (advice-add 'org-roam--update-file-name-on-title-change
-                        :around #'db/org-roam--no-titlechange-if-title-is-nil)))
+                        :around #'db/org-roam--no-titlechange-if-title-is-nil)
+
+            ;; `org-roam--id-link-face' apparently changes the matching data,
+            ;; resulting in `org-finalize-agenda' to fail while applying text
+            ;; properties to ID links; let's warp `save-match-data' around calls
+            ;; to it.
+
+            (defun db/save-match-data (orig-fun &rest args)
+              (save-match-data
+                (apply orig-fun args)))
+
+            (advice-add 'org-roam--id-link-face
+                        :around #'db/save-match-data)))
 
 (use-package org-ref
   :config (progn
