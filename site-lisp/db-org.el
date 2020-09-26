@@ -640,6 +640,8 @@ prompt for an item."
 Uses `org-id-get-create' to get the ID or CUSTOM_ID propery of
 the target headline."
   (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org Mode"))
   (let ((pom (nth 3 (org-refile-get-location nil (get-file-buffer db/org-default-org-file)))))
     (if (not pom)
         (user-error "Invalid location")
