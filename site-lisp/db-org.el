@@ -607,9 +607,13 @@ if in Org Mode."
   (interactive (when (derived-mode-p 'org-mode)
                  (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))
 
-  (unless (string-match-p  "^[a-f0-9]\\{8\\}-[a-f0-9]\\{4\\}-[a-f0-9]\\{4\\}-[a-f0-9]\\{4\\}-[a-f0-9]\\{12\\}$" id)
+  (unless (or (not id)
+              (and (stringp id)
+                   (string-match-p  "^[a-f0-9]\\{8\\}-[a-f0-9]\\{4\\}-[a-f0-9]\\{4\\}-[a-f0-9]\\{4\\}-[a-f0-9]\\{12\\}$" id)))
     (user-error "Given ID is not a valid UUID: %s" id))
-  (unless (string-match-p "[-a-zA-Z0-9]" custom-id)
+  (unless (or (not custom-id)
+              (and (stringp custom-id)
+                   (string-match-p "[-a-zA-Z0-9]" custom-id)))
     ;; sorry, only ASCII right now …
     (user-error "CUSTOM_ID must consist of alphanumeric charaters only"))
 
