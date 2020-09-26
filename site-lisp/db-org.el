@@ -637,8 +637,8 @@ prompt for an item."
 
 (defun db/org-add-link-to-other-item ()
   "Interactively query for item and add link to it at point.
-Uses `org-id-get-create' to get the ID or CUSTOM_ID propery of
-the target headline."
+Uses `org-id-get-create' to get the ID property of the target
+headline."
   (interactive)
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
