@@ -185,7 +185,7 @@
   (bind-key "<f8>" #'bm-toggle)
   (bind-key "<C-f8>" #'bm-next)
   (bind-key "<C-S-f8>" #'bm-previous)
-  (bind-key "<f9>" #'helm-org-agenda-files-headings)
+  (bind-key "<f9>" #'db/org-find-links-to-current-item)
   (bind-key "C-," #'mc/skip-to-previous-like-this)
   (bind-key "C-." #'mc/skip-to-next-like-this)
   (bind-key "C-;" #'iedit-mode)
