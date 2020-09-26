@@ -629,7 +629,7 @@ prompt for an item."
   (apply #'db/org-find-items-linking-by-id
          (if (and (derived-mode-p 'org-mode) (not arg))
              (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))
-           (let ((pom (nth 3 (org-refile-get-location))))
+           (let ((pom (nth 3 (org-refile-get-location nil (get-file-buffer db/org-default-org-file)))))
              (if (not pom)
                  (user-error "Invalid location")
                (org-with-point-at pom
