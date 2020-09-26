@@ -637,8 +637,7 @@ prompt for an item."
 
 (defun db/org-add-link-to-other-item ()
   "Interactively query for item and add link to it at point.
-Uses `org-id-get-create' to get the ID property of the target
-headline."
+Use `org-store-link' to save link to `org-stored-links'."
   (interactive)
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
@@ -648,9 +647,8 @@ headline."
       (let (id item)
         (save-mark-and-excursion
           (org-with-point-at pom
-            (setq item (org-entry-get nil "ITEM")
-                  id (org-id-get-create)))
-          (insert (format "[[id:%s][%s]]" id item)))))))
+            (org-store-link nil t))
+          (insert (apply #'format "[[%s][%s]]" (cl-first org-stored-links))))))))
 
 
 ;;; End
