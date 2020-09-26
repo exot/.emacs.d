@@ -616,7 +616,7 @@ not."
                 ((and id custom-id) (format "{\\[\\[id:%s\\]\\|\\[\\[#%s\\]}" id custom-id))
                 (id (format "[[id:%s]" id))
                 (custom-id (format "[[#%s]" custom-id))
-                (t (user-error "No ID given and not in Org Mode.")))))
+                (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
 (defun db/org-find-links-to-current-item (arg)
