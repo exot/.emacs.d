@@ -175,7 +175,7 @@
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<f10>" #'magit-status)
-  (bind-key "<f11>" #'org-capture)
+  (bind-key "<f11>" #'db/org-find-links-to-current-item)
   (bind-key "<f12>" #'db/helm-shortcuts)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
@@ -183,9 +183,9 @@
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
   (bind-key "<f8>" #'bm-toggle)
+  (bind-key "<f9>" #'db/org-add-link-to-other-item)
   (bind-key "<C-f8>" #'bm-next)
   (bind-key "<C-S-f8>" #'bm-previous)
-  (bind-key "<f9>" #'db/org-find-links-to-current-item)
   (bind-key "C-," #'mc/skip-to-previous-like-this)
   (bind-key "C-." #'mc/skip-to-next-like-this)
   (bind-key "C-;" #'iedit-mode)
@@ -716,7 +716,8 @@
              db/org-mark-current-default-task
              db/export-diary
              db/org-copy-template-for-periodic-task
-             db/org-find-links-to-current-item))
+             db/org-find-links-to-current-item
+             db/org-add-link-to-other-item))
 
 (use-package org
   :pin "gnu"

@@ -616,7 +616,7 @@ not."
                 ((and id custom-id) (format "{\\[\\[id:%s\\]\\|\\[\\[#%s\\]}" id custom-id))
                 (id (format "[[id:%s]" id))
                 (custom-id (format "[[#%s]" custom-id))
-                (t (user-error "No ID given and not in Org Mode.")))))
+                (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
 (defun db/org-find-links-to-current-item (arg)
@@ -634,6 +634,23 @@ prompt for an item."
                  (user-error "Invalid location")
                (org-with-point-at pom
                  (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))))))
+
+(defun db/org-add-link-to-other-item ()
+  "Interactively query for item and add link to it at point.
+Uses `org-id-get-create' to get the ID or CUSTOM_ID propery of
+the target headline."
+  (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org Mode"))
+  (let ((pom (nth 3 (org-refile-get-location nil (get-file-buffer db/org-default-org-file)))))
+    (if (not pom)
+        (user-error "Invalid location")
+      (let (id item)
+        (save-mark-and-excursion
+          (org-with-point-at pom
+            (setq item (org-entry-get nil "ITEM")
+                  id (org-id-get-create)))
+          (insert (format "[[id:%s][%s]]" id item)))))))
 
 
 ;;; End
