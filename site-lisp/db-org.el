@@ -635,6 +635,21 @@ prompt for an item."
                (org-with-point-at pom
                  (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))))))
 
+(defun db/org-add-link-to-other-item ()
+  "Interactively query for item and add link to it at point.
+Uses `org-id-get-create' to get the ID or CUSTOM_ID propery of
+the target headline."
+  (interactive)
+  (let ((pom (nth 3 (org-refile-get-location nil (get-file-buffer db/org-default-org-file)))))
+    (if (not pom)
+        (user-error "Invalid location")
+      (let (id item)
+        (save-mark-and-excursion
+          (org-with-point-at pom
+            (setq item (org-entry-get nil "ITEM")
+                  id (org-id-get-create)))
+          (insert (format "[[id:%s][%s]]" id item)))))))
+
 
 ;;; End
 

@@ -716,7 +716,8 @@
              db/org-mark-current-default-task
              db/export-diary
              db/org-copy-template-for-periodic-task
-             db/org-find-links-to-current-item))
+             db/org-find-links-to-current-item
+             db/org-add-link-to-other-item))
 
 (use-package org
   :pin "gnu"
