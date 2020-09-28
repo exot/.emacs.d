@@ -621,6 +621,27 @@ not."
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
+(defun db/org--get-location ()
+  "Interactively query for location and return mark.
+Searches through `org-agenda-files',
+`org-agenda-text-search-extra-files', and the current buffer, up
+to level 9.  If location does not have an associated mark, error
+out."
+  (let* ((org-refile-targets `((org-agenda-files :maxlevel . 9)
+                               (,(cl-remove-if-not
+                                  #'stringp org-agenda-text-search-extra-files)
+                                :maxlevel . 9)
+                               (nil :maxlevel . 9)))
+         (mrk (nth 3 (org-refile-get-location
+                      nil
+                      ;; if the current buffer is associated with a file, search
+                      ;; through it; otherwise, use the default Org Mode file as
+                      ;; default buffer
+                      (if (buffer-file-name)
+                          nil
+                        (get-file-buffer db/org-default-org-file))))))
+    (if mrk mrk (user-error "Invalid location"))))
+
 (defun db/org-find-links-to-current-item (arg)
   "Find links to current item.
 Only links using the ID or CUSTOM_ID property are considered.
@@ -631,11 +652,8 @@ prompt for an item."
   (apply #'db/org-find-items-linking-by-id
          (if (and (derived-mode-p 'org-mode) (not arg))
              (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))
-           (let ((pom (nth 3 (org-refile-get-location nil (get-file-buffer db/org-default-org-file)))))
-             (if (not pom)
-                 (user-error "Invalid location")
-               (org-with-point-at pom
-                 (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))))))
+           (org-with-point-at (db/org--get-location)
+             (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))))
 
 (defun db/org-add-link-to-other-item ()
   "Interactively query for item and add link to it at point.
@@ -643,14 +661,12 @@ Use `org-store-link' to save link to `org-stored-links'."
   (interactive)
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
-  (let ((pom (nth 3 (org-refile-get-location nil (get-file-buffer db/org-default-org-file)))))
-    (if (not pom)
-        (user-error "Invalid location")
-      (let (id item)
-        (save-mark-and-excursion
-          (org-with-point-at pom
-            (org-store-link nil t))
-          (insert (apply #'format "[[%s][%s]]" (cl-first org-stored-links))))))))
+  (let ((pom (db/org--get-location))
+        id item)
+    (save-mark-and-excursion
+      (org-with-point-at pom
+        (org-store-link nil t))
+      (insert (apply #'format "[[%s][%s]]" (cl-first org-stored-links))))))
 
 
 ;;; End
