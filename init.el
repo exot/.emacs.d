@@ -756,7 +756,7 @@
                 org-treat-S-cursor-todo-selection-as-state-change nil
 
                 org-global-properties
-                '(("Effort_ALL" . "0:00 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00"))
+                '(("Effort_ALL" . "0:00 0:05 0:10 0:15 0:30 0:45 1:00 2:00 3:00 4:00 6:00 8:00"))
 
                 org-columns-default-format
                 "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
