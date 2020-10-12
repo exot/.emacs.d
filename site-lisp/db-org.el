@@ -255,9 +255,7 @@ tag PERIODIC."
   (and
    ;; Exclude DONE state tasks from refile targets (from bh)
    (not (member (nth 2 (org-heading-components))
-                org-done-keywords))
-   ;; Don't refile to elements of periodic tasks
-   (not (member "PERIODIC" (org-get-tags)))))
+                org-done-keywords))))
 
 
 ;;; Reset checklists
