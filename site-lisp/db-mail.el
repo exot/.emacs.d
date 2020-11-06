@@ -107,8 +107,7 @@ first will be added to `gnus-secondary-select-methods'."
                                                             `(nnimap ,account-name
                                                                      (nnimap-address ,account-address)
                                                                      (nnimap-stream starttls)
-                                                                     (nnimap-inbox "INBOX")
-                                                                     (nnimap-fetch-partial-articles "text/")))))
+                                                                     (nnimap-inbox "INBOX")))))
                                                       remote-mail-accounts)))))
     (setq gnus-secondary-select-methods
           (cl-remove-duplicates select-methods
