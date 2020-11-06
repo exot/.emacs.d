@@ -1744,8 +1744,13 @@
             (add-hook 'gnus-summary-exit-hook
                       'gnus-summary-bubble-group)
 
-            ;; Use Gnus’ registry
-            (gnus-registry-initialize)
+            ;; Use Gnus’ registry; doing this too early conflicts with `gnus'
+            ;; calling `gnus-shutdown', which in turn calls
+            ;; `gnus-registry-clear', leaving us with an empty registry upon
+            ;; startup.  So let's call this initialization right after startup,
+            ;; that should be fine.
+            (add-hook 'gnus-started-hook
+                      #'gnus-registry-initialize)
 
             ;; Automatic encryption if all necessary keys are present
             (add-hook 'gnus-message-setup-hook
