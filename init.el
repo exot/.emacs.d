@@ -1651,7 +1651,7 @@
       gnus-inhibit-images t
       gnus-blocked-images "."
       mm-text-html-renderer 'shr
-      mm-discouraged-alternatives '("text/richtext" "text/html"))
+      mm-discouraged-alternatives '("text/richtext"))
 
 ;; Signing and Encryption
 
@@ -1792,8 +1792,7 @@
 (use-package mm-decode
   :config (progn
             (setq mm-automatic-display (-difference mm-automatic-display
-                                                    '("text/html"
-                                                      "text/enriched"
+                                                    '("text/enriched"
                                                       "text/richtext")))
 
             ;; Automatically show PGP data inline
