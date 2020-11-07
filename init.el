@@ -1665,7 +1665,9 @@
       gnus-message-replysign t
       gnus-message-replyencrypt t
       gnus-message-replysignencrypted t
-      mml-secure-cache-passphrase nil)
+      mml-secure-cache-passphrase nil
+      mml-secure-openpgp-sign-with-sender t
+      mml-secure-smime-sign-with-sender t)
 
 ;; Archiving
 
