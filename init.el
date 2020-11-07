@@ -2497,6 +2497,7 @@ With given ARG, display files in `db/important-document-path’."
               eshell-error-if-no-glob t
               eshell-hist-ignoredups t
               eshell-save-history-on-exit t
+              eshell-history-size 5000
               eshell-destroy-buffer-when-process-dies t
               eshell-prompt-function #'eshell/default-prompt-function
               eshell-prompt-regexp "└─[$#] "
