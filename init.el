@@ -2564,7 +2564,9 @@ With given ARG, display files in `db/important-document-path’."
 ;; Lisp Dialects
 
 (use-package elisp-mode
-  :config (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available))
+  :config (progn
+            (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available)
+            (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)))
 
 (use-package geiser
   :commands (geiser-mode))
