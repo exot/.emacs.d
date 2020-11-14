@@ -214,6 +214,7 @@
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
+  (bind-key "C-h C-v" #'find-variable)
   (bind-key "C-x 4 C-j" #'dired-jump-other-window)
   (bind-key "C-x C-b" #'ibuffer)
   (bind-key "C-x C-d" #'dired)
