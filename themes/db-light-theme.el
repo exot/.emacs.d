@@ -21,7 +21,7 @@
  '(flyspell-duplicate ((t (:underline (:color "orange red" :style wave)))))
  '(flyspell-incorrect ((t (:underline (:color "orange red" :style wave)))))
  '(gnus-group-mail-2 ((t (:inherit outline-4 :weight normal))))
- '(gnus-group-mail-3 ((t (:inherit gnus-group-mail-3-empty :weight normal))))
+ '(gnus-group-mail-3 ((t (:inherit outline-5 :weight normal))))
  '(gnus-group-news-3 ((t (:inherit outline-5 :weight normal))))
  '(gnus-summary-high-ancient ((t (:foreground "#268bd2" :weight normal))))
  '(gnus-summary-high-read ((t (:foreground "#859900" :weight normal))))
