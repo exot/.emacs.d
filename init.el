@@ -2493,7 +2493,8 @@ With given ARG, display files in `db/important-document-path’."
               eshell-prompt-function #'eshell/default-prompt-function
               eshell-prompt-regexp "└─[$#] "
               eshell-highlight-prompt nil
-              eshell-cd-on-directory t)
+              eshell-cd-on-directory t
+              eshell-expand-input-functions '(eshell-expand-history-references))
   :config (progn (require 'em-prompt)
                  (require 'em-term)
                  (require 'em-cmpl)
