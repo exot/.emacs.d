@@ -2122,7 +2122,7 @@
             (require 'helm-buffers)
             (require 'helm-ring)
 
-            (bind-key "#" #'db/play-radio-stations helm-command-map)
+            (bind-key "#" #'helm-emms helm-command-map)
             (bind-key "P" #'helm-pages helm-command-map)
 
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
