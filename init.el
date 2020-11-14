@@ -2142,7 +2142,8 @@
                                          (counsel-describe-variable . "^")
                                          (man . "^")
                                          (woman . "^"))
-              ivy-use-selectable-prompt t)
+              ivy-use-selectable-prompt t
+              ivy-do-completion-in-region nil)
   :config (add-to-list 'ivy-completing-read-handlers-alist
                        '(org-capture . completing-read-default)))
 
