@@ -1982,9 +1982,6 @@
 
             (require 'dired-x)
 
-            (with-demoted-errors "Non-Fatal Error (dired+): %s"
-              (require 'dired+))
-
             (if (eq system-type 'windows-nt)
                 (with-demoted-errors "Non-Fatal Error (w32-browser): %s"
                   (require 'w32-browser)
@@ -2085,13 +2082,6 @@
 
 (use-package gnus-dired
   :commands (turn-on-gnus-dired-mode))
-
-(use-package dired+
-  :config (progn
-            ;; disable exaggerated fontification of dired+
-            (require 'font-lock)
-            (add-to-list 'font-lock-maximum-decoration '(wdired-mode . 1))
-            (add-to-list 'font-lock-maximum-decoration '(dired-mode . 1))))
 
 (use-package trashed
   ;; A simple dired-like interface to the system trash bin
