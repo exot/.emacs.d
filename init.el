@@ -232,8 +232,6 @@
   (bind-key "M-=" #'count-words)
   (bind-key "M-SPC" #'cycle-spacing)
   (bind-key "M-Z" #'zap-to-char)
-  (bind-key "M-g j b" #'dumb-jump-back)
-  (bind-key "M-g j g" #'dumb-jump-go)
   (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
   (bind-key "M-z" #'zap-up-to-char)
@@ -2256,13 +2254,10 @@ With given ARG, display files in `db/important-document-path’."
               bm-wrap-search t))
 
 (use-package dumb-jump
-  :commands (dumb-jump-go-other-window
-             dumb-jump-go
-             dumb-jump-back
-             dumb-jump-quick-look
-             dumb-jump-go-prefer-external
-             dumb-jump-go-prefer-external-other-window)
-  :init (setq dumb-jump-selector 'helm))
+  :commands (dumb-jump-xref-activate)
+  :init (progn
+          (setq dumb-jump-selector 'helm)
+          (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)))
 
 (use-package helm-pages
   :ensure t
