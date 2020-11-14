@@ -1453,7 +1453,8 @@
                      use-package))))
 
 (use-package flycheck
-  :commands (global-flycheck-mode flycheck-mode))
+  :commands (global-flycheck-mode flycheck-mode)
+  :init (setq flycheck-emacs-lisp-load-path 'inherit))
 
 
 ;; * Mail
