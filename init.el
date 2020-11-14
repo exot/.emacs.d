@@ -559,6 +559,8 @@
 
 (use-package calc
   ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
+  :defines (math-additional-units
+            math-units-table)
   :init (setq math-additional-units
               '((bit nil "Bit")
                 (byte "8 * bit" "Byte")
@@ -678,7 +680,10 @@
              wgrep-change-to-wgrep-mode))
 
 (use-package yasnippet
-  :commands (yas-minor-mode-on yas-minor-mode yas-global-mode)
+  :commands (yas-minor-mode-on
+             yas-minor-mode
+             yas-global-mode
+             yas-reload-all)
   :diminish yas-minor-mode
   :config (yas-reload-all))
 
@@ -726,7 +731,6 @@
           (setq org-deadline-warning-days 14
                 org-read-date-popup-calendar t
                 org-insert-heading-respect-content t
-                org-list-description-max-indent 5
                 org-adapt-indentation nil
                 org-edit-timestamp-down-means-later t
                 org-archive-location "%s_archive.gpg::"
@@ -1185,7 +1189,7 @@
               (cond
                ((not (or (and user database host port)
                          (and user database)))
-                (user-error "Insufficient login credentials given, aborting."))
+                (user-error "Insufficient login credentials given, aborting"))
                (password
                 (funcall orig-fun host port user password database))
                (t
@@ -1283,11 +1287,6 @@
 (use-package ox-html
   :init (setq org-html-postamble nil))
 
-(use-package ox-reveal
-  :config (setq org-reveal-root "https://cdn.jsdelivr.net/reveal.js/3.0.0/"
-                org-reveal-mathjax t
-                org-reveal-transition "none"))
-
 (use-package org-tree-slide
   :commands (org-tree-slide-mode)
   ;; Configuration from https://protesilaos.com/dotemacs/
@@ -1383,8 +1382,7 @@
 (use-package magit
   :commands (magit-status)
   :init (setq magit-diff-refine-hunk nil
-              magit-commit-show-diff nil
-              magit-popup-use-prefix-argument 'default)
+              magit-commit-show-diff nil)
   :config (progn
             (global-magit-file-mode -1)
             (global-git-commit-mode +1)
@@ -1859,9 +1857,6 @@
   :init (setq smtpmail-stream-type 'starttls
               smtpmail-smtp-service 587
               smtpmail-debug-info t))
-
-(setq starttls-use-gnutls t
-      starttls-extra-arguments '("--strict-tofu"))
 
 
 ;; * Crypto
@@ -2580,8 +2575,7 @@ With given ARG, display files in `db/important-document-path’."
               ;;cider-lein-parameters "trampoline repl :headless"
               cider-lein-parameters "repl :headless"
               cider-repl-history-file (expand-file-name ".cider-history" emacs-d)
-              cider-repl-display-help-banner nil
-              cider-cljs-lein-repl "(cemerick.piggieback/cljs-repl (cljs.repl.rhino/repl-env))")
+              cider-repl-display-help-banner nil)
   :config (progn
             (add-hook 'cider-repl-mode-hook 'subword-mode)
             (add-hook 'cider-repl-mode-hook 'turn-on-lispy-when-available)
@@ -2914,8 +2908,7 @@ With given ARG, display files in `db/important-document-path’."
              sdcv-search-input))
 
 (use-package sh-script
-  :init (setq sh-basic-offset 2
-              sh-indentation 2))
+  :init (setq sh-basic-offset 2))
 
 (use-package timeline-tools
   :load-path "site-lisp"
