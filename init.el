@@ -2393,7 +2393,6 @@ With given ARG, display files in `db/important-document-path’."
              db/emms-playlist-mode-insert-track))
 
 (use-package helm-emms
-  :load-path "~/Documents/projects/helm-emms/"
   :commands (helm-emms)
   :init (setq helm-emms-use-track-description-function t)
   :config (progn
