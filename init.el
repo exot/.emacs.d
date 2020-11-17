@@ -2384,7 +2384,10 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package helm-emms
   :commands (helm-emms)
-  :init (setq helm-emms-use-track-description-function t)
+  :init (setq helm-emms-use-track-description-function t
+              helm-emms-default-sources '(helm-source-emms-streams
+                                          helm-source-emms-dired
+                                          helm-source-emms-files))
   :config (progn
             (require 'emms)
             (require 'helm-adaptive)))
