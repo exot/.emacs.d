@@ -2530,6 +2530,23 @@ With given ARG, display files in `db/important-document-path’."
                                 (lambda ()
                                   (setq pcomplete-ignore-case nil))))
 
+                 ;; Sometimes, when completing path names and immediately
+                 ;; hitting RET, `completion-in-region-mode' still seems to be
+                 ;; active; this often happens when calling cd.  Then,
+                 ;; `post-command-hook' still contains
+                 ;; `completion-in-region--postch', which calls some `pcomplete'
+                 ;; function to determine whether completion mode should exit.
+                 ;; However, after RET (i.e., `eshell-send-input'), we only have
+                 ;; an empty prompt, and `pcomplete' just computes all possible
+                 ;; functions for completion (doesn't show it, though).  This
+                 ;; introduces a noticeable amount of delay, which is annoying.
+                 ;; Expliticly disabling `completion-in-region-mode' before
+                 ;; sending input seems to alleviate the problem.
+                 (advice-add 'eshell-send-input
+                             :before #'(lambda (&rest _)
+                                         "Disable completion-in-region-mode before sending input."
+                                         (when completion-in-region-mode
+                                           (completion-in-region-mode -1))))
 
                  (require 'db-eshell)))
 
