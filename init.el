@@ -1905,20 +1905,24 @@
                          mode-line-end-spaces))
 
 (use-package solarized-theme
+  :ensure t
   :init (setq solarized-use-less-bold t
               solarized-emphasize-indicators t
               solarized-use-variable-pitch nil))
 
 (use-package smart-mode-line
+  :ensure t
   :init (setq sml/mode-width 'full
               sml/name-width 30)
   :commands (sml/setup))
 
 (use-package minions
+  :ensure t
   :commands (minions-mode)
   :init (setq minions-mode-line-lighter "…"))
 
 (use-package moody
+  :ensure t
   :commands (moody-replace-mode-line-buffer-identification
              moody-replace-vc-mode))
 
