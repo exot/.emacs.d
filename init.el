@@ -472,8 +472,8 @@
   :commands (winner-mode winner-undo winner-redo))
 
 (use-package abbrev
-  :init (progn
-          (setq save-abbrevs 'silently))
+  :init (setq save-abbrevs 'silently
+              abbrev-file-name (expand-file-name "private/abbrev_defs"))
   :diminish abbrev-mode)
 
 (use-package appt
