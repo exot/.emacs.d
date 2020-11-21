@@ -2122,8 +2122,13 @@
             (require 'helm-buffers)
             (require 'helm-ring)
 
-            (bind-key "#" #'helm-emms helm-command-map)
-            (bind-key "P" #'helm-pages helm-command-map)
+            (if (require 'helm-global-bindings nil :no-error)
+                (progn
+                  (bind-key "#" #'helm-emms helm-command-map)
+                  (bind-key "P" #'helm-pages helm-command-map))
+              (warn (concat
+                     "Cannot load `helm-global-bindings', please check your helm installation for completeness. "
+                     "(Have you installed it from melpa?)")))
 
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
