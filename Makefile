@@ -17,6 +17,8 @@ test: $(ELC) $(TESTC)
 	@echo "Testing $(TESTC)"
 	@$(EMACS) -Q --batch $(LDFLAGS) $(patsubst %,-l %, $(TESTC)) -f ert-run-tests-batch
 
+.PHONY: clean distclean sandbox-start
+
 clean:
 	rm -f $(ELC) $(TESTC)
 
