@@ -24,6 +24,11 @@ distclean: clean
 	rm -rfv elpa
 	git checkout elpa
 
+sandbox-start:
+	mkdir -p sandbox
+	ln -s $(PWD) sandbox/.emacs.d
+	HOME=$(PWD)/sandbox emacs
+
 .SUFFIXES: .el .elc
 .el.elc:
 	@echo "Compiling $<"
