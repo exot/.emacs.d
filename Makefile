@@ -20,6 +20,10 @@ test: $(ELC) $(TESTC)
 clean:
 	rm -f $(ELC) $(TESTC)
 
+distclean: clean
+	rm -rfv elpa
+	git checkout elpa
+
 .SUFFIXES: .el .elc
 .el.elc:
 	@echo "Compiling $<"
