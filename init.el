@@ -361,6 +361,7 @@
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 (setq inhibit-startup-message t
+      inhibit-default-init t
       frame-inhibit-implied-resize t
       initial-scratch-message nil
       initial-major-mode 'fundamental-mode
