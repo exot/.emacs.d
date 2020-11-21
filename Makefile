@@ -26,7 +26,8 @@ distclean: clean
 
 sandbox-start:
 	mkdir -p sandbox
-	ln -s $(PWD) sandbox/.emacs.d
+	rm -f sandbox/.emacs.d
+	ln -sT $(PWD) sandbox/.emacs.d
 	HOME=$(PWD)/sandbox emacs
 
 timelinetools-test.elc: timeline-tools.elc
