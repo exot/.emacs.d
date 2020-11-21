@@ -9,15 +9,13 @@ TEST = $(wildcard site-lisp/*-test.el)
 ELC = $(EL:.el=.elc)
 TESTC = $(TEST:.el=.elc)
 
-compile: $(ELC) $(TESTC)
+.PHONY: compile test clean distclean sandbox-start
 
-timelinetools-test.elc: timeline-tools.elc
+compile: $(ELC) $(TESTC)
 
 test: $(ELC) $(TESTC)
 	@echo "Testing $(TESTC)"
 	@$(EMACS) -Q --batch $(LDFLAGS) $(patsubst %,-l %, $(TESTC)) -f ert-run-tests-batch
-
-.PHONY: clean distclean sandbox-start
 
 clean:
 	rm -f $(ELC) $(TESTC)
@@ -30,6 +28,8 @@ sandbox-start:
 	mkdir -p sandbox
 	ln -s $(PWD) sandbox/.emacs.d
 	HOME=$(PWD)/sandbox emacs
+
+timelinetools-test.elc: timeline-tools.elc
 
 .SUFFIXES: .el .elc
 .el.elc:
