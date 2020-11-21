@@ -1449,6 +1449,7 @@
                      use-package))))
 
 (use-package flycheck
+  :ensure t
   :commands (global-flycheck-mode flycheck-mode)
   :init (setq flycheck-emacs-lisp-load-path 'inherit))
 
