@@ -257,6 +257,11 @@ Will print a warning in case of failure."
     (require 'lispy)
     (lispy-mode)))
 
+(defun turn-on-flycheck-when-file ()
+  "Turn on `flycheck-mode' when buffer is associated with a file."
+  (when buffer-file-name
+    (flycheck-mode +1)))
+
 (defun db/sort-nsm-permanent-settings ()
   "Sort values in `nsm-permanent-host-settings’."
   (setq nsm-permanent-host-settings

@@ -593,6 +593,7 @@
              db/text-to-hex
              conditionally-enable-lispy
              turn-on-lispy-when-available
+             turn-on-flycheck-when-file
              db/sort-nsm-permanent-settings
              endless/colorize-compilation
              db/turn-off-local-electric-pair-mode
@@ -2587,7 +2588,7 @@ With given ARG, display files in `db/important-document-path’."
 (use-package elisp-mode
   :config (progn
             (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'emacs-lisp-mode-hook 'flycheck-mode)))
+            (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file)))
 
 (use-package geiser
   :commands (geiser-mode))
