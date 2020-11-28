@@ -568,6 +568,10 @@
                 (bps "bit / s" "Bit per second"))
               math-units-table nil))
 
+(use-package tab-bar
+  :config (progn
+            (tab-bar-history-mode +1)))
+
 
 ;; * Essential external packages
 
