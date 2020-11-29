@@ -569,6 +569,7 @@
               math-units-table nil))
 
 (use-package tab-bar
+  :init (setq tab-bar-show nil)
   :config (progn
             (tab-bar-history-mode +1)))
 
