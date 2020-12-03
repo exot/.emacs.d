@@ -833,7 +833,8 @@
           ;; Refiling
 
           (setq org-refile-targets '((org-agenda-files . (:maxlevel . 9))
-                                     (nil . (:maxlevel . 9)))
+                                     (nil . (:maxlevel . 9))
+                                     (db/org-default-notes-file . (:maxlevel . 9)))
                 org-refile-use-outline-path 'file
                 org-refile-use-cache t
                 org-refile-allow-creating-parent-nodes 'confirm
