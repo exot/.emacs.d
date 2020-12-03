@@ -1604,8 +1604,9 @@
 
 ;; Adaptive Scoring
 
-(setq gnus-use-scoring nil
-      gnus-use-adaptive-scoring nil
+(setq gnus-use-scoring t
+      gnus-use-adaptive-scoring '(word line)
+      gnus-summary-mark-below nil
       gnus-adaptive-word-length-limit 5
       gnus-adaptive-word-no-group-words t
       gnus-default-adaptive-score-alist
@@ -1620,17 +1621,7 @@
         (gnus-ancient-mark)
         (gnus-low-score-mark)
         (gnus-catchup-mark (from -1) (subject -1)))
-      gnus-summary-mark-below nil
-
-      gnus-parameters '(("^nnimap.*"
-                         (gnus-use-scoring nil))
-                        ("^nnimap.*:lists.*"
-                         (gnus-use-scoring t)
-                         (gnus-use-adaptive-scoring '(word line)))
-                        ("^nntp.*"
-                         (gnus-use-scoring nil)
-                         (gnus-summary-mark-below -1000)
-                         (gnus-use-adaptive-scoring '(word line)))))
+      gnus-summary-mark-below nil)
 
 ;; Gnus Registry
 
