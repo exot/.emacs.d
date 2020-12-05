@@ -368,7 +368,8 @@
       ring-bell-function #'ignore
       garbage-collection-messages nil
       load-prefer-newer nil             ; t breaks `org-reload'
-      auth-sources '("~/.authinfo.gpg"))
+      auth-sources '("~/.authinfo.gpg")
+      auth-source-save-behavior nil)
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
