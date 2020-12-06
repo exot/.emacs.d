@@ -56,3 +56,4 @@
 /transient/
 /dired-history
 /sandbox/.emacs.d
+/flycheck_init.el
