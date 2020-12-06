@@ -1664,41 +1664,6 @@
                          '("application/pgp$" mm-inline-text identity))
             (add-to-list 'mm-automatic-display "application/pgp$")))
 
-(use-package mm-view
-  :config (progn
-            ;; Fix: mm-view does not seem to support verifying S/MIME messages
-            ;; using gpgsm, so we add a simple fix here
-
-            (defun mm-view-pkcs7-verify (handle)
-              (let ((verified nil))
-                (with-temp-buffer
-                  (if (eq mml-smime-use 'epg)
-                      ;; Use gpgsm
-                      (progn
-                        (insert-buffer-substring (mm-handle-buffer handle))
-                        (setq verified (epg-verify-string (epg-make-context 'CMS)
-                                                          (base64-decode-string (buffer-string)))))
-                    ;; FIXME: insert valid signature
-                    ;; use openssl
-                    (progn
-                      (insert "MIME-Version: 1.0\n")
-                      (mm-insert-headers "application/pkcs7-mime" "base64" "smime.p7m")
-                      (insert-buffer-substring (mm-handle-buffer handle))
-                      (setq verified (smime-verify-region (point-min) (point-max))))))
-                (goto-char (point-min))
-                (mm-insert-part handle)
-                (if (search-forward "Content-Type: " nil t)
-                    (delete-region (point-min) (match-beginning 0)))
-                (goto-char (point-max))
-                (if (re-search-backward "--\r?\n?" nil t)
-                    (delete-region (match-end 0) (point-max)))
-                (unless verified
-                  (insert-buffer-substring smime-details-buffer)))
-              (goto-char (point-min))
-              (while (search-forward "\r\n" nil t)
-                (replace-match "\n"))
-              t)))
-
 (setq message-forward-as-mime t)
 
 ;; MIME creation; signing, and encryption
