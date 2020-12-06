@@ -1604,6 +1604,13 @@
       gnus-treat-emphasize 'head
       gnus-treat-unsplit-urls t)
 
+(use-package gnus-art
+  :init (setq gnus-ignored-mime-types '("text/x-vcard")
+              gnus-inhibit-mime-unbuttonizing nil
+              gnus-buttonized-mime-types '("multipart/signed" "multipart/encrypted")
+              gnus-inhibit-images t
+              gnus-blocked-images ".*"))
+
 ;; Adaptive Scoring
 
 (setq gnus-use-scoring t
@@ -1639,24 +1646,84 @@
                                                  emacs-d)
       gnus-refer-article-method 'current)
 
-;; MIME
+;; MIME decoding
 
-(setq gnus-ignored-mime-types '("text/x-vcard")
-      message-forward-as-mime t
-      gnus-inhibit-mime-unbuttonizing nil
-      gnus-buttonized-mime-types '("multipart/signed" "multipart/encrypted")
-      gnus-inhibit-images t
-      gnus-blocked-images "."
-      mm-text-html-renderer 'shr
-      mm-discouraged-alternatives '("text/richtext"))
+(use-package mm-decode
+  :init (setq mm-text-html-renderer 'shr
+              mm-discouraged-alternatives '("text/richtext")
+              mm-decrypt-option 'known
+              mm-verify-option 'known)
+  :config (progn
+            (setq mm-automatic-display (-difference mm-automatic-display
+                                                    '("text/enriched"
+                                                      "text/richtext")))
 
-;; Signing and Encryption
+            ;; Automatically show PGP data inline
+            (add-to-list 'mm-inlined-types "application/pgp$")
+            (add-to-list 'mm-inline-media-tests
+                         '("application/pgp$" mm-inline-text identity))
+            (add-to-list 'mm-automatic-display "application/pgp$")))
 
-(setq mm-encrypt-option nil
-      mm-sign-option nil
-      mm-decrypt-option 'known
-      mm-verify-option 'known
-      mml-smime-use 'epg
+(use-package mm-view
+  :config (progn
+            ;; Fix: mm-view does not seem to support verifying S/MIME messages
+            ;; using gpgsm, so we add a simple fix here
+
+            (defun mm-view-pkcs7-verify (handle)
+              (let ((verified nil))
+                (with-temp-buffer
+                  (if (eq mml-smime-use 'epg)
+                      ;; Use gpgsm
+                      (progn
+                        (insert-buffer-substring (mm-handle-buffer handle))
+                        (setq verified (epg-verify-string (epg-make-context 'CMS)
+                                                          (base64-decode-string (buffer-string)))))
+                    ;; FIXME: insert valid signature
+                    ;; use openssl
+                    (progn
+                      (insert "MIME-Version: 1.0\n")
+                      (mm-insert-headers "application/pkcs7-mime" "base64" "smime.p7m")
+                      (insert-buffer-substring (mm-handle-buffer handle))
+                      (setq verified (smime-verify-region (point-min) (point-max))))))
+                (goto-char (point-min))
+                (mm-insert-part handle)
+                (if (search-forward "Content-Type: " nil t)
+                    (delete-region (point-min) (match-beginning 0)))
+                (goto-char (point-max))
+                (if (re-search-backward "--\r?\n?" nil t)
+                    (delete-region (match-end 0) (point-max)))
+                (unless verified
+                  (insert-buffer-substring smime-details-buffer)))
+              (goto-char (point-min))
+              (while (search-forward "\r\n" nil t)
+                (replace-match "\n"))
+              t)))
+
+(setq message-forward-as-mime t)
+
+;; MIME creation; signing, and encryption
+
+(use-package mml
+  :config (progn
+            ;; Move to end of message buffer before attaching a file
+            ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
+
+            (defun db/mml-attach-file--go-to-eob (orig-fun &rest args)
+              "Go to the end of buffer before attaching files."
+              (save-excursion
+                (save-restriction
+                  (widen)
+                  (goto-char (point-max))
+                  (apply orig-fun args))))
+
+            (advice-add 'mml-attach-file
+                        :around #'db/mml-attach-file--go-to-eob)))
+
+(use-package mm-encode
+  :init (setq mm-encrypt-option nil
+              mm-sign-option nil))
+
+(setq mml-smime-use 'epg
       ;;mml2015-encrypt-to-self t
       mml2015-display-key-image nil
       gnus-message-replysign t
@@ -1786,71 +1853,10 @@
             (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-summary-mode-map)
             (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-article-mode-map)))
 
-(use-package mm-decode
-  :config (progn
-            (setq mm-automatic-display (-difference mm-automatic-display
-                                                    '("text/enriched"
-                                                      "text/richtext")))
 
-            ;; Automatically show PGP data inline
-            (add-to-list 'mm-inlined-types "application/pgp$")
-            (add-to-list 'mm-inline-media-tests
-                         '("application/pgp$" mm-inline-text identity))
-            (add-to-list 'mm-automatic-display "application/pgp$")))
+;; Sending mail
 
-(use-package mm-view
-  :config (progn
-            ;; Fix: mm-view does not seem to support verifying S/MIME messages
-            ;; using gpgsm, so we add a simple fix here
-
-            (defun mm-view-pkcs7-verify (handle)
-              (let ((verified nil))
-                (with-temp-buffer
-                  (if (eq mml-smime-use 'epg)
-                      ;; Use gpgsm
-                      (progn
-                        (insert-buffer-substring (mm-handle-buffer handle))
-                        (setq verified (epg-verify-string (epg-make-context 'CMS)
-                                                          (base64-decode-string (buffer-string)))))
-                    ;; FIXME: insert valid signature
-                    ;; use openssl
-                    (progn
-                      (insert "MIME-Version: 1.0\n")
-                      (mm-insert-headers "application/pkcs7-mime" "base64" "smime.p7m")
-                      (insert-buffer-substring (mm-handle-buffer handle))
-                      (setq verified (smime-verify-region (point-min) (point-max))))))
-                (goto-char (point-min))
-                (mm-insert-part handle)
-                (if (search-forward "Content-Type: " nil t)
-                    (delete-region (point-min) (match-beginning 0)))
-                (goto-char (point-max))
-                (if (re-search-backward "--\r?\n?" nil t)
-                    (delete-region (match-end 0) (point-max)))
-                (unless verified
-                  (insert-buffer-substring smime-details-buffer)))
-              (goto-char (point-min))
-              (while (search-forward "\r\n" nil t)
-                (replace-match "\n"))
-              t)))
-
-(use-package mml
-  :config (progn
-            ;; Move to end of message buffer before attaching a file
-            ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
-
-            (defun db/mml-attach-file--go-to-eob (orig-fun &rest args)
-              "Go to the end of buffer before attaching files."
-              (save-excursion
-                (save-restriction
-                  (widen)
-                  (goto-char (point-max))
-                  (apply orig-fun args))))
-
-            (advice-add 'mml-attach-file
-                        :around #'db/mml-attach-file--go-to-eob)))
-
-(setq notmuch-fcc-dirs nil
-      message-send-mail-function #'db/smtpmail-send-it
+(setq message-send-mail-function #'db/smtpmail-send-it
       send-mail-function #'db/smtpmail-send-it
       mail-user-agent 'gnus-user-agent)
 
