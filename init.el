@@ -2229,7 +2229,7 @@ With given ARG, display files in `db/important-document-path’."
   :ensure t
   :commands (ace-window ace-window-display-mode)
   :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-              aw-background nil
+              aw-background t
               aw-leading-char-style 'char
               aw-scope 'frame))
 
