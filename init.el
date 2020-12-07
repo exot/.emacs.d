@@ -252,8 +252,7 @@
     (bind-key "C-h f" #'counsel-describe-function)
     (bind-key "C-h v" #'counsel-describe-variable)
     (bind-key "C-h b" #'counsel-descbinds)
-    (bind-key "C-S-s" #'counsel-grep-or-swiper)
-    (bind-key [remap bookmark-bmenu-list] #'counsel-bookmark))
+    (bind-key "C-S-s" #'counsel-grep-or-swiper))
 
   (when (package-installed-p 'helm)
     (bind-key "M-y" #'helm-show-kill-ring))
