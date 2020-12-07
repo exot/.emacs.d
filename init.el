@@ -113,6 +113,7 @@
                   ace-window-display-mode
                   key-chord-mode
                   ivy-mode
+                  helm-mode
                   minions-mode
                   which-key-mode
                   eyebrowse-mode
@@ -2085,7 +2086,8 @@
               helm-candidate-number-limit 100
               helm-follow-mode-persistent t
               helm-buffer-details-flag t
-              helm-buffer-skip-remote-checking t)
+              helm-buffer-skip-remote-checking t
+              helm-mode-no-completion-in-region-in-modes '(eshell-mode))
   :config (progn
             (require 'helm-config)
             (require 'helm-mode)
