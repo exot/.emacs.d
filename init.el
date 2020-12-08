@@ -113,7 +113,6 @@
                   ace-window-display-mode
                   key-chord-mode
                   ivy-mode
-                  helm-mode
                   minions-mode
                   which-key-mode
                   eyebrowse-mode
