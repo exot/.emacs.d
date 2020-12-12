@@ -613,7 +613,9 @@
              db/system-open
              db/switch-to-dark-theme
              db/switch-to-light-theme
-             keyboard-quit-context+))
+             keyboard-quit-context+
+             db/convert-lf-to-crlf-in-buffer
+             db/convert-crlf-to-lf-in-buffer))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
@@ -1661,7 +1663,17 @@
             (add-to-list 'mm-inlined-types "application/pgp$")
             (add-to-list 'mm-inline-media-tests
                          '("application/pgp$" mm-inline-text identity))
-            (add-to-list 'mm-automatic-display "application/pgp$")))
+            (add-to-list 'mm-automatic-display "application/pgp$")
+
+            ;; When copying MIME buffers, we are looking for the start of the
+            ;; header by searching ^\n; however, if we received mail from
+            ;; Outlook, there's an ^\r\n seperating header and body, which is
+            ;; not found by `mm-copy-to-buffer', leaving the target buffer empty
+            ;; and the mail as well.  Replacing all \r\n with \n before copying
+            ;; buffers seems to help.
+
+            (advice-add 'mm-copy-to-buffer
+                        :before #'db/convert-crlf-to-lf-in-buffer)))
 
 (setq message-forward-as-mime t)
 
@@ -1687,15 +1699,24 @@
   :init (setq mm-encrypt-option nil
               mm-sign-option nil))
 
-(setq mml-smime-use 'epg
-      ;;mml2015-encrypt-to-self t
-      mml2015-display-key-image nil
+(setq mml2015-display-key-image nil
       gnus-message-replysign t
       gnus-message-replyencrypt t
       gnus-message-replysignencrypted t
       mml-secure-cache-passphrase nil
       mml-secure-openpgp-sign-with-sender t
       mml-secure-smime-sign-with-sender t)
+
+(use-package mml-smime
+  :init (setq mml-smime-use 'epg)
+  :config (progn
+            ;; Outlook seems to expect \r\n in PKCS#7 encrypted containers, but
+            ;; Gnus is only sending \n; so let's artificially replace \n by \r\n
+            ;; before, well, signing?  Seems to work at least in the case where
+            ;; we are sending S/MIME encrypted and signed messages
+
+            (advice-add 'mml-smime-epg-sign
+                        :after #'db/convert-lf-to-crlf-in-buffer) ))
 
 ;; Archiving
 

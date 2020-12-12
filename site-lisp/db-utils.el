@@ -404,6 +404,26 @@ regardless of the currently selected window."
          (let ((debug-on-quit nil))
            (signal 'quit nil)))))
 
+(defun db/convert-lf-to-crlf-in-buffer (&rest _stuff)
+  "Convert all LF to CRLF in current buffer.
+Does not replace CRLF with CRCRLF, and so on."
+  (save-mark-and-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (while (re-search-forward "\n" nil 'noerror)
+        (unless (looking-back "\r\n" 2)
+          (replace-match "\r\n"))))))
+
+(defun db/convert-crlf-to-lf-in-buffer (&rest _stuff)
+  "Convert all CRLF to LF in current buffer."
+  (save-mark-and-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (while (re-search-forward "\r\n" nil 'noerror)
+        (replace-match "\n")))))
+
 
 ;;; Extend Input Methods
 
