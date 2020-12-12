@@ -1699,7 +1699,9 @@
   :init (setq mm-encrypt-option nil
               mm-sign-option nil))
 
-(setq mml2015-display-key-image nil
+(setq mml-secure-openpgp-encrypt-to-self t
+      mml-secure-smime-encrypt-to-self t
+      mml2015-display-key-image nil
       gnus-message-replysign t
       gnus-message-replyencrypt t
       gnus-message-replysignencrypted t
