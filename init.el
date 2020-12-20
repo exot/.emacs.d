@@ -1527,6 +1527,7 @@
       gnus-always-force-window-configuration t
       gnus-fetch-old-headers nil
       gnus-select-method '(nnnil "")
+      gnus-refer-article-method 'current
 
       gnus-visible-headers (regexp-opt '("From:"
                                          "Newsgroups:"
@@ -1635,17 +1636,19 @@
 
 ;; Gnus Registry
 
-(setq gnus-registry-split-strategy 'majority
-      gnus-registry-ignored-groups '(("^nntp" t)
-                                     ("^nnfolder" t)
-                                     ("^nnir" t)
-                                     ("^nnmaildir" t)
-                                     ("INBOX$" t))
-      gnus-registry-max-entries 40000
-      gnus-registry-track-extra '(sender subject recipient)
-      gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
-                                                 emacs-d)
-      gnus-refer-article-method 'current)
+(use-package gnus-registry
+  :commands (gnus-registry-split-fancy-with-parent
+             gnus-registry-initialize)
+  :init (setq gnus-registry-split-strategy 'majority
+              gnus-registry-ignored-groups '(("^nntp" t)
+                                             ("^nnfolder" t)
+                                             ("^nnir" t)
+                                             ("^nnmaildir" t)
+                                             ("INBOX$" t))
+              gnus-registry-max-entries 40000
+              gnus-registry-track-extra '(sender subject recipient)
+              gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
+                                                         emacs-d)))
 
 ;; MIME decoding
 
