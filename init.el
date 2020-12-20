@@ -1969,7 +1969,6 @@
                   ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
                    "vlc")
                   ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
-                  ("\\.html?\\'" "firefox")
                   ("\\.docx?\\'" "loffice")))
 
           (when on-windows
@@ -2066,10 +2065,15 @@
 
 (use-package dired-open
   :ensure t
-  :init (unless (eq system-type 'gnu/linux)
-          (setq dired-open-use-nohup nil))
-  :config (add-to-list 'dired-open-functions
-                       #'dired-open-guess-shell-alist))
+  :init (progn
+          (unless (eq system-type 'gnu/linux)
+            (setq dired-open-use-nohup nil))
+          (setq dired-open-extensions-elisp '(("html" . eww-open-file))))
+  :config (progn
+            (add-to-list 'dired-open-functions
+                         #'dired-open-guess-shell-alist)
+            (add-to-list 'dired-open-functions
+                         #'dired-open-call-function-by-extension)))
 
 (use-package dired-recent
   :ensure t
