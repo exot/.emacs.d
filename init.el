@@ -1978,14 +1978,15 @@
 
             (require 'dired-x)
 
+            (with-demoted-errors "Non-Fatal Errors (dired-open): %s"
+              (require 'dired-open))
+
             (if (eq system-type 'windows-nt)
                 (with-demoted-errors "Non-Fatal Error (w32-browser): %s"
                   (require 'w32-browser)
                   (bind-key "M-RET" #'dired-w32-browser dired-mode-map)
                   (bind-key "<C-return>" #'dired-w32explore dired-mode-map))
-              (with-demoted-errors "Non-Fatal Errors (dired-open): %s"
-                (require 'dired-open)
-                (bind-key "M-RET" #'dired-open-xdg dired-mode-map)))
+              (bind-key "M-RET" #'dired-open-xdg dired-mode-map))
 
             (with-demoted-errors "Non-Fatal Errors (dired-recent): %s"
               (dired-recent-mode +1))
