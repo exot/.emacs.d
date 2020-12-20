@@ -1297,6 +1297,9 @@
 (use-package ox-html
   :init (setq org-html-postamble nil))
 
+(use-package ox-pandoc
+  :init (setq org-pandoc-options-for-docx '((standalone . t))))
+
 (use-package org-tree-slide
   :commands (org-tree-slide-mode)
   ;; Configuration from https://protesilaos.com/dotemacs/
