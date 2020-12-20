@@ -2916,7 +2916,7 @@ With given ARG, display files in `db/important-document-path’."
   :ensure t
   :commands (markdown-mode)
   :init (setq markdown-use-pandoc-style-yaml-metadata t
-              markdown-command "pandoc -f markdown -t html"))
+              markdown-command "pandoc"))
 
 (use-package pdf-occur
   :commands (pdf-occur-global-minor-mode))
