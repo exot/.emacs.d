@@ -2154,7 +2154,7 @@
                                          (man . "^")
                                          (woman . "^"))
               ivy-use-selectable-prompt t
-              ivy-do-completion-in-region nil)
+              ivy-do-completion-in-region t)
   :config (add-to-list 'ivy-completing-read-handlers-alist
                        '(org-capture . completing-read-default)))
 
