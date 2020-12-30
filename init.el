@@ -758,7 +758,7 @@
                 org-use-sub-superscripts '{}
                 org-src-fontify-natively t
                 org-src-preserve-indentation t
-                org-src-tab-acts-natively t
+                org-src-tab-acts-natively nil
                 org-ellipsis "⤵"
                 org-fontify-done-headline nil
                 org-cycle-separator-lines 0
