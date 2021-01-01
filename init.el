@@ -576,8 +576,7 @@
 
 ;; * Essential external packages
 
-(use-package dash
-  :pin "melpa-stable")
+(use-package dash)
 
 (use-package hydra
   :pin "melpa-stable")
