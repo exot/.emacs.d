@@ -1399,7 +1399,8 @@
   :init (setq magit-diff-refine-hunk nil
               magit-commit-show-diff nil)
   :config (progn
-            (global-magit-file-mode -1)
+            (when (fboundp 'global-magit-file-mode)
+             (global-magit-file-mode -1))
             (global-git-commit-mode +1)
 
             (with-demoted-errors "Non-Fatal Error: %s"
