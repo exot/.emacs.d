@@ -2159,7 +2159,7 @@
                                          (woman . "^"))
               ivy-use-selectable-prompt t
               ivy-do-completion-in-region t
-              ivy-re-bilders-alist '((t . ivy--regex-ignore-order)))
+              ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
   :config (add-to-list 'ivy-completing-read-handlers-alist
                        '(org-capture . completing-read-default)))
 
