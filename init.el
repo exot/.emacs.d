@@ -2160,8 +2160,14 @@
               ivy-use-selectable-prompt t
               ivy-do-completion-in-region t
               ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
-  :config (add-to-list 'ivy-completing-read-handlers-alist
-                       '(org-capture . completing-read-default)))
+  :config (progn
+            ;; Since we are using `ivy--regex-ignore-order' for completion
+            ;; anyway, providing the an individual restriction in the ivy buffer
+            ;; is not necessary anymore.  Since I often mistype S-SPC for SPC,
+            ;; loosing the current candidate and annoying myself, removing this
+            ;; shortcut is both helpful and not removing necessary
+            ;; functionality.
+            (define-key ivy-minibuffer-map (kbd "S-SPC") nil)))
 
 (use-package ivy-hydra)
 
