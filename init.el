@@ -1326,7 +1326,8 @@
 (use-package org-roam
   :commands (org-roam-find-file)
   :custom ((org-roam-directory "~/Documents/zettelkasten/")
-           (org-roam-db-location "~/Documents/zettelkasten/org-roam.db"))
+           (org-roam-db-location "~/Documents/zettelkasten/org-roam.db")
+           (org-roam-completion-everywhere t))
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam)
                ("C-c n f" . org-roam-find-file)
