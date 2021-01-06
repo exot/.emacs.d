@@ -1685,7 +1685,7 @@
             (advice-add 'mm-copy-to-buffer
                         :before #'db/convert-crlf-to-lf-in-buffer)))
 
-(setq message-forward-as-mime t)
+(setq message-forward-as-mime nil)
 
 ;; MIME creation; signing, and encryption
 
