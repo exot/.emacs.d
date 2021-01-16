@@ -92,7 +92,7 @@ ACCOUNT must be a valid element of `db/mail-accounts’."
   "Set `gnus-secondary-select-methods’ from OTHER-GNUS-ACCOUNTS and REMOTE-MAIL-ACCOUNTS.
 The values of the latter two variables are usually those of
 `db/other-gnus-accounts’ and `db/mail-accounts’.  If multiple
-accounts exist with the same (equalp) account name, only the
+accounts exist with the same (cl-equalp) account name, only the
 first will be added to `gnus-secondary-select-methods'."
   (let ((select-methods (append other-gnus-accounts
                                 ;; Only add those remote accounts whose IMAP address is neither
@@ -112,7 +112,7 @@ first will be added to `gnus-secondary-select-methods'."
     (setq gnus-secondary-select-methods
           (cl-remove-duplicates select-methods
                                 :key #'cl-second ; account name is second element
-                                :test #'equalp))))
+                                :test #'cl-equalp))))
 
 ;; Let's make the byte-compiler happy
 (defvar gnus-posting-styles)
