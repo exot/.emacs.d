@@ -659,6 +659,7 @@
             (unbind-key "C-c $" flyspell-mode-map)))
 
 (use-package key-chord
+  :ensure t
   :commands (key-chord-mode)
   :config (progn
             (key-chord-define-global "``" "“")
@@ -1423,6 +1424,7 @@
   :commands (magit-list-repositories))
 
 (use-package projectile
+  :ensure t
   :commands (projectile-mode)
   :defines (projectile-known-projects)
   :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
