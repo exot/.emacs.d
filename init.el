@@ -1675,11 +1675,24 @@
             ;; header by searching ^\n; however, if we received mail from
             ;; Outlook, there's an ^\r\n seperating header and body, which is
             ;; not found by `mm-copy-to-buffer', leaving the target buffer empty
-            ;; and the mail as well.  Replacing all \r\n with \n before copying
-            ;; buffers seems to help.
+            ;; and the mail as well.  Redefining `mm-copy-to-buffer' to also
+            ;; search for ^\r\n might help.
 
-            (advice-add 'mm-copy-to-buffer
-                        :before #'db/convert-crlf-to-lf-in-buffer)))
+            (defun mm-copy-to-buffer ()
+              "Copy the contents of the current buffer to a fresh buffer."
+              (let ((obuf (current-buffer))
+                    (mb enable-multibyte-characters)
+                    beg)
+                (goto-char (point-min))
+                ;; The following regex has been extended by \r? .
+                (search-forward-regexp "^\r?\n" nil 'move) ;; There might be no body.
+                (setq beg (point))
+                (with-current-buffer
+                    (generate-new-buffer " *mm*")
+                  ;; Preserve the data's unibyteness (for url-insert-file-contents).
+                  (set-buffer-multibyte mb)
+                  (insert-buffer-substring obuf beg)
+                  (current-buffer))))))
 
 (setq message-forward-as-mime nil)
 
@@ -1721,7 +1734,7 @@
             ;; Outlook seems to expect \r\n in PKCS#7 encrypted containers, but
             ;; Gnus is only sending \n; so let's artificially replace \n by \r\n
             ;; before, well, signing?  Seems to work at least in the case where
-            ;; we are sending S/MIME encrypted and signed messages
+            ;; we are sending S/MIME encrypted and signed messages.
 
             (advice-add 'mml-smime-epg-sign
                         :after #'db/convert-lf-to-crlf-in-buffer) ))
