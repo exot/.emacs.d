@@ -617,7 +617,8 @@
              db/switch-to-light-theme
              keyboard-quit-context+
              db/convert-lf-to-crlf-in-buffer
-             db/convert-crlf-to-lf-in-buffer))
+             db/convert-crlf-to-lf-in-buffer
+             db/sync-magit-repos-from-projectile))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
@@ -1405,20 +1406,10 @@
               magit-commit-show-diff nil)
   :config (progn
             (when (fboundp 'global-magit-file-mode)
-             (global-magit-file-mode -1))
+              (global-magit-file-mode -1))
             (global-git-commit-mode +1)
 
-            (with-demoted-errors "Non-Fatal Error: %s"
-              (require 'projectile)
-              (setq magit-repository-directories
-                    (mapcar
-                     (lambda (dir)
-                       (cons (substring dir 0 -1) 0))
-                     (cl-remove-if-not
-                      (lambda (project)
-                        (unless (file-remote-p project)
-                          (file-exists-p (concat project "/.git"))))
-                      projectile-known-projects))))))
+            (db/sync-magit-repos-from-projectile)))
 
 (use-package magit-repos
   :commands (magit-list-repositories))
