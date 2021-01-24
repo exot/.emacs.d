@@ -897,10 +897,6 @@
                           (mapcar #'timer--function timer-idle-list))
               (run-with-idle-timer 200 t #'db/export-diary))
 
-            ;; Drag-and-Drop images into org-mode buffer
-            (use-package org-download
-              :init (setq org-download-method 'attach))
-
             ;; Hack: The default implementation is too slow, because it is
             ;; parsing all properties of an entry by default.  Let’s simplify
             ;; this to only parse what we are looking for.  This makes tag
@@ -917,6 +913,13 @@
                     (org-entry-get pom property 'inherit)
                   ;; This is different in the original implementation
                   (org-entry-get pom property))))))
+
+;; Drag-and-Drop images into org-mode buffer
+(use-package org-download
+  :commands (org-download-yank
+             org-download-screenshot
+             org-download-clipboard)
+  :init (setq org-download-method 'attach))
 
 (use-package ol
   :init (setq org-link-keep-stored-after-insertion t)
