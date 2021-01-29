@@ -720,6 +720,7 @@
              db/org-agenda-list-deadlines
              db/org-agenda-skip-tag
              hydra-org-agenda-view/body
+             db/org-agenda-insert-efforts
              org-babel-execute:hy
              db/org-timestamp-difference
              db/org-capture-code-snippet
@@ -1012,6 +1013,9 @@
               org-agenda-persistent-filter t
               org-agenda-search-headline-for-time nil
               org-agenda-search-view-always-boolean t
+
+              ;; Show daily efforts directly in the agenda
+              org-agenda-finalize-hook '(db/org-agenda-insert-efforts)
 
               org-agenda-clock-consistency-checks
               '(:max-duration 9999999

@@ -181,6 +181,40 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
      (org-agenda-redo)))
   ("q" (message "Abort") :exit t))
 
+;; Show sum of daily efforts in agenda, the following two functions are from
+;; anpandey,
+;; cf. https://emacs.stackexchange.com/questions/21380/show-sum-of-efforts-for-a-day-in-org-agenda-day-title#21902
+
+(defun db/org-agenda-calculate-efforts (limit)
+  "Sum efforts of scheduled entries up to LIMIT in the agenda buffer."
+  (let (total)
+    (save-excursion
+     (while (< (point) limit)
+       (when (member (org-get-at-bol 'type) '("scheduled" "past-scheduled"))
+         (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total))
+       (forward-line)))
+    (org-duration-from-minutes
+     (cl-reduce #'+
+                (mapcar #'org-duration-to-minutes
+                        (cl-remove-if-not 'identity total))))))
+
+(defun db/org-agenda-insert-efforts ()
+  "Insert efforts for each day into the agenda buffer.
+
+Add this function to `org-agenda-finalize-hook'."
+  (save-excursion
+    (let (pos)
+      (while (setq pos (text-property-any
+                        (point) (point-max) 'org-agenda-date-header t))
+        (goto-char pos)
+        (end-of-line)
+        (insert-and-inherit
+         (concat " ("
+                 (db/org-agenda-calculate-efforts
+                  (next-single-property-change (point) 'day))
+                 ")"))
+        (forward-line)))))
+
 
 ;;; Capturing
 
