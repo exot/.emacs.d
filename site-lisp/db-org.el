@@ -186,14 +186,16 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 ;; cf. https://emacs.stackexchange.com/questions/21380/show-sum-of-efforts-for-a-day-in-org-agenda-day-title#21902
 
 (defun db/org-agenda-calculate-efforts (limit)
-  "Sum efforts of scheduled entries up to LIMIT in the agenda buffer."
+  "Sum efforts of day entries up to LIMIT in the agenda buffer.
+Entries included are those scheduled for that day, scheduled at
+some past day (and still on display) and active timestamps (appointments)."
   (let (total)
     (save-excursion
-     (while (< (point) limit)
-       (when (member (org-get-at-bol 'type)
-                     '("scheduled" "past-scheduled" "timestamp"))
-         (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total))
-       (forward-line)))
+      (while (< (point) limit)
+        (when (member (org-get-at-bol 'type)
+                      '("scheduled" "past-scheduled" "timestamp"))
+          (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total))
+        (forward-line)))
     (org-duration-from-minutes
      (cl-reduce #'+
                 (mapcar #'org-duration-to-minutes
@@ -202,7 +204,7 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (defun db/org-agenda-insert-efforts ()
   "Insert efforts for each day into the agenda buffer.
 
-Add this function to `org-agenda-finalize-hook'."
+Add this function to `org-agenda-finalize-hook' to enable this."
   (save-excursion
     (let (pos)
       (while (setq pos (text-property-any
