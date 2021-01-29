@@ -212,7 +212,11 @@ Add this function to `org-agenda-finalize-hook'."
         (insert-and-inherit
          (concat " ("
                  (db/org-agenda-calculate-efforts
-                  (next-single-property-change (point) 'day))
+                  (or (next-single-property-change (point) 'day)
+                      ;; If nothing is shown on the current day, the previous
+                      ;; call may return nil; in that case, don't sum anything
+                      ;; by setting the limit to 0
+                      0))
                  ")"))
         (forward-line)))))
 
