@@ -190,7 +190,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
   (let (total)
     (save-excursion
      (while (< (point) limit)
-       (when (member (org-get-at-bol 'type) '("scheduled" "past-scheduled"))
+       (when (member (org-get-at-bol 'type)
+                     '("scheduled" "past-scheduled" "timestamp"))
          (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total))
        (forward-line)))
     (org-duration-from-minutes
