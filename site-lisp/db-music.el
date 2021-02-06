@@ -60,12 +60,13 @@ Shuffle it and start playing it afterwards."
         (emms-start)))))
 
 (defun db/playlist-files-from-git-annex-find (match-expression)
-  "Generate playlist from git annex find on MATCH-EXPRESSION.
+  "Generate list of files from git annex find on MATCH-EXPRESSION.
 
 Prompts for MATCH-EXPRESSION when called interactively.
-Generates playlist that is comprised of exactly those files that
-are match it.  Assumes `emms-source-file-default-directory’ to be
-part of a git-annex repository, and will complain otherwise."
+Generates a list of absolute file names that is comprised of
+exactly those files that match it.  Assumes the default EMMS file
+directory as specified by `emms-source-file-default-directory’ to
+be part of a git-annex repository, complaining otherwise."
   (interactive "smatch expression: ")
   (let* ((default-directory emms-source-file-default-directory))
     (->> (split-string (with-output-to-string
