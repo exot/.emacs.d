@@ -142,9 +142,6 @@
         (org-roam-mode +1)
       (warn "Cannot activate org-roam: sqlite3 not found.")))
 
-  (with-demoted-errors "Cannot add password-store to auth-sources: %s"
-    (auth-source-pass-enable))
-
   ;; Global Hooks
 
   (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)
@@ -1897,9 +1894,6 @@
 (use-package epg
   :init (setq epg-debug t
               epg-gpg-program "gpg"))
-
-(use-package auth-source-pass
-  :commands (auth-source-pass-enable))
 
 
 ;; * Appearance
