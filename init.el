@@ -559,8 +559,7 @@
               browse-url-generic-program "firefox"))
 
 (use-package tramp
-  :init (setq tramp-save-ad-hoc-proxies t
-              tramp-default-method (if on-windows "plink" "sshx")))
+  :init (setq tramp-default-method (if on-windows "plink" "sshx")))
 
 (use-package calc
   ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
