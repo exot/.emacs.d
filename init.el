@@ -789,12 +789,11 @@
                   ("DELG" ("HOLD") ("WAIT" . t))
                   ("HOLD" ("HOLD" . t) ("WAIT"))
                   (done ("HOLD") ("WAIT"))
-                  (todo ("DATE") ("READ"))
-                  ("TODO" ("HOLD") ("WAIT"))
-                  ("READ" ("READ" . t) ("HOLD") ("WAIT"))
-                  ("GOTO" ("DATE" . t) ("HOLD") ("WAIT"))
-                  ("CONT" ("HOLD") ("WAIT"))
-                  ("ATTN" ("HOLD") ("WAIT"))
+                  ("TODO" ("HOLD") ("WAIT") ("DATE") ("READ"))
+                  ("READ" ("READ" . t) ("DATE") ("HOLD") ("WAIT"))
+                  ("GOTO" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
+                  ("CONT" ("DATE") ("HOLD") ("WAIT"))
+                  ("ATTN" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
                   ("" ("HOLD") ("WAIT") ("DATE") ("READ")))
 
                 org-tag-alist
