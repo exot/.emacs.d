@@ -162,14 +162,13 @@ Candidates are taken from `db/radio-stations'."
 ;; Playlist management
 
 (cl-defun db/write-m3u-playlist-from-git-annex-find
-    (file name match-expression
+    (file match-expression
           &optional (base-dir emms-source-file-default-directory) overwrite)
-  "Write an M3U playlist to FILE with NAME containing all files
-found by git-annex-find using MATCH-EXPRESSION.  NAME will be
-written to the M3U playlist using the non-standard ”#PLAYLIST:”
-directive.  Conduct search with git-annex-find in BASE-DIR.
-Query for overwrite if FILE already exists, unless OVERWRITE is
-non-nil."
+  "Write an M3U playlist to FILE based on a git-annex MATCH-EXPRESSION.
+The playlist will contain all files found by git-annex-find using
+MATCH-EXPRESSION.  Conduct search with git-annex-find in
+BASE-DIR.  Query for overwrite if FILE already exists, unless
+OVERWRITE is non-nil."
   (interactive "FFile name of playlist: \nsPlaylist name: \nsgit annex match-expression: ")
   (let ((base-dir (expand-file-name base-dir)))
     (unless (file-accessible-directory-p base-dir)
@@ -177,34 +176,47 @@ non-nil."
     (unless (or (not (file-exists-p file))
                 overwrite
                 (yes-or-no-p (format "File %s already exists, overwrite?" file)))
-      (user-error "Error: %s exists and shall not be overwritten, aborting." file))
+      (user-error "Error: %s exists and shall not be overwritten, aborting" file))
     (let ((default-directory base-dir))
-      (with-temp-buffer
-        (insert "#EXTM3U\n")
-        (insert (format "#PLAYLIST: %s\n" name))
-        (let* ((return-code nil)
-               (output (with-output-to-string
-                         (with-current-buffer standard-output
-                           (setq return-code (apply #'call-process
-                                                    "git" nil t nil
-                                                    "annex" "find"
-                                                    (split-string match-expression)))))))
-          (if (not (zerop return-code))
-              (error "%s" output)
-            (insert output)
-            (write-file file)))))))
+      (let* ((return-code nil)
+             (output (with-output-to-string
+                       (with-current-buffer standard-output
+                         (setq return-code (apply #'call-process
+                                                  "git" nil t nil
+                                                  "annex" "find"
+                                                  (split-string match-expression)))))))
+        (if (not (zerop return-code))
+            (error "%s" output)
+          (let ((emms-source-playlist-ask-before-overwrite (not overwrite))
+                (emms-temp-playlist-buffer (emms-playlist-new " *EMMS Playlist Export*")))
+            (with-current-buffer emms-temp-playlist-buffer
+              (emms-playlist-clear)
+              (dolist (track (split-string output "[\n\r]+"))
+                (emms-insert-file track))
+              (emms-playlist-sort-by-info-title)
+              (emms-playlist-sort-by-info-artist)
+              ;; When writing the playlist, we simulate the current buffer to be
+              ;; the current playlist, as otherwise `emms-playlist-save' will
+              ;; ask for confirmation.
+              (with-current-emms-playlist
+                (emms-playlist-save 'm3u file)))
+            (kill-buffer emms-temp-playlist-buffer)))))))
 
 (defun db/update-playlist-files ()
   "Update personal playlist files."
   (interactive)
   (message "Update favorites playlist")
   (db/write-m3u-playlist-from-git-annex-find
-   "~/Documents/media/audio/others/daniels-favorite.m3u" "Daniel's Favorites"
-   "../songs/ --metadata rating-daniel>=0.9" "~/Documents/media/audio/others/" t)
+   "~/Documents/media/audio/others/daniels-favorite.m3u"
+   "../songs/ --metadata rating-daniel>=0.9"
+   "~/Documents/media/audio/others/"
+   'overwrite)
   (message "Update work playlist")
   (db/write-m3u-playlist-from-git-annex-find
-   "~/Documents/media/audio/others/daniels-work-list.m3u" "Daniel's Work Music"
-   "../songs/ --metadata db-work=include" "~/Documents/media/audio/others/" t))
+   "~/Documents/media/audio/others/daniels-work-list.m3u"
+   "../songs/ --metadata db-work=include"
+   "~/Documents/media/audio/others/"
+   'overwrite))
 
 
 
