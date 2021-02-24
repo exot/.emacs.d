@@ -188,17 +188,18 @@ OVERWRITE is non-nil."
         (if (not (zerop return-code))
             (error "%s" output)
           (let ((emms-source-playlist-ask-before-overwrite (not overwrite))
-                (emms-temp-playlist-buffer (emms-playlist-new " *EMMS Playlist Export*")))
+                (emms-temp-playlist-buffer (emms-playlist-new " *EMMS Playlist Export*"))
+                (emms-info-asynchronously nil))
             (with-current-buffer emms-temp-playlist-buffer
-              (emms-playlist-clear)
-              (dolist (track (split-string output "[\n\r]+"))
-                (emms-insert-file track))
-              (emms-playlist-sort-by-info-title)
-              (emms-playlist-sort-by-info-artist)
-              ;; When writing the playlist, we simulate the current buffer to be
-              ;; the current playlist, as otherwise `emms-playlist-save' will
-              ;; ask for confirmation.
-              (with-current-emms-playlist
+              (let ((emms-playlist-buffer (current-buffer)))
+                (emms-playlist-clear)
+                (dolist (track (split-string output "[\n\r]+"))
+                  (emms-insert-file track))
+                (emms-playlist-sort-by-info-title)
+                (emms-playlist-sort-by-info-artist)
+                ;; When writing the playlist, we simulate the current buffer to be
+                ;; the current playlist, as otherwise `emms-playlist-save' will
+                ;; ask for confirmation.
                 (emms-playlist-save 'm3u file)))
             (kill-buffer emms-temp-playlist-buffer)))))))
 
