@@ -201,7 +201,18 @@ OVERWRITE is non-nil."
                 ;; the current playlist, as otherwise `emms-playlist-save' will
                 ;; ask for confirmation.
                 (emms-playlist-save 'm3u file)))
-            (kill-buffer emms-temp-playlist-buffer)))))))
+            (kill-buffer emms-temp-playlist-buffer)
+
+            ;; Convert absolute file names to relative file names
+            (with-current-buffer (or (find-buffer-visiting file)
+                                     (find-file-noselect file))
+              ;; Make sure the current buffer is up to date with the file on
+              ;; disk, in case it had been visited before
+              (revert-buffer 'ignore-auto 'noconfirm)
+              (goto-char (point-min))
+              (while (re-search-forward "^.+$" nil 'noerror)
+                (replace-match (file-relative-name (match-string 0))))
+              (save-buffer))))))))
 
 (defun db/update-playlist-files ()
   "Update personal playlist files."
