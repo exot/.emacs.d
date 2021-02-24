@@ -187,7 +187,7 @@ OVERWRITE is non-nil."
                                                   (split-string match-expression)))))))
         (if (not (zerop return-code))
             (error "%s" output)
-          (let ((emms-source-playlist-ask-before-overwrite (not overwrite))
+          (let ((emms-source-playlist-ask-before-overwrite nil)
                 (emms-temp-playlist-buffer (emms-playlist-new " *EMMS Playlist Export*"))
                 (emms-info-asynchronously nil))
             (with-current-buffer emms-temp-playlist-buffer
