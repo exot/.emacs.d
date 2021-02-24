@@ -193,7 +193,7 @@ OVERWRITE is non-nil."
             (with-current-buffer emms-temp-playlist-buffer
               (let ((emms-playlist-buffer (current-buffer)))
                 (emms-playlist-clear)
-                (dolist (track (split-string output "[\n\r]+"))
+                (dolist (track (split-string output "[\n\r]" 'omit-nulls))
                   (emms-insert-file track))
                 (emms-playlist-sort-by-info-title)
                 (emms-playlist-sort-by-info-artist)
