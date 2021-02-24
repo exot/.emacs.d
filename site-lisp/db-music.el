@@ -9,6 +9,8 @@
 (require 'seq)
 (require 'emms)
 (require 'emms-source-file)
+(require 'emms-playlist-sort)
+(require 'emms-info)
 (require 'hydra)
 (require 'db-emms)
 
@@ -22,16 +24,17 @@
 ;; Autogeneration of Playlist
 
 (defcustom db/auto-playlist-file-function #'db/play-auto-playlist-from-git-annex-find
-  "Function that has to return a list of all music files that
-should be included in the auto playlist."
+  "Function returning all music files of an automatically generated playlist.
+
+This function should return a list of file names of music files."
   :group 'db-music
   :type 'function)
 
 (defun db/play-auto-playlist ()
-  "Generate playlist using `db/auto-playlist-file-function’ and
-start playing it.
+  "Automatically generate playlist and play it.
 
-Current backend is EMMS."
+Will use `db/auto-playlist-file-function’ for generating that
+playlist.  Current backend is EMMS."
   (interactive)
   (db/-emms-playlist-from-files (funcall db/auto-playlist-file-function)))
 
@@ -89,10 +92,11 @@ be part of a git-annex repository, complaining otherwise."
                       emms-source-file-default-directory))))))
 
 (defun db/play-auto-playlist-from-git-annex-find ()
-  "Interactively query user for a git-annex match expression and
-  play resulting list of audio files.
+  "Query for match expression and play resulting audio files.
 
-See `db/playlist-files-from-git-annex-find’ for more details."
+The match expression must be suitable for git-annex to find the
+desired files.  See `db/playlist-files-from-git-annex-find’ for
+more details."
   (interactive)
   (db/-emms-playlist-from-files
    (call-interactively #'db/playlist-files-from-git-annex-find)))
