@@ -2939,8 +2939,6 @@ With given ARG, display files in `db/important-document-path’."
   :commands (pdf-tools-install))
 
 (use-package python
-  :init (setq python-indent-offset 2
-              python-shell-interpreter "python3")
   :config (progn
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
             (add-hook 'python-mode-hook #'company-mode)
