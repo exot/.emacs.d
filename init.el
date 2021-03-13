@@ -1469,6 +1469,10 @@
   :commands (global-flycheck-mode flycheck-mode)
   :init (setq flycheck-emacs-lisp-load-path 'inherit))
 
+(use-package eglot
+  :ensure t
+  :commands (eglot-ensure))
+
 
 ;; * Mail
 
@@ -2835,29 +2839,6 @@ With given ARG, display files in `db/important-document-path’."
   :commands (helm-bibtex))
 
 
-;; * Python
-
-(use-package company-jedi
-  :ensure t)
-
-(use-package python
-  :init (setq python-indent-offset 2
-              python-shell-interpreter "python3")
-  :config (progn
-            (add-hook 'python-mode-hook 'highlight-indentation-mode)
-            (add-hook 'python-mode-hook
-                      #'(lambda ()
-                          (add-to-list 'company-backends 'company-jedi)))
-            (add-hook 'python-mode-hook #'flycheck-mode)
-
-            (elpy-enable)))
-
-(use-package elpy
-  :ensure t
-  :commands (elpy-enable)
-  :config (setq elpy-modules (delq 'elpy-module-flymake elpy-modules)))
-
-
 ;; * Various Mode Configurations
 
 ;; These are packages that are not essential, but still nice to have.  They
@@ -2956,6 +2937,14 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package pdf-tools
   :commands (pdf-tools-install))
+
+(use-package python
+  :init (setq python-indent-offset 2
+              python-shell-interpreter "python3")
+  :config (progn
+            (add-hook 'python-mode-hook #'highlight-indentation-mode)
+            (add-hook 'python-mode-hook #'company-mode)
+            (add-hook 'python-mode-hook #'eglot-ensure)))
 
 (use-package shr
   :init (setq shr-use-fonts nil
