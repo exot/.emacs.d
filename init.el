@@ -1112,6 +1112,7 @@
                  ,(concat "* TODO [#B] %^{What}\n"
                           "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "%a\n"
                           "%?"))
                 ("T" "Complex Tasks")
                 ("TC" "Record new complex task with first item"
