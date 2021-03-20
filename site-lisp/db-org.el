@@ -305,8 +305,9 @@ tag PERIODIC."
 ;; from `org-checklist’ by James TD Smith (@ ahktenzero (. mohorovi cc)),
 ;; version: 1.0
 (defun org-reset-checkbox-state-maybe ()
-  "Reset all checkboxes in an entry if the `RESET_CHECK_BOXES' property is set"
+  "Reset all checkboxes in an entry if `RESET_CHECK_BOXES' property is set."
   (interactive "*")
+  (warn "Using the RESET_CHECK_BOXES property is deprecated, user periodic tasks instead")
   (if (org-entry-get (point) "RESET_CHECK_BOXES")
       (org-reset-checkbox-state-subtree)))
 
