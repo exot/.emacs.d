@@ -729,9 +729,9 @@ in an Org Mode buffer or when the clock is not active."
     (user-error "No clocked-in task, aborting"))
   (save-mark-and-excursion
     (org-with-point-at org-clock-marker
-      (org-store-link nil t))
-    (pcase-let ((`(,location ,description) (cl-first org-stored-links)))
-      (org-insert-link nil location description))))
+      (org-store-link nil t)))
+  (pcase-let ((`(,location ,description) (cl-first org-stored-links)))
+    (org-insert-link nil location description)))
 
 
 ;;; End
