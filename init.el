@@ -176,7 +176,6 @@
   (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<f10>" #'magit-status)
   (bind-key "<f11>" #'db/org-find-links-to-current-item)
-  (bind-key "<f12>" #'db/helm-shortcuts)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
   (bind-key "<f5>" (if (executable-find "ag") #'counsel-ag #'rgrep))
