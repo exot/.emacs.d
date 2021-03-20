@@ -661,17 +661,20 @@ not."
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
-(defun db/org--get-location ()
+(defun db/org--get-location (&optional arg)
   "Interactively query for location and return mark.
-Searches through `org-agenda-files',
-`org-agenda-text-search-extra-files', and the current buffer, up
-to level 9.  If location does not have an associated mark, error
-out."
-  (let* ((org-refile-targets `((org-agenda-files :maxlevel . 9)
-                               (,(cl-remove-if-not
-                                  #'stringp org-agenda-text-search-extra-files)
-                                :maxlevel . 9)
-                               (nil :maxlevel . 9)))
+Searches through the current file, and through all of
+`org-agenda-files', `org-agenda-text-search-extra-files', and the
+current buffer, if ARG is non-nil.  Search is always conducted up
+to level 9.  If the selected location does not have an associated
+mark, error out."
+  (let* ((org-refile-targets (if arg
+                                 `((org-agenda-files :maxlevel . 9)
+                                   (,(cl-remove-if-not
+                                      #'stringp org-agenda-text-search-extra-files)
+                                    :maxlevel . 9)
+                                   (nil :maxlevel . 9))
+                                 '((nil :maxlevel . 9))))
          (mrk (nth 3 (org-refile-get-location
                       nil
                       ;; if the current buffer is associated with a file, search
@@ -695,14 +698,20 @@ prompt for an item."
            (org-with-point-at (db/org--get-location)
              (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))))
 
-(defun db/org-add-link-to-other-item ()
+(defun db/org-add-link-to-other-item (arg)
   "Interactively query for item and add link to it at point.
+
+Search through all items of the current buffer, or
+`db/org-default-org-file' if the current buffer is not associated
+with a file.  If ARG is non-nil, include all files in
+`org-agenda-files' and `org-agenda-text-search-extra-files' in
+this search.
+
 Use `org-store-link' to save link to `org-stored-links'."
-  (interactive)
+  (interactive "P")
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
-  (let ((pom (db/org--get-location))
-        id item)
+  (let ((pom (db/org--get-location arg)))
     (save-mark-and-excursion
       (org-with-point-at pom
         (org-store-link nil t))
