@@ -26,10 +26,10 @@
 ;;; Agenda Customization
 
 (defun db/check-special-org-files-in-agenda (&rest args)
-  "Check whether the special org-mode files are part of `org-agenda-files', ignoring ARGS.
-The special org-mode files are `db/org-default-org-file',
+  "Check special Org mode files to be part of the variable `org-agenda-files'.
+The special Org mode files are `db/org-default-org-file',
 `db/org-default-work-file', `db/org-default-home-file', and
-`db/org-default-refile-file'."
+`db/org-default-refile-file'.  Ignore ARGS."
   (ignore args)
   (require 'org)
   (let ((agenda-files (mapcar #'file-truename (org-agenda-files t))))
@@ -227,7 +227,9 @@ Add this function to `org-agenda-finalize-hook' to enable this."
 ;;; Capturing
 
 (defun db/org-timestamp-difference (stamp-1 stamp-2)
-  "Returns time difference between two given org-mode timestamps."
+  "Return time difference between two Org mode timestamps.
+STAMP-1 and STAMP-2 must be understood by
+`org-parse-time-string'."
   ;; Things copied from `org-clock-update-time-maybe’
   (let* ((s (-
              (float-time
@@ -243,8 +245,7 @@ Add this function to `org-agenda-finalize-hook' to enable this."
 ;; Capture Code Snippets
 ;; from http://ul.io/nb/2018/04/30/better-code-snippets-with-org-capture/
 (defun db/org-capture-code-snippet (filename)
-  "Format Org mode entry for capturing code in active region in
-the buffer visiting FILENAME."
+  "Format Org mode source block with contant of active region in FILENAME."
   (with-current-buffer (find-buffer-visiting filename)
     (let ((code-snippet (buffer-substring-no-properties (mark) (- (point) 1)))
           (func-name (which-function))
@@ -277,9 +278,8 @@ In ~%s~:
   (delete-other-windows)
   (org-capture))
 
-(defun db/delete-frame-if-capture (&rest r)
+(defun db/delete-frame-if-capture (&rest)
   "If current frame was made for a capture, close after done."
-  (ignore r)
   (when (equal (frame-parameter nil 'name)
                "capture")
     (delete-frame)))
@@ -351,8 +351,7 @@ tag PERIODIC."
          (org-clock-in '(4))))))))
 
 (defun db/save-current-org-task-to-file ()
-  "Format currently clocked task and write it to
-`db/org-clock-current-task-file'."
+  "Format currently clocked task and write it to`db/org-clock-current-task-file'."
   (with-temp-file db/org-clock-current-task-file
     (let ((clock-buffer (marker-buffer org-clock-marker)))
       (if (null clock-buffer)
@@ -360,8 +359,7 @@ tag PERIODIC."
         (insert org-clock-heading)))))
 
 (defun db/org-update-frame-title-with-current-clock ()
-  "Set the title of all active frames to the headline of the
-  current task."
+  "Set title of all active frames to the headline of the current task."
   (interactive)
   (let ((clock-buffer (marker-buffer org-clock-marker)))
     (when clock-buffer
@@ -391,7 +389,7 @@ tag PERIODIC."
   "Clock in org mode task as given by TASK-ID."
   (let ((location (org-id-find task-id 'marker)))
     (if (null location)
-        (user-error "Invalid location «%s» given." task-id)
+        (user-error "Invalid location give: %s»" task-id)
       (org-with-point-at location
         (org-clock-in))
       (org-save-all-org-buffers))))
@@ -487,14 +485,14 @@ forces clocking in of the default task."
 (defun db/org-onenote-open (path)
   "Visit OneNote document on PATH."
   (unless (file-executable-p db/path-to-onenote)
-    (user-error "Path for OneNote is not executable, please customize `db/path-to-onenote’."))
+    (user-error "Path for OneNote is not executable, please customize `db/path-to-onenote’"))
   (start-process "OneNote" nil db/path-to-onenote "/hyperlink" path))
 
 (defun db/org-outlook-open (id)
-  "Open the Outlook item identified by ID.
-  ID should be an Outlook GUID."
+  "Open Outlook item identified by ID.
+ID should be an Outlook GUID."
   (unless (file-executable-p db/path-to-outlook)
-    (user-error "Path for Outlook is not executable, please customize `db/path-to-outlook’."))
+    (user-error "Path for Outlook is not executable, please customize `db/path-to-outlook’"))
   (w32-shell-execute "open" db/path-to-outlook (concat "/select outlook:" id)))
 
 (defun db/org-rfc-open (number)
@@ -542,9 +540,9 @@ open RFC in HTML format in the default browser."
        (org-clock-update-time-maybe)))))
 
 (defun db/find-csv-in-org (arg)
-  "Interactively CSV find file and open it as Org mode table.
+  "Interactively find CSV file and open it as Org mode table.
 Default separator is \";\", but this can be changed interactively
-by passing a universal argument."
+by passing a non-nil value for ARG."
   (interactive "P")
   (let ((separator (if arg (read-from-minibuffer "Separator (regular expression): ")
                      ";")))
@@ -577,7 +575,7 @@ drawers, will be copied to point."
                                                 (org-element-at-point))))
                         (unless (string-equal (org-element-property :title template-element)
                                               "Template")
-                          (user-error "Template must be first headline in periodic task."))
+                          (user-error "Template must be first headline in periodic task"))
                         ;; Starting from the end of the last element in the
                         ;; subtree, we go up until we find a drawer or a
                         ;; headline; everything in between is considered to be the template
@@ -599,14 +597,14 @@ drawers, will be copied to point."
 ;;; Calendar
 
 (defun db/export-diary ()
-  "Export diary.org as ics file to the current value of `org-icalendar-combined-agenda-file’.
+  "Export diary.org as ics file to `org-icalendar-combined-agenda-file’.
 This is done only if the value of this variable is not null."
   (interactive)
   (cond
    ((null org-icalendar-combined-agenda-file)
     (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
    ((not (file-name-absolute-p org-icalendar-combined-agenda-file))
-    (user-error "`org-icalendar-combined-agenda-file’ not an absolute path, aborting."))
+    (user-error "`org-icalendar-combined-agenda-file’ not an absolute path, aborting"))
    (t
     (progn
       (org-save-all-org-buffers)
@@ -664,11 +662,12 @@ not."
 
 (defun db/org--get-location (&optional arg)
   "Interactively query for location and return mark.
-Searches through the current file, and through all of
-`org-agenda-files', `org-agenda-text-search-extra-files', and the
-current buffer, if ARG is non-nil.  Search is always conducted up
-to level 9.  If the selected location does not have an associated
-mark, error out."
+Searches through the current file, and through all files in the
+variables `org-agenda-files',
+`org-agenda-text-search-extra-files', and the current buffer, if
+ARG is non-nil.  Search is always conducted up to level 9.  If
+the selected location does not have an associated mark, error
+out."
   (let* ((org-refile-targets (if arg
                                  `((org-agenda-files :maxlevel . 9)
                                    (,(cl-remove-if-not
@@ -704,9 +703,9 @@ prompt for an item."
 
 Search through all items of the current buffer, or
 `db/org-default-org-file' if the current buffer is not associated
-with a file.  If ARG is non-nil, include all files in
-`org-agenda-files' and `org-agenda-text-search-extra-files' in
-this search.
+with a file.  If ARG is non-nil, include all files in the
+variables `org-agenda-files' and
+`org-agenda-text-search-extra-files' in this search.
 
 Use `org-store-link' to save link to `org-stored-links'."
   (interactive "P")
