@@ -734,10 +734,13 @@ in an Org Mode buffer or when the clock is not active."
     (org-insert-link nil location description)))
 
 (defhydra hydra-org-linking (:color blue :hint none)
-  "\nLinking between Org mode items.
- _c_urrent clock              _o_ther item (current buffer or default Org file)
- _b_acklinks to current item  _O_ther item (all text files)
-"
+  "
+Add link at point to …
+ … _c_urrent clock
+ … _o_ther item (from current file buffer or default Org file)
+ … _O_ther item (from all Org mode text search files)
+
+Show _b_acklinks to current item."
   ("c" (db/org-add-link-to-current-clock))
   ("o" (db/org-add-link-to-other-item nil))
   ("O" (db/org-add-link-to-other-item t))
