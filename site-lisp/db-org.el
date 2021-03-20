@@ -307,9 +307,9 @@ tag PERIODIC."
 (defun org-reset-checkbox-state-maybe ()
   "Reset all checkboxes in an entry if `RESET_CHECK_BOXES' property is set."
   (interactive "*")
-  (warn "Using the RESET_CHECK_BOXES property is deprecated, user periodic tasks instead")
-  (if (org-entry-get (point) "RESET_CHECK_BOXES")
-      (org-reset-checkbox-state-subtree)))
+  (when (org-entry-get (point) "RESET_CHECK_BOXES")
+    (warn "Using the RESET_CHECK_BOXES property is deprecated, user periodic tasks instead")
+    (org-reset-checkbox-state-subtree)))
 
 
 ;;; Helper Functions for Clocking
