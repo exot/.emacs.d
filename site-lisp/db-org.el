@@ -733,6 +733,16 @@ in an Org Mode buffer or when the clock is not active."
   (pcase-let ((`(,location ,description) (cl-first org-stored-links)))
     (org-insert-link nil location description)))
 
+(defhydra hydra-org-linking (:color blue :hint none)
+  "\nLinking between Org mode items.
+ _c_urrent clock              _o_ther item (current buffer or default Org file)
+ _b_acklinks to current item  _O_ther item (all text files)
+"
+  ("c" (db/org-add-link-to-current-clock))
+  ("o" (db/org-add-link-to-other-item nil))
+  ("O" (db/org-add-link-to-other-item t))
+  ("b" db/org-find-links-to-current-item))
+
 
 ;;; End
 

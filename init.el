@@ -175,14 +175,13 @@
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<f10>" #'magit-status)
-  (bind-key "<f11>" #'db/org-find-links-to-current-item)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
   (bind-key "<f5>" (if (executable-find "ag") #'counsel-ag #'rgrep))
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
   (bind-key "<f8>" #'bm-toggle)
-  (bind-key "<f9>" #'db/org-add-link-to-other-item)
+  (bind-key "<f9>" #'hydra-org-linking/body)
   (bind-key "<C-f8>" #'bm-next)
   (bind-key "<C-S-f8>" #'bm-previous)
   (bind-key "C-," #'mc/skip-to-previous-like-this)
@@ -732,7 +731,8 @@
              db/org-copy-template-for-periodic-task
              db/org-find-links-to-current-item
              db/org-add-link-to-other-item
-             db/org-add-link-to-current-clock))
+             db/org-add-link-to-current-clock
+             hydra-org-linking/body))
 
 (use-package org
   :pin "gnu"
