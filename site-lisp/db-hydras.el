@@ -80,4 +80,4 @@ the hydra will be generated.  See documentation of
 (db/define-feature-shortcuts-hydra)
 
 (provide 'db-hydras)
-;; db-hydras.el ends here
+;;; db-hydras.el ends here
