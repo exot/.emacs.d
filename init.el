@@ -732,7 +732,8 @@
              db/export-diary
              db/org-copy-template-for-periodic-task
              db/org-find-links-to-current-item
-             db/org-add-link-to-other-item))
+             db/org-add-link-to-other-item
+             db/org-add-link-to-current-clock))
 
 (use-package org
   :pin "gnu"

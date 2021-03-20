@@ -717,6 +717,22 @@ Use `org-store-link' to save link to `org-stored-links'."
         (org-store-link nil t))
       (insert (apply #'format "[[%s][%s]]" (cl-first org-stored-links))))))
 
+(defun db/org-add-link-to-current-clock ()
+  "Insert link to currently clocked-in item at point.
+
+Uses `org-store-link' and `org-insert-link'.  Error out when not
+in an Org Mode buffer or when the clock is not active."
+  (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org Mode, aborting"))
+  (unless org-clock-marker
+    (user-error "No clocked-in task, aborting"))
+  (save-mark-and-excursion
+    (org-with-point-at org-clock-marker
+      (org-store-link nil t))
+    (pcase-let ((`(,location ,description) (cl-first org-stored-links)))
+      (org-insert-link nil location description))))
+
 
 ;;; End
 
