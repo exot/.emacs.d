@@ -278,7 +278,7 @@ In ~%s~:
   (delete-other-windows)
   (org-capture))
 
-(defun db/delete-frame-if-capture (&rest)
+(defun db/delete-frame-if-capture (&rest _r)
   "If current frame was made for a capture, close after done."
   (when (equal (frame-parameter nil 'name)
                "capture")
