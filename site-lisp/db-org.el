@@ -667,23 +667,26 @@ variables `org-agenda-files',
 `org-agenda-text-search-extra-files', and the current buffer, if
 ARG is non-nil.  Search is always conducted up to level 9.  If
 the selected location does not have an associated mark, error
-out."
-  (let* ((org-refile-targets (if arg
-                                 `((org-agenda-files :maxlevel . 9)
-                                   (,(cl-remove-if-not
-                                      #'stringp org-agenda-text-search-extra-files)
-                                    :maxlevel . 9)
-                                   (nil :maxlevel . 9))
-                                 '((nil :maxlevel . 9))))
-         (mrk (nth 3 (org-refile-get-location
-                      nil
-                      ;; if the current buffer is associated with a file, search
-                      ;; through it; otherwise, use the default Org Mode file as
-                      ;; default buffer
-                      (if (buffer-file-name)
-                          nil
-                        (get-file-buffer db/org-default-org-file))))))
-    (if mrk mrk (user-error "Invalid location"))))
+out.  Disable refile cache and any active refile filter hooks to
+allow linking to any item."
+  (let ((org-refile-target-verify-function nil)
+        (org-refile-use-cache nil))
+   (let* ((org-refile-targets (if arg
+                                  `((org-agenda-files :maxlevel . 9)
+                                    (,(cl-remove-if-not
+                                       #'stringp org-agenda-text-search-extra-files)
+                                     :maxlevel . 9)
+                                    (nil :maxlevel . 9))
+                                '((nil :maxlevel . 9))))
+          (mrk (nth 3 (org-refile-get-location
+                       nil
+                       ;; if the current buffer is associated with a file, search
+                       ;; through it; otherwise, use the default Org Mode file as
+                       ;; default buffer
+                       (if (buffer-file-name)
+                           nil
+                         (get-file-buffer db/org-default-org-file))))))
+     (if mrk mrk (user-error "Invalid location")))))
 
 (defun db/org-find-links-to-current-item (arg)
   "Find links to current item.
