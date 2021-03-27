@@ -744,7 +744,7 @@ Add link at point to …
  … _O_ther item (from all Org mode text search files)
 
 Show _b_acklinks to current item."
-  ("c" (db/org-add-link-to-current-clock))
+  ("c" db/org-add-link-to-current-clock)
   ("o" (db/org-add-link-to-other-item nil))
   ("O" (db/org-add-link-to-other-item t))
   ("b" db/org-find-links-to-current-item))
