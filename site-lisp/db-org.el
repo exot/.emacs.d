@@ -662,31 +662,43 @@ not."
 
 (defun db/org--get-location (&optional arg)
   "Interactively query for location and return mark.
-Searches through the current file, and through all files in the
-variables `org-agenda-files',
-`org-agenda-text-search-extra-files', and the current buffer, if
-ARG is non-nil.  Search is always conducted up to level 9.  If
-the selected location does not have an associated mark, error
-out.  Disable refile cache and any active refile filter hooks to
-allow linking to any item."
+
+Searches through the current buffer if that one is associated
+with a file, or `db/org-default-org-file'.  When ARG is non-nil,
+search through all files in the variables `org-agenda-files',
+`org-agenda-text-search-extra-files', and the current file or
+`db/org-default-org-file'.
+
+Search is always conducted up to level 9.  If the selected
+location does not have an associated point or mark, error out.
+Disable refile cache and any active refile filter hooks to allow
+linking to any item."
   (let ((org-refile-target-verify-function nil)
-        (org-refile-use-cache nil))
-   (let* ((org-refile-targets (if arg
-                                  `((org-agenda-files :maxlevel . 9)
-                                    (,(cl-remove-if-not
-                                       #'stringp org-agenda-text-search-extra-files)
-                                     :maxlevel . 9)
-                                    (nil :maxlevel . 9))
-                                '((nil :maxlevel . 9))))
-          (mrk (nth 3 (org-refile-get-location
-                       nil
-                       ;; if the current buffer is associated with a file, search
-                       ;; through it; otherwise, use the default Org Mode file as
-                       ;; default buffer
-                       (if (buffer-file-name)
-                           nil
-                         (get-file-buffer db/org-default-org-file))))))
-     (if mrk mrk (user-error "Invalid location")))))
+        (org-refile-use-cache nil)
+        ;; If the current buffer is associated with a file, search through it;
+        ;; otherwise, use the default Org Mode file as default buffer
+        (default-buffer (if (buffer-file-name)
+                           (current-buffer)
+                         (find-file-noselect db/org-default-org-file))))
+    (when (null default-buffer)
+      (user-error "Current buffer is not associated with a file and `db/org-default-org-file' does not exist; nothing to search through"))
+    (let* ((org-refile-targets (if arg
+                                   `((org-agenda-files :maxlevel . 9)
+                                     (,(cl-remove-if-not
+                                        #'stringp org-agenda-text-search-extra-files)
+                                      :maxlevel . 9)
+                                     (nil :maxlevel . 9))
+                                 '((nil :maxlevel . 9))))
+           (pom (nth 3 (org-refile-get-location nil default-buffer))))
+      (cond
+       ((markerp pom) pom)
+       ((integerp pom)
+        ;; Convert point to marker to ensure we are always in the correct buffer
+        (save-mark-and-excursion
+          (with-current-buffer default-buffer
+            (goto-char pom)
+            (point-marker))))
+       (t (user-error "Invalid location"))))))
 
 (defun db/org-find-links-to-current-item (arg)
   "Find links to current item.
