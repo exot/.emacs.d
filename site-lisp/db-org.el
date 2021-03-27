@@ -704,14 +704,21 @@ linking to any item."
   "Find links to current item.
 Only links using the ID or CUSTOM_ID property are considered.
 
-If ARG is given, or if not in an Org Mode buffer, interactively
-prompt for an item."
+If ARG is given, or if neither in an Org Mode buffer nor on a
+headline in an Org Agenda buffer, interactively prompt for an
+item."
   (interactive "P")
   (apply #'db/org-find-items-linking-by-id
-         (if (and (derived-mode-p 'org-mode) (not arg))
-             (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))
-           (org-with-point-at (db/org--get-location)
-             (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))))
+         (cond ((and (not arg) (derived-mode-p 'org-mode))
+                (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))
+               ((and (not arg)
+                     (derived-mode-p 'org-agenda-mode)
+                     (org-get-at-bol 'org-hd-marker))
+                (org-with-point-at (org-get-at-bol 'org-hd-marker)
+                  (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))
+               (t
+                (org-with-point-at (db/org--get-location)
+                  (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))))))
 
 (defun db/org-add-link-to-other-item (arg)
   "Interactively query for item and add link to it at point.
