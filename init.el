@@ -42,9 +42,15 @@
 
 ;; * Packages
 
+(setq package-archives
+      '(("melpa" . "https://melpa.org/packages/")
+        ("gnu" . "https://elpa.gnu.org/packages/")
+        ("melpa-stable" . "https://stable.melpa.org/packages/")
+        ("org" . "https://orgmode.org/elpa/")))
+
 (when (< emacs-major-version 27)
   ;; Before Emacs 27.1, we had to do package initialization ourselves.  In Emacs
-  ;; 27.1 and later, it's done in early-init.el.  See
+  ;; 27.1 and later, it's done directly after loading early-init.el.  See
   ;; https://www.gnu.org/software/emacs/news/NEWS.27.1
   (load-file (expand-file-name "early-init.el" emacs-d))
   (package-initialize))
