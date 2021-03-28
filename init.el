@@ -923,7 +923,7 @@
   :commands (org-store-link))
 
 (use-package org-id
-  :custom (org-id-link-to-org-use-id 'create-if-interactive-and-no-custom-id))
+  :custom (org-id-link-to-org-use-id t))
 
 (use-package org-clock
   :commands (org-clock-save)
