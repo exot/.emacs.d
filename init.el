@@ -1478,7 +1478,10 @@
 
 (use-package eglot
   :ensure t
-  :commands (eglot-ensure))
+  :commands (eglot-ensure)
+  ;; Highlighting takes a lot of time and does not add much value, so let's just
+  ;; disable it
+  :init (setq eglot-ignored-server-capabilites '(:documentHighlightProvider)))
 
 
 ;; * Mail
