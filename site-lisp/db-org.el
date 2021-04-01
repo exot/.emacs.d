@@ -734,10 +734,9 @@ Use `org-store-link' to save link to `org-stored-links'."
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
   (let ((pom (db/org--get-location arg)))
-    (save-mark-and-excursion
-      (org-with-point-at pom
-        (org-store-link nil t))
-      (insert (apply #'format "[[%s][%s]]" (cl-first org-stored-links))))))
+    (org-with-point-at pom
+      (org-store-link nil t))
+    (insert (apply #'format "[[%s][%s]]" (cl-first org-stored-links)))))
 
 (defun db/org-add-link-to-current-clock ()
   "Insert link to currently clocked-in item at point.
