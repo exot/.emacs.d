@@ -689,13 +689,16 @@ linking to any item."
                                       :maxlevel . 9)
                                      (nil :maxlevel . 9))
                                  '((nil :maxlevel . 9))))
-           (pom (nth 3 (org-refile-get-location nil default-buffer))))
+           (target-pointer (org-refile-get-location))
+           (pom (nth 3 target-pointer)))
       (cond
        ((markerp pom) pom)
        ((integerp pom)
-        ;; Convert point to marker to ensure we are always in the correct buffer
+        ;; Convert point to marker to ensure we are always in the correct
+        ;; buffer; the second element of `target-pointer' contains the path to
+        ;; the target file
         (save-mark-and-excursion
-          (with-current-buffer default-buffer
+          (with-current-buffer (find-file-noselect (nth 1 target-pointer))
             (goto-char pom)
             (point-marker))))
        (t (user-error "Invalid location"))))))
