@@ -1750,11 +1750,23 @@
   :config (progn
             ;; Outlook seems to expect \r\n in PKCS#7 encrypted containers, but
             ;; Gnus is only sending \n; so let's artificially replace \n by \r\n
-            ;; after, well, signing?  Seems to work at least in the case where
-            ;; we are sending S/MIME encrypted and signed messages.
+            ;; after, well, signing?  But only if we are encrypting with S/MIME,
+            ;; as otherwise the search for \n\n in `message-encode-message-body'
+            ;; will break.  However, I think this is not the right way to do it
+            ;; … isn't there some way to specify the encoding of the the
+            ;; relevant MML buffers to be some nasty cp1252 or something?
+
+            ;; A previous version of this worked, but the following has not been
+            ;; tested with Outlook proper.
+
+            (defun db/smime-add-crlf-when-pkcs7 (cont)
+              "If CONT signifies encryption with smime, replace all \n with \r\n."
+              (when (and (eq (car cont) 'part)
+                         (string= "smime" (or (cdr (assq 'encrypt cont)) "")))
+                (db/convert-lf-to-crlf-in-buffer)))
 
             (advice-add 'mml-smime-epg-sign
-                        :after #'db/convert-lf-to-crlf-in-buffer) ))
+                        :after #'db/smime-add-crlf-when-pkcs7)))
 
 ;; Archiving
 
