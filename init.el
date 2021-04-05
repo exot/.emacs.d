@@ -1750,7 +1750,7 @@
   :config (progn
             ;; Outlook seems to expect \r\n in PKCS#7 encrypted containers, but
             ;; Gnus is only sending \n; so let's artificially replace \n by \r\n
-            ;; before, well, signing?  Seems to work at least in the case where
+            ;; after, well, signing?  Seems to work at least in the case where
             ;; we are sending S/MIME encrypted and signed messages.
 
             (advice-add 'mml-smime-epg-sign
