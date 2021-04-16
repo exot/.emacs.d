@@ -392,6 +392,7 @@
       message-log-max t
       inhibit-eol-conversion nil
       tab-always-indent 'complete
+      completion-cycle-threshold 10
       enable-recursive-minibuffers t
       set-mark-command-repeat-pop t
       large-file-warning-threshold 10000000
