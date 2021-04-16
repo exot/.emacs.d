@@ -689,7 +689,7 @@ linking to any item."
                                       :maxlevel . 9)
                                      (nil :maxlevel . 9))
                                  '((nil :maxlevel . 9))))
-           (target-pointer (org-refile-get-location))
+           (target-pointer (org-refile-get-location nil default-buffer))
            (pom (nth 3 target-pointer)))
       (cond
        ((markerp pom) pom)
