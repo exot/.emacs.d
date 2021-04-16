@@ -2614,6 +2614,24 @@ With given ARG, display files in `db/important-document-path’."
                                          (when completion-in-region-mode
                                            (completion-in-region-mode -1))))
 
+                 ;; After completing partial inputs, pcomplete wants to add an
+                 ;; extra character stored in `pcomplete-termination-string',
+                 ;; which is a space by default.  When completing paths, this
+                 ;; leads to spaces being inserted after every directory within
+                 ;; the path, which is annoying.  We thus set the value of this
+                 ;; variable locally to an empty string, thus silencing this
+                 ;; bug.  A better way to handle this would be to correctly
+                 ;; determine whether the completion is not done yet, by passing
+                 ;; `exact' instead of `finished' to the handlers stored in
+                 ;; `completion-extra-properties'.
+
+                 (defun db/set-empty-pcomplete-termination-string ()
+                   "Locally set `pcomplete-termination-string' to the empty string."
+                   (setq-local pcomplete-termination-string ""))
+
+                 (add-hook 'eshell-mode-hook
+                           #'db/set-empty-pcomplete-termination-string)
+
                  (require 'db-eshell)))
 
 (use-package with-editor
