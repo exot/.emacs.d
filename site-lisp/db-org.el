@@ -682,13 +682,12 @@ linking to any item."
                          (find-file-noselect db/org-default-org-file))))
     (when (null default-buffer)
       (user-error "Current buffer is not associated with a file and `db/org-default-org-file' does not exist; nothing to search through"))
-    (let* ((org-refile-targets (if arg
-                                   `((org-agenda-files :maxlevel . 9)
-                                     (,(cl-remove-if-not
-                                        #'stringp org-agenda-text-search-extra-files)
-                                      :maxlevel . 9)
-                                     (nil :maxlevel . 9))
-                                 '((nil :maxlevel . 9))))
+    (let* ((org-refile-targets (append (and arg
+                                            `((org-agenda-files :maxlevel . 9)
+                                              (,(cl-remove-if-not #'stringp
+                                                                  org-agenda-text-search-extra-files)
+                                               :maxlevel . 9)))
+                                       '((nil :maxlevel . 9))))
            (target-pointer (org-refile-get-location nil default-buffer))
            (pom (nth 3 target-pointer)))
       (cond
