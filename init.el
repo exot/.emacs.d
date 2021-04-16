@@ -2537,8 +2537,20 @@ With given ARG, display files in `db/important-document-path’."
             ;; We may want to use readline support in bash, don't inhibit this
             ;; with explicit command line arguments;
             ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
+
             (setq explicit-bash-args
-                  (delete "--noediting" explicit-bash-args))))
+                  (delete "--noediting" explicit-bash-args))
+
+            ;; When doing completion, ivy seems to add an extra space, much like
+            ;; in the case for eshell.  However, here the space seems to come
+            ;; out of nowhere.  Since the builtin completion using
+            ;; `completion--in-region' is good enough for the shell mode, let's
+            ;; stick to that.
+
+            (add-hook 'shell-mode-hook
+                      (lambda ()
+                        (setq-local completion-in-region-function
+                                    #'completion--in-region)))))
 
 (use-package db-eshell
   :commands (db/run-or-hide-eshell
