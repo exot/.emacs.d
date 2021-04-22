@@ -58,3 +58,4 @@
 /sandbox/.emacs.d
 /flycheck_init.el
 /projects
+/.lsp-session-v1

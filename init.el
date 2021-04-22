@@ -1477,12 +1477,9 @@
   :commands (global-flycheck-mode flycheck-mode)
   :init (setq flycheck-emacs-lisp-load-path 'inherit))
 
-(use-package eglot
+(use-package lsp-mode
   :ensure t
-  :commands (eglot-ensure)
-  ;; Highlighting takes a lot of time and does not add much value, so let's just
-  ;; disable it
-  :init (setq eglot-ignored-server-capabilites '(:documentHighlightProvider)))
+  :commands (lsp))
 
 
 ;; * Mail
@@ -2995,7 +2992,7 @@ With given ARG, display files in `db/important-document-path’."
   :config (progn
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
             (add-hook 'python-mode-hook #'company-mode)
-            (add-hook 'python-mode-hook #'eglot-ensure)))
+            (add-hook 'python-mode-hook #'lsp)))
 
 (use-package shr
   :init (setq shr-use-fonts nil
