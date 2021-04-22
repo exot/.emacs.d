@@ -1481,7 +1481,8 @@
 
 (use-package lsp-mode
   :ensure t
-  :commands (lsp))
+  :init (setq lsp-keymap-prefix "C-c C-l")
+  :commands (lsp lsp-deferred))
 
 
 ;; * Mail
