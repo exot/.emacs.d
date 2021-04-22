@@ -2997,6 +2997,11 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'python-mode-hook #'company-mode)
             (add-hook 'python-mode-hook #'lsp)))
 
+;; https://ddavis.io/posts/emacs-python-lsp/
+(use-package pyvenv
+  :ensure t
+  :commands (pyvenv-workon pyvenv-activate))
+
 (use-package shr
   :init (setq shr-use-fonts nil
               shr-use-colors nil
