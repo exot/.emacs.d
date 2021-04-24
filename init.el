@@ -1035,7 +1035,7 @@
               '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
 
               org-stuck-projects
-              '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP\\|TOPIC}"
+              '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP\\|TOPIC\\|SOMEWHEN}"
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
                 ()
                 "")
