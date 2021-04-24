@@ -3005,7 +3005,8 @@ With given ARG, display files in `db/important-document-path’."
 (use-package pyvenv
   :ensure t
   :commands (pyvenv-workon pyvenv-activate)
-  :init (setenv "WORKON_HOME" (expand-file-name "~/.pyenv/versions"))
+  :init (unless (getenv "WORKON_HOME")
+          (setenv "WORKON_HOME" (expand-file-name "~/.pyenv/versions")))
   :config (progn
             ;; Restart python inferior processes when switching virtual
             ;; environments; this does not work when only calling
