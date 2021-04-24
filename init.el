@@ -3004,7 +3004,9 @@ With given ARG, display files in `db/important-document-path’."
 ;; https://ddavis.io/posts/emacs-python-lsp/
 (use-package pyvenv
   :ensure t
-  :commands (pyvenv-workon pyvenv-activate)
+  :commands (pyvenv-workon
+             pyvenv-activate
+             pyvenv-create)
   :init (unless (getenv "WORKON_HOME")
           (setenv "WORKON_HOME" (expand-file-name "~/.pyenv/versions")))
   :config (progn
