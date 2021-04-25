@@ -1071,7 +1071,7 @@
                 ("U" "Unsupervised (Waiting, Unscheduled, Missed Appointments, Hold)"
                  ((tags-todo "WAIT"
                              ((org-agenda-overriding-header "Waiting For List")))
-                  (tags-todo "-HOLD-READ-SOMEWHEN-DATE-WAIT/-DONE"
+                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
                              ((org-agenda-overriding-header "Next Actions List (Things not yet scheduled)")
                               (org-tags-match-list-sublevels t)
                               (org-agenda-todo-ignore-scheduled t)
