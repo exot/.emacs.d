@@ -1068,7 +1068,7 @@
                               (org-agenda-sorting-strategy '(deadline-down priority-down))
                               (org-agenda-prefix-format '((tags . "%-12c %-4e ")))))))
 
-                ("U" "Unsupervised (Waiting, Unscheduled, Stuck, Hold)"
+                ("U" "Unsupervised (Waiting, Unscheduled, Missed Appointments, Hold)"
                  ((tags-todo "WAIT"
                              ((org-agenda-overriding-header "Waiting For List")))
                   (tags-todo "-HOLD-READ-SOMEWHEN-DATE-WAIT/-DONE"
@@ -1080,8 +1080,6 @@
                   (tags-todo "DATE"
                              ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
                               (org-agenda-todo-ignore-timestamp 0)))
-                  (stuck ""
-                         ((org-agenda-overriding-header "Stuck Tasks")))
                   (tags-todo "HOLD"
                              ((org-agenda-overriding-header "Tasks on Hold")))))
 
