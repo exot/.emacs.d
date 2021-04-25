@@ -1042,9 +1042,9 @@
 
               org-agenda-prefix-format
               '((agenda . "%11s%?-12t%-4e ")
-                (todo . "%-8c ")
-                (tags . "%-8c ")
-                (search . "%-8c "))
+                (todo . "%-8c%-4e ")
+                (tags . "%-8c%-4e ")
+                (search . "%-8c%-4e "))
 
               org-agenda-custom-commands
               `(("A" "Main Agenda"
