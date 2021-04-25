@@ -1077,6 +1077,9 @@
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy
                                '(priority-down time-up category-keep))))
+                  (tags-todo "DATE"
+                             ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
+                              (org-agenda-todo-ignore-timestamp 0)))
                   (stuck ""
                          ((org-agenda-overriding-header "Stuck Tasks")))
                   (tags-todo "HOLD"
