@@ -1070,11 +1070,11 @@
 
                 ("U" "Unsupervised (Waiting, Unscheduled, Stuck, Hold)"
                  ((tags-todo "WAIT"
-                             ((org-agenda-overriding-header "Tasks requiring response/input")))
-                  (tags-todo "-HOLD-READ-SOMEWHEN/-DONE"
-                             ((org-agenda-overriding-header "Things not being scheduled or deadlined")
+                             ((org-agenda-overriding-header "Waiting For List")))
+                  (tags-todo "-HOLD-READ-SOMEWHEN-DATE/-DONE"
+                             ((org-agenda-overriding-header "Next Actions List (Things not yet scheduled)")
                               (org-tags-match-list-sublevels t)
-                              (org-agenda-todo-ignore-with-date t)
+                              (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy
                                '(priority-down time-up category-keep))))
                   (stuck ""
