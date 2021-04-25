@@ -1095,15 +1095,19 @@
                               (org-tags-match-list-sublevels nil)))))
 
                 ("P" "Current Projects"
-                 tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE"
-                 ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE)")))
+                 ((stuck ""
+                         ((org-agenda-overriding-header "Stuck Projects")))
+                  (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE"
+                        ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE)")))
+                  (tags "TAGS={PERIODIC}"
+                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))))
 
                 ("W" "Weekly Review"
                  ((agenda ""
                           ((org-agenda-span 7)
                            (org-agenda-archives-mode t)
                            (org-agenda-dim-blocked-tasks nil)
-                           (org-agenda-skip-deadline-prewarning-if-scheduled t)))))))
+                           (org-agenda-skip-deadline-prewarning-if-scheduled t))))))
 
   :config (progn
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
