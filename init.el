@@ -1120,7 +1120,6 @@
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* TODO [#B] %^{What}\n"
-                          "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "%a\n"
                           "%?"))
@@ -1131,7 +1130,6 @@
                  ,(concat "* %^{Task Description}\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n** TODO [#B] %^{First Thing to Do}\n"
-                          "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%?"))
                 ("TT" "Record new ticket with first item"
@@ -1141,7 +1139,6 @@
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\nReference: %^{Reference}\n"
                           "\n** TODO [#B] %^{First Task}\n"
-                          "SCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%?"))
                 ("n" "Note"
@@ -1155,13 +1152,14 @@
                 ("i" "Interruptions"
                  entry
                  (file db/org-default-refile-file)
-                 "* DONE [#B] %^{What}\nCLOSED: %U\n\n%?"
+                 "* DONE [#B] %^{What}\nCLOSED: %U\n"
+                 ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                 "\n%?"
                  :clock-in t :clock-resume t)
                 ("r" "respond"
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* TODO [#B] E-Mail: %:subject (%:from) :EMAIL:\n"
-                          "SCHEDULED: %^{Reply when?}t\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%a")
                  :immediate-finish t)
@@ -1169,7 +1167,6 @@
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* READ [#B] %:subject :READ:\n"
-                          ;; "DEADLINE: <%(org-read-date nil nil \"+1m\")>\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%a"))
                 ("U" "Read current content of clipboard"
