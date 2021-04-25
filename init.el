@@ -1071,9 +1071,14 @@
                 ("U" "Unsupervised (Waiting, Unscheduled, Missed Appointments, Hold)"
                  ((tags-todo "WAIT"
                              ((org-agenda-overriding-header "Waiting For List")))
-                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
+                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT-READ/-DONE"
                              ((org-agenda-overriding-header "Next Actions List (Things not yet scheduled)")
                               (org-tags-match-list-sublevels t)
+                              (org-agenda-todo-ignore-scheduled t)
+                              (org-agenda-sorting-strategy
+                               '(priority-down time-up category-keep))))
+                  (tags-todo "READ/-DONE"
+                             ((org-agenda-overriding-header "Reading List")
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy
                                '(priority-down time-up category-keep))))
