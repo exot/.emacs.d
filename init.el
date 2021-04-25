@@ -1084,7 +1084,7 @@
                              ((org-agenda-overriding-header "Tasks on Hold")))))
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
-                 ((tags-todo "SOMEWHEN/-CANC-DONE|READ/-CANC-DONE"
+                 ((tags-todo "SOMEWHEN/-CANC-DONE"
                              ((org-agenda-overriding-header "Things to do or read somewhen")
                               (org-agenda-todo-ignore-with-date t)
                               (org-tags-match-list-sublevels nil)))))
