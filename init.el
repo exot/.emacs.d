@@ -1077,7 +1077,7 @@
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy
                                '(priority-down time-up category-keep))))
-                  (tags-todo "READ/-DONE"
+                  (tags-todo "READ-SOMEWHEN/-DONE"
                              ((org-agenda-overriding-header "Reading List")
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy
