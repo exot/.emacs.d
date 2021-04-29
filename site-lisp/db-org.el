@@ -729,31 +729,31 @@ Search through all items of the current buffer, or
 `db/org-default-org-file' if the current buffer is not associated
 with a file.  If ARG is non-nil, include all files in the
 variables `org-agenda-files' and
-`org-agenda-text-search-extra-files' in this search.
-
-Use `org-store-link' to save link to `org-stored-links'."
+`org-agenda-text-search-extra-files' in this search."
   (interactive "P")
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
-  (let ((pom (db/org--get-location arg)))
+  (let* ((pom (db/org--get-location arg))
+         item id)
     (org-with-point-at pom
-      (org-store-link nil t))
-    (insert (apply #'format "[[%s][%s]]" (cl-first org-stored-links)))))
+      (setq item (org-entry-get (point) "ITEM")
+            id (org-id-get-create)))
+    (insert (format "[[%s][%s]]" id item))))
 
 (defun db/org-add-link-to-current-clock ()
   "Insert link to currently clocked-in item at point.
-
-Uses `org-store-link' and `org-insert-link'.  Error out when not
-in an Org Mode buffer or when the clock is not active."
+Error out when not in an Org Mode buffer or when the clock is not
+active."
   (interactive)
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode, aborting"))
   (unless org-clock-marker
     (user-error "No clocked-in task, aborting"))
-  (org-with-point-at org-clock-marker
-    (org-store-link nil t))
-  (pcase-let ((`(,location ,description) (cl-first org-stored-links)))
-    (org-insert-link nil location description)))
+  (let (item id)
+    (org-with-point-at org-clock-marker
+      (setq item (org-entry-get (point) "ITEM")
+            id (org-id-get-create)))
+    (insert (format "[[%s][%s]]" id item))))
 
 (defhydra hydra-org-linking (:color blue :hint none)
   "
