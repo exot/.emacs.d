@@ -1107,7 +1107,7 @@
                           ((org-agenda-span 7)
                            (org-agenda-archives-mode t)
                            (org-agenda-dim-blocked-tasks nil)
-                           (org-agenda-skip-deadline-prewarning-if-scheduled t))))))
+                           (org-agenda-skip-deadline-prewarning-if-scheduled t)))))))
 
   :config (progn
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
