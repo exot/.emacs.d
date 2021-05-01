@@ -180,6 +180,7 @@
 
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
+  (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
   (bind-key "<f10>" #'magit-status)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
