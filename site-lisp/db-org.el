@@ -739,8 +739,11 @@ link."
     ;; use the link part
     (save-match-data
       (when (string-match org-link-bracket-re item)
-        (setq item (or (match-string-no-properties 2 item)
-                       (match-string-no-properties 1 item)))))
+        (let ((desc (or (match-string-no-properties 2 item)
+                        (match-string-no-properties 1 item))))
+          (setq item (concat (substring item 0 (match-beginning 0))
+                             desc
+                             (substring item (match-end 0)))))))
 
     (org-insert-link nil (format "id:%s" id) item)))
 
