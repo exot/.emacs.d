@@ -722,6 +722,28 @@ item."
                 (org-with-point-at (db/org--get-location)
                   (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))))))
 
+(defun db/org-insert-link-to-pom (pom)
+  "Insert an Org link to headline at POM.
+
+If headline consists of a link with description, only the
+description of that link will be included in the description of
+the newly inserted link instead of the complete headline.  This
+avoids containing a link in the description of the newly inserted
+link."
+  (let (item id)
+    (org-with-point-at pom
+      (setq item (org-entry-get (point) "ITEM")
+            id (org-id-get-create)))
+
+    ;; When item is a link, only use it's description when available; otherwise
+    ;; use the link part
+    (save-match-data
+      (when (string-match org-link-bracket-re item)
+        (setq item (or (match-string-no-properties 2 item)
+                       (match-string-no-properties 1 item)))))
+
+    (org-insert-link nil (format "id:%s" id) item)))
+
 (defun db/org-add-link-to-other-item (arg)
   "Interactively query for item and add link to it at point.
 
@@ -733,12 +755,7 @@ variables `org-agenda-files' and
   (interactive "P")
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
-  (let* ((pom (db/org--get-location arg))
-         item id)
-    (org-with-point-at pom
-      (setq item (org-entry-get (point) "ITEM")
-            id (org-id-get-create)))
-    (insert (format "[[%s][%s]]" id item))))
+  (db/org-insert-link-to-pom (db/org--get-location arg)))
 
 (defun db/org-add-link-to-current-clock ()
   "Insert link to currently clocked-in item at point.
@@ -749,11 +766,7 @@ active."
     (user-error "Not in Org Mode, aborting"))
   (unless org-clock-marker
     (user-error "No clocked-in task, aborting"))
-  (let (item id)
-    (org-with-point-at org-clock-marker
-      (setq item (org-entry-get (point) "ITEM")
-            id (org-id-get-create)))
-    (insert (format "[[%s][%s]]" id item))))
+  (db/org-insert-link-to-pom org-clock-marker))
 
 (defhydra hydra-org-linking (:color blue :hint none)
   "
