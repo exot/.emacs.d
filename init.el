@@ -1171,8 +1171,7 @@
                  (file db/org-default-refile-file)
                  ,(concat "* TODO [#B] E-Mail: %:subject (%:from) :EMAIL:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%a")
-                 :immediate-finish t)
+                          "\n%a"))
                 ("R" "read"
                  entry
                  (file db/org-default-refile-file)
