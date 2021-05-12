@@ -738,7 +738,7 @@ link."
     ;; When item is a link, only use it's description when available; otherwise
     ;; use the link part
     (save-match-data
-      (when (string-match org-link-bracket-re item)
+      (while (string-match org-link-bracket-re item)
         (let ((desc (or (match-string-no-properties 2 item)
                         (match-string-no-properties 1 item))))
           (setq item (concat (substring item 0 (match-beginning 0))
