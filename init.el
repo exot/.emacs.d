@@ -1066,7 +1066,7 @@
                               (org-tags-match-list-sublevels t)
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy
-                               '(priority-down time-up category-keep))))))
+                               '(priority-down category-up))))))
                 ("O" "Open, non-periodic TODOs"
                  ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
