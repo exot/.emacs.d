@@ -1060,8 +1060,13 @@
                     (org-deadline-warning-days 30)))
                   (tags "REFILE"
                         ((org-agenda-files (list db/org-default-refile-file))
-                         (org-agenda-overriding-header "Things to refile (make it empty!)")))))
-
+                         (org-agenda-overriding-header "Things to refile (make it empty!)")))
+                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT-READ/-DONE"
+                             ((org-agenda-overriding-header "Next Actions List (unscheduled actions)")
+                              (org-tags-match-list-sublevels t)
+                              (org-agenda-todo-ignore-scheduled t)
+                              (org-agenda-sorting-strategy
+                               '(priority-down time-up category-keep))))))
                 ("O" "Open, non-periodic TODOs"
                  ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
@@ -1069,15 +1074,9 @@
                               (org-agenda-sorting-strategy '(deadline-down priority-down))
                               (org-agenda-prefix-format '((tags . "%-12c %-4e ")))))))
 
-                ("U" "Unsupervised (Waiting, Unscheduled, Missed Appointments, Hold)"
+                ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT"
                              ((org-agenda-overriding-header "Waiting For List")))
-                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT-READ/-DONE"
-                             ((org-agenda-overriding-header "Next Actions List (Things not yet scheduled)")
-                              (org-tags-match-list-sublevels t)
-                              (org-agenda-todo-ignore-scheduled t)
-                              (org-agenda-sorting-strategy
-                               '(priority-down time-up category-keep))))
                   (tags-todo "READ-SOMEWHEN/-DONE"
                              ((org-agenda-overriding-header "Reading List")
                               (org-agenda-todo-ignore-scheduled t)
