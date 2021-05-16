@@ -1066,7 +1066,12 @@
                               (org-tags-match-list-sublevels t)
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy
-                               '(priority-down category-up))))))
+                               '(priority-down category-up))))
+                  (tags-todo "READ-SOMEWHEN/-DONE"
+                             ((org-agenda-overriding-header "Reading List")
+                              (org-agenda-todo-ignore-scheduled t)
+                              (org-agenda-sorting-strategy
+                               '(priority-down time-up category-keep))))))
                 ("O" "Open, non-periodic TODOs"
                  ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
@@ -1077,11 +1082,6 @@
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT"
                              ((org-agenda-overriding-header "Waiting For List")))
-                  (tags-todo "READ-SOMEWHEN/-DONE"
-                             ((org-agenda-overriding-header "Reading List")
-                              (org-agenda-todo-ignore-scheduled t)
-                              (org-agenda-sorting-strategy
-                               '(priority-down time-up category-keep))))
                   (tags-todo "DATE"
                              ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
                               (org-agenda-todo-ignore-timestamp 0)))
