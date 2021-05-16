@@ -1168,15 +1168,15 @@
                 ("r" "respond"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* TODO [#B] E-Mail: %:subject (%:from) :EMAIL:\n"
+                 ,(concat "* TODO [#B] Reply %:subject (%:from) :EMAIL:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%a"))
+                          "\n%a\n%?"))
                 ("R" "read"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* READ [#B] %:subject :READ:\n"
+                 ,(concat "* READ [#B] %^{Topic} :READ:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%a"))
+                          "\n%a\n%?"))
                 ("U" "Read current content of clipboard"
                  entry
                  (file db/org-default-refile-file)
