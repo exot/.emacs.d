@@ -1161,9 +1161,9 @@
                 ("i" "Interruptions"
                  entry
                  (file db/org-default-refile-file)
-                 "* DONE [#B] %^{What}\nCLOSED: %U\n"
-                 ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                 "\n%?"
+                 ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
+                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                          "\n%?")
                  :clock-in t :clock-resume t)
                 ("r" "respond"
                  entry
