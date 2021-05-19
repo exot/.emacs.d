@@ -1065,8 +1065,7 @@
                              ((org-agenda-overriding-header "Next Actions List (unscheduled actions)")
                               (org-tags-match-list-sublevels t)
                               (org-agenda-todo-ignore-scheduled t)
-                              (org-agenda-sorting-strategy
-                               '(priority-down category-up))))
+                              (org-agenda-sorting-strategy '(priority-down category-up))))
                   (tags-todo "READ-SOMEWHEN/-DONE"
                              ((org-agenda-overriding-header "Reading List")
                               (org-agenda-todo-ignore-scheduled t)
@@ -1081,7 +1080,8 @@
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT"
-                             ((org-agenda-overriding-header "Waiting For List")))
+                             ((org-agenda-overriding-header "Waiting For List")
+                              (org-agenda-sorting-strategy '(priority-down category-up))))
                   (tags-todo "DATE"
                              ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
                               (org-agenda-todo-ignore-timestamp 0)))
