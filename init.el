@@ -1168,7 +1168,7 @@
                 ("r" "respond"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* TODO [#B] Reply %:subject (%:from) :EMAIL:\n"
+                 ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%a\n%?"))
                 ("R" "read"
