@@ -124,7 +124,8 @@
                   eyebrowse-mode
                   projectile-mode
                   yas-global-mode
-                  semantic-mode))
+                  semantic-mode
+                  global-git-commit-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
