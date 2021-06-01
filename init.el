@@ -1082,7 +1082,7 @@
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT"
                              ((org-agenda-overriding-header "Waiting For List")
-                              (org-agenda-todo-ignore-scheduled 'future)
+                              (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy '(priority-down category-up))))
                   (tags-todo "DATE"
                              ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
