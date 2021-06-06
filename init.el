@@ -1008,7 +1008,7 @@
               org-agenda-skip-scheduled-if-deadline-is-shown 'not-today
               org-agenda-tags-todo-honor-ignore-options t
               org-agenda-start-with-log-mode nil
-              org-agenda-log-mode-items '(closed clock)
+              org-agenda-log-mode-items '(closed)
               org-agenda-remove-tags t
               org-agenda-sticky nil
               org-agenda-inhibit-startup nil
