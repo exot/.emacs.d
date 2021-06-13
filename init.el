@@ -1799,9 +1799,10 @@
 
 ;; Agents
 
-(setq gnus-agent-mark-unread-after-downloaded nil
-      gnus-agent-synchronize-flags t
-      gnus-agent-go-online t)
+(use-package gnus-agent
+  :init (setq gnus-agent-mark-unread-after-downloaded nil
+              gnus-agent-synchronize-flags t
+              gnus-agent-go-online t))
 
 ;; Package configuration
 
