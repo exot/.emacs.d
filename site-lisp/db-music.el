@@ -106,18 +106,19 @@ more details."
 Playing: %s(db/emms-track-status)
 
   _n_: ?n?          _p_: ?p?
-_RET_: ?RET?    _M_: ?M?
+_RET_: ?RET?    _s_: ?s?
   _-_: lower volume  _+_: ?+?
   _P_: ?P?
+  _M_: ?M?
 
 "
   ("n" emms-next         "next")
   ("p" emms-previous     "previous")
   ("RET" emms-pause      "play/pause")
-  ("s" emms-show         "show title")
+  ("s" emms-stop         "stop playing")
   ("-" emms-volume-lower "lower volume")
   ("+" emms-volume-raise "raise volume")
-  ("M" emms              "show playlist")
+  ("M" emms              "Show playlist in new EMMS buffer")
   ("P" (db/play-auto-playlist)
    "Play automatically generated playlist"))
 
