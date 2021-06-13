@@ -1107,7 +1107,6 @@
                 ("W" "Weekly Review"
                  ((agenda ""
                           ((org-agenda-span 7)
-                           (org-agenda-archives-mode t)
                            (org-agenda-dim-blocked-tasks nil)
                            (org-agenda-skip-deadline-prewarning-if-scheduled t)))))))
 
