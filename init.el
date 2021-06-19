@@ -703,6 +703,7 @@
              yas-minor-mode
              yas-global-mode
              yas-reload-all)
+  :ensure t
   :diminish yas-minor-mode
   :config (yas-reload-all))
 
@@ -1409,6 +1410,7 @@
 
 (use-package git-commit
   :commands (global-git-commit-mode)
+  :ensure t
   :init (setq git-commit-style-convention-checks '(non-empty-second-line
                                                    overlong-summary-line)
               git-commit-known-pseudo-headers '("Signed-off-by"
@@ -1421,6 +1423,7 @@
                                                 "Reviewed-by")))
 
 (use-package magit
+  :ensure t
   :commands (magit-status)
   :init (setq magit-diff-refine-hunk nil
               magit-commit-show-diff nil)
@@ -1510,6 +1513,7 @@
              db/gnus-demon-scan-news-on-level-2))
 
 (use-package bbdb
+  :ensure t
   :commands (bbdb-search-name
              bbdb-initialize
              bbdb-mua-auto-update-init
