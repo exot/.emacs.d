@@ -3001,6 +3001,12 @@ With given ARG, display files in `db/important-document-path’."
                 markdown-command "pandoc --standalone")
           (fset 'markdown-output-standalone-p #'(lambda () t))))
 
+(use-package plantuml-mode
+  :commands (plantuml-mode)
+  :init (setq plantuml-output-type "png"
+              plantuml-default-exec-mode 'jar
+              plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+
 (use-package pdf-occur
   :commands (pdf-occur-global-minor-mode))
 
