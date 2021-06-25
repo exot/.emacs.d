@@ -3005,7 +3005,8 @@ With given ARG, display files in `db/important-document-path’."
   :commands (plantuml-mode)
   :init (setq plantuml-output-type "png"
               plantuml-default-exec-mode 'jar
-              plantuml-jar-path "/usr/share/plantuml/plantuml.jar"))
+              plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
+              plantuml-indent-level 2))
 
 (use-package pdf-occur
   :commands (pdf-occur-global-minor-mode))
