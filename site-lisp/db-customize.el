@@ -147,7 +147,8 @@ in the main agenda view."
     ("scratch" ?r db/scratch)
     ("Org Clock Goto" ?c org-clock-goto)
     ("Info Lookup" ?I counsel-info-lookup-symbol)
-    ("Unicode Lookup" ?U counsel-unicode-char))
+    ("Unicode Lookup" ?U counsel-unicode-char)
+    ("Timeline of Day" ?T timeline-tools-format-timeline-of-day))
   "Mapping of frequently used features to functions implementing
 them.  Can be used in application shortcuts such as
 `db/helm-shortcuts’.  Each entry is a list of three items: a
