@@ -108,6 +108,7 @@ end date of the timeline."
     (define-key map "n" #'timeline-tools-next-line)
     (define-key map (kbd "C-p") #'timeline-tools-previous-line)
     (define-key map "p" #'timeline-tools-previous-line)
+    (define-key map "o" #'delete-other-windows)
     map))
 
 (define-derived-mode timeline-tools-mode
