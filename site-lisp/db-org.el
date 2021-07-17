@@ -771,15 +771,30 @@ active."
     (user-error "No clocked-in task, aborting"))
   (db/org-insert-link-to-pom org-clock-marker))
 
+(defun db/org-add-link-to-org-clock-select-task ()
+  "Insert link to Org item that was recently associated with clocking.
+
+Interactively query for such an item and insert link to current
+buffer at point."
+  (interactive "")
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org Mode, will not insert link"))
+  (let ((pom (org-clock-select-task "Select item to link to: ")))
+    (if (null pom)
+        (error "Invalid choice")
+      (db/org-insert-link-to-pom pom))))
+
 (defhydra hydra-org-linking (:color blue :hint none)
   "
 Add link at point to …
  … _c_urrent clock
+ … _s_select clock item from the recent clock history
  … _o_ther item (from current file buffer or default Org file)
  … _O_ther item (from all Org mode text search files)
 
 Show _b_acklinks to current item."
   ("c" db/org-add-link-to-current-clock)
+  ("s" db/org-add-link-to-org-clock-select-task)
   ("o" (db/org-add-link-to-other-item nil))
   ("O" (db/org-add-link-to-other-item t))
   ("b" db/org-find-links-to-current-item))
