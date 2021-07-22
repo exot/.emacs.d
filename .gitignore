@@ -59,3 +59,4 @@
 /flycheck_init.el
 /projects
 /.lsp-session-v1
+/.cache/

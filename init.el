@@ -3020,6 +3020,9 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package python
   :config (progn
+            (unless (require 'lsp-pyright nil :no-error)
+              (message "`lsp-pyright' not available, using defaults from `lsp'"))
+
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
             (add-hook 'python-mode-hook #'company-mode)
             (add-hook 'python-mode-hook #'lsp)))
