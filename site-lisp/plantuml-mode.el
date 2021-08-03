@@ -75,6 +75,7 @@
 (require 'thingatpt)
 (require 'dash)
 (require 'xml)
+(require 'cl)
 
 (defgroup plantuml-mode nil
   "Major mode for editing plantuml file."
@@ -146,6 +147,11 @@
 
 (defcustom plantuml-indent-level tab-width
   "Indentation level of PlantUML lines")
+
+(defcustom plantuml-export-overwrite-files nil
+  "Control whether file exporting is allowed to silently overwrite files."
+  :type 'boolean
+  :group 'plantuml)
 
 (defun plantuml-jar-render-command (&rest arguments)
   "Create a command line to execute PlantUML with arguments (as ARGUMENTS)."
@@ -539,6 +545,101 @@ Uses prefix (as PREFIX) to choose where to display it:
   (if mark-active
       (plantuml-preview-region prefix (region-beginning) (region-end))
     (plantuml-preview-buffer prefix)))
+
+
+;; Exporting to buffers
+
+(cl-defgeneric plantuml-export-string-to-buffer (exec-mode string buffer)
+  "Export STRING to plantuml diagram using the given EXEC-MODE.
+Use BUFFER to write the diagram to, clearing it first.  This
+buffer can be written to a file or be displayed directly.")
+
+(cl-defmethod plantuml-export-string-to-buffer (exec-mode string buffer)
+  "Fallback method when EXEC-MODE is unknown.
+STRING and BUFFER are ignored."
+  (ignore string buffer)
+  (user-error "Exporting with exec-mode %s is not supported (yet)" exec-mode))
+
+(cl-defmethod plantuml-export-string-to-buffer ((exec-mode (eql jar)) string buffer)
+  "Method to export plantuml diagrams in STRING to BUFFER using jar EXEC-MODE."
+  (ignore exec-mode)
+  (unless (bufferp buffer)
+    (user-error "Given argument BUFFER is not a buffer: %s" buffer))
+
+  (let ((java-args (if (<= 8 (plantuml-jar-java-version))
+                       (remove "--illegal-access=deny" plantuml-java-args)
+                     plantuml-java-args)))
+
+    (with-current-buffer buffer
+      (erase-buffer))
+
+    (let ((return-code (apply #'call-process-region
+                              string nil
+                              plantuml-java-command
+                              nil buffer nil
+                              `(,@java-args
+                                ,(expand-file-name plantuml-jar-path)
+                                ,(plantuml-jar-output-type-opt plantuml-output-type)
+                                ,@plantuml-jar-args
+                                "-p"))))
+
+      ;; If an error occured, return the return-code, and nil otherwise to
+      ;; signal everything's fine.
+      (unless (zerop return-code)
+        return-code))))
+
+;; TODO add support for exec-modes `server' and `executable'
+
+(defun plantuml-export ()
+  "Export a plantuml diagram to a file.
+Exports the whole buffer unless a region is active, in which case
+only the region will be exported."
+  (interactive)
+  (let ((original-file-name (buffer-file-name (current-buffer)))
+        (diagram-string (if mark-active
+                            (buffer-substring-no-properties
+                             (region-beginning) (region-end))
+                          (buffer-string)))
+        export-file-name
+        errors-during-export)
+
+    (unless original-file-name
+      (user-error "Current buffer is not associated with any file, cannot determine output file name"))
+    (setq export-file-name (concat (file-name-sans-extension original-file-name)
+                                   "."
+                                   plantuml-output-type))
+    (when (and (file-exists-p export-file-name)
+               (not plantuml-export-overwrite-files))
+      (user-error "File %s already exists, will not export"
+                  export-file-name))
+
+    (message "Exporting to %s ..." export-file-name)
+
+    (let ((target-buffer (generate-new-buffer " *temp*")))
+      ;; We do not use `with-temp-buffer' here, as we want to stay in the
+      ;; current buffer containing the plantuml diagram.  The reason for this is
+      ;; that `planumlt-output-type' is local to the current buffer, and
+      ;; switching the buffer using `with-temp-buffer' may change its value and
+      ;; thus may give inconsistent results (e.g., files with ending "svg" that
+      ;; still contain a png).
+      (setq errors-during-export
+            (plantuml-export-string-to-buffer (plantuml-get-exec-mode)
+                                              diagram-string
+                                              target-buffer))
+      ;; We export the result even in case of errors, as plantuml writes its
+      ;; error messages to the target output.  Furthermore, exporting is always
+      ;; done without any conversion, as plantuml already outputs the desired
+      ;; format bit by bit.
+      (with-current-buffer target-buffer
+        (let ((coding-system-for-write 'binary))
+          (write-file export-file-name))))
+
+    (if errors-during-export
+        (message "Exporting to %s ... failed (see file for details)" export-file-name)
+      (message "Exporting to %s ... done" export-file-name))))
+
+
+;;
 
 ;; Below are the regexp's for indentation.
 ;; Notes:
