@@ -3003,7 +3003,7 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package plantuml-mode
   :commands (plantuml-mode)
-  :init (setq plantuml-output-type "png"
+  :init (setq plantuml-output-type "svg"
               plantuml-default-exec-mode 'jar
               plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
               plantuml-indent-level 2)
