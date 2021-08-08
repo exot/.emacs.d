@@ -593,9 +593,9 @@ drawers, will be copied to point."
 This can be used to copy checklists from templates to the current
 item, which might be an instance of a periodic task.
 
-If POM is not given, use `db/org--get-location' to interactively
+If POM is not given, use `db/org-get-location' to interactively
 query for it."
-  (interactive (list (db/org--get-location)))
+  (interactive (list (db/org-get-location)))
   (unless (number-or-marker-p pom)
     (user-error "Argument is neither point nor mark: %s" pom))
   (let ((body (save-restriction
@@ -686,7 +686,7 @@ not."
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
-(defun db/org--get-location (&optional arg)
+(defun db/org-get-location (&optional arg)
   "Interactively query for location and return mark.
 
 Searches through the current buffer if that one is associated
@@ -745,7 +745,7 @@ item."
                 (org-with-point-at (org-get-at-bol 'org-hd-marker)
                   (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))
                (t
-                (org-with-point-at (db/org--get-location)
+                (org-with-point-at (db/org-get-location)
                   (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))))))
 
 (defun db/org-insert-link-to-pom (pom)
@@ -784,7 +784,7 @@ variables `org-agenda-files' and
   (interactive "P")
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org Mode"))
-  (db/org-insert-link-to-pom (db/org--get-location arg)))
+  (db/org-insert-link-to-pom (db/org-get-location arg)))
 
 (defun db/org-add-link-to-current-clock ()
   "Insert link to currently clocked-in item at point.
