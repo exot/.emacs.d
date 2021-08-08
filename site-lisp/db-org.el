@@ -560,37 +560,63 @@ Work task and home task are determined by the current values of
       (org-clock-mark-default-task))))
 
 (defun db/org-copy-template-for-periodic-task ()
-  "Copy template of the enclosing periodic task to item at point.
-The template must be placed into an item titled 'Template',
-called the template item.  The template item must be the first
+  "Copy body of the enclosing periodic task to item at point.
+The body must be placed into an item titled 'Template',
+called the body item.  The body item must be the first
 headline of the periodic task, i.e., of the parent of the current
-item at point.  The body of the template item, without any
+item at point.  The body of the body item, without any
 drawers, will be copied to point."
   (interactive)
-  (let ((template (save-restriction
-                    (save-mark-and-excursion
-                      (let ((template-element (progn
-                                                (outline-up-heading 1 'invisible-ok)
-                                                (outline-next-heading)
-                                                (org-element-at-point))))
-                        (unless (string-equal (org-element-property :title template-element)
-                                              "Template")
-                          (user-error "Template must be first headline in periodic task"))
-                        ;; Starting from the end of the last element in the
-                        ;; subtree, we go up until we find a drawer or a
-                        ;; headline; everything in between is considered to be the template
-                        (let ((content-end (org-element-property :contents-end template-element))
-                              content-begin current-element)
-                          (goto-char content-end)
-                          (while (progn
-                                   (setq current-element (org-element-at-point))
-                                   (not (memq (org-element-type current-element)
-                                              '(drawer property-drawer headline))))
-                            (setq content-begin (org-element-property :begin current-element))
-                            (goto-char (1- content-begin)))
-                          (string-trim-right
-                           (buffer-substring-no-properties content-begin content-end))))))))
-    (insert template)
+  (let ((template-pom (save-restriction
+                        (save-mark-and-excursion
+                          ;; Navigate to the body, which is supposed to be
+                          ;; the first item of the periodic task.  One could
+                          ;; think about putting the body also directly
+                          ;; below the periodic task, but this is not supported
+                          ;; yet.
+                          (outline-up-heading 1 'invisible-ok)
+                          (outline-next-heading)
+                          (point)))))
+
+    (unless (string-equal (org-element-property
+                           :title
+                           (org-with-point-at template-pom
+                             (org-element-at-point)))
+                          "Template")
+      (user-error "Template must be first headline in periodic task"))
+
+    (db/org-copy-body-from-item-to-point template-pom)))
+
+(defun db/org-copy-body-from-item-to-point (pom)
+  "Copy body from item given by POM to point.
+
+This can be used to copy checklists from templates to the current
+item, which might be an instance of a periodic task.
+
+If POM is not given, use `db/org--get-location' to interactively
+query for it."
+  (interactive (list (db/org--get-location)))
+  (unless (number-or-marker-p pom)
+    (user-error "Argument is neither point nor mark: %s" pom))
+  (let ((body (save-restriction
+                (save-mark-and-excursion
+                  (let ((template-element (org-with-point-at pom
+                                            (org-element-at-point))))
+                    ;; Starting from the end of the last element in the subtree,
+                    ;; we go up until we find a drawer or a headline; everything
+                    ;; in between is considered to be the body.
+                    (let ((content-end (org-element-property :contents-end template-element))
+                          content-begin current-element)
+                      (goto-char content-end)
+                      (while (progn
+                               (setq current-element (org-element-at-point))
+                               (not (memq (org-element-type current-element)
+                                          '(drawer property-drawer headline))))
+                        (setq content-begin (org-element-property :begin current-element))
+                        (goto-char (1- content-begin)))
+                      (string-trim-right
+                       (buffer-substring-no-properties content-begin content-end))))))))
+    (insert body)
     (org-update-statistics-cookies nil)))
 
 
