@@ -1096,16 +1096,18 @@
                              ((org-agenda-overriding-header "Tasks on Hold")))))
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
-                 ((tags-todo "SOMEWHEN/-CANC-DONE"
-                             ((org-agenda-overriding-header "Things to do or read somewhen")
+                 ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SCHEDULED>=\"<+1d>\""
+                        ((org-agenda-overriding-header "Open Projects to do SOMEWHEN (no TODO keyword, no PERIODIC, no NOTE, no DATE, no future SCHEDULED)")))
+                  (tags-todo "SOMEWHEN/-CANC-DONE"
+                             ((org-agenda-overriding-header "Things To Do SOMEWHEN")
                               (org-agenda-todo-ignore-with-date t)
                               (org-tags-match-list-sublevels nil)))))
 
                 ("P" "Current Projects"
                  ((stuck ""
                          ((org-agenda-overriding-header "Stuck Projects")))
-                  (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SCHEDULED>=\"<+1d>\""
-                        ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE, no future SCHEDULED)")))
+                  (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SOMEWHEN-SCHEDULED>=\"<+1d>\""
+                        ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE, no SOMEWHEN, no future SCHEDULED)")))
                   (tags "TAGS={PERIODIC}"
                         ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))))
 
