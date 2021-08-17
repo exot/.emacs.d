@@ -1037,8 +1037,12 @@
               org-agenda-clockreport-parameter-plist
               '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
 
+              ;; Note: projects scheduled in the future are not considered
+              ;; stuck, even though they are projects by itself; the rationale
+              ;; here is that projects that have an explicit SCHEDULED entry
+              ;; should not be considered before this date is due.
               org-stuck-projects
-              '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP\\|TOPIC\\|SOMEWHEN}"
+              '("+TODO=\"\"-DATE-REGULAR-HOLD-NOTE-TAGS={NOP\\|TOPIC\\|SOMEWHEN}-SCHEDULED>=\"<+1d>\""
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
                 ()
                 "")
@@ -1100,8 +1104,8 @@
                 ("P" "Current Projects"
                  ((stuck ""
                          ((org-agenda-overriding-header "Stuck Projects")))
-                  (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE"
-                        ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE)")))
+                  (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SCHEDULED>=\"<+1d>\""
+                        ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE, no future SCHEDULED)")))
                   (tags "TAGS={PERIODIC}"
                         ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))))
 
