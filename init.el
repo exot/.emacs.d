@@ -821,6 +821,9 @@
                   ("NOP" . ?o)
                   ("TOPIC" . ?t))
 
+                org-tags-exclude-from-inheritance
+                '("NOP" "TOPIC")
+
                 org-fast-tag-selection-single-key 'expert)
 
           ;; Faces
