@@ -354,8 +354,8 @@ output, separated by \\n, when called with
          (list-of-files (cl-remove-if-not
                          (lambda (entry)
                            (and (not (string-empty-p entry))
-                                (file-exists-p entry)
-                                (file-readable-p entry)))
+                                (or (file-exists-p entry)
+                                    (file-symlink-p entry))))
                          (split-string (shell-command-to-string command)
                                        "\n"))))
     (dired (cons "Command output" list-of-files))))
