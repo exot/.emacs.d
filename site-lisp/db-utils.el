@@ -358,7 +358,9 @@ output, separated by \\n, when called with
                                     (file-symlink-p entry))))
                          (split-string (shell-command-to-string command)
                                        "\n"))))
-    (dired (cons "Command output" list-of-files))))
+    (if (null list-of-files)
+        (message "No files return by command “%s”" command)
+      (dired (cons "Command output" list-of-files)))))
 
 (defun db/system-open (path)
   "Open PATH with default program as defined by the underlying system."
