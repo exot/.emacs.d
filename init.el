@@ -1539,8 +1539,8 @@
 ;; General Gnus configuration
 
 (setq gnus-init-file (expand-file-name "gnus.el" emacs-d)
-      gnus-home-directory (expand-file-name "private/news/" emacs-d)
-      gnus-directory (expand-file-name "private/news/" emacs-d)
+      gnus-home-directory (expand-file-name "~/.config/gnus-news")
+      gnus-directory gnus-home-directory
       gnus-kill-files-directory gnus-directory
       gnus-startup-file (expand-file-name "private/gnus-newsrc" emacs-d)
       gnus-cache-directory (expand-file-name "cache/" gnus-directory)
