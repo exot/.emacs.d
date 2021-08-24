@@ -362,6 +362,16 @@ output, separated by \\n, when called with
         (message "No files return by command “%s”" command)
       (dired (cons "Command output" list-of-files)))))
 
+(defun db/dired-from-git-annex (matching-options)
+  "Display files found by git annex with MATCHING-OPTIONS.
+This runs “git annex find” with MATCHING-OPTIONS (a string) in
+`default-directory' and displays the resulting set of files using
+`dired'."
+  (interactive (list (read-string (format "Matching Options (in %s): "
+                                          default-directory))))
+  (db/dired-from-shell-command (format "git annex find . %s" matching-options)
+                               default-directory))
+
 (defun db/system-open (path)
   "Open PATH with default program as defined by the underlying system."
   (cond
