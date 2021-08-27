@@ -1106,13 +1106,15 @@
                               (org-agenda-todo-ignore-with-date t)
                               (org-tags-match-list-sublevels nil)))))
 
-                ("P" "Current Projects"
+                ("P" "Current Projects and Topics"
                  ((stuck ""
                          ((org-agenda-overriding-header "Stuck Projects")))
                   (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SOMEWHEN-SCHEDULED>=\"<+1d>\""
                         ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE, no SOMEWHEN, no future SCHEDULED)")))
                   (tags "TAGS={PERIODIC}"
-                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))))
+                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))
+                  (tags "TAGS={TOPIC}"
+                        ((org-agenda-overriding-header "Topics")))))
 
                 ("W" "Weekly Review"
                  ((agenda ""
