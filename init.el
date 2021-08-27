@@ -1067,9 +1067,6 @@
                    ((org-agenda-overriding-header "Deadlines")
                     (org-agenda-sorting-strategy '(deadline-up priority-down))
                     (org-deadline-warning-days 30)))
-                  (tags "REFILE"
-                        ((org-agenda-files (list db/org-default-refile-file))
-                         (org-agenda-overriding-header "Things to refile (make it empty!)")))
                   (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT-READ/-DONE"
                              ((org-agenda-overriding-header "Next Actions List (unscheduled actions)")
                               (org-tags-match-list-sublevels t)
@@ -1095,6 +1092,9 @@
                   (tags-todo "DATE"
                              ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
                               (org-agenda-todo-ignore-timestamp 0)))
+                  (tags "REFILE"
+                        ((org-agenda-files (list db/org-default-refile-file))
+                         (org-agenda-overriding-header "Things to refile (make it empty!)")))
                   (tags-todo "HOLD"
                              ((org-agenda-overriding-header "Tasks on Hold")))))
 
