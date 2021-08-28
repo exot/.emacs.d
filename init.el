@@ -1111,10 +1111,10 @@
                          ((org-agenda-overriding-header "Stuck Projects")))
                   (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SOMEWHEN-SCHEDULED>=\"<+1d>\""
                         ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE, no SOMEWHEN, no future SCHEDULED)")))
+                  (tags "TAGS={TOPIC}-SCHEDULED>=\"<+1d>\""
+                        ((org-agenda-overriding-header "Topics")))
                   (tags "TAGS={PERIODIC}"
-                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))
-                  (tags "TAGS={TOPIC}"
-                        ((org-agenda-overriding-header "Topics")))))
+                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))))
 
                 ("W" "Weekly Review"
                  ((agenda ""
