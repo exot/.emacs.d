@@ -996,8 +996,8 @@
               org-agenda-insert-diary-strategy 'top-level
               org-catch-invisible-edits 'show
               org-agenda-sorting-strategy '((agenda time-up habit-up priority-down)
-                                            (todo category-keep)
-                                            (tags category-keep)
+                                            (todo priority-down category-keep)
+                                            (tags priority-down category-keep)
                                             (search category-keep))
               org-agenda-window-setup 'current-window
               org-agenda-restore-windows-after-quit t
