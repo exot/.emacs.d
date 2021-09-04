@@ -145,9 +145,7 @@
   (require 'helm)
 
   (when (package-installed-p 'org-roam)
-    (if (executable-find "sqlite3")
-        (org-roam-mode +1)
-      (warn "Cannot activate org-roam: sqlite3 not found.")))
+    (org-roam-db-autosync-mode))
 
   ;; Global Hooks
 
@@ -214,8 +212,6 @@
   (bind-key "C-c j" #'avy-goto-char-timer)
   (bind-key "C-c l" #'org-store-link)
   (bind-key "C-c m" #'music-control/body)
-  (bind-key "C-c n I" #'org-roam-insert-immediate)
-  (bind-key "C-c n i" #'org-roam-insert)
   (bind-key "C-c o" #'hydra-org-clock/body)
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-c t" #'hydra-toggle/body)
@@ -1361,42 +1357,12 @@
               ("<C-left>" . org-tree-slide-move-previous-tree)))
 
 (use-package org-roam
-  :commands (org-roam-find-file)
+  :init (setq org-roam-v2-ack t)
   :custom ((org-roam-directory "~/Documents/zettelkasten/")
            (org-roam-db-location "~/Documents/zettelkasten/org-roam.db")
            (org-roam-completion-everywhere t))
   :bind (:map org-roam-mode-map
-              (("C-c n l" . org-roam)
-               ("C-c n f" . org-roam-find-file)
-               ("C-c n g" . org-roam-graph)))
-  :config (progn
-
-            ;; There seems to be a problem when capturing notes with the capture
-            ;; template.  More precisely, `org-roam-current-title' does not get
-            ;; set correctly (is it my setup or a general bug?)  This causes
-            ;; `org-roam--update-file-name-on-title-change' to get a nil
-            ;; argument, on which it barfs.  Let's intercept this case and don't
-            ;; do anything.  This effectively disables the auto-rename
-            ;; functionality when using org-capture to add notes.
-
-            (defun db/org-roam--no-titlechange-if-title-is-nil (orig-fun &rest args)
-              (unless (cl-some #'null args)
-                (apply orig-fun args)))
-
-            (advice-add 'org-roam--update-file-name-on-title-change
-                        :around #'db/org-roam--no-titlechange-if-title-is-nil)
-
-            ;; `org-roam--id-link-face' apparently changes the matching data,
-            ;; resulting in `org-finalize-agenda' to fail while applying text
-            ;; properties to ID links; let's warp `save-match-data' around calls
-            ;; to it.
-
-            (defun db/save-match-data (orig-fun &rest args)
-              (save-match-data
-                (apply orig-fun args)))
-
-            (advice-add 'org-roam--id-link-face
-                        :around #'db/save-match-data)))
+              (("C-c n g" . org-roam-graph))))
 
 (use-package org-ref
   :config (progn
