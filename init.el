@@ -942,7 +942,7 @@
 (use-package org-clock
   :commands (org-clock-save)
   :init (progn
-          (setq org-clock-history-length 23
+          (setq org-clock-history-length 35
                 org-clock-in-resume t
                 org-clock-into-drawer t
                 org-clock-idle-time nil
