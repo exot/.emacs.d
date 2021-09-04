@@ -212,6 +212,9 @@
   (bind-key "C-c j" #'avy-goto-char-timer)
   (bind-key "C-c l" #'org-store-link)
   (bind-key "C-c m" #'music-control/body)
+  (bind-key "C-c n f" #'org-roam-node-find)
+  (bind-key "C-c n i" #'org-roam-node-insert)
+  (bind-key "C-c n c" #'org-roam-capture)
   (bind-key "C-c o" #'hydra-org-clock/body)
   (bind-key "C-c s" #'synonyms)
   (bind-key "C-c t" #'hydra-toggle/body)
@@ -1358,11 +1361,15 @@
 
 (use-package org-roam
   :init (setq org-roam-v2-ack t)
+  :commands (org-roam-node-insert
+             org-roam-node-find
+             org-roam-capture)
   :custom ((org-roam-directory "~/Documents/zettelkasten/")
            (org-roam-db-location "~/Documents/zettelkasten/org-roam.db")
            (org-roam-completion-everywhere t))
   :bind (:map org-roam-mode-map
-              (("C-c n g" . org-roam-graph))))
+              (("C-c n l" . org-roam-buffer-toggle)
+               ("C-c n g" . org-roam-graph))))
 
 (use-package org-ref
   :config (progn
