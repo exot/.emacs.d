@@ -814,7 +814,7 @@ buffer at point."
   "
 Add link at point to …
  … _c_urrent clock
- … _s_select clock item from the recent clock history
+ … _s_elect clock item from the recent clock history
  … _o_ther item (from current file buffer or default Org file)
  … _O_ther item (from all Org mode text search files)
 
