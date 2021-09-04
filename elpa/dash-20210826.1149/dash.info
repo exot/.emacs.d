@@ -1,6 +1,6 @@
 This is dash.info, produced by makeinfo version 6.7 from dash.texi.
 
-This manual is for Dash version 2.18.1.
+This manual is for Dash version 2.19.1.
 
    Copyright © 2012–2021 Free Software Foundation, Inc.
 
@@ -22,7 +22,7 @@ File: dash.info,  Node: Top,  Next: Installation,  Up: (dir)
 Dash
 ****
 
-This manual is for Dash version 2.18.1.
+This manual is for Dash version 2.19.1.
 
    Copyright © 2012–2021 Free Software Foundation, Inc.
 
@@ -110,7 +110,7 @@ File: dash.info,  Node: Using in a package,  Next: Fontification of special vari
 If you use Dash in your own package, be sure to list it as a dependency
 in the library’s headers as follows (*note (elisp)Library Headers::).
 
-     ;; Package-Requires: ((dash "2.18.1"))
+     ;; Package-Requires: ((dash "2.19.1"))
 
 
 File: dash.info,  Node: Fontification of special variables,  Next: Info symbol lookup,  Prev: Using in a package,  Up: Installation
@@ -1135,27 +1135,68 @@ File: dash.info,  Node: Predicates,  Next: Partitioning,  Prev: Unfolding,  Up: 
 
 Reductions of one or more lists to a boolean value.
 
+ -- Function: -some (pred list)
+     Return (PRED x) for the first LIST item where (PRED x) is non-nil,
+     else nil.
+
+     Alias: ‘-any’.
+
+     This function’s anaphoric counterpart is ‘--some’.
+
+          (-some #'stringp '(1 "2" 3))
+              ⇒ t
+          (--some (string-match-p "x" it) '("foo" "axe" "xor"))
+              ⇒ 1
+          (--some (= it-index 3) '(0 1 2))
+              ⇒ nil
+
+ -- Function: -every (pred list)
+     Return non-nil if PRED returns non-nil for all items in LIST.  If
+     so, return the last such result of PRED.  Otherwise, once an item
+     is reached for which PRED returns nil, return nil without calling
+     PRED on any further LIST elements.
+
+     This function is like ‘-every-p’, but on success returns the last
+     non-nil result of PRED instead of just t.
+
+     This function’s anaphoric counterpart is ‘--every’.
+
+          (-every #'numberp '(1 2 3))
+              ⇒ t
+          (--every (string-match-p "x" it) '("axe" "xor"))
+              ⇒ 0
+          (--every (= it it-index) '(0 1 3))
+              ⇒ nil
+
  -- Function: -any? (pred list)
      Return t if (PRED x) is non-nil for any x in LIST, else nil.
 
      Alias: ‘-any-p’, ‘-some?’, ‘-some-p’
 
-          (-any? 'even? '(1 2 3))
+          (-any? #'numberp '(nil 0 t))
               ⇒ t
-          (-any? 'even? '(1 3 5))
+          (-any? #'numberp '(nil t t))
               ⇒ nil
-          (-any? 'null '(1 3 5))
+          (-any? #'null '(1 3 5))
               ⇒ nil
 
  -- Function: -all? (pred list)
-     Return t if (PRED x) is non-nil for all x in LIST, else nil.
+     Return t if (PRED X) is non-nil for all X in LIST, else nil.  In
+     the latter case, stop after the first X for which (PRED X) is nil,
+     without calling PRED on any subsequent elements of LIST.
 
-     Alias: ‘-all-p’, ‘-every?’, ‘-every-p’
+     The similar function ‘-every’ (*note -every::) is more widely
+     useful, since it returns the last non-nil result of PRED instead of
+     just t on success.
 
-          (-all? 'even? '(1 2 3))
-              ⇒ nil
-          (-all? 'even? '(2 4 6))
+     Alias: ‘-all-p’, ‘-every-p’, ‘-every?’.
+
+     This function’s anaphoric counterpart is ‘--all?’.
+
+          (-all? #'numberp '(1 2 3))
               ⇒ t
+          (-all? #'numberp '(2 t 6))
+              ⇒ nil
           (--all? (= 0 (% it 2)) '(2 4 6))
               ⇒ t
 
@@ -1313,9 +1354,9 @@ Functions partitioning the input list into a list of lists.
 
           (-split-on '| '(Nil | Leaf a | Node [Tree a]))
               ⇒ ((Nil) (Leaf a) (Node [Tree a]))
-          (-split-on ':endgroup '("a" "b" :endgroup "c" :endgroup "d" "e"))
+          (-split-on :endgroup '("a" "b" :endgroup "c" :endgroup "d" "e"))
               ⇒ (("a" "b") ("c") ("d" "e"))
-          (-split-on ':endgroup '("a" "b" :endgroup :endgroup "d" "e"))
+          (-split-on :endgroup '("a" "b" :endgroup :endgroup "d" "e"))
               ⇒ (("a" "b") ("d" "e"))
 
  -- Function: -split-when (fn list)
@@ -1647,8 +1688,8 @@ File: dash.info,  Node: Other list operations,  Next: Tree operations,  Prev: Se
 Other list functions not fit to be classified elsewhere.
 
  -- Function: -rotate (n list)
-     Rotate LIST N places to the right.  With N negative, rotate to the
-     left.  The time complexity is O(n).
+     Rotate LIST N places to the right (left if N is negative).  The
+     time complexity is O(n).
 
           (-rotate 3 '(1 2 3 4 5 6 7))
               ⇒ (5 6 7 1 2 3 4)
@@ -1899,21 +1940,6 @@ Other list functions not fit to be classified elsewhere.
               ⇒ nil
           (--first (> it 2) '(1 2 3))
               ⇒ 3
-
- -- Function: -some (pred list)
-     Return (PRED x) for the first LIST item where (PRED x) is non-nil,
-     else nil.
-
-     Alias: ‘-any’.
-
-     This function’s anaphoric counterpart is ‘--some’.
-
-          (-some (lambda (s) (string-match-p "x" s)) '("foo" "axe" "xor"))
-              ⇒ 1
-          (-some (lambda (s) (string-match-p "x" s)) '("foo" "bar" "baz"))
-              ⇒ nil
-          (--some (member 'foo it) '((foo bar) (baz)))
-              ⇒ (foo bar)
 
  -- Function: -last (pred list)
      Return the last x in LIST where (PRED x) is non-nil, else nil.
@@ -2768,31 +2794,58 @@ Functions that manipulate and compose other functions.
           (funcall (-applify #'<) '(3 6))
               ⇒ t
 
- -- Function: -on (operator transformer)
-     Return a function of two arguments that first applies TRANSFORMER
-     to each of them and then applies OPERATOR on the results (in the
-     same order).
+ -- Function: -on (op trans)
+     Return a function that calls TRANS on each arg and OP on the
+     results.  The returned function takes a variable number of
+     arguments, calls the function TRANS on each one in turn, and then
+     passes those results as the list of arguments to OP, in the same
+     order.
 
-     In types: (b -> b -> c) -> (a -> b) -> a -> a -> c
+     For example, the following pairs of expressions are morally
+     equivalent:
 
-          (-sort (-on '< 'length) '((1 2 3) (1) (1 2)))
+     (funcall (-on #’+ #’1+) 1 2 3) = (+ (1+ 1) (1+ 2) (1+ 3)) (funcall
+     (-on #’+ #’1+)) = (+)
+
+          (-sort (-on #'< #'length) '((1 2 3) (1) (1 2)))
               ⇒ ((1) (1 2) (1 2 3))
-          (-min-by (-on '> 'length) '((1 2 3) (4) (1 2)))
+          (funcall (-on #'min #'string-to-number) "22" "2" "1" "12")
+              ⇒ 1
+          (-min-by (-on #'> #'length) '((1 2 3) (4) (1 2)))
               ⇒ (4)
-          (-min-by (-on 'string-lessp 'number-to-string) '(2 100 22))
-              ⇒ 22
 
- -- Function: -flip (func)
-     Swap the order of arguments for binary function FUNC.
+ -- Function: -flip (fn)
+     Return a function that calls FN with its arguments reversed.  The
+     returned function takes the same number of arguments as FN.
 
-     In types: (a -> b -> c) -> b -> a -> c
+     For example, the following two expressions are morally equivalent:
 
-          (funcall (-flip '<) 2 1)
-              ⇒ t
-          (funcall (-flip '-) 3 8)
-              ⇒ 5
-          (-sort (-flip '<) '(4 3 6 1))
+     (funcall (-flip #’-) 1 2) = (- 2 1)
+
+     See also: ‘-rotate-args’ (*note -rotate-args::).
+
+          (-sort (-flip #'<) '(4 3 6 1))
               ⇒ (6 4 3 1)
+          (funcall (-flip #'-) 3 2 1 10)
+              ⇒ 4
+          (funcall (-flip #'1+) 1)
+              ⇒ 2
+
+ -- Function: -rotate-args (n fn)
+     Return a function that calls FN with args rotated N places to the
+     right.  The returned function takes the same number of arguments as
+     FN, rotates the list of arguments N places to the right (left if N
+     is negative) just like ‘-rotate’ (*note -rotate::), and applies FN
+     to the result.
+
+     See also: ‘-flip’ (*note -flip::).
+
+          (funcall (-rotate-args -1 #'list) 1 2 3 4)
+              ⇒ (2 3 4 1)
+          (funcall (-rotate-args 1 #'-) 1 10 100)
+              ⇒ 89
+          (funcall (-rotate-args 2 #'list) 3 4 5 1 2)
+              ⇒ (1 2 3 4 5)
 
  -- Function: -const (c)
      Return a function that returns C ignoring any additional arguments.
@@ -2801,9 +2854,9 @@ Functions that manipulate and compose other functions.
 
           (funcall (-const 2) 1 3 "foo")
               ⇒ 2
-          (-map (-const 1) '("a" "b" "c" "d"))
+          (mapcar (-const 1) '("a" "b" "c" "d"))
               ⇒ (1 1 1 1)
-          (-sum (-map (-const 1) '("a" "b" "c" "d")))
+          (-sum (mapcar (-const 1) '("a" "b" "c" "d")))
               ⇒ 4
 
  -- Macro: -cut (&rest params)
@@ -2820,39 +2873,52 @@ Functions that manipulate and compose other functions.
               ⇒ ((1 2 3) [1 2 3] "\1\2\3")
 
  -- Function: -not (pred)
-     Take a unary predicate PRED and return a unary predicate that
-     returns t if PRED returns nil and nil if PRED returns non-nil.
+     Return a predicate that negates the result of PRED.  The returned
+     predicate passes its arguments to PRED.  If PRED returns nil, the
+     result is non-nil; otherwise the result is nil.
 
-          (funcall (-not 'even?) 5)
+     See also: ‘-andfn’ (*note -andfn::) and ‘-orfn’ (*note -orfn::).
+
+          (funcall (-not #'numberp) "5")
               ⇒ t
-          (-filter (-not (-partial '< 4)) '(1 2 3 4 5 6 7 8))
+          (-sort (-not #'<) '(5 2 1 0 6))
+              ⇒ (6 5 2 1 0)
+          (-filter (-not (-partial #'< 4)) '(1 2 3 4 5 6 7 8))
               ⇒ (1 2 3 4)
 
  -- Function: -orfn (&rest preds)
-     Take list of unary predicates PREDS and return a unary predicate
-     with argument x that returns non-nil if at least one of the PREDS
-     returns non-nil on x.
+     Return a predicate that returns the first non-nil result of PREDS.
+     The returned predicate takes a variable number of arguments, passes
+     them to each predicate in PREDS in turn until one of them returns
+     non-nil, and returns that non-nil result without calling the
+     remaining PREDS.  If all PREDS return nil, or if no PREDS are
+     given, the returned predicate returns nil.
 
-     In types: [a -> Bool] -> a -> Bool
+     See also: ‘-andfn’ (*note -andfn::) and ‘-not’ (*note -not::).
 
-          (-filter (-orfn 'even? (-partial (-flip '<) 5)) '(1 2 3 4 5 6 7 8 9 10))
-              ⇒ (1 2 3 4 6 8 10)
-          (funcall (-orfn 'stringp 'even?) "foo")
+          (-filter (-orfn #'natnump #'booleanp) '(1 nil "a" -4 b c t))
+              ⇒ (1 nil t)
+          (funcall (-orfn #'symbolp (-cut string-match-p "x" <>)) "axe")
+              ⇒ 1
+          (funcall (-orfn #'= #'+) 1 1)
               ⇒ t
 
  -- Function: -andfn (&rest preds)
-     Take list of unary predicates PREDS and return a unary predicate
-     with argument x that returns non-nil if all of the PREDS returns
-     non-nil on x.
+     Return a predicate that returns non-nil if all PREDS do so.  The
+     returned predicate P takes a variable number of arguments and
+     passes them to each predicate in PREDS in turn.  If any one of
+     PREDS returns nil, P also returns nil without calling the remaining
+     PREDS.  If all PREDS return non-nil, P returns the last such value.
+     If no PREDS are given, P always returns non-nil.
 
-     In types: [a -> Bool] -> a -> Bool
+     See also: ‘-orfn’ (*note -orfn::) and ‘-not’ (*note -not::).
 
-          (funcall (-andfn (-cut < <> 10) 'even?) 6)
-              ⇒ t
-          (funcall (-andfn (-cut < <> 10) 'even?) 12)
-              ⇒ nil
-          (-filter (-andfn (-not 'even?) (-cut >= 5 <>)) '(1 2 3 4 5 6 7 8 9 10))
-              ⇒ (1 3 5)
+          (-filter (-andfn #'numberp (-cut < <> 5)) '(a 1 b 6 c 2))
+              ⇒ (1 2)
+          (mapcar (-andfn #'numberp #'1+) '(a 1 b 6))
+              ⇒ (nil 2 nil 7)
+          (funcall (-andfn #'= #'+) 1 1)
+              ⇒ 2
 
  -- Function: -iteratefn (fn n)
      Return a function FN composed N times with itself.
@@ -4231,16 +4297,16 @@ Index
 * -->:                                   Threading macros.    (line  35)
 * ->:                                    Threading macros.    (line   9)
 * ->>:                                   Threading macros.    (line  22)
-* -all?:                                 Predicates.          (line  20)
+* -all?:                                 Predicates.          (line  53)
 * -andfn:                                Function combinators.
-                                                              (line 147)
+                                                              (line 184)
 * -annotate:                             Maps.                (line  84)
-* -any?:                                 Predicates.          (line   8)
+* -any?:                                 Predicates.          (line  41)
 * -applify:                              Function combinators.
                                                               (line  63)
 * -as->:                                 Threading macros.    (line  49)
 * -butlast:                              Other list operations.
-                                                              (line 350)
+                                                              (line 335)
 * -clone:                                Tree operations.     (line 122)
 * -common-prefix:                        Reductions.          (line 242)
 * -common-suffix:                        Reductions.          (line 252)
@@ -4249,14 +4315,14 @@ Index
 * -concat:                               List to list.        (line  23)
 * -cons*:                                Other list operations.
                                                               (line  30)
-* -cons-pair?:                           Predicates.          (line 126)
+* -cons-pair?:                           Predicates.          (line 167)
 * -const:                                Function combinators.
-                                                              (line 101)
-* -contains?:                            Predicates.          (line  59)
+                                                              (line 128)
+* -contains?:                            Predicates.          (line 100)
 * -copy:                                 Maps.                (line 139)
 * -count:                                Reductions.          (line 172)
 * -cut:                                  Function combinators.
-                                                              (line 113)
+                                                              (line 140)
 * -cycle:                                Other list operations.
                                                               (line 180)
 * -difference:                           Set operations.      (line  20)
@@ -4273,8 +4339,9 @@ Index
 * -each-while:                           Side effects.        (line  24)
 * -elem-index:                           Indexing.            (line   9)
 * -elem-indices:                         Indexing.            (line  21)
+* -every:                                Predicates.          (line  23)
 * -fifth-item:                           Other list operations.
-                                                              (line 330)
+                                                              (line 315)
 * -filter:                               Sublist selection.   (line   8)
 * -find-index:                           Indexing.            (line  32)
 * -find-indices:                         Indexing.            (line  60)
@@ -4282,17 +4349,17 @@ Index
 * -first:                                Other list operations.
                                                               (line 246)
 * -first-item:                           Other list operations.
-                                                              (line 287)
+                                                              (line 272)
 * -fix:                                  Other list operations.
-                                                              (line 390)
+                                                              (line 375)
 * -fixfn:                                Function combinators.
-                                                              (line 184)
+                                                              (line 224)
 * -flatten:                              List to list.        (line  34)
 * -flatten-n:                            List to list.        (line  56)
 * -flip:                                 Function combinators.
-                                                              (line  89)
+                                                              (line  95)
 * -fourth-item:                          Other list operations.
-                                                              (line 320)
+                                                              (line 305)
 * -grade-down:                           Indexing.            (line  81)
 * -grade-up:                             Indexing.            (line  71)
 * -group-by:                             Partitioning.        (line 194)
@@ -4307,24 +4374,24 @@ Index
 * -intersection:                         Set operations.      (line  32)
 * -iota:                                 Other list operations.
                                                               (line  78)
-* -is-infix?:                            Predicates.          (line 112)
-* -is-prefix?:                           Predicates.          (line  88)
-* -is-suffix?:                           Predicates.          (line 100)
+* -is-infix?:                            Predicates.          (line 153)
+* -is-prefix?:                           Predicates.          (line 129)
+* -is-suffix?:                           Predicates.          (line 141)
 * -iterate:                              Unfolding.           (line   9)
 * -iteratefn:                            Function combinators.
-                                                              (line 161)
+                                                              (line 201)
 * -juxt:                                 Function combinators.
                                                               (line  37)
 * -keep:                                 List to list.        (line   8)
 * -lambda:                               Binding.             (line 247)
 * -last:                                 Other list operations.
-                                                              (line 277)
+                                                              (line 262)
 * -last-item:                            Other list operations.
-                                                              (line 340)
+                                                              (line 325)
 * -let:                                  Binding.             (line  61)
 * -let*:                                 Binding.             (line 227)
 * -list:                                 Other list operations.
-                                                              (line 373)
+                                                              (line 358)
 * -map:                                  Maps.                (line  10)
 * -map-first:                            Maps.                (line  38)
 * -map-indexed:                          Maps.                (line  66)
@@ -4336,14 +4403,14 @@ Index
 * -min:                                  Reductions.          (line 262)
 * -min-by:                               Reductions.          (line 272)
 * -non-nil:                              Sublist selection.   (line  94)
-* -none?:                                Predicates.          (line  32)
+* -none?:                                Predicates.          (line  73)
 * -not:                                  Function combinators.
-                                                              (line 126)
+                                                              (line 153)
 * -on:                                   Function combinators.
                                                               (line  75)
-* -only-some?:                           Predicates.          (line  44)
+* -only-some?:                           Predicates.          (line  85)
 * -orfn:                                 Function combinators.
-                                                              (line 135)
+                                                              (line 167)
 * -pad:                                  Other list operations.
                                                               (line 191)
 * -partial:                              Function combinators.
@@ -4361,7 +4428,7 @@ Index
 * -permutations:                         Set operations.      (line  52)
 * -powerset:                             Set operations.      (line  44)
 * -prodfn:                               Function combinators.
-                                                              (line 218)
+                                                              (line 258)
 * -product:                              Reductions.          (line 201)
 * -reduce:                               Reductions.          (line  53)
 * -reduce-from:                          Reductions.          (line   8)
@@ -4385,13 +4452,15 @@ Index
 * -replace-last:                         List to list.        (line  96)
 * -rotate:                               Other list operations.
                                                               (line   8)
+* -rotate-args:                          Function combinators.
+                                                              (line 112)
 * -rpartial:                             Function combinators.
                                                               (line  22)
 * -running-product:                      Reductions.          (line 211)
 * -running-sum:                          Reductions.          (line 190)
-* -same-items?:                          Predicates.          (line  74)
+* -same-items?:                          Predicates.          (line 115)
 * -second-item:                          Other list operations.
-                                                              (line 300)
+                                                              (line 285)
 * -select-by-indices:                    Sublist selection.   (line 208)
 * -select-column:                        Sublist selection.   (line 238)
 * -select-columns:                       Sublist selection.   (line 219)
@@ -4400,13 +4469,12 @@ Index
 * -slice:                                Sublist selection.   (line 104)
 * -snoc:                                 Other list operations.
                                                               (line  43)
-* -some:                                 Other list operations.
-                                                              (line 262)
+* -some:                                 Predicates.          (line   8)
 * -some-->:                              Threading macros.    (line  86)
 * -some->:                               Threading macros.    (line  62)
 * -some->>:                              Threading macros.    (line  74)
 * -sort:                                 Other list operations.
-                                                              (line 360)
+                                                              (line 345)
 * -splice:                               Maps.                (line  95)
 * -splice-list:                          Maps.                (line 115)
 * -split-at:                             Partitioning.        (line   8)
@@ -4423,7 +4491,7 @@ Index
 * -take-last:                            Sublist selection.   (line 133)
 * -take-while:                           Sublist selection.   (line 175)
 * -third-item:                           Other list operations.
-                                                              (line 310)
+                                                              (line 295)
 * -tree-map:                             Tree operations.     (line  28)
 * -tree-map-nodes:                       Tree operations.     (line  39)
 * -tree-mapreduce:                       Tree operations.     (line  84)
@@ -4528,137 +4596,139 @@ Node: Unfolding37244
 Ref: -iterate37485
 Ref: -unfold37932
 Node: Predicates38737
-Ref: -any?38914
-Ref: -all?39234
-Ref: -none?39564
-Ref: -only-some?39866
-Ref: -contains?40351
-Ref: -same-items?40740
-Ref: -is-prefix?41125
-Ref: -is-suffix?41451
-Ref: -is-infix?41777
-Ref: -cons-pair?42131
-Node: Partitioning42456
-Ref: -split-at42644
-Ref: -split-with43308
-Ref: -split-on43708
-Ref: -split-when44381
-Ref: -separate45018
-Ref: -partition45457
-Ref: -partition-all45906
-Ref: -partition-in-steps46331
-Ref: -partition-all-in-steps46825
-Ref: -partition-by47307
-Ref: -partition-by-header47685
-Ref: -partition-after-pred48286
-Ref: -partition-before-pred48733
-Ref: -partition-before-item49118
-Ref: -partition-after-item49425
-Ref: -group-by49727
-Node: Indexing50160
-Ref: -elem-index50362
-Ref: -elem-indices50757
-Ref: -find-index51137
-Ref: -find-last-index51626
-Ref: -find-indices52130
-Ref: -grade-up52535
-Ref: -grade-down52942
-Node: Set operations53356
-Ref: -union53539
-Ref: -difference53977
-Ref: -intersection54389
-Ref: -powerset54821
-Ref: -permutations55031
-Ref: -distinct55327
-Node: Other list operations55701
-Ref: -rotate55926
-Ref: -repeat56293
-Ref: -cons*56572
-Ref: -snoc56988
-Ref: -interpose57398
-Ref: -interleave57692
-Ref: -iota58058
-Ref: -zip-with58541
-Ref: -zip59255
-Ref: -zip-lists60084
-Ref: -zip-fill60782
-Ref: -unzip61104
-Ref: -cycle61846
-Ref: -pad62245
-Ref: -table62564
-Ref: -table-flat63350
-Ref: -first64355
-Ref: -some64841
-Ref: -last65325
-Ref: -first-item65659
-Ref: -second-item66058
-Ref: -third-item66322
-Ref: -fourth-item66584
-Ref: -fifth-item66850
-Ref: -last-item67112
-Ref: -butlast67403
-Ref: -sort67648
-Ref: -list68134
-Ref: -fix68703
-Node: Tree operations69192
-Ref: -tree-seq69388
-Ref: -tree-map70243
-Ref: -tree-map-nodes70683
-Ref: -tree-reduce71530
-Ref: -tree-reduce-from72412
-Ref: -tree-mapreduce73012
-Ref: -tree-mapreduce-from73871
-Ref: -clone75156
-Node: Threading macros75483
-Ref: ->75708
-Ref: ->>76196
-Ref: -->76699
-Ref: -as->77255
-Ref: -some->77709
-Ref: -some->>78082
-Ref: -some-->78517
-Ref: -doto79066
-Node: Binding79619
-Ref: -when-let79826
-Ref: -when-let*80281
-Ref: -if-let80804
-Ref: -if-let*81164
-Ref: -let81781
-Ref: -let*87853
-Ref: -lambda88790
-Ref: -setq89596
-Node: Side effects90397
-Ref: -each90591
-Ref: -each-while91112
-Ref: -each-indexed91714
-Ref: -each-r92300
-Ref: -each-r-while92736
-Ref: -dotimes93362
-Node: Destructive operations93915
-Ref: !cons94133
-Ref: !cdr94337
-Node: Function combinators94530
-Ref: -partial94734
-Ref: -rpartial95252
-Ref: -juxt95900
-Ref: -compose96352
-Ref: -applify96959
-Ref: -on97389
-Ref: -flip97913
-Ref: -const98224
-Ref: -cut98562
-Ref: -not99042
-Ref: -orfn99351
-Ref: -andfn99784
-Ref: -iteratefn100278
-Ref: -fixfn100980
-Ref: -prodfn102536
-Node: Development103594
-Node: Contribute103883
-Node: Contributors104895
-Node: FDL106988
-Node: GPL132308
-Node: Index170057
+Ref: -some38914
+Ref: -every39331
+Ref: -any?40010
+Ref: -all?40341
+Ref: -none?41048
+Ref: -only-some?41350
+Ref: -contains?41835
+Ref: -same-items?42224
+Ref: -is-prefix?42609
+Ref: -is-suffix?42935
+Ref: -is-infix?43261
+Ref: -cons-pair?43615
+Node: Partitioning43940
+Ref: -split-at44128
+Ref: -split-with44792
+Ref: -split-on45192
+Ref: -split-when45863
+Ref: -separate46500
+Ref: -partition46939
+Ref: -partition-all47388
+Ref: -partition-in-steps47813
+Ref: -partition-all-in-steps48307
+Ref: -partition-by48789
+Ref: -partition-by-header49167
+Ref: -partition-after-pred49768
+Ref: -partition-before-pred50215
+Ref: -partition-before-item50600
+Ref: -partition-after-item50907
+Ref: -group-by51209
+Node: Indexing51642
+Ref: -elem-index51844
+Ref: -elem-indices52239
+Ref: -find-index52619
+Ref: -find-last-index53108
+Ref: -find-indices53612
+Ref: -grade-up54017
+Ref: -grade-down54424
+Node: Set operations54838
+Ref: -union55021
+Ref: -difference55459
+Ref: -intersection55871
+Ref: -powerset56303
+Ref: -permutations56513
+Ref: -distinct56809
+Node: Other list operations57183
+Ref: -rotate57408
+Ref: -repeat57761
+Ref: -cons*58040
+Ref: -snoc58456
+Ref: -interpose58866
+Ref: -interleave59160
+Ref: -iota59526
+Ref: -zip-with60009
+Ref: -zip60723
+Ref: -zip-lists61552
+Ref: -zip-fill62250
+Ref: -unzip62572
+Ref: -cycle63314
+Ref: -pad63713
+Ref: -table64032
+Ref: -table-flat64818
+Ref: -first65823
+Ref: -last66309
+Ref: -first-item66643
+Ref: -second-item67042
+Ref: -third-item67306
+Ref: -fourth-item67568
+Ref: -fifth-item67834
+Ref: -last-item68096
+Ref: -butlast68387
+Ref: -sort68632
+Ref: -list69118
+Ref: -fix69687
+Node: Tree operations70176
+Ref: -tree-seq70372
+Ref: -tree-map71227
+Ref: -tree-map-nodes71667
+Ref: -tree-reduce72514
+Ref: -tree-reduce-from73396
+Ref: -tree-mapreduce73996
+Ref: -tree-mapreduce-from74855
+Ref: -clone76140
+Node: Threading macros76467
+Ref: ->76692
+Ref: ->>77180
+Ref: -->77683
+Ref: -as->78239
+Ref: -some->78693
+Ref: -some->>79066
+Ref: -some-->79501
+Ref: -doto80050
+Node: Binding80603
+Ref: -when-let80810
+Ref: -when-let*81265
+Ref: -if-let81788
+Ref: -if-let*82148
+Ref: -let82765
+Ref: -let*88837
+Ref: -lambda89774
+Ref: -setq90580
+Node: Side effects91381
+Ref: -each91575
+Ref: -each-while92096
+Ref: -each-indexed92698
+Ref: -each-r93284
+Ref: -each-r-while93720
+Ref: -dotimes94346
+Node: Destructive operations94899
+Ref: !cons95117
+Ref: !cdr95321
+Node: Function combinators95514
+Ref: -partial95718
+Ref: -rpartial96236
+Ref: -juxt96884
+Ref: -compose97336
+Ref: -applify97943
+Ref: -on98373
+Ref: -flip99145
+Ref: -rotate-args99669
+Ref: -const100298
+Ref: -cut100640
+Ref: -not101120
+Ref: -orfn101646
+Ref: -andfn102408
+Ref: -iteratefn103164
+Ref: -fixfn103866
+Ref: -prodfn105422
+Node: Development106480
+Node: Contribute106769
+Node: Contributors107781
+Node: FDL109874
+Node: GPL135194
+Node: Index172943
 
 End Tag Table
 
