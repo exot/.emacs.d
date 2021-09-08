@@ -776,6 +776,9 @@
                 org-fontify-done-headline nil
                 org-cycle-separator-lines 0
 
+                org-blank-before-new-entry '((heading . t)
+                                             (plain-list-item . t))
+
                 org-duration-format '(("y") ("w") ("d") (special . h:mm))
 
                 org-treat-S-cursor-todo-selection-as-state-change nil
