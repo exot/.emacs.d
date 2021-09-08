@@ -936,7 +936,7 @@
   :init (setq org-download-method 'attach))
 
 (use-package ol
-  :init (setq org-link-keep-stored-after-insertion t)
+  :init (setq org-link-keep-stored-after-insertion nil)
   :commands (org-store-link))
 
 (use-package org-id
