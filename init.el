@@ -183,7 +183,7 @@
   (bind-key "<f10>" #'magit-status)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
-  (bind-key "<f5>" (if (executable-find "ag") #'counsel-ag #'rgrep))
+  (bind-key "<f5>" #'rgrep)
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
   (bind-key "<f8>" #'bm-toggle)
@@ -2221,7 +2221,6 @@
 (use-package counsel
   :ensure t
   :commands (counsel-org-goto-all
-             counsel-ag
              counsel-M-x
              counsel-find-file
              counsel-info-lookup-symbol
