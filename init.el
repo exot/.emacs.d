@@ -1969,7 +1969,7 @@
              'solarized-dark
              `(tab-bar ((t (:height 1.2
                                     :foregreound ,(cdr (assoc 'base03 solarized-dark-color-palette-alist))
-                                    :background ,(cdr (assoc 'base03 solarized-dark-color-palette-alist))))))
+                                    :background ,(cdr (assoc 'base02 solarized-dark-color-palette-alist))))))
              `(tab-bar-tab ((t (:background ,(cdr (assoc 'base02 solarized-dark-color-palette-alist))
                                             :foreground ,(cdr (assoc 'magenta solarized-dark-color-palette-alist))
                                             :inverse-video nil
