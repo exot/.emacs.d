@@ -1069,16 +1069,11 @@
                    ((org-agenda-overriding-header "Deadlines")
                     (org-agenda-sorting-strategy '(deadline-up priority-down))
                     (org-deadline-warning-days 30)))
-                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT-READ/-DONE"
+                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
                              ((org-agenda-overriding-header "Next Actions List (unscheduled actions)")
                               (org-tags-match-list-sublevels t)
                               (org-agenda-todo-ignore-scheduled t)
-                              (org-agenda-sorting-strategy '(priority-down category-up))))
-                  (tags-todo "READ-SOMEWHEN/-DONE"
-                             ((org-agenda-overriding-header "Reading List")
-                              (org-agenda-todo-ignore-scheduled t)
-                              (org-agenda-sorting-strategy
-                               '(priority-down time-up category-keep))))))
+                              (org-agenda-sorting-strategy '(priority-down category-up))))))
                 ("O" "Open, non-periodic TODOs"
                  ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
@@ -1189,13 +1184,13 @@
                 ("R" "read"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* READ [#B] %^{Topic} :READ:\n"
+                 ,(concat "* TODO [#B] %^{Topic} :READ:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%a\n%?"))
                 ("U" "Read current content of clipboard"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* READ [#B] %^{Description} :READ:\n"
+                 ,(concat "* TODO [#B] %^{Description} :READ:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%(current-kill 0)"))
                 ("w" "Weekly Summary"
