@@ -2934,7 +2934,8 @@ With given ARG, display files in `db/important-document-path’."
                 cperl-invalid-face 'default
                 cperl-electric-keywords nil
                 cperl-lazy-help-time 2
-                cperl-highlight-variables-indiscriminately t))
+                cperl-highlight-variables-indiscriminately t
+                cperl-indent-parens-as-block t))
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
