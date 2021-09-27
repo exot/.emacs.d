@@ -1082,7 +1082,7 @@
                               (org-agenda-prefix-format '((tags . "%-12c %-4e ")))))))
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
-                 ((tags-todo "WAIT"
+                 ((tags-todo "WAIT-HOLD"
                              ((org-agenda-overriding-header "Waiting For List")
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy '(priority-down category-up))))
