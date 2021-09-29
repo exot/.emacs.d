@@ -869,9 +869,6 @@
                                            (emacs-lisp . t))))
   :config (progn
 
-            ;; Allow company completion in Org Mode buffers
-            (add-hook 'org-mode-hook 'company-mode)
-
             ;; Reset checkboxes if the RESET_CHECK_BOXES property is set
             (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
 
