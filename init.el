@@ -112,6 +112,7 @@
   (global-auto-revert-mode -1)
   (which-function-mode +1)
   (global-eldoc-mode +1)
+  (global-hl-line-mode +1)
 
   ;; Activate modes (packages)
 
