@@ -112,7 +112,6 @@
   (global-auto-revert-mode -1)
   (which-function-mode +1)
   (global-eldoc-mode +1)
-  (global-hl-line-mode +1)
 
   ;; Activate modes (packages)
 
@@ -155,6 +154,7 @@
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
   (add-hook 'prog-mode-hook 'subword-mode)
+  (add-hook 'prog-mode-hook 'hl-line-mode)
   (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)
 
   (when (<= 24 emacs-major-version)
@@ -162,6 +162,7 @@
 
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'abbrev-mode)
+  (add-hook 'text-mode-hook 'hl-line-mode)
 
   ;; Auto-Modes
 
