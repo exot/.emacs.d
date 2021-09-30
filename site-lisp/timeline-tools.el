@@ -474,6 +474,7 @@ current values of the relevant buffer local variables."
   (interactive)
   (if (not (eq major-mode 'timeline-tools-mode))
       (user-error "Not in Timeline buffer")
+
     (let ((timeline (timeline-tools-transform-timeline
                      (if force
                          (timeline-tools-timeline
@@ -481,6 +482,17 @@ current values of the relevant buffer local variables."
                           timeline-tools--current-time-end
                           timeline-tools--current-files)
                        (timeline-tools--get-timeline-from-buffer)))))
+
+      ;; Update categories in all affected buffers to retrieve up-to-date
+      ;; information; find all relevant buffers by checking the markers of all
+      ;; entries.
+      (dolist (buffer (->> timeline
+                           (mapcar #'timeline-tools-entry-marker)
+                           (mapcar #'marker-buffer)
+                           (cl-remove-duplicates)))
+        (with-current-buffer buffer
+          (org-refresh-category-properties)))
+
       (erase-buffer)
       (insert (format "* Timeline from [%s] to [%s]\n\n"
                       (format-time-string timeline-tools-headline-time-format
@@ -563,9 +575,6 @@ as it is done by `timeline-tools-redraw-timeline'."
   "Parse timeline from files again and redraw current display.
 Updates category properties before constructing the new timeline."
   (interactive)
-  (dolist (file timeline-tools--current-files)
-    (with-current-buffer (get-file-buffer file)
-      (org-refresh-category-properties)))
   (timeline-tools-redraw-timeline 'force))
 
 (defun timeline-tools-forward-day ()
