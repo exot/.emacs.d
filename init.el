@@ -1199,18 +1199,7 @@
                 ("s" "Code Snippet"
                  entry
                  (file db/org-default-refile-file)
-                 "* %?\n%(db/org-capture-code-snippet \"%F\")")
-                ;; http://www.howardism.org/Technical/Emacs/capturing-content.html
-                ("c" "Note for currently clocked in task"
-                 item
-                 (clock)
-                 "%i%?"
-                 :empty-lines 1)
-                ("K" "Kill-ring to currently clocked in task"
-                 plain
-                 (clock)
-                 "%c"
-                 :immediate-finish t :empty-lines 1)))
+                 "* %?\n%(db/org-capture-code-snippet \"%F\")")))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
