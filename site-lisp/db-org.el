@@ -392,7 +392,7 @@ tag PERIODIC."
   "Clock in org mode task as given by TASK-ID."
   (let ((location (org-id-find task-id 'marker)))
     (if (null location)
-        (user-error "Invalid location give: %s»" task-id)
+        (user-error "Invalid location given: «%s»" task-id)
       (org-with-point-at location
         (org-clock-in))
       (org-save-all-org-buffers))))
