@@ -105,6 +105,7 @@
   (let ((keymap (make-sparse-keymap)))
     (define-key keymap (kbd "C-c C-c") 'plantuml-preview)
     (define-key keymap (kbd "C-c C-e") 'plantuml-export)
+    (define-key keymap (kbd "C-c C-v") 'plantuml-view-exported-file)
     keymap)
   "Keymap for plantuml-mode.")
 
@@ -148,7 +149,7 @@
 (defcustom plantuml-indent-level tab-width
   "Indentation level of PlantUML lines")
 
-(defcustom plantuml-export-overwrite-files nil
+(defcustom plantuml-confirm-overwrite-on-export t
   "Control whether file exporting is allowed to silently overwrite files."
   :type 'boolean
   :group 'plantuml)
@@ -586,28 +587,38 @@ buffer can be written to a file or be displayed directly."
 
 ;; TODO add support for exec-modes `server' and `executable'
 
-(defun plantuml-export ()
+(defun plantuml--export-file-name ()
+  "Return export file name based on the file name associated with the current buffer."
+  (let ((original-file-name (buffer-file-name (current-buffer))))
+
+    (unless original-file-name
+      (error "Current buffer is not associated with any file, cannot determine output file name"))
+
+    (concat (file-name-sans-extension original-file-name)
+            "."
+            plantuml-output-type)))
+
+(defun plantuml-export (&optional export-file-name)
   "Export a plantuml diagram to a file.
 Exports the whole buffer unless a region is active, in which case
-only the region will be exported."
+only the region will be exported.  Unless EXPORT-FILE-NAME is
+explicitly given, the file name of the exported file will be
+determined based on the file name of the current plantuml-file
+and `plantuml-output-type'"
   (interactive)
-  (let ((original-file-name (buffer-file-name (current-buffer)))
-        (diagram-string (if mark-active
+  (let ((diagram-string (if mark-active
                             (buffer-substring-no-properties
                              (region-beginning) (region-end))
                           (buffer-string)))
-        export-file-name
         errors-during-export)
 
-    (unless original-file-name
-      (user-error "Current buffer is not associated with any file, cannot determine output file name"))
-    (setq export-file-name (concat (file-name-sans-extension original-file-name)
-                                   "."
-                                   plantuml-output-type))
-    (when (and (file-exists-p export-file-name)
-               (not plantuml-export-overwrite-files))
-      (user-error "File %s already exists, will not export"
-                  export-file-name))
+    (unless export-file-name
+      (setq export-file-name (plantuml--export-file-name)))
+
+    (unless (or (not (file-exists-p export-file-name))
+                (not plantuml-confirm-overwrite-on-export)
+                (yes-or-no-p (message "File %s already exists, overwrite?" export-file-name)))
+      (user-error "File %s already exists, will not overwrite" export-file-name))
 
     (message "Exporting to %s ..." export-file-name)
 
@@ -647,6 +658,30 @@ only the region will be exported."
     (if errors-during-export
         (message "Exporting to %s ... failed (see file for details)" export-file-name)
       (message "Exporting to %s ... done" export-file-name))))
+
+
+
+;; View exported files
+
+(defun plantuml-view-exported-file ()
+  "Open file exported from current plantuml-buffer in external application.
+When an exported file does not exist yet, ask whether it should
+be generated first."
+  (interactive)
+
+  (let ((export-file-name (plantuml--export-file-name)))
+
+    (when (not (file-exists-p export-file-name))
+      (if (yes-or-no-p (message "Export file %s does not exist yet, export current buffer?"
+                                export-file-name))
+          (plantuml-export export-file-name)
+        (user-error "Export file name %s does not exist yet and export has been denied, aborting"
+                    export-file-name)))
+
+    (case system-type
+      ((windows-nt) (w32-shell-execute "open" export-file-name))
+      ((cygwin) (start-process "" nil "cygstart" export-file-name))
+      (otherwise (start-process "" nil "xdg-open" export-file-name)))))
 
 
 ;;
