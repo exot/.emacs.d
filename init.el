@@ -1105,8 +1105,8 @@
                 ("P" "Current Projects and Topics"
                  ((stuck ""
                          ((org-agenda-overriding-header "Stuck Projects")))
-                  (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SOMEWHEN-SCHEDULED>=\"<+1d>\""
-                        ((org-agenda-overriding-header "Open Projects (no TODO keyword, no PERIODIC, no NOTE, no DATE, no SOMEWHEN, no future SCHEDULED)")))
+                  (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SOMEWHEN-HOLD-SCHEDULED>=\"<+1d>\""
+                        ((org-agenda-overriding-header "Open Projects")))
                   (tags "TODO=\"\"+TAGS={TOPIC}-SCHEDULED>=\"<+1d>\""
                         ((org-agenda-overriding-header "Topics")))
                   (tags "TAGS={PERIODIC}"
