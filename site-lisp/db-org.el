@@ -365,8 +365,9 @@ tag PERIODIC."
   (interactive)
   (let ((clock-buffer (marker-buffer org-clock-marker)))
     (when clock-buffer
+      (setq frame-title-format org-clock-heading)
       (dolist (frame (frame-list))
-        (modify-frame-parameters frame `((name . , org-clock-heading)))))))
+        (modify-frame-parameters frame `((name . ,org-clock-heading)))))))
 
 (defun db/show-current-org-task ()
   "Show title of currently clock in task in modeline."
