@@ -297,7 +297,9 @@ tag PERIODIC."
   (and
    ;; Exclude DONE state tasks from refile targets (from bh)
    (not (member (nth 2 (org-heading-components))
-                org-done-keywords))))
+                org-done-keywords))
+   ;; Do not refile to NOTEs, as those are meant to keep information, not tasks
+   (not (member "NOTE" (org-get-tags)))))
 
 
 ;;; Reset checklists
