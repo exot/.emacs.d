@@ -596,7 +596,7 @@ item, which might be an instance of a periodic task.
 
 If POM is not given, use `db/org-get-location' to interactively
 query for it."
-  (interactive (list (db/org-get-location)))
+  (interactive (list (db/org-get-location t)))
   (unless (number-or-marker-p pom)
     (user-error "Argument is neither point nor mark: %s" pom))
   (let ((body (save-restriction
