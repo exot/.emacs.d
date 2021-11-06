@@ -193,7 +193,7 @@ might depend on the coding system of the current buffer."
                          (buffer-substring-no-properties (region-beginning) (region-end))
                        (read-from-minibuffer "String (ascii): "))))
   (let ((result (->> text-string
-                     (--map (format "%2X " it))
+                     (--map (format "%02X " it))
                      (apply #'concat)
                      (string-trim-right))))
     (if (use-region-p)
