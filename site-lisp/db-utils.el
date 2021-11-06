@@ -181,7 +181,8 @@ the result in the minibuffer."
     (if (use-region-p)
         (progn
           (delete-region (region-beginning) (region-end))
-          (insert result))
+          (dolist (char (string-to-list result))
+            (insert-byte char 1)))
       (message result))))
 
 (defun db/text-to-hex (text-string)
