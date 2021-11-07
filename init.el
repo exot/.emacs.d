@@ -586,7 +586,10 @@
 
 ;; * Essential external packages
 
-(use-package dash)
+(use-package dash
+  :config (progn
+            (global-dash-fontify-mode)
+            (dash-register-info-lookup)))
 
 (use-package hydra
   :pin "melpa-stable")
