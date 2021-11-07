@@ -514,9 +514,15 @@ Does not replace CRLF with CRCRLF, and so on."
 (ert-deftest db/base45-decode-string--basic-tests ()
   "Test basic decoding examples"
   ;; dash is funny :)
-  (-each '(("QED8WEX0" "ietf!")
+  (-each `(("QED8WEX0" "ietf!")
            ("X.CT3EGEC" "foobar")
-           ("x.ct3egec" "foobar"))
+           ("x.ct3egec" "foobar")
+           ("/Y81EC.OE+EDR342%EX0" "Emacs is Fun!")
+           ("1A6VF61:64R6F4F%EDM-C6H6 8DKQEWF6V4761" "19287349wjiqf72yhasd29823")
+           ;; Bytes in the returned strings are actually numbers between 0 and
+           ;; 255; no character conversion (or something like that) is conducted
+           ;; here
+           ("6BFOXN" ,(string 120 156 187 212)))
     (-lambda ((in out))
       (should (equal out (db/base45-decode-string in))))))
 
@@ -545,7 +551,7 @@ number of bytes has been inserted."
       (message "%s" (string-to-list (buffer-string)))
       ;; (120 4194204 4194235 4194260) is Emacs' internal representation of
       ;; x\234\273\324, where the last three bytes are raw-byte; when
-      ;; non-raw-bytes would have been inserted, it would be (120 156 …)
+      ;; non-raw-bytes would have been inserted, it would be (120 156 187 212).
       (should (equal '(120 4194204 4194235 4194260)
                      (string-to-list (buffer-string)))))))
 
