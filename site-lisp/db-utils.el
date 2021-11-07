@@ -521,8 +521,11 @@ Does not replace CRLF with CRCRLF, and so on."
            ("1A6VF61:64R6F4F%EDM-C6H6 8DKQEWF6V4761" "19287349wjiqf72yhasd29823")
            ;; Bytes in the returned strings are actually numbers between 0 and
            ;; 255; no character conversion (or something like that) is conducted
-           ;; here
-           ("6BFOXN" ,(string 120 156 187 212)))
+           ;; here.
+           ("6BFOXN" ,(string 120 156 187 212))
+           ;; Test cases from https://github.com/Netnod/base45.
+           ("%69 VD92EX0" "Hello!!")
+           ("VV4:97Y+AHA7MY831" "%69 VD92EX0"))
     (-lambda ((in out))
       (should (equal out (db/base45-decode-string in))))))
 
