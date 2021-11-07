@@ -460,94 +460,56 @@ Does not replace CRLF with CRCRLF, and so on."
 ;; This is based on https://datatracker.ietf.org/doc/draft-faltstrom-base45/,
 ;; which in turned may be used in data encoded for QR codes.
 
-(let ((translation-hash-table (make-hash-table)))
-  (puthash ?0 00 translation-hash-table)
-  (puthash ?1 01 translation-hash-table)
-  (puthash ?2 02 translation-hash-table)
-  (puthash ?3 03 translation-hash-table)
-  (puthash ?4 04 translation-hash-table)
-  (puthash ?5 05 translation-hash-table)
-  (puthash ?6 06 translation-hash-table)
-  (puthash ?7 07 translation-hash-table)
-  (puthash ?8 08 translation-hash-table)
-  (puthash ?9 09 translation-hash-table)
-  (puthash ?A 10 translation-hash-table)
-  (puthash ?B 11 translation-hash-table)
-  (puthash ?C 12 translation-hash-table)
-  (puthash ?D 13 translation-hash-table)
-  (puthash ?E 14 translation-hash-table)
-  (puthash ?F 15 translation-hash-table)
-  (puthash ?G 16 translation-hash-table)
-  (puthash ?H 17 translation-hash-table)
-  (puthash ?I 18 translation-hash-table)
-  (puthash ?J 19 translation-hash-table)
-  (puthash ?K 20 translation-hash-table)
-  (puthash ?L 21 translation-hash-table)
-  (puthash ?M 22 translation-hash-table)
-  (puthash ?N 23 translation-hash-table)
-  (puthash ?O 24 translation-hash-table)
-  (puthash ?P 25 translation-hash-table)
-  (puthash ?Q 26 translation-hash-table)
-  (puthash ?R 27 translation-hash-table)
-  (puthash ?S 28 translation-hash-table)
-  (puthash ?T 29 translation-hash-table)
-  (puthash ?U 30 translation-hash-table)
-  (puthash ?V 31 translation-hash-table)
-  (puthash ?W 32 translation-hash-table)
-  (puthash ?X 33 translation-hash-table)
-  (puthash ?Y 34 translation-hash-table)
-  (puthash ?Z 35 translation-hash-table)
-  (puthash ?\s 36 translation-hash-table)
-  (puthash ?$ 37 translation-hash-table)
-  (puthash ?% 38 translation-hash-table)
-  (puthash ?* 39 translation-hash-table)
-  (puthash ?+ 40 translation-hash-table)
-  (puthash ?- 41 translation-hash-table)
-  (puthash ?. 42 translation-hash-table)
-  (puthash ?/ 43 translation-hash-table)
-  (puthash ?: 44 translation-hash-table)
+(let ((decode-hash-table (make-hash-table))
+      (base45-alphabet "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ $%*+-./:"))
 
-  (defun db/base45--string-to-bytes (str)
-    "Translate base45 input string to list of numbers as per specification."
-    (-map (lambda (char)
-            (or (gethash char translation-hash-table)
-                (user-error "Invalid character in string for base45 decoding: %c" char)))
-          str)))
+  (-each-indexed (string-to-list base45-alphabet)
+    (-lambda (index char)
+      (puthash char index decode-hash-table)
+      ;; Add an encode-hash-table here in case base45-encode-string will ever be
+      ;; written, like so: (puthash index char encode-hash-table)
+      ))
 
-(defun db/base45-decode-string (str)
-  "Decode base45 string STR and return the result as a string."
+  (defun db/base45-decode-string (str)
+    "Decode base45 string STR and return the result as a string."
 
-  (when (= 1 (% (length str) 3))
-    (user-error "Input string has invalid length for base45 decoding; must be 0 or 2 modulo 3"))
+    (when (= 1 (% (length str) 3))
+      (user-error "Input string has invalid length for base45 decoding; must be 0 or 2 modulo 3"))
 
-  (let* ((str (s-upcase str))
+    (let* ((list-of-numbers (->> str
 
-         (list-of-blocks (->> str
-                              db/base45--string-to-bytes
-                              (-partition-all 3)))
+                                 s-upcase ; also allow lower-case input characters
 
-         (list-of-numbers (-map (lambda (block)
-                                  (+ (* 45 45 (or (nth 2 block) 0))
-                                     (* 45 (nth 1 block))
-                                     (nth 0 block)))
-                                list-of-blocks))
+                                 ;; convert all characters to their code values
+                                 (-map (lambda (char)
+                                         (or (gethash char decode-hash-table)
+                                             (user-error "Invalid character in string for base45 decoding: %c" char))))
 
-         (list-of-bytes (nconc (-mapcat (lambda (num)
-                                          (list (/ num 256)
-                                                (% num 256)))
-                                        (-butlast list-of-numbers))
-                               (let ((last-one (-last-item list-of-numbers)))
-                                 (if (< last-one 256)
-                                     ;; When the last element represents only
-                                     ;; one byte, discard the extra 0 that (/
-                                     ;; last-one 256) would produce …
-                                     (list last-one)
-                                   ;; … else handle the last element like all
-                                   ;; the others
-                                   (list (/ last-one 256)
-                                         (% last-one 256)))))))
+                                 (-partition-all 3)
 
-    (apply #'string list-of-bytes)))
+                                 ;; Interpret tuples as base45 numbers and
+                                 ;; compute their decimal values
+                                 (-map (lambda (block)
+                                         (+ (* 45 45 (or (nth 2 block) 0))
+                                            (* 45 (nth 1 block))
+                                            (nth 0 block))))))
+
+           (list-of-bytes (nconc (-mapcat (lambda (num)
+                                            (list (/ num 256)
+                                                  (% num 256)))
+                                          (-butlast list-of-numbers))
+                                 (let ((last-one (-last-item list-of-numbers)))
+                                   (if (< last-one 256)
+                                       ;; When the last element represents only
+                                       ;; one byte, discard the extra 0 that (/
+                                       ;; last-one 256) would produce …
+                                       (list last-one)
+                                     ;; … else handle the last element like all
+                                     ;; the others
+                                     (list (/ last-one 256)
+                                           (% last-one 256)))))))
+
+      (apply #'string list-of-bytes))))
 
 (ert-deftest db/base45-decode-string--basic-tests ()
   "Test basic decoding examples"
