@@ -18,6 +18,8 @@
 (require 'compile)
 (require 'calc)
 (require 'calc-forms)
+(require 'ert)
+(require 's)
 
 (autoload 'async-start "async")
 (autoload 'lispy-mode "lispy")
@@ -547,6 +549,15 @@ Does not replace CRLF with CRCRLF, and so on."
 
     (apply #'string list-of-bytes)))
 
+(ert-deftest db/base45-decode-string--basic-tests ()
+  "Test basic decoding examples"
+  ;; dash is funny :)
+  (-each '(("QED8WEX0" "ietf!")
+           ("X.CT3EGEC" "foobar")
+           ("x.ct3egec" "foobar"))
+    (-lambda ((in out))
+      (should (equal out (db/base45-decode-string in))))))
+
 (defun db/base45-decode-region (beg end)
   "Base45-decode region between BEG and END.
 
@@ -559,6 +570,22 @@ Replaces the region by the result of the decoding."
     ;; instead.
     (dolist (char (string-to-list replace-string))
       (insert-byte char 1))))
+
+(ert-deftest db/base45-decode-region--insert-correct-bytes ()
+  "Test whether bytes are always inserted.
+Take the start of a compressed EU Digital Covid Certificate and
+insert into a temporary buffer; check that indeed the expected
+number of bytes has been inserted."
+  (let ((encoded-string "6BFOXN"))
+    (with-temp-buffer
+      (insert encoded-string)
+      (db/base45-decode-region (point-min) (point-max))
+      (message "%s" (string-to-list (buffer-string)))
+      ;; (120 4194204 4194235 4194260) is Emacs' internal representation of
+      ;; x\234\273\324, where the last three bytes are raw-byte; when
+      ;; non-raw-bytes would have been inserted, it would be (120 156 …)
+      (should (equal '(120 4194204 4194235 4194260)
+                     (string-to-list (buffer-string)))))))
 
 
 ;;; Extend Input Methods
