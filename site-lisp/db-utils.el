@@ -518,7 +518,9 @@ Does not replace CRLF with CRCRLF, and so on."
   (when (= 1 (% (length str) 3))
     (user-error "Input string has invalid length for base45 decoding; must be 0 or 2 modulo 3"))
 
-  (let* ((list-of-blocks (->> str
+  (let* ((str (s-upcase str))
+
+         (list-of-blocks (->> str
                               db/base45--string-to-bytes
                               (-partition-all 3)))
 
