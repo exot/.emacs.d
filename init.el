@@ -133,9 +133,12 @@
     (with-demoted-errors "Cannot load `pdf-tools’: %s"
       (pdf-tools-install)))
 
-  (with-demoted-errors "Cannot activate moody: %s"
-    (moody-replace-mode-line-buffer-identification)
-    (moody-replace-vc-mode))
+  ;; This causes inacceptable lack when drawing buffers, so disable it for now.
+  ;; Needs to be investigated further.
+
+  ;; (with-demoted-errors "Cannot activate moody: %s"
+  ;;   (moody-replace-mode-line-buffer-identification)
+  ;;   (moody-replace-vc-mode))
 
   (with-demoted-errors "Cannot activate `vlf': %s"
     (require 'vlf-setup))
