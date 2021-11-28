@@ -783,6 +783,7 @@
                 org-ellipsis "⤵"
                 org-fontify-done-headline nil
                 org-cycle-separator-lines 0
+                org-special-ctrl-a/e t
 
                 org-blank-before-new-entry '((heading . t)
                                              (plain-list-item . t))
