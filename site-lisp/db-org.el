@@ -620,14 +620,19 @@ query for it."
     (insert body)
     (org-update-statistics-cookies nil)))
 
-(defun db/org-update-headline-log-note (new-headline)
+(defun db/org-update-headline-log-note (&optional new-headline)
   "Replace headline of item at point with NEW-HEADLINE.
 Interactively query for HEADLINE when not provided."
-  (interactive "sNew Headline: ")
+  (interactive)
 
-  ;; We should check this before asking the user for the new headline, but how?
   (unless (derived-mode-p 'org-mode 'org-agenda-mode)
     (user-error "Neither in an Org mode nor Org agenda buffer, aborting"))
+
+  (unless new-headline
+    (setq new-headline (read-string "New Headline: ")))
+
+  (unless (stringp new-headline)
+    (user-error "New headline must be string"))
 
   (when (string-match-p "\n" new-headline)
     (user-error "New headline contains newlines, aborting"))
