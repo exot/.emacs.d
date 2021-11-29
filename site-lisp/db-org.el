@@ -620,6 +620,34 @@ query for it."
     (insert body)
     (org-update-statistics-cookies nil)))
 
+(defun db/org-update-headline-log-note (new-headline)
+  "Replace headline of item at point with NEW-HEADLINE.
+Interactively query for HEADLINE when not provided."
+  (interactive "sNew Headline: ")
+
+  ;; We should check this before asking the user for the new headline, but how?
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in an Org mode buffer, aborting"))
+
+  (when (string-match-p "\n" new-headline)
+    (user-error "New headline contains newlines, aborting"))
+
+  (when (org-before-first-heading-p)
+    (user-error "Point is before first headline, aborting"))
+
+  (let ((old-headline (org-entry-get (point) "ITEM")))
+    (org-edit-headline new-headline)
+
+    ;; This simulates adding a note by manually.  It may also work by directly
+    ;; using `org-add-note', but this function makes use of `post-command-hook'
+    ;; in a way I do not understand.  So let's try it that way.
+    (move-marker org-log-note-marker (point))
+    (let ((org-log-note-purpose 'note))
+      (org-add-log-note nil)
+      (insert                           ; This goes into the *Org Note* buffer.
+       (format "Changed headline from: %s" old-headline))
+      (org-store-log-note))))
+
 
 ;;; Calendar
 
