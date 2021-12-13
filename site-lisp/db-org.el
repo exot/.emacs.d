@@ -603,18 +603,23 @@ query for it."
                 (save-mark-and-excursion
                   (let ((template-element (org-with-point-at pom
                                             (org-element-at-point))))
-                    ;; Starting from the end of the last element in the subtree,
-                    ;; we go up until we find a drawer or a headline; everything
-                    ;; in between is considered to be the body.
                     (let ((content-end (org-element-property :contents-end template-element))
-                          content-begin current-element)
-                      (goto-char content-end)
-                      (while (progn
-                               (setq current-element (org-element-at-point))
-                               (not (memq (org-element-type current-element)
-                                          '(drawer property-drawer headline))))
-                        (setq content-begin (org-element-property :begin current-element))
-                        (goto-char (1- content-begin)))
+                          current-element
+                          content-begin)
+                      ;; Start finding the beginning of the template contents from the top …
+                      (goto-char (org-element-property :contents-begin template-element))
+                      ;; … but skip any drawers we may find.
+                      (setq current-element (org-element-at-point))
+                      (while (memq (org-element-type current-element)
+                                   '(drawer property-drawer))
+                        (goto-char (org-element-property :end current-element))
+                        (setq current-element (org-element-at-point)))
+                      ;; Now we are at the beginning of the contents, let's copy
+                      ;; that, but only if it exists and is not empty.
+                      (setq content-begin (org-element-property :begin current-element))
+                      (unless (and content-begin
+                                   (< content-begin content-end))
+                        (user-error "Cannot find content in template, or content is empty"))
                       (string-trim-right
                        (buffer-substring-no-properties content-begin content-end))))))))
     (insert body)
