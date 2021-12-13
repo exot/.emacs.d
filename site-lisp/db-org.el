@@ -588,6 +588,20 @@ drawers, will be copied to point."
 
     (db/org-copy-body-from-item-to-point template-pom)))
 
+(defun db/org-copy-template-from-id ()
+  "Copy template given by current value of TEMPLATE_ID property to point.
+The TEMPLATE_ID property must be an ID property of another item
+from which the contents is supposed to be copied to point."
+  (interactive)
+  (let ((template-id (org-entry-get (point) "TEMPLATE_ID"))
+        template-pom)
+    (unless template-id
+      (user-error "Property TEMPLATE_ID not set, cannot copy from there"))
+    (setq template-pom (org-id-find template-id :get-marker))
+    (unless template-pom
+      (user-error "Cannot find item with id %s" template-id))
+    (db/org-copy-body-from-item-to-point template-pom)))
+
 (defun db/org-copy-body-from-item-to-point (pom)
   "Copy body from item given by POM to point.
 
