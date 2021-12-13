@@ -748,6 +748,8 @@
              db/org-mark-current-default-task
              db/export-diary
              db/org-copy-template-for-periodic-task
+             db/org-copy-template-from-id
+             db/org-copy-body-from-item-to-point
              db/org-find-links-to-current-item
              db/org-add-link-to-other-item
              db/org-add-link-to-current-clock
