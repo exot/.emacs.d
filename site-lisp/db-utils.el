@@ -20,6 +20,7 @@
 (require 'calc-forms)
 (require 'ert)
 (require 's)
+(require 'shr)
 
 (autoload 'async-start "async")
 (autoload 'lispy-mode "lispy")
@@ -453,6 +454,13 @@ Does not replace CRLF with CRCRLF, and so on."
             (unless (file-remote-p project)
               (file-exists-p (concat project "/.git"))))
           projectile-known-projects))))
+
+(defun db/shr-render-file (file)
+  "Display the HTML rending of the contents of FILE."
+  (interactive "f")
+  (unless (file-readable-p file)
+    (user-error "Cannot read file: %s" file))
+  (shr-render-buffer (find-file-noselect file)))
 
 
 ;; Base45 Decoding
