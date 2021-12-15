@@ -8,6 +8,7 @@
 
 ;;; Code:
 
+(require 'subr-x)
 (require 'cl-lib)
 (require 'org)
 (require 'org-agenda)
@@ -592,6 +593,7 @@ drawers, will be copied to point."
   "Copy template given by current value of TEMPLATE_ID property to point.
 The TEMPLATE_ID property must be an ID property of another item
 from which the contents is supposed to be copied to point."
+  ;; This function might be obsoleted by `db/org-copy-template'.
   (interactive)
   (let ((template-id (org-entry-get (point) "TEMPLATE_ID"))
         template-pom)
@@ -600,6 +602,47 @@ from which the contents is supposed to be copied to point."
     (setq template-pom (org-id-find template-id :get-marker))
     (unless template-pom
       (user-error "Cannot find item with id %s" template-id))
+    (db/org-copy-body-from-item-to-point template-pom)))
+
+(defun db/org-copy-template ()
+  "Copy template for the current Org Mode item to point.
+The template is determined by the TEMPLATE_ID property, which
+must be an ID referencing the proper template item.  If that
+property is not set, search for the topmost sibling of the
+current item and see whether its headline is matching
+\"^Template.*\"; if so, use its body as template, and barf
+otherwise."
+  (interactive)
+
+  (let (template-pom)
+
+    ;; Check for TEMPLATE_ID property
+    (when-let ((template-id (org-entry-get (point) "TEMPLATE_ID")))
+      (setq template-pom (org-id-find template-id :get-marker))
+      (unless template-pom
+        (warn "TEMPLATE_ID is set, but could not be resolved: %s"
+              template-id)))
+
+    ;; If no template has been found so far, search for top-most sibling and
+    ;; whether its headline starts with “Template”; use that when found.
+    (unless template-pom
+      (let ((top-most-sibling (condition-case _
+                                  (save-restriction
+                                    (save-mark-and-excursion
+                                      (outline-up-heading 1 'invisible-ok)
+                                      (outline-next-heading)
+                                      (point)))
+                                (t nil))))
+        (when (and top-most-sibling
+                   (integerp top-most-sibling) ; just to make sure we have a
+                                               ; point here
+                   (string-match-p "^Template.*"
+                                   (org-entry-get top-most-sibling "ITEM")))
+          (setq template-pom top-most-sibling))))
+
+    (unless template-pom
+      (user-error "Cannot find template via TEMPLATE_ID property or top-most sibling"))
+
     (db/org-copy-body-from-item-to-point template-pom)))
 
 (defun db/org-copy-body-from-item-to-point (pom)
