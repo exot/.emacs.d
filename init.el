@@ -1670,7 +1670,7 @@
                                              ("^nnir" t)
                                              ("^nnmaildir" t)
                                              ("INBOX$" t))
-              gnus-registry-max-entries 40000
+              gnus-registry-max-entries 5000
               gnus-registry-track-extra '(sender subject recipient)
               gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
                                                          emacs-d)))
