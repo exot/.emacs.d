@@ -647,12 +647,10 @@ otherwise."
 
 (defun db/org-copy-body-from-item-to-point (pom)
   "Copy body from item given by POM to point.
-
 This can be used to copy checklists from templates to the current
-item, which might be an instance of a periodic task.
-
-If POM is not given, use `db/org-get-location' to interactively
-query for it."
+item, which might be an instance of a periodic task.  If POM is
+not given, use `db/org-get-location' to interactively query for
+it.  Adds newline before and after the template."
   (interactive (list (db/org-get-location t)))
   (unless (number-or-marker-p pom)
     (user-error "Argument is neither point nor mark: %s" pom))
@@ -679,7 +677,9 @@ query for it."
                         (user-error "Cannot find content in template, or content is empty"))
                       (string-trim-right
                        (buffer-substring-no-properties content-begin content-end))))))))
+    (insert "\n")
     (insert body)
+    (insert "\n")
     (org-update-statistics-cookies nil)))
 
 (defun db/org-update-headline-log-note (&optional new-headline)
