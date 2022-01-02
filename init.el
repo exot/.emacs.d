@@ -1078,9 +1078,9 @@
                     (org-agenda-sorting-strategy '(deadline-up priority-down))
                     (org-deadline-warning-days 30)))
                   (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
-                             ((org-agenda-overriding-header "Next Actions List (unscheduled actions)")
+                             ((org-agenda-overriding-header "Next Actions List (not scheduled or scheduled in the future)")
                               (org-tags-match-list-sublevels t)
-                              (org-agenda-todo-ignore-scheduled t)
+                              (org-agenda-todo-ignore-scheduled 'future)
                               (org-agenda-sorting-strategy '(priority-down category-up))))))
                 ("B" "Backlog"
                  ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC/-DONE"
