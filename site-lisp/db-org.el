@@ -710,15 +710,12 @@ Interactively query for HEADLINE when not provided."
       (let ((old-headline (org-entry-get (point) "ITEM")))
         (org-edit-headline new-headline)
 
-        ;; This simulates manually adding a note.  It may also work by directly
-        ;; using `org-add-note', but this function makes use of `post-command-hook'
-        ;; in a way I do not understand.  So let's try it that way.
-        (move-marker org-log-note-marker (point))
-        (let ((org-log-note-purpose 'note))
-          (org-add-log-note nil)
-          (insert                       ; This goes into the *Org Note* buffer.
-           (format "Changed headline from: %s" old-headline))
-          (org-store-log-note)))))
+        ;; This simulates adding a note manually.  I am not quite sure how
+        ;; robust this is, but let's try it out.
+        (org-add-note)
+        (insert                       ; This goes into the *Org Note* buffer.
+         (format "Changed headline from: %s" old-headline))
+        (org-store-log-note))))
 
   (when (derived-mode-p 'org-agenda-mode)
     (org-agenda-redo)))
