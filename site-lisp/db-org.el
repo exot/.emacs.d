@@ -691,7 +691,15 @@ Interactively query for HEADLINE when not provided."
     (user-error "Neither in an Org mode nor Org agenda buffer, aborting"))
 
   (unless new-headline
-    (setq new-headline (read-string "New Headline: ")))
+    (let ((default-value (cond
+                          ((derived-mode-p 'org-mode)
+                           (org-entry-get (point) "ITEM"))
+                          ((derived-mode-p 'org-agenda-mode)
+                           (org-agenda-with-point-at-orig-entry
+                            nil (org-entry-get (point) "ITEM"))))))
+      (setq new-headline (read-string "New Headline: "
+                                      nil nil
+                                      default-value))))
 
   (unless (stringp new-headline)
     (user-error "New headline must be string"))
