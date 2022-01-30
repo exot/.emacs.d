@@ -2189,7 +2189,9 @@
               helm-follow-mode-persistent t
               helm-buffer-details-flag t
               helm-buffer-skip-remote-checking t
-              helm-mode-no-completion-in-region-in-modes '(eshell-mode))
+              helm-mode-no-completion-in-region-in-modes '(eshell-mode)
+              helm-kill-ring-threshold 0 ; include all yanks in the kill ring
+              )
   :config (progn
             (require 'helm-config)
             (require 'helm-mode)
