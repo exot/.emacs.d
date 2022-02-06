@@ -1871,7 +1871,6 @@
             ;; Automatically scan for new news
             (gnus-demon-add-handler 'db/gnus-demon-scan-news-on-level-2 5 5)
 
-            (add-hook 'gnus-started-hook #'gnus-demon-init)
 
             ;; Visit group under point and immediately close it; this updates
             ;; gnus’ registry as a side-effect
