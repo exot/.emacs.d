@@ -460,7 +460,8 @@ Does not replace CRLF with CRCRLF, and so on."
   (interactive "f")
   (unless (file-readable-p file)
     (user-error "Cannot read file: %s" file))
-  (shr-render-buffer (find-file-noselect file)))
+  (shr-render-buffer (find-file-noselect file))
+  (delete-trailing-whitespace))
 
 
 ;; Base45 Decoding
