@@ -1871,6 +1871,8 @@
             ;; Automatically scan for new news
             (gnus-demon-add-handler 'db/gnus-demon-scan-news-on-level-2 5 5)
 
+            ;; Automatically expire groups on idle
+            (gnus-demon-add-handler 'gnus-group-expire-all-groups 10 5)
 
             ;; Visit group under point and immediately close it; this updates
             ;; gnus’ registry as a side-effect
