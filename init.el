@@ -916,10 +916,6 @@
                           (mapcar #'timer--function timer-list))
               (run-with-timer 0 3600 #'org-clock-save))
 
-            (unless (memq #'db/export-diary
-                          (mapcar #'timer--function timer-idle-list))
-              (run-with-idle-timer 200 t #'db/export-diary))
-
             ;; Hack: The default implementation is too slow, because it is
             ;; parsing all properties of an entry by default.  Let’s simplify
             ;; this to only parse what we are looking for.  This makes tag
