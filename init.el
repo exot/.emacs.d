@@ -1074,8 +1074,11 @@
                    ((org-agenda-overriding-header "Deadlines")
                     (org-agenda-sorting-strategy '(deadline-up priority-down))
                     (org-deadline-warning-days 30)))
-                  (tags-todo "-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
-                             ((org-agenda-overriding-header "Next Actions List (not scheduled or scheduled in the future)")
+                  (tags-todo "TODO=\"CONT\""
+                             ((org-agenda-overriding-header "WIP List (TODO=\"CONT\", all items)")
+                              (org-agenda-sorting-strategy '(priority-down category-up))))
+                  (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
+                             ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled in the future)")
                               (org-tags-match-list-sublevels t)
                               (org-agenda-todo-ignore-scheduled 'future)
                               (org-agenda-sorting-strategy '(priority-down category-up))))))
