@@ -569,7 +569,8 @@
               browse-url-generic-program "firefox"))
 
 (use-package tramp
-  :init (setq tramp-default-method (if on-windows "pscp" "scp")))
+  :init (setq tramp-default-method (if on-windows "pscp" "scp")
+              tramp-completion-use-auth-sources nil))
 
 (use-package calc
   ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
