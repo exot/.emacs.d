@@ -1082,7 +1082,7 @@
                   (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
                              ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled)")
                               (org-tags-match-list-sublevels t)
-                              (org-agenda-todo-ignore-scheduled 'future)
+                              (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy '(priority-down category-up))))))
                 ("B" "Backlog"
                  ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC/-DONE"
