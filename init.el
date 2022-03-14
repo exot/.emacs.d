@@ -1791,7 +1791,6 @@
 ;; Searching
 
 (setq nnir-method-default-engines '((nnimap . imap)
-                                    (nnmaildir . notmuch)
                                     (nntp . gmane)))
 
 ;; Agents
