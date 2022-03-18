@@ -4,16 +4,16 @@
 
 ;; This is the main entry point for Emacs to load this configuration.  The
 ;; structure is roughly as follows:
-;; * first comes some preliminary setup, mostly setting up `package’;
-;; * the main activation of the configuration is done in the function
+;; - first comes some preliminary setup, mostly setting up `package’;
+;; - the main activation of the configuration is done in the function
 ;;   `db/run-init’, which is installed in `after-init-hook’; it is thus run
 ;;   after init.el has been read
-;; * then comes setting up all the packages that can be used by this
+;; - then comes setting up all the packages that can be used by this
 ;;   configuration; most of these packages are not loaded however, and only
 ;;   configuration hooks are installed (using `use-package’); this way a user
 ;;   can choose in `db/run-init’ which configuration to activate without
 ;;   changing much of the rest of the file.
-;; * this file also introduces a new customization group `personal-settings’
+;; - this file also introduces a new customization group `personal-settings’
 ;;   containing variables (mostly file paths) that must be set to enable some
 ;;   of the provided functionality.
 
