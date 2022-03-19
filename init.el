@@ -1152,6 +1152,7 @@
 (use-package org-capture
   :commands (org-capture)
   :init (setq org-capture-use-agenda-date nil
+              org-capture-bookmark nil
               org-capture-templates
               `(("t" "Simple Task"
                  entry
