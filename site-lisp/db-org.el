@@ -716,14 +716,17 @@ Interactively query for HEADLINE when not provided."
         (user-error "Point is before first headline, aborting"))
 
       (let ((old-headline (org-entry-get (point) "ITEM")))
+        ;; Update headline
         (org-edit-headline new-headline)
 
-        ;; This simulates adding a note manually.  I am not quite sure how
-        ;; robust this is, but let's try it out.
-        (org-add-note)
-        (insert                       ; This goes into the *Org Note* buffer.
-         (format "Changed headline from: %s" old-headline))
-        (org-store-log-note))))
+        ;; Store note manually (I tried using `org-add-log-note', but did not succeed …)
+        (goto-char (org-log-beginning 'create))
+        (indent-according-to-mode)
+        (insert "- Note taken on ")
+        (org-insert-time-stamp (current-time) t t)
+        (insert " \\\\\n")
+        (indent-according-to-mode)
+        (insert (format "  Changed headline from: %s\n" old-headline)))))
 
   (when (derived-mode-p 'org-agenda-mode)
     (org-agenda-redo)))
