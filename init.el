@@ -836,7 +836,8 @@
                   ("PERIODIC" . ?p)
                   ("REGULAR" . ?r)
                   ("NOP" . ?o)
-                  ("TOPIC" . ?t))
+                  ("TOPIC" . ?t)
+                  ("TEMPLATE" . ?l))
 
                 org-tags-exclude-from-inheritance
                 '("NOP" "TOPIC")
@@ -1081,18 +1082,18 @@
                              ((org-agenda-overriding-header "WIP List (TODO={CONT\\\\|ATTN}, not scheduled)")
                               (org-agenda-sorting-strategy '(priority-down category-up))
                               (org-agenda-todo-ignore-scheduled t)))
-                  (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT/-DONE"
+                  (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE/-DONE"
                              ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled)")
                               (org-tags-match-list-sublevels t)
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy '(priority-down category-up))))))
                 ("B" "Backlog"
-                 ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC/-DONE"
+                 ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE/-DONE"
                              ((org-agenda-overriding-header "Backlog items (next items list without periodic tasks; includes waiting-fors)")
                               (org-tags-match-list-sublevels t)
                               (org-agenda-sorting-strategy '(priority-down category-up))))))
                 ("O" "Open, non-periodic TODOs"
-                 ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD"
+                 ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD-TEMPLATE"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
                               (org-use-tag-inheritance t)
                               (org-agenda-sorting-strategy '(deadline-down priority-down))
