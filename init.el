@@ -945,12 +945,11 @@
   :init (setq org-download-method 'attach))
 
 ;; Extended query language and dynamic blocks
-(use-package org-ql
-  :ensure t
+(use-package org-ql-search
+  :ensure org-ql
   :commands (org-ql-view
              org-ql-search
-             org-dblock-write:org-ql)
-  :config (require 'org-ql-search))
+             org-dblock-write:org-ql))
 
 (use-package ol
   :init (setq org-link-keep-stored-after-insertion nil)
