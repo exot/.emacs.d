@@ -944,6 +944,14 @@
              org-download-clipboard)
   :init (setq org-download-method 'attach))
 
+;; Extended query language and dynamic blocks
+(use-package org-ql
+  :ensure t
+  :commands (org-ql-view
+             org-ql-search
+             org-dblock-write:org-ql)
+  :config (require 'org-ql-search))
+
 (use-package ol
   :init (setq org-link-keep-stored-after-insertion nil)
   :commands (org-store-link))
