@@ -524,6 +524,13 @@ open RFC in HTML format in the default browser."
     (warn "`db/rfc-cache-path' not defined or not an absolute writable path, opening RFC in browser.")
     (browse-url (concat "https://tools.ietf.org/html/rfc" number)))))
 
+(defun db/org-clear-stored-links ()
+  "Clear list of stored links by setting `org-stored-links' to NIL.
+This might be handy when links are kept by setting
+`org-link-keep-stored-after-insertion' to T, but too many links
+have accumulated over time."
+  (interactive)
+  (setq org-stored-links nil))
 
 
 ;;; Org Utilities

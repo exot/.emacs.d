@@ -744,6 +744,7 @@
              db/org-onenote-open
              db/org-outlook-open
              db/org-rfc-open
+             db/org-clear-stored-links
              db/org-cleanup-continuous-clocks
              db/find-csv-in-org
              db/org-mark-current-default-task
@@ -952,7 +953,7 @@
              org-dblock-write:org-ql))
 
 (use-package ol
-  :init (setq org-link-keep-stored-after-insertion nil)
+  :init (setq org-link-keep-stored-after-insertion t)
   :commands (org-store-link))
 
 (use-package org-id
