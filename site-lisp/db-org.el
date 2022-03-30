@@ -545,8 +545,8 @@ have accumulated over time."
     (save-excursion
       (goto-char (point-min))
       (while (search-forward-regexp clock-line nil t)
-       (replace-match "\\1CLOCK: [\\4]--[\\3]")
-       (org-clock-update-time-maybe)))))
+        (replace-match "\\1CLOCK: [\\4]--[\\3]")
+        (org-clock-update-time-maybe)))))
 
 (defun db/find-csv-in-org (arg)
   "Interactively find CSV file and open it as Org mode table.

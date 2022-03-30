@@ -909,7 +909,7 @@
               (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
               (org-link-set-parameters "outlook" :follow #'db/org-outlook-open))
 
-            ;; Skip some org mode regions to be skipped by ispell
+            ;; Mark some org mode regions to be skipped by ispell
             (add-hook 'org-mode-hook #'endless/org-ispell)
 
             ;; Link type for RFCs
