@@ -527,6 +527,20 @@ current values of the relevant buffer local variables."
       (goto-char (point-min))
       (timeline-tools-next-line))))
 
+(defun timeline-tools--get-entry-from-point ()
+  "Return timeline entry of point when in timeline buffer."
+  (unless (derived-mode-p 'timeline-tools-mode))
+  (save-mark-and-excursion
+    (unless (org-at-table-p)
+      (user-error "Not in table"))
+    (unless (looking-at "^| ")
+      (user-error "Not on valid row in timeline"))
+    (beginning-of-line)
+    (org-table-next-field)
+    (if-let ((entry (get-text-property (point) 'entry)))
+        entry
+      (user-error "Not on valid row in timeline"))))
+
 (defun timeline-tools-next-line ()
   "Move point to next line in timetable, if possible."
   (interactive)
@@ -611,13 +625,7 @@ Updates category properties before constructing the new timeline."
   (interactive)
   (unless (eq major-mode 'timeline-tools-mode)
     (user-error "Not in Timeline buffer"))
-  (let ((marker (save-mark-and-excursion
-                  (beginning-of-line)
-                  (org-table-next-field)
-                  (-> (get-text-property (point) 'entry)
-                      (timeline-tools-entry-marker)))))
-    (unless marker
-      (user-error "Not on headline to jump to"))
+  (let ((marker (timeline-tools-entry-marker (timeline-tools--get-entry-from-point))))
     (switch-to-buffer (marker-buffer marker))
     (goto-char marker)
     (org-reveal)))
@@ -627,19 +635,15 @@ Updates category properties before constructing the new timeline."
   (interactive)
   (unless (eq major-mode 'timeline-tools-mode)
     (user-error "Not in Timeline buffer"))
-  (save-mark-and-excursion
-    ;; get actual entry from headline of line
-    (beginning-of-line)
-    (unless (looking-at "^| ")
-      (user-error "Not in table"))
-    (org-table-next-field)
-    (let ((entry (get-text-property (point) 'entry)))
-      (unless entry
-        (user-error "Not on valid row in timeline"))
-      (kill-line)))
-  ;; the call to `erase-buffer’ in `timeline-tools-redraw-timeline’ somehow
-  ;; makes `save-mark-and-excursion’ meaningless; thus we save the number of the
+
+  ;; If there's an entry on the current line, delete it and redraw; the call to
+  ;; `erase-buffer’ in `timeline-tools-redraw-timeline’ somehow makes
+  ;; `save-mark-and-excursion’ meaningless; thus we save the number of the
   ;; current line by ourselves
+
+  (if (timeline-tools--get-entry-from-point) ; barfs if there's no entry
+      (kill-line))
+
   (let ((linenum (line-number-at-pos (point))))
     (timeline-tools-redraw-timeline)
     (goto-char (point-min))
@@ -659,28 +663,12 @@ changed accordingly."
 
   (let (pos-entry-1 pos-entry-2 entry-1 entry-2)
 
-    ;; XXX: this feels redundant and should be refactored into a separate
-    ;; function or something.
     (save-mark-and-excursion
-      ;; Get first entry and its position.
-      (beginning-of-line)
-      (unless (looking-at "^| ")
-        (user-error "Not in table"))
-      (org-table-next-field)
-      (setq entry-1 (get-text-property (point) 'entry)
+      (setq entry-1 (timeline-tools--get-entry-from-point)
             pos-entry-1 (point))
-      (unless entry-1
-        (user-error "Not on valid row in timeline"))
-
-      ;; If there's no next line, the following will barf.
       (timeline-tools-next-line)
-
-      (beginning-of-line)
-      (org-table-next-field)
-      (setq entry-2 (get-text-property (point) 'entry)
-            pos-entry-2 (point))
-      (unless entry-2
-        (user-error "Next row not valid in timeline")))
+      (setq entry-2 (timeline-tools--get-entry-from-point)
+            pos-entry-2 (point)))
 
     ;; Let's create new entries and overwrite the old ones.
 
