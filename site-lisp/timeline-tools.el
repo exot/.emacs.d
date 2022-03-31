@@ -468,7 +468,8 @@ archives."
 
 (defun timeline-tools-redraw-timeline (&optional force)
   "Redraw timeline of current buffer.
-If `force' is non-nil, reparse the timeline using
+
+If FORCE is non-nil, reparse the timeline using
 `timeline-tools-timeline' within the time span given by the
 current values of the relevant buffer local variables."
   (interactive)
@@ -586,6 +587,9 @@ Updates category properties before constructing the new timeline."
   (interactive)
   (if (not (eq major-mode 'timeline-tools-mode))
       (user-error "Not in Timeline buffer")
+    ;; CAVEAT: this does not work properly when daylight time saving occured.
+    ;; In that case, jump directly to the day you want to display.  This is not
+    ;; going to be fixed.
     (setq-local timeline-tools--current-time-start (+ 86400 timeline-tools--current-time-start))
     (setq-local timeline-tools--current-time-end (+ 86400 timeline-tools--current-time-end))
     (timeline-tools-redraw-timeline 'force)))
@@ -640,7 +644,7 @@ Updates category properties before constructing the new timeline."
     (forward-line (1- linenum))))
 
 
-;;; Manipulating Clocklines
+;;; Manipulating Clocklines in Org Files
 
 ;; XXX: All this needs some autoloadable frontend
 
