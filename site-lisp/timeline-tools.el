@@ -527,49 +527,62 @@ current values of the relevant buffer local variables."
       (goto-char (point-min))
       (timeline-tools-next-line))))
 
-(defun timeline-tools--get-entry-from-point ()
-  "Return timeline entry of point when in timeline buffer."
+(defun timeline-tools--get-entry-from-point (&optional noerror)
+  "Return timeline entry of point when in timeline buffer.
+
+Errors out if there is no entry on the current line, unless
+NOERROR is non-nil; in that case, return nil when no text
+property could be found (note that this can also happen if point
+is outside of the current table)."
   (unless (derived-mode-p 'timeline-tools-mode))
   (save-mark-and-excursion
-    (unless (org-at-table-p)
-      (user-error "Not in table"))
-    (unless (looking-at "^| ")
-      (user-error "Not on valid row in timeline"))
-    (beginning-of-line)
-    (org-table-next-field)
-    (if-let ((entry (get-text-property (point) 'entry)))
-        entry
-      (user-error "Not on valid row in timeline"))))
+    (if (not (org-at-table-p))
+        (if noerror nil (user-error "Not in table"))
+      (beginning-of-line)
+      (if (not (looking-at "^| "))
+          (if noerror nil (user-error "Not on valid row in timeline"))
+        (org-table-next-field)
+        (if-let ((entry (get-text-property (point) 'entry)))
+            entry
+          (if noerror nil (user-error "Not on valid row in timeline")))))))
 
 (defun timeline-tools-next-line ()
-  "Move point to next line in timetable, if possible."
+  "Move point to next line in timetable, if possible.
+
+Otherwise don't move point and error out."
   (interactive)
-  (unless (eq major-mode 'timeline-tools-mode)
+  (unless (derived-mode-p 'timeline-tools-mode)
     (user-error "Not in Timeline buffer"))
-  (beginning-of-line)
-  (let ((point (point)))
-    (when (looking-at "^| ")
-      (forward-line))
-    (unless (re-search-forward "^| " nil 'no-error)
+  (let ((point (point))
+        found)
+    (end-of-line)
+    (while (and (setq found (re-search-forward "^| " nil t))
+                (not (timeline-tools--get-entry-from-point 'noerror))))
+    ;; Check whether we've found something when leaving the while-loop; if not,
+    ;; go back and error out, as promised in the docstring.
+    (unless found
       (goto-char point)
-      (user-error "No next line"))
-    (beginning-of-line)))
+      (user-error "No next line")))
+  (beginning-of-line))
 
 (defun timeline-tools-previous-line ()
-  "Move point to previous line in timetable, if possible."
+  "Move point to previous line in timetable, if possible.
+
+Otherwise don't move point and error out."
   (interactive)
   (unless (eq major-mode 'timeline-tools-mode)
     (user-error "Not in Timeline buffer"))
   (beginning-of-line)
-  (let ((point (point)))
-    ;; Make sure we do not move into the headline by checking the `entry'
-    ;; property
-    (unless (and (re-search-backward "^| " nil 'no-error)
-                 (progn (org-table-next-field)
-                        (get-text-property (point) 'entry)))
+  (let ((point (point))
+        found)
+    (while (and (setq found (re-search-backward "^| " nil t))
+                (not (timeline-tools--get-entry-from-point 'noerror))))
+    ;; Check whether we've found something when leaving the while-loop; if not,
+    ;; go back and error out, as promised in the docstring.
+    (unless found
       (goto-char point)
-      (user-error "No previous line"))
-    (beginning-of-line)))
+      (user-error "No previous line")))
+  (beginning-of-line))
 
 (defun timeline-tools--get-timeline-from-buffer ()
   "Extract current timeline from buffer and return it.
