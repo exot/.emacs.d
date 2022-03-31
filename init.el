@@ -1122,8 +1122,8 @@
                              ((org-agenda-overriding-header "Tasks on Hold")))))
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
-                 ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SCHEDULED>=\"<+1d>\""
-                        ((org-agenda-overriding-header "Open Projects to do SOMEWHEN (no TODO keyword, no PERIODIC, no NOTE, no DATE, no future SCHEDULED)")))
+                 ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<+1d>\""
+                        ((org-agenda-overriding-header "Open Projects to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no future SCHEDULED)")))
                   (tags-todo "SOMEWHEN/-CANC-DONE"
                              ((org-agenda-overriding-header "Things To Do SOMEWHEN")
                               (org-agenda-todo-ignore-with-date t)
