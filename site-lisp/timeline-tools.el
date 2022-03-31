@@ -521,7 +521,6 @@ current values of the relevant buffer local variables."
                                (timeline-tools-format-entry-time line 'end)
                                (timeline-tools-entry-duration line)
                                (timeline-tools-entry-headline line))
-                       'marker (timeline-tools-entry-marker line)
                        'entry line))))
       (insert "|--|\n")
       (org-table-align)
@@ -613,9 +612,10 @@ Updates category properties before constructing the new timeline."
   (unless (eq major-mode 'timeline-tools-mode)
     (user-error "Not in Timeline buffer"))
   (let ((marker (save-mark-and-excursion
-                 (beginning-of-line)
-                 (org-table-next-field)
-                 (get-text-property (point) 'marker))))
+                  (beginning-of-line)
+                  (org-table-next-field)
+                  (-> (get-text-property (point) 'entry)
+                      (timeline-tools-entry-marker)))))
     (unless marker
       (user-error "Not on headline to jump to"))
     (switch-to-buffer (marker-buffer marker))
