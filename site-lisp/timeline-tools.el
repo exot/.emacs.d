@@ -106,8 +106,10 @@ end date of the timeline."
     (define-key map "k" #'timeline-tools-kill-line)
     (define-key map (kbd "C-n") #'timeline-tools-next-line)
     (define-key map "n" #'timeline-tools-next-line)
+    (define-key map "N" #'timeline-tools-swap-line-with-next)
     (define-key map (kbd "C-p") #'timeline-tools-previous-line)
     (define-key map "p" #'timeline-tools-previous-line)
+    (define-key map "P" #'timeline-tools-swap-line-with-previous)
     (define-key map "o" #'delete-other-windows)
     map))
 
@@ -642,6 +644,92 @@ Updates category properties before constructing the new timeline."
     (timeline-tools-redraw-timeline)
     (goto-char (point-min))
     (forward-line (1- linenum))))
+
+(defun timeline-tools-swap-line-with-next ()
+  "Swap the current line with the next line in current timeline.
+
+Durations of the entries are kept, the start and end times are
+changed accordingly."
+  (interactive)
+  (unless (derived-mode-p 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+
+  ;; The idea is to swap the two entries attached as text properties to the rows
+  ;; and update the start end end times accordingly, and then redraw.
+
+  (let (pos-entry-1 pos-entry-2 entry-1 entry-2)
+
+    ;; XXX: this feels redundant and should be refactored into a separate
+    ;; function or something.
+    (save-mark-and-excursion
+      ;; Get first entry and its position.
+      (beginning-of-line)
+      (unless (looking-at "^| ")
+        (user-error "Not in table"))
+      (org-table-next-field)
+      (setq entry-1 (get-text-property (point) 'entry)
+            pos-entry-1 (point))
+      (unless entry-1
+        (user-error "Not on valid row in timeline"))
+
+      ;; If there's no next line, the following will barf.
+      (timeline-tools-next-line)
+
+      (beginning-of-line)
+      (org-table-next-field)
+      (setq entry-2 (get-text-property (point) 'entry)
+            pos-entry-2 (point))
+      (unless entry-2
+        (user-error "Next row not valid in timeline")))
+
+    ;; Let's create new entries and overwrite the old ones.
+
+    (let ((s1 (timeline-tools-entry-start-time entry-1))
+          (m1 (timeline-tools-entry-marker entry-1))
+          (s2 (timeline-tools-entry-start-time entry-2))
+          (e2 (timeline-tools-entry-end-time entry-2))
+          (m2 (timeline-tools-entry-marker entry-2))
+          entry-1-new entry-2-new)
+
+      (setq entry-1-new (timeline-tools-make-entry s1 (+ s1 (- e2 s2)) m2)
+            entry-2-new (timeline-tools-make-entry (+ s1 (- e2 s2)) e2 m1))
+
+      (save-mark-and-excursion
+        (goto-char pos-entry-1)
+        (put-text-property (line-beginning-position)
+                           (line-end-position)
+                           'entry entry-1-new)
+        (goto-char pos-entry-2)
+        (put-text-property (line-beginning-position)
+                           (line-end-position)
+                           'entry entry-2-new))
+
+      (timeline-tools-redraw-timeline)
+
+      ;; Stay on line we were previously, by searching for an entry that has
+      ;; the same starting time as `entry-2-new', going there.
+
+      ;; XXX: problem is that entries may get transformed by functions from
+      ;; `timeline-tools-transform-timeline', so this approach is not correct
+      ;; in general.
+
+      (text-property-search-forward 'entry
+                                    (timeline-tools-entry-start-time entry-2-new)
+                                    #'(lambda (x y)
+                                        (equal x (timeline-tools-entry-start-time y)))))))
+
+(defun timeline-tools-swap-line-with-previous ()
+  "Swap the current line with the previous line in current timeline.
+
+See `timeline-tools-swap-line-with-next' for more details."
+  (interactive)
+  (unless (derived-mode-p 'timeline-tools-mode)
+    (user-error "Not in Timeline buffer"))
+
+  ;; Go to the previous line and swap those.
+  (timeline-tools-previous-line)
+  (timeline-tools-swap-line-with-next)
+  (timeline-tools-previous-line))
 
 
 ;;; Manipulating Clocklines in Org Files
