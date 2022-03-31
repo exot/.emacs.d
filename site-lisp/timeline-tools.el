@@ -546,7 +546,11 @@ current values of the relevant buffer local variables."
     (user-error "Not in Timeline buffer"))
   (beginning-of-line)
   (let ((point (point)))
-    (unless (re-search-backward "^| " nil 'no-error)
+    ;; Make sure we do not move into the headline by checking the `entry'
+    ;; property
+    (unless (and (re-search-backward "^| " nil 'no-error)
+                 (progn (org-table-next-field)
+                        (get-text-property (point) 'entry)))
       (goto-char point)
       (user-error "No previous line"))
     (beginning-of-line)))
