@@ -1137,8 +1137,8 @@
                         ((org-agenda-overriding-header "Open Projects")))
                   (tags "TODO=\"\"+TAGS={TOPIC}-SCHEDULED>=\"<+1d>\""
                         ((org-agenda-overriding-header "Topics")))
-                  (tags "TAGS={PERIODIC}-TAGS={DONE\\|CANC}"
-                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC)")))))
+                  (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-SCHEDULED>=\"<+1d>\""
+                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done)")))))
 
                 ("W" "Weekly Review"
                  ((agenda ""
