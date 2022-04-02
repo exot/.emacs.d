@@ -691,7 +691,9 @@ it.  Adds newline before and after the template."
 
 (defun db/org-update-headline-log-note (&optional new-headline)
   "Replace headline of item at point with NEW-HEADLINE.
-Interactively query for HEADLINE when not provided."
+
+Interactively query for HEADLINE when not provided.  Clear refile
+cache if that's in use."
   (interactive)
 
   (unless (derived-mode-p 'org-mode 'org-agenda-mode)
@@ -734,6 +736,9 @@ Interactively query for HEADLINE when not provided."
         (insert " \\\\\n")
         (indent-according-to-mode)
         (insert (format "  Changed headline from: %s\n" old-headline)))))
+
+  (when org-refile-use-cache
+    (org-refile-cache-clear))
 
   (when (derived-mode-p 'org-agenda-mode)
     (org-agenda-redo)))
