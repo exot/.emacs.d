@@ -968,7 +968,7 @@ The search is conducted over all files returned by
 `org-agenda-files' including archives, as well as all files
 referenced in `org-agenda-text-search-extra-files'."
   (let ((id-of-item-at-point (org-id-get))
-        (org-agenda-text-search-extra-files org-agenda-text-search-extra-files)
+        (extra-files org-agenda-text-search-extra-files)
         files)
 
     (unless id-of-item-at-point
@@ -978,9 +978,9 @@ referenced in `org-agenda-text-search-extra-files'."
     ;; `org-agenda-text-search-extra-files', as we already handle this when
     ;; calling `org-agenda-files'.
     (setq files (org-agenda-files t archives))
-    (when (eq (car org-agenda-text-search-extra-files) 'agenda-archives)
-      (pop org-agenda-text-search-extra-files))
-    (setq files (nconc files org-agenda-text-search-extra-files))
+    (when (eq (car extra-files) 'agenda-archives)
+      (pop extra-files))
+    (setq files (append files extra-files))
 
     (org-ql-query :select '(list (org-link-make-string (format "id:%s" (org-id-get-create))
                                                        (org-entry-get (point) "ITEM")))
