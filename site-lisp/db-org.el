@@ -860,19 +860,23 @@ Only links using the ID or CUSTOM_ID property are considered.
 
 If ARG is given, or if neither in an Org Mode buffer nor on a
 headline in an Org Agenda buffer, interactively prompt for an
-item."
+item using `db/org-get-location', which see."
   (interactive "P")
   (apply #'db/org-find-items-linking-by-id
-         (cond ((and (not arg) (derived-mode-p 'org-mode))
-                (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))
-               ((and (not arg)
-                     (derived-mode-p 'org-agenda-mode)
-                     (org-get-at-bol 'org-hd-marker))
-                (org-with-point-at (org-get-at-bol 'org-hd-marker)
-                  (list (org-id-get) (org-entry-get nil "CUSTOM_ID"))))
-               (t
-                (org-with-point-at (db/org-get-location)
-                  (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))))))
+         ;; Determine the current item interactively based on where we are: when
+         ;; in an Org buffer or in Org agenda view, indeed use the item at
+         ;; point; otherwise, and when ARG is given, query the user for the item
+         ;; to look for.
+         (org-with-point-at (cond ((and (not arg)
+                                        (derived-mode-p 'org-mode))
+                                   (point))
+                                  ((and (not arg)
+                                        (derived-mode-p 'org-agenda-mode)
+                                        (org-get-at-bol 'org-hd-marker))
+                                   (org-get-at-bol 'org-hd-marker))
+                                  (t
+                                   (db/org-get-location)))
+           (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))))
 
 (defun db/org-insert-link-to-pom (pom)
   "Insert an Org link to headline at POM.
