@@ -814,11 +814,11 @@ not."
 (defun db/org-get-location (&optional arg)
   "Interactively query for location and return mark.
 
-Searches through the current buffer if that one is associated
-with a file, or `db/org-default-org-file'.  When ARG is non-nil,
-search through all files in the variables `org-agenda-files',
-`org-agenda-text-search-extra-files', and the current file or
-`db/org-default-org-file'.
+Searches through the current buffer if that one is an Org buffer
+and is associated with a file, or `db/org-default-org-file'.
+When ARG is non-nil, search through all files in the variables
+`org-agenda-files', `org-agenda-text-search-extra-files', and the
+current file or `db/org-default-org-file'.
 
 Search is always conducted up to level 9.  If the selected
 location does not have an associated point or mark, error out.
@@ -826,9 +826,10 @@ Disable refile cache and any active refile filter hooks to allow
 linking to any item."
   (let ((org-refile-target-verify-function nil)
         (org-refile-use-cache nil)
-        ;; If the current buffer is associated with a file, search through it;
-        ;; otherwise, use the default Org Mode file as default buffer
-        (default-buffer (if (buffer-file-name)
+        ;; If the current buffer is an Org buffer and is associated with a file,
+        ;; search through it; otherwise, use the default Org Mode file as
+        ;; default buffer
+        (default-buffer (if (and (buffer-file-name) (derived-mode-p 'org-mode))
                            (current-buffer)
                          (find-file-noselect db/org-default-org-file))))
     (when (null default-buffer)
