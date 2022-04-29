@@ -2620,6 +2620,7 @@ With given ARG, display files in `db/important-document-path’."
   :config (progn (require 'em-prompt)
                  (require 'em-term)
                  (require 'em-cmpl)
+                 (require 'em-hist)
 
                  (setenv "PAGER" "cat")
 
@@ -2632,12 +2633,21 @@ With given ARG, display files in `db/important-document-path’."
                  (add-hook 'eshell-mode-hook
                            'with-editor-export-editor)
 
-                 (add-hook 'eshell-mode-hook
-                           (lambda ()
-                             (bind-key "C-a" #'eshell-bol eshell-mode-map)
-                             (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
-                             (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
-                             (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
+                 (if (<= emacs-major-version 27)
+                     (add-hook 'eshell-mode-hook
+                               (lambda ()
+                                 (bind-key "C-a" #'eshell-bol eshell-mode-map)
+                                 (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
+                                 (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+                                 (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
+                   ;; In Emacs 28.1, eshell's mode maps have been refactored to
+                   ;; follow standard extensibility.  There's thus no need
+                   ;; anymore to use the special hook construction.
+                   (progn
+                     (bind-key "C-a" #'eshell-bol eshell-mode-map)
+                     (bind-key "M-r" #'eshell-insert-history eshell-hist-mode-map)
+                     (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+                     (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
 
                  ;; Ignoring case when completing file names seems to have a
                  ;; bug: when a ~ is encountered, it is implicitly expaned by
