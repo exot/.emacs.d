@@ -2132,7 +2132,10 @@
                      (match-string 1))))))))
 
 (use-package dired-x
-  :commands (dired-jump dired-jump-other-window)
+  :commands (dired-jump dired-jump-other-window) ; In Emacs 28.1, this has been
+                                                 ; moved to dired.el, but we'll
+                                                 ; keep it here to support Emacs
+                                                 ; 27.2 as well.
   :init (setq dired-clean-confirm-killing-deleted-buffers t
               dired-x-hands-off-my-keys t
               dired-bind-man nil
@@ -2337,7 +2340,7 @@ With given ARG, display files in `db/important-document-path’."
              avy-goto-line))
 
 (use-package bm
-  ;; Taken from https://protesilaos.com/dotemacs/ and slightly adapted
+  ;; Taken from https://protesilaos.com/dotemacs/ and adapted slightly
   :ensure t
   :commands (bm-toggle bm-next bm-previous bm-toggle-buffer-persistence)
   :init (setq bm-restore-repository-on-load t
@@ -2938,9 +2941,6 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'TeX-mode-hook
                       (lambda () (setq ispell-parser 'tex)))))
 
-(use-package helm-bibtex
-  :commands (helm-bibtex))
-
 
 ;; * Various Mode Configurations
 
@@ -3041,9 +3041,6 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'plantuml-mode-hook
                       #'(lambda ()
                           (subword-mode -1)))))
-
-(use-package pdf-occur
-  :commands (pdf-occur-global-minor-mode))
 
 (use-package python
   :config (progn
