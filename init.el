@@ -2511,7 +2511,6 @@ With given ARG, display files in `db/important-document-path’."
              db/playlist-files-from-git-annex-find
              db/play-auto-playlist-from-git-annex-find
              music-control/body
-             db/play-radio-stations
              db/update-playlist-files))
 
 
