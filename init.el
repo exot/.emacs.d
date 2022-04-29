@@ -129,10 +129,6 @@
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
-  (unless on-windows
-    (with-demoted-errors "Cannot load `pdf-tools’: %s"
-      (pdf-tools-install)))
-
   ;; This causes inacceptable lack when drawing buffers, so disable it for now.
   ;; Needs to be investigated further.
 
@@ -3046,9 +3042,6 @@ With given ARG, display files in `db/important-document-path’."
 
 (use-package pdf-occur
   :commands (pdf-occur-global-minor-mode))
-
-(use-package pdf-tools
-  :commands (pdf-tools-install))
 
 (use-package python
   :config (progn
