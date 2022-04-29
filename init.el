@@ -2974,11 +2974,6 @@ With given ARG, display files in `db/important-document-path’."
             ;; controlled by the value of `cperl-lazy-help-time'
             (add-hook 'cperl-mode-hook 'cperl-lazy-install)))
 
-(use-package db-projects
-  :commands (projects-add-project
-             projects-archive-project
-             projects-lint-projects))
-
 (use-package define-word
   :ensure t
   :commands (define-word-at-point define-word))
