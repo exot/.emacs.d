@@ -60,3 +60,4 @@
 /projects
 /.lsp-session-v1
 /.cache/
+.*.~undo-tree~
