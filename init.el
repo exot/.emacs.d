@@ -695,7 +695,9 @@
              undo
              undo-tree-redo)
   :init (setq undo-tree-visualizer-timestamps t
-              undo-tree-visualizer-diff t)
+              undo-tree-visualizer-diff t
+              undo-tree-auto-save-history t
+              undo-tree-history-directory-alist `(("." . ,(expand-file-name "ebackup/" emacs-d))))
   :diminish undo-tree-mode)
 
 (use-package wgrep
