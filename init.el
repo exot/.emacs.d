@@ -148,7 +148,6 @@
 
   ;; Global Hooks
 
-  (add-hook 'minibuffer-setup-hook 'conditionally-enable-lispy)
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
