@@ -955,6 +955,35 @@ Show _b_acklinks to current item."
   ("O" (db/org-add-link-to-other-item t))
   ("b" db/org-find-links-to-current-item))
 
+(defun db/org--backlinks-for-id (item-id &optional org-ql-match archives)
+  "Return list of ID properties of Org Mode items linking to ITEM-ID.
+
+If the optional ORG-QL-MATCH is given and is a valid `org-ql' query in
+sexp syntax, filter the list for all items matching this query.
+If ARCHIVES is given, also include archive files.
+
+The search is conducted over all files returned by
+`org-agenda-files' including archives, as well as all files
+referenced in `org-agenda-text-search-extra-files'."
+
+  (let ((extra-files org-agenda-text-search-extra-files)
+        files)
+
+    ;; Determine files to search through; ignore `agenda-archive' in
+    ;; `org-agenda-text-search-extra-files', as we already handle this when
+    ;; calling `org-agenda-files'.
+    (setq files (org-agenda-files t archives))
+    (when (eq (car extra-files) 'agenda-archives)
+      (pop extra-files))
+    (setq files (append files extra-files))
+
+    (org-ql-query :select '(org-id-get-create)
+                  :from files
+                  :where (let ((link-expression `(link :target ,item-id)))
+                           (if org-ql-match
+                               `(and ,link-expression ,org-ql-match)
+                             link-expression)))))
+
 (defun db/org-backlinks-to-item-at-point (&optional org-ql-match archives)
   "Return list of Org links to item at point.
 
@@ -967,28 +996,18 @@ If ARCHIVES is given, also include archive files.
 The search is conducted over all files returned by
 `org-agenda-files' including archives, as well as all files
 referenced in `org-agenda-text-search-extra-files'."
-  (let ((id-of-item-at-point (org-id-get))
-        (extra-files org-agenda-text-search-extra-files)
-        files)
+
+  (let ((id-of-item-at-point (org-id-get)))
 
     (unless id-of-item-at-point
       (user-error "Item at point does not have an ID property set, cannot determine backlinks"))
 
-    ;; Determine files to search through; ignore `agenda-archive' in
-    ;; `org-agenda-text-search-extra-files', as we already handle this when
-    ;; calling `org-agenda-files'.
-    (setq files (org-agenda-files t archives))
-    (when (eq (car extra-files) 'agenda-archives)
-      (pop extra-files))
-    (setq files (append files extra-files))
+    (mapcar #'(lambda (id)
+                (list (org-link-make-string (format "id:%s" id)
+                                            (org-entry-get (org-id-find id 'marker) "ITEM"))))
+            (db/org--backlinks-for-id id-of-item-at-point org-ql-match archives))))
 
-    (org-ql-query :select '(list (org-link-make-string (format "id:%s" (org-id-get-create))
-                                                       (org-entry-get (point) "ITEM")))
-                  :from files
-                  :where (let ((link-expression `(link :target ,id-of-item-at-point)))
-                           (if org-ql-match
-                               `(and ,link-expression ,org-ql-match)
-                             link-expression)))))
+;; TODO: function to return links to all backlinks of self and parents
 
 
 ;;; End
