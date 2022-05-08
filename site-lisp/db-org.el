@@ -69,7 +69,8 @@ deadlines."
         (setq s (point))
         (if org-agenda-overriding-header
             (insert (org-add-props (copy-sequence org-agenda-overriding-header)
-                        nil 'face 'org-agenda-structure) "\n"))
+                        nil 'face 'org-agenda-structure)
+                    "\n"))
 	(org-agenda-mark-header-line s))
 
       ;; actual content
