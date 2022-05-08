@@ -203,7 +203,6 @@
   (bind-key "C-c C-r" #'ivy-resume)
   (bind-key "C-c D" #'define-word)
   (bind-key "C-c J" #'avy-goto-word-or-subword-1)
-  (bind-key "C-c P" #'ivy-pages)
   (bind-key "C-c a" #'org-agenda)
   (bind-key "C-c c" #'org-capture)
   (bind-key "C-c d" #'define-word-at-point)
