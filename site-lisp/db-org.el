@@ -319,20 +319,23 @@ tag PERIODIC."
 
 (defun db/find-parent-task ()
   ;; http://doc.norang.ca/org-mode.html#Clocking
-  "Return point of the nearest parent task, and NIL if no such task exists."
+  "Return point of the nearest parent task, and NIL if no such task exists.
+
+Ignores headlines tagged with NOP or PERIODIC, as those items
+should not be clocked."
   (save-mark-and-excursion
-   (save-restriction
-     (widen)
-     (let ((parent-task nil))
-       (or (org-at-heading-p)
-           (org-back-to-heading t))
-       (while (and (not parent-task)
-                   (org-up-heading-safe))
-         (let ((tags (org-get-tags nil 'local)))
-           (unless (or (member "NOP" tags)
-                       (member "PERIODIC" tags))
-             (setq parent-task (point)))))
-       parent-task))))
+    (save-restriction
+      (widen)
+      (let ((parent-task nil))
+        (or (org-at-heading-p)
+            (org-back-to-heading t))
+        (while (and (not parent-task)
+                    (org-up-heading-safe))
+          (let ((tags (org-get-tags nil 'local)))
+            (unless (or (member "NOP" tags)
+                        (member "PERIODIC" tags))
+              (setq parent-task (point)))))
+        parent-task))))
 
 (defun db/ensure-running-clock ()
   "Clocks in into the parent task, if it exists, or the default task."
@@ -985,30 +988,86 @@ referenced in `org-agenda-text-search-extra-files'."
                                `(and ,link-expression ,org-ql-match)
                              link-expression)))))
 
-(defun db/org-backlinks-to-item-at-point (&optional org-ql-match archives)
-  "Return list of Org links to item at point.
+(defun db/org--find-parent-marks ()
+  "Return list of markers of all parent headings of Org item at point.
 
-The links are grouped in singleton lists to allow easy formatting
-in Org mode source blocks with “:reslts value table”.  If the
-optional ORG-QL-MATCH is given and is a valid `org-ql' query in
-sexp syntax, filter the list for all items matching this query.
-If ARCHIVES is given, also include archive files.
+The list will include a marker to the current headline as well.
+The order of the list will be in ascending order of
+positions (i.e., the marker for the headline with the lowest
+level/position comes first)."
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org mode buffer, cannot determine parent items"))
 
-The search is conducted over all files returned by
-`org-agenda-files' including archives, as well as all files
-referenced in `org-agenda-text-search-extra-files'."
+  (save-mark-and-excursion
+    (save-restriction
+      (widen)
 
-  (let ((id-of-item-at-point (org-id-get)))
+      ;; Start at headline of current item
+      (or (org-at-heading-p)
+          (org-back-to-heading t))
 
-    (unless id-of-item-at-point
-      (user-error "Item at point does not have an ID property set, cannot determine backlinks"))
+      ;; Iterate over parents until at top-level
+      (let ((parent-markers (list (point-marker))))
+        (while (org-up-heading-safe)
+          (push (point-marker) parent-markers))
+        parent-markers))))
 
-    (mapcar #'(lambda (id)
-                (list (org-link-make-string (format "id:%s" id)
-                                            (org-entry-get (org-id-find id 'marker) "ITEM"))))
-            (db/org--backlinks-for-id id-of-item-at-point org-ql-match archives))))
+(defun db/org--format-link-with-headline (id)
+  "Format ID as an Org mode link [[ID][item headline]]."
+  (org-link-make-string (format "id:%s" id)
+                        (org-entry-get (org-id-find id 'marker) "ITEM")))
 
-;; TODO: function to return links to all backlinks of self and parents
+(defun org-dblock-write:db/org-backlinks (params)
+  "Write table of backlinks for current item and its parent items as Org table.
+
+PARAMS may contain the following values:
+
+  :org-ql-match   An org-ql-match expression in sexp syntax to filter
+                  the resulting backlinks
+
+  :archives       If non-nil, include archives"
+  (let* ((org-ql-match (plist-get params :org-ql-match))
+         (archives (plist-get params :archives))
+         headlines)
+
+    ;; Get all backlinks as list of Org mode IDs.  Each list consists of the ID
+    ;; of the headline (current or partent), followed by the IDs linking back to
+    ;; that headline.  If any of the headlines (current or parent) does not have
+    ;; an ID, it will not be included in that list.
+    (setq headlines
+          (->> (db/org--find-parent-marks)
+               (mapcar #'(lambda (mark)
+                           (org-with-point-at mark
+                             (when-let ((id-at-point (org-id-get)))
+                               (cons id-at-point
+                                     (db/org--backlinks-for-id id-at-point org-ql-match archives))))))
+               (cl-remove-if #'null)))
+
+    ;; Formatting.
+    (insert (format "| Item | Backlinks | Priority |\n|---|"))
+    (dolist (headline headlines)
+      (insert (format "\n| %s |\n|---|" (db/org--format-link-with-headline (car headline))))
+      (let ((backlink-lines (-> (mapcar #'(lambda (backlink-id)
+                                            (list (db/org--format-link-with-headline backlink-id)
+                                                  (org-entry-get (org-id-find backlink-id 'marker)
+                                                                 "PRIORITY")))
+                                        (cdr headline))
+                                (cl-sort #'string< :key #'cl-second))))
+        (dolist (line backlink-lines)
+          (insert (apply #'format "\n| | %s | %s |" line)))
+        (when backlink-lines ; only print closing hline when there's something to close
+          (insert "\n|---|"))))
+    (org-table-align)))
+
+(defun db/org-insert-backlink-block ()
+  "Create dynamic block of backlinks to current item or any of its parents."
+  (interactive)
+  (org-create-dblock
+   (list :name "db/org-backlinks"
+         :org-ql-match '(todo)))
+  (org-update-dblock))
+
+(org-dynamic-block-define "db/org-backlinks" #'db/org-insert-backlink-block)
 
 
 ;;; End

@@ -752,7 +752,8 @@
              db/org-find-links-to-current-item
              db/org-add-link-to-other-item
              db/org-add-link-to-current-clock
-             hydra-org-linking/body))
+             hydra-org-linking/body
+             org-dblock-write:db/org-backlinks))
 
 (use-package org
   :pin "gnu"
