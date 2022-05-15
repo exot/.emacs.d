@@ -524,6 +524,7 @@
 
 (use-package calender
   :init (setq calendar-date-style 'iso
+              calendar-time-zone-style 'numeric
               calendar-week-start-day 1 ; Monday
               calendar-bahai-all-holidays-flag nil
               calendar-chinese-all-holidays-flag nil
