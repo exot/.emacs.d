@@ -1,5 +1,8 @@
 ;;; db-projects.el -- Simple Directory-Based Project Management -*- lexical-binding: t -*-
 
+;; TODO: this package is deprecated and should be replaced or at least built
+;; upon either project.el or projectile.
+
 ;;; Commentary:
 
 ;; A project is simply a directory under `projects-main-project-directory'
