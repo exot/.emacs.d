@@ -3032,6 +3032,8 @@ With given ARG, display files in `db/important-document-path’."
           (fset 'markdown-output-standalone-p #'(lambda () t))))
 
 (use-package plantuml-mode
+  :load-path "site-lisp"
+  :mode ("\\.plantuml\\'" . plantuml-mode)
   :commands (plantuml-mode)
   :init (setq plantuml-output-type "svg"
               plantuml-default-exec-mode 'jar
