@@ -1086,7 +1086,7 @@
                    ((org-agenda-overriding-header "Deadlines")
                     (org-agenda-sorting-strategy '(deadline-up priority-down))
                     (org-deadline-warning-days 30)))
-                  (tags-todo "TODO={CONT\\|ATTN}"
+                  (tags-todo "TODO={CONT\\|ATTN}-HOLD"
                              ((org-agenda-overriding-header "WIP List (TODO ∈ {CONT,ATTN}, not scheduled in the future)")
                               (org-agenda-sorting-strategy '(priority-down category-up))
                               (org-agenda-todo-ignore-scheduled 'future)))
