@@ -1046,16 +1046,16 @@ PARAMS may contain the following values:
     ;; Formatting.
     (insert (format "| Item | Backlinks | Priority |\n|---|"))
     (dolist (headline headlines)
-      (insert (format "\n| %s |\n|---|" (db/org--format-link-with-headline (car headline))))
-      (let ((backlink-lines (-> (mapcar #'(lambda (backlink-id)
-                                            (list (db/org--format-link-with-headline backlink-id)
-                                                  (org-entry-get (org-id-find backlink-id 'marker)
-                                                                 "PRIORITY")))
-                                        (cdr headline))
-                                (cl-sort #'string< :key #'cl-second))))
-        (dolist (line backlink-lines)
-          (insert (apply #'format "\n| | %s | %s |" line)))
-        (when backlink-lines ; only print closing hline when there's something to close
+      (when (cdr headline)           ; do not print backlinks if there are none
+        (insert (format "\n| %s |\n|---|" (db/org--format-link-with-headline (car headline))))
+        (let ((backlink-lines (-> (mapcar #'(lambda (backlink-id)
+                                              (list (db/org--format-link-with-headline backlink-id)
+                                                    (org-entry-get (org-id-find backlink-id 'marker)
+                                                                   "PRIORITY")))
+                                          (cdr headline))
+                                  (cl-sort #'string< :key #'cl-second))))
+          (dolist (line backlink-lines)
+            (insert (apply #'format "\n| | %s | %s |" line)))
           (insert "\n|---|"))))
     (org-table-align)))
 
