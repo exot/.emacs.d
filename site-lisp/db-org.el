@@ -882,6 +882,26 @@ item using `db/org-get-location', which see."
                                    (db/org-get-location)))
            (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))))
 
+(defun db/org--format-link-with-headline (id)
+  "Format ID as an Org mode link [[ID][item headline]].
+
+If the headline of the item pointed to by ID contains any links,
+those are replaced by their description before formatting."
+  (let ((item-headline (org-entry-get (org-id-find id 'marker) "ITEM")))
+
+    ;; When item-headline contains links, replace them by teir description (when
+    ;; available); otherwise use the link part only
+    ;; FIXME: this is code duplicated from `db/org-insert-link-to-pom'
+    (save-match-data
+      (while (string-match org-link-bracket-re item-headline)
+        (let ((desc (or (match-string-no-properties 2 item-headline)
+                        (match-string-no-properties 1 item-headline))))
+          (setq item-headline (concat (substring item-headline 0 (match-beginning 0))
+                                      desc
+                                      (substring item-headline (match-end 0)))))))
+
+    (org-link-make-string (format "id:%s" id) item-headline)))
+
 (defun db/org-insert-link-to-pom (pom)
   "Insert an Org link to headline at POM.
 
@@ -1011,11 +1031,6 @@ level/position comes first)."
         (while (org-up-heading-safe)
           (push (point-marker) parent-markers))
         parent-markers))))
-
-(defun db/org--format-link-with-headline (id)
-  "Format ID as an Org mode link [[ID][item headline]]."
-  (org-link-make-string (format "id:%s" id)
-                        (org-entry-get (org-id-find id 'marker) "ITEM")))
 
 (defun org-dblock-write:db/org-backlinks (params)
   "Write table of backlinks for current item and its parent items as Org table.
