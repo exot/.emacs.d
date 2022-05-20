@@ -882,34 +882,20 @@ item using `db/org-get-location', which see."
                                    (db/org-get-location)))
            (list (org-id-get) (org-entry-get nil "CUSTOM_ID")))))
 
-(defun db/org--format-link-with-headline (id)
-  "Format ID as an Org mode link [[ID][item headline]].
+(defun db/org--format-link-from-pom (pom)
+  "Return Org link pointing to Org item at POM.
 
-If the headline of the item pointed to by ID contains any links,
-those are replaced by their description before formatting."
-  (let ((item-headline (org-entry-get (org-id-find id 'marker) "ITEM")))
+POM must be point or mark to a valid Org item.  The link will be
+of the format [[id][item-headline]], where `id' is the value of
+the ID property of the item.  If the item does not have such a
+property, is is generated automatically.
 
-    ;; When item-headline contains links, replace them by teir description (when
-    ;; available); otherwise use the link part only
-    ;; FIXME: this is code duplicated from `db/org-insert-link-to-pom'
-    (save-match-data
-      (while (string-match org-link-bracket-re item-headline)
-        (let ((desc (or (match-string-no-properties 2 item-headline)
-                        (match-string-no-properties 1 item-headline))))
-          (setq item-headline (concat (substring item-headline 0 (match-beginning 0))
-                                      desc
-                                      (substring item-headline (match-end 0)))))))
+If `item-headline' contains any links itself, those will be
+replaced by the description when available, and otherwise by
+their plain link part."
+  (unless (or (markerp pom) (integerp pom))
+    (user-error "POM must be point or mark"))
 
-    (org-link-make-string (format "id:%s" id) item-headline)))
-
-(defun db/org-insert-link-to-pom (pom)
-  "Insert an Org link to headline at POM.
-
-If headline consists of a link with description, only the
-description of that link will be included in the description of
-the newly inserted link instead of the complete headline.  This
-avoids containing a link in the description of the newly inserted
-link."
   (let (item id)
     (org-with-point-at pom
       (setq item (org-entry-get (point) "ITEM")
@@ -925,7 +911,24 @@ link."
                              desc
                              (substring item (match-end 0)))))))
 
-    (org-insert-link nil (format "id:%s" id) item)))
+    (org-link-make-string (format "id:%s" id) item)))
+
+(defun db/org--format-link-from-org-id (id)
+  "Format ID as an Org mode link [[ID][item-headline]].
+
+If the headline of the item pointed to by ID contains any links,
+those are replaced by their description before formatting."
+  (db/org--format-link-from-pom (org-id-find id 'marker)))
+
+(defun db/org-insert-link-to-pom (pom)
+  "Insert an Org link to headline at POM.
+
+If headline consists of a link with description, only the
+description of that link will be included in the description of
+the newly inserted link instead of the complete headline.  This
+avoids containing a link in the description of the newly inserted
+link."
+  (insert (db/org--format-link-from-pom pom)))
 
 (defun db/org-add-link-to-other-item (arg)
   "Interactively query for item and add link to it at point.
@@ -1062,9 +1065,9 @@ PARAMS may contain the following values:
     (insert (format "| Item | Backlinks | Priority |\n|---|"))
     (dolist (headline headlines)
       (when (cdr headline)           ; do not print backlinks if there are none
-        (insert (format "\n| %s |\n|---|" (db/org--format-link-with-headline (car headline))))
+        (insert (format "\n| %s |\n|---|" (db/org--format-link-from-org-id (car headline))))
         (let ((backlink-lines (-> (mapcar #'(lambda (backlink-id)
-                                              (list (db/org--format-link-with-headline backlink-id)
+                                              (list (db/org--format-link-from-org-id backlink-id)
                                                     (org-entry-get (org-id-find backlink-id 'marker)
                                                                    "PRIORITY")))
                                           (cdr headline))
