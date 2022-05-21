@@ -791,6 +791,7 @@
                 org-highlight-latex-and-related nil
                 org-attach-store-link-p 'attached
                 org-attach-auto-tag nil
+                org-bookmark-names-plist nil
 
                 org-blank-before-new-entry '((heading . t)
                                              (plain-list-item . t))
