@@ -955,17 +955,17 @@
                 org-clock-auto-clock-resolution 'when-no-clock-is-running
                 org-clock-mode-line-total 'auto
                 org-clock-report-include-clocking-task t
-                org-clock-in-switch-to-state (lambda (_)
-                                               (when (not
-                                                      (and (boundp 'org-capture-mode)
-                                                           org-capture-mode))
-                                                 (cond
-                                                  ((member (org-get-todo-state)
-                                                           (list "TODO" "READ"))
-                                                   "CONT")
-                                                  ((member (org-get-todo-state)
-                                                           (list "GOTO"))
-                                                   "ATTN"))))
+                org-clock-in-switch-to-state #'(lambda (_)
+                                                 (when (not
+                                                        (and (boundp 'org-capture-mode)
+                                                             org-capture-mode))
+                                                   (cond
+                                                    ((member (org-get-todo-state)
+                                                             (list "TODO" "READ"))
+                                                     "CONT")
+                                                    ((member (org-get-todo-state)
+                                                             (list "GOTO"))
+                                                     "ATTN"))))
                 org-clock-persist t
                 org-clock-persist-query-resume nil
                 org-time-stamp-rounding-minutes '(1 1))
@@ -1385,9 +1385,9 @@
               ediff-show-clashes-only t)
   :config (progn
             (add-hook 'ediff-keymap-setup-hook
-                      '(lambda ()
-                        (bind-key "j" #'ediff-next-difference ediff-mode-map)
-                        (bind-key "k" #'ediff-previous-difference ediff-mode-map)))
+                      #'(lambda ()
+                          (bind-key "j" #'ediff-next-difference ediff-mode-map)
+                          (bind-key "k" #'ediff-previous-difference ediff-mode-map)))
 
             (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
 
@@ -1580,12 +1580,12 @@
                                          "User-Agent:"))
 
       message-citation-line-function
-      (lambda ()
-        (when message-reply-headers
-          (insert "ghItlhpu' "
-                  (mail-header-from message-reply-headers)
-                  ":")
-          (newline))))
+      #'(lambda ()
+          (when message-reply-headers
+            (insert "ghItlhpu' "
+                    (mail-header-from message-reply-headers)
+                    ":")
+            (newline))))
 
 ;; Gnus Appearence
 
@@ -1874,20 +1874,20 @@
             ;; Visit group under point and immediately close it; this updates
             ;; gnus’ registry as a side-effect
             (bind-key "v u"
-                      '(lambda ()
-                         (interactive)
-                         (save-mark-and-excursion
-                           (when (gnus-topic-select-group)
-                             (gnus-summary-exit))))
+                      #'(lambda ()
+                          (interactive)
+                          (save-mark-and-excursion
+                            (when (gnus-topic-select-group)
+                              (gnus-summary-exit))))
                       gnus-group-mode-map)
 
             ;; Toggle visibility of News group
             (bind-key "v c"
-                      (lambda ()
-                        (interactive)
-                        (save-mark-and-excursion
-                          (gnus-topic-jump-to-topic "News")
-                          (gnus-topic-read-group)))
+                      #'(lambda ()
+                          (interactive)
+                          (save-mark-and-excursion
+                            (gnus-topic-jump-to-topic "News")
+                            (gnus-topic-read-group)))
                       gnus-group-mode-map)
 
             (bind-key "C-<return>" #'db/gnus-summary-open-Link gnus-summary-mode-map)
@@ -2089,9 +2089,9 @@
                           (ediff-files file2 file1)
                         (ediff-files file1 file2))
                       (add-hook 'ediff-after-quit-hook-internal
-                                (lambda ()
-                                  (setq ediff-after-quit-hook-internal nil)
-                                  (set-window-configuration wnd))))
+                                #'(lambda ()
+                                    (setq ediff-after-quit-hook-internal nil)
+                                    (set-window-configuration wnd))))
                   (error "No more than 2 files should be marked"))))
 
             (defun dired-back-to-top ()
@@ -2451,9 +2451,9 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'emms-player-started-hook 'emms-show)
 
             (advice-add 'emms-tag-editor-submit
-                        :after (lambda (&rest r)
-                                 (ignore r)
-                                 (delete-window)))
+                        :after #'(lambda (&rest r)
+                                   (ignore r)
+                                   (delete-window)))
 
             (unless (eq system-type 'windows-nt)
               (setq emms-source-file-directory-tree-function
@@ -2463,9 +2463,9 @@ With given ARG, display files in `db/important-document-path’."
             ;; no matter what previous values or customization may say otherwise
             ;; … so we need to employ a hook to change its value
             (add-hook 'emms-playlist-mode-hook
-                      (lambda ()
-                        (setq emms-playlist-insert-track-function
-                              #'db/emms-playlist-mode-insert-track)))
+                      #'(lambda ()
+                          (setq emms-playlist-insert-track-function
+                                #'db/emms-playlist-mode-insert-track)))
 
             (run-with-timer 0 3600 #'emms-cache-save)))
 
@@ -2521,14 +2521,14 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq explicit-shell-file-name "/bin/bash")
   :config (progn
             (add-hook 'term-exec-hook   ; oremacs.com
-                      (lambda ()
-                        (let* ((buff (current-buffer))
-                               (proc (get-buffer-process buff)))
-                          (set-process-sentinel
-                           proc
-                           `(lambda (process event)
-                              (if (string= event "finished\n")
-                                  (kill-buffer ,buff)))))))
+                      #'(lambda ()
+                          (let* ((buff (current-buffer))
+                                 (proc (get-buffer-process buff)))
+                            (set-process-sentinel
+                             proc
+                             `(lambda (process event)
+                                (if (string= event "finished\n")
+                                    (kill-buffer ,buff)))))))
 
             ;; does not work; C-c is shadowed by some minor modes like semantic,
             ;; projectile, and winner
@@ -2546,7 +2546,7 @@ With given ARG, display files in `db/important-document-path’."
               (unbind-key "C-x C-j" term-raw-map)
               (unbind-key "C-x g" term-raw-map))
 
-            (add-hook 'term-mode-hook (lambda () (yas-minor-mode -1)))))
+            (add-hook 'term-mode-hook #'(lambda () (yas-minor-mode -1)))))
 
 (use-package ansi-color
   :commands (ansi-color-for-comint-mode-on
@@ -2577,9 +2577,9 @@ With given ARG, display files in `db/important-document-path’."
             ;; stick to that.
 
             (add-hook 'shell-mode-hook
-                      (lambda ()
-                        (setq-local completion-in-region-function
-                                    #'completion--in-region)))))
+                      #'(lambda ()
+                          (setq-local completion-in-region-function
+                                      #'completion--in-region)))))
 
 (use-package db-eshell
   :commands (db/run-or-hide-eshell
@@ -2622,11 +2622,11 @@ With given ARG, display files in `db/important-document-path’."
 
                  (if (<= emacs-major-version 27)
                      (add-hook 'eshell-mode-hook
-                               (lambda ()
-                                 (bind-key "C-a" #'eshell-bol eshell-mode-map)
-                                 (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
-                                 (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
-                                 (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
+                               #'(lambda ()
+                                   (bind-key "C-a" #'eshell-bol eshell-mode-map)
+                                   (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
+                                   (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+                                   (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
                    ;; In Emacs 28.1, eshell's mode maps have been refactored to
                    ;; follow standard extensibility.  There's thus no need
                    ;; anymore to use the special hook construction.
@@ -2645,8 +2645,8 @@ With given ARG, display files in `db/important-document-path’."
                  ;; `pcomplete-ignore-case’ is non-nil by default.
                  (when on-windows
                    (add-to-list 'eshell-mode-hook
-                                (lambda ()
-                                  (setq pcomplete-ignore-case nil))))
+                                #'(lambda ()
+                                    (setq pcomplete-ignore-case nil))))
 
                  ;; Sometimes, when completing path names and immediately
                  ;; hitting RET, `completion-in-region-mode' still seems to be
@@ -2767,7 +2767,7 @@ With given ARG, display files in `db/important-document-path’."
                                                  (ccl ("ccl") :coding-system utf-8-unix))
                     slime-repl-history-remove-duplicates t
                     slime-repl-history-trim-whitespaces t)
-              (add-hook 'lisp-mode-hook '(lambda () (slime-mode +1)) t))
+              (add-hook 'lisp-mode-hook #'(lambda () (slime-mode +1)) t))
   :config   (progn
               (make-directory "/tmp/slime-fasls/" t)
               (slime-setup '(slime-repl slime-fancy slime-autodoc))
@@ -2833,10 +2833,10 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
             (add-hook 'latex-mode-hook #'turn-on-reftex)
 
-            (add-hook 'LaTeX-mode-hook '(lambda ()
-                                          (TeX-PDF-mode 1)
-                                          (TeX-source-correlate-mode 1)
-                                          (TeX-fold-mode 1)))
+            (add-hook 'LaTeX-mode-hook #'(lambda ()
+                                           (TeX-PDF-mode 1)
+                                           (TeX-source-correlate-mode 1)
+                                           (TeX-fold-mode 1)))
 
 
             (add-to-list 'TeX-view-program-selection
@@ -2852,80 +2852,80 @@ With given ARG, display files in `db/important-document-path’."
             ;; works as intended
             (TeX-add-style-hook
              "mydefs"
-             (lambda ()
-               (TeX-run-style-hooks "etex"
-                                    "etoolbox"
-                                    "ifthen"
-                                    "amsmath"
-                                    "amssymb"
-                                    "latexsym"
-                                    "mathabx"
-                                    "stmaryrd"
-                                    "verbatim"
-                                    "graphicx"
-                                    "enumerate"
-                                    "array"
-                                    "booktabs"
-                                    "ulem"
-                                    "nicefrac"
-                                    "listings"
-                                    "microtype"
-                                    "tabularx"
-                                    "tikz"
-                                    "csquotes"
-                                    "ntheorem"
-                                    "xspace")
-               (LaTeX-add-environments
-                '("Exercise" LaTeX-env-label)
-                '("Theorem" LaTeX-env-label)
-                '("Proposition" LaTeX-env-label)
-                '("Lemma" LaTeX-env-label)
-                '("Corollary" LaTeX-env-label)
-                '("Remark" LaTeX-env-label)
-                '("Example" LaTeX-env-label)
-                '("Definition" LaTeX-env-label)
-                '("Proof" LaTeX-env-label))
+             #'(lambda ()
+                 (TeX-run-style-hooks "etex"
+                                      "etoolbox"
+                                      "ifthen"
+                                      "amsmath"
+                                      "amssymb"
+                                      "latexsym"
+                                      "mathabx"
+                                      "stmaryrd"
+                                      "verbatim"
+                                      "graphicx"
+                                      "enumerate"
+                                      "array"
+                                      "booktabs"
+                                      "ulem"
+                                      "nicefrac"
+                                      "listings"
+                                      "microtype"
+                                      "tabularx"
+                                      "tikz"
+                                      "csquotes"
+                                      "ntheorem"
+                                      "xspace")
+                 (LaTeX-add-environments
+                  '("Exercise" LaTeX-env-label)
+                  '("Theorem" LaTeX-env-label)
+                  '("Proposition" LaTeX-env-label)
+                  '("Lemma" LaTeX-env-label)
+                  '("Corollary" LaTeX-env-label)
+                  '("Remark" LaTeX-env-label)
+                  '("Example" LaTeX-env-label)
+                  '("Definition" LaTeX-env-label)
+                  '("Proof" LaTeX-env-label))
 
-               ;; https://tex.stackexchange.com/questions/217799/auctex-11-88-bug-on-latex-env-label-cannot-automatically-insert-label
-               (setf (cadr reftex-insert-label-flags)
-                     (concat (cadr reftex-insert-label-flags) "TLPDRCE"))
+                 ;; https://tex.stackexchange.com/questions/217799/auctex-11-88-bug-on-latex-env-label-cannot-automatically-insert-label
+                 (setf (cadr reftex-insert-label-flags)
+                       (concat (cadr reftex-insert-label-flags) "TLPDRCE"))
 
-               (dolist (label-spec
-                        '(("Theorem" ?T "thm:" "~\\ref{%s}" t ("Theorem" "Thm.") nil)
-                          ("Lemma" ?L "lem:" "~\\ref{%s}" t ("Lemma" "Lem.") nil)
-                          ("Proposition" ?P "prop:" "~\\ref{%s}" t ("Proposition" "Prop.") nil)
-                          ("Satz" ?T "thm:" "~\\ref{%s}" t ("Satz") nil)
-                          ("Definition" ?D "def:" "~\\ref{%s}" t ("Definition" "Def.") nil)
-                          ("Remark" ?R "rem:" "~\\ref{%s}" t ("Remark" "Rem.") nil)
-                          ("Corollary" ?C "cor:" "~\\ref{%s}" t ("Corollary" "Cor.") nil)
-                          ("Example" ?E "expl:" "~\\ref{%s}" t ("Example") nil)))
-                 (add-to-list 'reftex-label-alist label-spec)
-                 (add-to-list 'LaTeX-label-alist (cons (nth 0 label-spec)
-                                                       (nth 2 label-spec))))))
+                 (dolist (label-spec
+                          '(("Theorem" ?T "thm:" "~\\ref{%s}" t ("Theorem" "Thm.") nil)
+                            ("Lemma" ?L "lem:" "~\\ref{%s}" t ("Lemma" "Lem.") nil)
+                            ("Proposition" ?P "prop:" "~\\ref{%s}" t ("Proposition" "Prop.") nil)
+                            ("Satz" ?T "thm:" "~\\ref{%s}" t ("Satz") nil)
+                            ("Definition" ?D "def:" "~\\ref{%s}" t ("Definition" "Def.") nil)
+                            ("Remark" ?R "rem:" "~\\ref{%s}" t ("Remark" "Rem.") nil)
+                            ("Corollary" ?C "cor:" "~\\ref{%s}" t ("Corollary" "Cor.") nil)
+                            ("Example" ?E "expl:" "~\\ref{%s}" t ("Example") nil)))
+                   (add-to-list 'reftex-label-alist label-spec)
+                   (add-to-list 'LaTeX-label-alist (cons (nth 0 label-spec)
+                                                         (nth 2 label-spec))))))
 
             ;; Add completion for cleverref’s reference macros; not clear
             ;; whether this works as intended
             (TeX-add-style-hook
              "cleveref"
-             (lambda ()
-               (add-to-list 'reftex-ref-style-alist
-                            '("Cleveref" "cleveref"
-                              (("\\cref" ?c) ("\\Cref" ?C)
-                               ("\\cpageref" ?d) ("\\Cpageref" ?D))))
-               (reftex-ref-style-activate "Cleveref")
-               (TeX-add-symbols
-                '("cref" TeX-arg-ref)
-                '("Cref" TeX-arg-ref)
-                '("cpageref" TeX-arg-ref)
-                '("Cpageref" TeX-arg-ref))))
+             #'(lambda ()
+                 (add-to-list 'reftex-ref-style-alist
+                              '("Cleveref" "cleveref"
+                                (("\\cref" ?c) ("\\Cref" ?C)
+                                 ("\\cpageref" ?d) ("\\Cpageref" ?D))))
+                 (reftex-ref-style-activate "Cleveref")
+                 (TeX-add-symbols
+                  '("cref" TeX-arg-ref)
+                  '("Cref" TeX-arg-ref)
+                  '("cpageref" TeX-arg-ref)
+                  '("Cpageref" TeX-arg-ref))))
 
             ;; Language definitions
             (add-hook 'TeX-language-de-hook
-                      (lambda () (ispell-change-dictionary "de_DE")))
+                      #'(lambda () (ispell-change-dictionary "de_DE")))
             (add-hook 'TeX-language-en-hook
-                      (lambda () (ispell-change-dictionary "en_US")))
+                      #'(lambda () (ispell-change-dictionary "en_US")))
             (add-hook 'TeX-mode-hook
-                      (lambda () (setq ispell-parser 'tex)))))
+                      #'(lambda () (setq ispell-parser 'tex)))))
 
 
 ;; * Various Mode Configurations
@@ -2939,9 +2939,9 @@ With given ARG, display files in `db/important-document-path’."
   :init (progn
           ;; replace perl-mode with cperl-mode
           (mapc
-           (lambda (pair)
-             (if (eq (cdr pair) 'perl-mode)
-                 (setcdr pair 'cperl-mode)))
+           #'(lambda (pair)
+               (if (eq (cdr pair) 'perl-mode)
+                   (setcdr pair 'cperl-mode)))
            (append auto-mode-alist interpreter-mode-alist))
 
           (setq cperl-hairy nil
@@ -2982,8 +2982,8 @@ With given ARG, display files in `db/important-document-path’."
             (message "Loaded eproject … done")
             (with-eval-after-load 'message
               (add-hook 'message-setup-hook
-                        (lambda ()
-                          (eproject-mode -1))))))
+                        #'(lambda ()
+                            (eproject-mode -1))))))
 
 (use-package eww
   :init (setq eww-bookmarks-directory
@@ -2994,11 +2994,11 @@ With given ARG, display files in `db/important-document-path’."
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
             (add-hook 'haskell-mode-hook
-                      (lambda ()
-                        (company-mode +1)
-                        (set (make-local-variable 'company-backends)
-                             (append '((company-capf company-dabbrev-code))
-                                     company-backends))))
+                      #'(lambda ()
+                          (company-mode 1)
+                          (set (make-local-variable 'company-backends)
+                               (append '((company-capf company-dabbrev-code))
+                                       company-backends))))
             (add-hook 'haskell-mode-hook 'flycheck-mode)
 
             (with-demoted-errors "Non-Fatal Error: %s"
