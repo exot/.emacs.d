@@ -1316,11 +1316,6 @@
               (("C-c n l" . org-roam-buffer-toggle)
                ("C-c n g" . org-roam-graph))))
 
-(use-package org-ref
-  :config (progn
-            (require 'org-ref-pdf)
-            (require 'org-ref-url-utils)))
-
 
 ;; * General Programming
 
@@ -2782,12 +2777,6 @@ With given ARG, display files in `db/important-document-path’."
 
             (add-to-list 'TeX-view-program-selection
                          '(output-pdf "Evince"))
-
-            ;; use pdf-tools when loaded
-            (with-eval-after-load 'pdf-tools
-              (add-to-list 'TeX-view-program-selection '(output-pdf "PDF Tools"))
-              (add-to-list 'TeX-after-compilation-finished-functions
-                           #'TeX-revert-document-buffer))
 
             ;; style used for my personal definitions; not clear whether this
             ;; works as intended
