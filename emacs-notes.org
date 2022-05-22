@@ -1,4 +1,4 @@
-#+title: Notes on Emacs
+#+title: Random Notes on Emacs
 #+author: Various
 #+filetags: NOTE
 
@@ -7,63 +7,7 @@
 This is a small collection of Emacs related posts and documentation by other
 authors that I find useful.
 
-* Random Notes
-
-** Parsing with ~org-element~                                        :IRREAL:
-:PROPERTIES:
-:CREATED: [2018-08-10 Fri 17:55]
-:END:
-
-The other day, I saw [[https://www.reddit.com/r/emacs/comments/89bxe0/org_mode_longterm_time_tracking_for_freelancers/][this query]] on the reddit Emacs subreddit. I already have
-solutions for this type of problem but I'm always interested in the how people
-use Org mode to record and report data so I followed the link that primitiveinds
-provided for [[https://alexpeits.github.io/programming/2017/02/12/org-timesheets.html][his solution]] to generating time reports.
-
-Even if, like me, you already have your time tracking and reporting needs under
-control, primitiveinds' solution is worth looking at for its own sake. It works
-by looking for CLOCK entries in an Org buffer and accumulating the relevant
-information in the CLOCK line as well data about the associated task. That might
-seem like it would require routine but tedious text manipulation but
-primitiveinds leverages the org-element functionality to easily handle the task.
-
-He starts by calling =org-element-parse-buffer= to generate a tree
-representation of the Org buffer. Then he uses =org-element-map= to examine each
-CLOCK element (and only CLOCK elements) to extract the necessary
-information. It's a great technique that can easily be adapted for other parsing
-of Org data. The code that primitiveinds presents is easy to follow and he
-provides a nice explanation of what it's doing.
-
-If you need to programmatically examine Org data for further processing, you
-should take a look at primitiveinds' post. It's definitely worth a read.
-
-[[http://irreal.org/blog/?p=7073][Link]]
-
-The relevant code:
-
-#+begin_src emacs-lisp
-(nconc
- '(("date" "project" "hours" "task"))
- '(hline)
- (let ((ast (org-element-parse-buffer 'element)))
-   (org-element-map ast 'clock
-     (lambda (x)
-       (let* ((val (org-element-property :value x))
-              (task (org-element-property :parent (org-element-property :parent x))))
-         `(,(let ((year (org-element-property :year-start val))
-                  (month (calendar-month-name
-                          (org-element-property :month-start val)))
-                  (day (org-element-property :day-start val)))
-              ;; (insert (org-element-property :raw-value val))
-              (format "%s %s, %s" month day year))
-           ,(org-element-property :PROJECT task)
-           ,(org-element-property :duration x)
-           ,(org-element-property :title task)
-           )))))
- '(hline)
- '(("" "total:" ":=vsum(@2..@-1);T" "")))
-#+end_src
-
-** Fractals in Emacs
+* Fractals in Emacs
 :PROPERTIES:
 :CREATED: [2018-08-04 Sat 13:01]
 :END:
@@ -100,100 +44,8 @@ From https://nullprogram.com/blog/2012/09/14/
           (insert-char (floor (* 256 (/ v 1.0 d))) 3))))
     (image-mode)))
 #+end_src
-** Gnus and notmuch
 
-Currently working: ~notmuch~ for ~nnmaildir~ backend.  However, I also have a
-local ~nnimap~-backend, which uses Maildir format locally.  It would be nice to
-have this working with ~notmuch~ as well.
-
-Relevant functions:
-- ~nnir-compose-result~ :: Goes over the results of notmuch (stored in the
-     buffer ~*nnir*~ (with an additional leading space) and decides which lines
-     to keep;
-- ~nnir-notmuch-remove-prefix~ :: a server-local variable to decide what to
-     remove from the lines in ~*nnir*~.
-
-** Inserting a function definition                                     :CHUA:
-:PROPERTIES:
-:CREATED: [2018-08-04 Sat 17:40]
-:END:
-
-From [[http://sachachua.com/blog/2018/01/org-mode-inserting-a-function-definition/][Sacha Chua]].
-
-While nudging jcs to add a definition of =jcs-insert-url= to the blog post about
-[[http://irreal.org/blog/?p=6924][Making Things Easier]], I realized it might be handy to have a quick function for
-inserting a function definition without thinking about where it's defined. This
-tries to use the definition from the source, and it can fall back to using the
-stored function definition if necessary. There's probably a better way to do
-this, but this was small and fun to write. =)
-
-Naturally, I used it to insert itself:
-
-#+begin_src emacs-lisp
-(defun my/org-insert-defun (function)
-  "Inserts an Org source block with the definition for FUNCTION."
-  (interactive (find-function-read))
-  (let* ((buffer-point (condition-case nil
-                           (find-definition-noselect function nil)
-                         (error nil)))
-         (new-buf (car buffer-point))
-         (new-point (cdr buffer-point))
-         definition)
-    (if buffer-point
-      (with-current-buffer new-buf ;; Try to get original definition
-        (save-excursion
-          (goto-char new-point)
-          (setq definition (buffer-substring-no-properties
-                            (point)
-                            (save-excursion (end-of-defun) (point))))))
-      ;; Fallback: Print function definition
-      (setq definition (concat (prin1-to-string
-                                (symbol-function function))
-                               "\n")))
-    (insert "#+begin_src emacs-lisp\n" definition "#+end_src\n")))
-#+end_src
-
-** Tramping into GCloud instances from within emacs                  :IRREAL:
-
-From https://gist.github.com/jackrusher/36c80a2fd6a8fe8ddf46bc7e408ae1f9 via [[https://irreal.org/blog/?p=8126][Irreal]].
-
-#+begin_src emacs-lisp
-;; make sure you've set your default project with:
-;; gcloud config set project <project-name>
-
-(require 'tramp)
-(add-to-list 'tramp-methods
-  '("gcssh"
-    (tramp-login-program        "gcloud compute ssh")
-    (tramp-login-args           (("%h")))
-    (tramp-async-args           (("-q")))
-    (tramp-remote-shell         "/bin/sh")
-    (tramp-remote-shell-args    ("-c"))
-    (tramp-gw-args              (("-o" "GlobalKnownHostsFile=/dev/null")
-                                 ("-o" "UserKnownHostsFile=/dev/null")
-                                 ("-o" "StrictHostKeyChecking=no")))
-    (tramp-default-port         22)))
-
-;; ... after which it's as easy as:
-;;
-;; C-x C-f /gcssh:compute-instance:/path/to/filename.clj
-#+end_src
-
-** Finding the largest Emacs buffer
-
-I found this somewhere, but forget where …
-
-Approach: sort all buffers by size.
-
-#+begin_src emacs-lisp
-(mapcar (lambda (x)
-          (list x (buffer-size x)))
-        (cl-sort (buffer-list)
-                 (lambda (x y)
-                   (< (buffer-size y) (buffer-size x)))))
-#+end_src
-
-** Emacs reencode buffers with other encoding
+* Emacs reencode buffers with other encoding
 
 - Use the function =revert-buffer-with-coding-system= to re-open a buffer in
   another encoding.
