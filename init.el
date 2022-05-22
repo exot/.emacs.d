@@ -2309,11 +2309,6 @@ With given ARG, display files in `db/important-document-path’."
               imenu-use-popup-menu nil
               imenu-eager-completion-buffer t))
 
-(use-package eyebrowse
-  :ensure t
-  :commands (eyebrowse-mode)
-  :init (setq eyebrowse-keymap-prefix (kbd "C-c w")))
-
 (use-package goto-last-change
   :commands goto-last-change)
 
