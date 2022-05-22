@@ -125,7 +125,6 @@
                   eyebrowse-mode
                   projectile-mode
                   yas-global-mode
-                  semantic-mode
                   global-git-commit-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
@@ -1388,30 +1387,6 @@
   :pin "melpa-stable"
   :commands (page-break-lines-mode)
   :diminish page-break-lines-mode)
-
-(use-package semantic
-  :commands (semantic-mode)
-  :init (progn
-          (setq semantic-default-submodes
-                '(global-semantic-idle-scheduler-mode
-                  global-semanticdb-minor-mode))
-
-          ;; Disable global key bindings as we are not using them;
-          ;; cf. https://emacs.stackexchange.com/questions/32389/how-do-you-disable-all-keybinding-for-a-package
-          (setq semantic-mode-map (make-sparse-keymap)))
-  :config (progn
-            (require 'semantic/ia)
-            (require 'semantic/bovine/el)
-
-            ;; recognize `use-package' as include statement; the function seems
-            ;; to have to be a byte-compiled function, for otherwise it just
-            ;; won’t work … ?
-            (eval `(semantic-elisp-setup-form-parser
-                       ,(lambda (form start end)
-                          (ignore start end)
-                          (semantic-tag-new-include (symbol-name (nth 1 form))
-                                                    nil))
-                     use-package))))
 
 (use-package flycheck
   :ensure t
