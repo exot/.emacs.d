@@ -1277,60 +1277,6 @@
             (require 'ox-md)
             (require 'ox-pandoc)))
 
-(use-package ox-latex
-  :init (setq org-latex-default-class "scrartcl"
-              org-latex-listings t
-              org-latex-compiler "lualatex")
-  :config (progn
-            (add-to-list 'org-latex-classes
-                         `("scrartcl"
-                           ,(concat "\\documentclass[parskip=half,colorlinks]{scrartcl}\n"
-                                    "[DEFAULT-PACKAGES]"
-                                    "[PACKAGES]"
-                                    "
-\\lstset{
-  basewidth=0.5em,
-  keywordstyle=\\textcolor{blue!80!white},
-  basicstyle=\\ttfamily,
-  commentstyle={\\itshape},
-  frame=tb,
-  showspaces=false,
-  showtabs=false,
-  showstringspaces=false,
-}
-"
-                                    "[EXTRA]\n")
-                           ("\\section{%s}" . "\\section*{%s}")
-                           ("\\subsection{%s}" . "\\subsection*{%s}")
-                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
-                           ("\\paragraph{%s}" . "\\paragraph*{%s}")
-                           ("\\subparagraph{%s}" . "\\subparagraph*{%s}")))
-            (add-to-list 'org-latex-classes
-                         `("beamer"
-                           ,(concat "\\documentclass[presentation]{beamer}\n"
-                                    "[DEFAULT-PACKAGES]"
-                                    "[PACKAGES]"
-                                    "
-\\lstset{
-  basewidth=0.5em,
-  keywordstyle=\\textcolor{blue!80!white},
-  basicstyle=\\ttfamily,
-  commentstyle={\\itshape},
-  frame=tb,
-  showspaces=false,
-  showtabs=false,
-  showstringspaces=false,
-}
-"
-                                    "[EXTRA]\n")
-                           ("\\section{%s}" . "\\section*{%s}")
-                           ("\\subsection{%s}" . "\\subsection*{%s}")
-                           ("\\subsubsection{%s}" . "\\subsubsection*{%s}")))
-            (add-to-list 'org-latex-packages-alist
-                         '("" "listings"))
-            (add-to-list 'org-latex-packages-alist
-                         '("" "xcolor"))))
-
 (use-package ox-html
   :init (setq org-html-postamble nil))
 
