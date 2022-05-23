@@ -122,7 +122,6 @@
                   ivy-mode
                   minions-mode
                   which-key-mode
-                  eyebrowse-mode
                   projectile-mode
                   yas-global-mode
                   global-git-commit-mode))
