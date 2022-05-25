@@ -586,6 +586,7 @@
 ;; * Essential external packages
 
 (use-package dash
+  :defer nil
   :config (progn
             (global-dash-fontify-mode)
             (dash-register-info-lookup)))
