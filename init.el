@@ -984,6 +984,7 @@
                                                      "ATTN"))))
                 org-clock-persist t
                 org-clock-persist-query-resume nil
+                org-clock-ask-before-exiting nil
                 org-time-stamp-rounding-minutes '(1 1))
 
           ;; On Windows, we don't have dbus to show notifications; default to
