@@ -1124,7 +1124,7 @@
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
                  ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<+1d>\""
-                        ((org-agenda-overriding-header "Open Projects to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no future SCHEDULED)")))
+                        ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no future SCHEDULED)")))
                   (tags-todo "SOMEWHEN/-CANC-DONE"
                              ((org-agenda-overriding-header "Things To Do SOMEWHEN")
                               (org-agenda-todo-ignore-with-date t)
@@ -1132,10 +1132,12 @@
 
                 ("P" "Current Projects and Topics"
                  ((stuck ""
-                         ((org-agenda-overriding-header "Stuck Projects")
+                         ((org-agenda-overriding-header "Stuck Tasks")
                           (org-agenda-todo-ignore-scheduled 'future)))
                   (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SOMEWHEN-HOLD-TEMPLATE-SCHEDULED>=\"<+1d>\""
-                        ((org-agenda-overriding-header "Open Projects")))
+                        ((org-agenda-overriding-header "Open Tasks")))
+                  (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD"
+                        ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE)")))
                   (tags "TODO=\"\"+TAGS={TOPIC}-SCHEDULED>=\"<+1d>\""
                         ((org-agenda-overriding-header "Topics")))
                   (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+1d>\""
