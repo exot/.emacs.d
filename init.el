@@ -2525,7 +2525,7 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq eshell-cmpl-cycle-completions nil
               eshell-scroll-to-bottom-on-input t
               eshell-prefer-lisp-functions nil
-              eshell-error-if-no-glob t
+              eshell-error-if-no-glob nil
               eshell-hist-ignoredups t
               eshell-save-history-on-exit t
               eshell-history-size 5000
