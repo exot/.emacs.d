@@ -1449,7 +1449,14 @@
   :config (progn
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
-            (run-with-timer 0 3600 #'bbdb-save)))
+            (run-with-timer 0 3600 #'bbdb-save)
+
+            (with-eval-after-load 'ol-bbdb
+              (add-to-list 'org-bbdb-anniversary-format-alist
+                           (cons "day-of-death"
+                                 #'(lambda (name years suffix)
+                                     (format "Day of Death: [[bbdb:%s][%s (%s%s)]]"
+                                             name name years suffix)))))))
 
 ;; General Gnus configuration
 
