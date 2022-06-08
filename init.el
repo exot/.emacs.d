@@ -1015,10 +1015,10 @@
               org-agenda-span 1
               org-agenda-insert-diary-strategy 'top-level
               org-catch-invisible-edits 'show
-              org-agenda-sorting-strategy '((agenda time-up habit-up priority-down)
-                                            (todo priority-down category-keep)
-                                            (tags priority-down category-keep)
-                                            (search category-keep))
+              org-agenda-sorting-strategy '((agenda time-up priority-down effort-up category-keep)
+                                            (todo priority-down effort-up category-keep)
+                                            (tags priority-down effort-up category-keep)
+                                            (search priority-down effort-up category-keep))
               org-agenda-window-setup 'current-window
               org-agenda-restore-windows-after-quit t
               org-agenda-compact-blocks nil
