@@ -1136,8 +1136,8 @@
                           (org-agenda-todo-ignore-scheduled 'future)))
                   (tags "TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-NOTE-DATE-SOMEWHEN-HOLD-TEMPLATE-SCHEDULED>=\"<+1d>\""
                         ((org-agenda-overriding-header "Open Tasks")))
-                  (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD"
-                        ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE)")))
+                  (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP"
+                        ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP)")))
                   (tags "TODO=\"\"+TAGS={TOPIC}-SCHEDULED>=\"<+1d>\""
                         ((org-agenda-overriding-header "Topics")))
                   (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+1d>\""
