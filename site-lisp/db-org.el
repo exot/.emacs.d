@@ -1004,9 +1004,12 @@ referenced in `org-agenda-text-search-extra-files'."
       (pop extra-files))
     (setq files (append files extra-files))
 
+    ;; Search directly for “[[id:ITEM-ID]” instead of using the regular
+    ;; expression for links, as the latter seems to be broken (as of
+    ;; [2022-06-09] when descriptions contain brackets
     (org-ql-query :select '(org-id-get-create)
                   :from files
-                  :where (let ((link-expression `(link :target ,item-id)))
+                  :where (let ((link-expression `(regexp ,(format "\\[\\[id:%s\\]" item-id))))
                            (if org-ql-match
                                `(and ,link-expression ,org-ql-match)
                              link-expression)))))
