@@ -974,23 +974,22 @@ respectively."
                     (description target)
                     (rx-to-string `(seq (or bol (1+ blank))
                                         "[[" (0+ (not (any "]"))) (regexp ,target) (0+ (not (any "]")))
-                                        ;; Added `anything'
-                                        "][" (0+ anything) (regexp ,description) (0+ anything)
+                                        ;; Added .* wildcards
+                                        "][" (regexp ".*") (regexp ,description) (regexp ".*")
                                         "]]")))
                    ;; Note that these actually allow empty descriptions
                    ;; or targets, depending on what they are matching.
                    (match-desc
                     (match) (rx-to-string `(seq (or bol (1+ blank))
                                                 "[[" (0+ (not (any "]")))
-                                                ;; Added `anything'
-                                                "][" (0+ anything) (regexp ,match) (0+ anything)
+                                                ;; Added .* wildcards
+                                                "][" (regexp ".*") (regexp ,match) (regexp ".*")
                                                 "]]")))
                    (match-target
                     (match) (rx-to-string `(seq (or bol (1+ blank))
                                                 "[[" (0+ (not (any "]"))) (regexp ,match) (0+ (not (any "]")))
-                                                ;; Added `anything'
-                                                "][" (0+ anything)
-                                                "]]"))))
+                                                ;; Removed pattern for description
+                                                "][" ))))
                 (cond (description-or-target
                        (rx-to-string `(or (regexp ,(no-desc description-or-target))
                                           (regexp ,(match-desc description-or-target))
