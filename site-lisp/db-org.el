@@ -1049,7 +1049,7 @@ PARAMS may contain the following values:
   :archives       If non-nil, include archives"
   (let* ((org-ql-match (plist-get params :org-ql-match))
          (archives (plist-get params :archives))
-         headlines)
+         headlines output-lines)
 
     ;; Get all backlinks as list of Org mode IDs.  Each list consists of the ID
     ;; of the headline (current or partent), followed by the IDs linking back to
@@ -1064,20 +1064,42 @@ PARAMS may contain the following values:
                                      (db/org--backlinks-for-id id-at-point org-ql-match archives))))))
                (cl-remove-if #'null)))
 
-    ;; Formatting.
-    (insert (format "| Item | Backlinks | Priority |\n|---|"))
-    (dolist (headline headlines)
-      (when (cdr headline)           ; do not print backlinks if there are none
-        (insert (format "\n| %s |\n|---|" (db/org--format-link-from-org-id (car headline))))
-        (let ((backlink-lines (-> (mapcar #'(lambda (backlink-id)
-                                              (list (db/org--format-link-from-org-id backlink-id)
-                                                    (org-entry-get (org-id-find backlink-id 'marker)
-                                                                   "PRIORITY")))
-                                          (cdr headline))
-                                  (cl-sort #'string< :key #'cl-second))))
-          (dolist (line backlink-lines)
-            (insert (apply #'format "\n| | %s | %s |" line)))
-          (insert "\n|---|"))))
+    ;; Change entries in headlines from the format (headline-id backlink-ids...)
+    ;; to (backlink-id headline-ids ...) for grouping them in the output later
+    (setq headlines
+          (->> headlines
+               (-mapcat #'(lambda (headline)
+                            (mapcar #'(lambda (backlink)
+                                        (cons backlink (car headline)))
+                                    (cdr headline))))
+               ;; Group by backlinks (first entry), returns list of non-empty
+               ;; lists
+               (-group-by #'car)
+               ;; Flatten list, to get a list of (backlink-id headline-ids...)
+               (-map #'(lambda (group)
+                         (cons (car group) (-map #'cdr (cdr group)))))))
+
+    ;; Replace IDs by headlines and add priority for sorting
+    (setq output-lines
+          (->> headlines
+               (-map #'(lambda (line)
+                         (list (db/org--format-link-from-org-id (cl-first line))
+                               (org-entry-get (org-id-find (cl-first line) 'marker)
+                                              "PRIORITY")
+                               (-map #'db/org--format-link-from-org-id (cdr line)))))
+               (-sort #'(lambda (line-1 line-2)
+                          (string< (cl-second line-1) (cl-second line-2))))))
+
+    ;; Format output-lines as Org table
+    (insert (format "| Backlink | Prio | Backlink Target(s) |\n|---|"))
+    (when output-lines
+      (dolist (line output-lines)
+        (insert (format "\n| %s | %s | %s |"
+                        (cl-first line)  ; backlink
+                        (cl-second line) ; priority
+                        (apply #'concat (-interpose ", " (cl-third line))) ; backlink targets
+                        )))
+      (insert "\n|---|"))
     (org-table-align)))
 
 (defun db/org-insert-backlink-block ()
