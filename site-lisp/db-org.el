@@ -1061,50 +1061,53 @@ PARAMS may contain the following values:
                            (org-with-point-at mark
                              (when-let ((id-at-point (org-id-get)))
                                (cons id-at-point
-                                     (db/org--backlinks-for-id id-at-point org-ql-match archives))))))
+                                     (db/org--backlinks-for-id id-at-point
+                                                               org-ql-match
+                                                               archives))))))
                (cl-remove-if #'null)))
 
     ;; Change entries in headlines from the format (headline-id backlink-ids...)
-    ;; to (backlink-id headline-ids ...) for grouping them in the output later
+    ;; to (backlink-id headline-ids ...) for grouping them in the output later.
     (setq headlines
           (->> headlines
-               (-mapcat #'(lambda (headline)
-                            (mapcar #'(lambda (backlink)
-                                        (cons backlink (car headline)))
-                                    (cdr headline))))
-               ;; Group by backlinks (first entry), returns list of non-empty
-               ;; lists
+               ;; Transform (headline-id backlink-ids) to pairs
+               ;; (headline-id . backlink-id)
+               (-mapcat (pcase-lambda (`(,headline . ,backlinks))
+                          (mapcar #'(lambda (backlink)
+                                      (cons backlink headline))
+                                  backlinks)))
+               ;; Group by backlinks (first entry), returns alist of
+               ;; backlink-ids and list of pairs (backlink-id . headline-id)
                (-group-by #'car)
                ;; Flatten list, to get a list of (backlink-id headline-ids...)
-               (-map #'(lambda (group)
-                         (cons (car group) (-map #'cdr (cdr group)))))))
+               (-map (pcase-lambda (`(,backlink . ,backlink-headline-conses))
+                       (cons backlink (-map #'cdr backlink-headline-conses))))))
 
     ;; Replace IDs by headlines and add priority for sorting
     (setq output-lines
           (->> headlines
-               (-map #'(lambda (line)
-                         (list (db/org--format-link-from-org-id (cl-first line))
-                               (org-entry-get (org-id-find (cl-first line) 'marker)
-                                              "PRIORITY")
-                               (-map #'db/org--format-link-from-org-id (cdr line)))))
-               (-sort #'(lambda (line-1 line-2)
-                          (string< (cl-second line-1) (cl-second line-2))))))
+               (-map (pcase-lambda (`(,backlink-id . ,headline-ids))
+                       (list (db/org--format-link-from-org-id backlink-id)
+                             (org-entry-get (org-id-find backlink-id 'marker)
+                                            "PRIORITY")
+                             (-map #'db/org--format-link-from-org-id headline-ids))))
+               (-sort (pcase-lambda (`(_ ,prio-1 _) `(_ ,prio-2 _))
+                        (string< prio-1 prio-2)))))
 
     ;; Format output-lines as Org table
     (insert (format "| Backlink | Prio | Backlink Target(s) |\n|---|"))
     (when output-lines
       (let (pp) ; pervious-priority, to draw hlines between groups of same priority
-       (dolist (line output-lines)
-         (when (and pp (not (equal pp (cl-second line))))
-           (insert "\n|--|"))
-         (setq pp (cl-second line))
-         (insert
-          (format "\n| %s | %s | %s |"
-                  (cl-first line)       ; actual backlink
-                  pp                    ; current priority
-                  (apply #'concat       ; backlink targets, separated by comma
-                         (-interpose ", " (cl-third line))))))
-       (insert "\n|---|")))
+        (pcase-dolist (`(,backlink ,priority ,backlink-targets) output-lines)
+          (when (and pp (not (equal pp priority)))
+            (insert "\n|--|"))
+          (setq pp priority)
+          (insert
+           (format "\n| %s | %s | %s |"
+                   backlink
+                   priority
+                   (apply #'concat (-interpose ", " backlink-targets)))))
+        (insert "\n|---|")))
     (org-table-align)))
 
 (defun db/org-insert-backlink-block ()
