@@ -1093,13 +1093,18 @@ PARAMS may contain the following values:
     ;; Format output-lines as Org table
     (insert (format "| Backlink | Prio | Backlink Target(s) |\n|---|"))
     (when output-lines
-      (dolist (line output-lines)
-        (insert (format "\n| %s | %s | %s |"
-                        (cl-first line)  ; backlink
-                        (cl-second line) ; priority
-                        (apply #'concat (-interpose ", " (cl-third line))) ; backlink targets
-                        )))
-      (insert "\n|---|"))
+      (let (pp) ; pervious-priority, to draw hlines between groups of same priority
+       (dolist (line output-lines)
+         (when (and pp (not (equal pp (cl-second line))))
+           (insert "\n|--|"))
+         (setq pp (cl-second line))
+         (insert
+          (format "\n| %s | %s | %s |"
+                  (cl-first line)       ; actual backlink
+                  pp                    ; current priority
+                  (apply #'concat       ; backlink targets, separated by comma
+                         (-interpose ", " (cl-third line))))))
+       (insert "\n|---|")))
     (org-table-align)))
 
 (defun db/org-insert-backlink-block ()
