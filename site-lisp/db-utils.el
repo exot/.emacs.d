@@ -443,8 +443,9 @@ Does not replace CRLF with CRCRLF, and so on."
 (defun db/sync-magit-repos-from-projectile ()
   "Update repositories known to magit from projectile's."
   (interactive)
-  (require 'projectile)
-  (require 'magit)
+  (eval-when-compile                    ; to silence the byte compiler
+    (require 'projectile)
+    (require 'magit))
   (setq magit-repository-directories
         (mapcar
          (lambda (dir)
