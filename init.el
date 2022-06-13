@@ -628,7 +628,8 @@
              keyboard-quit-context+
              db/convert-lf-to-crlf-in-buffer
              db/convert-crlf-to-lf-in-buffer
-             db/sync-magit-repos-from-projectile))
+             db/sync-magit-repos-from-projectile
+             db/replace-variables-in-string))
 
 (use-package db-hydras
   :commands (hydra-toggle/body

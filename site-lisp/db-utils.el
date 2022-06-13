@@ -464,6 +464,19 @@ Does not replace CRLF with CRCRLF, and so on."
   (shr-render-buffer (find-file-noselect file))
   (delete-trailing-whitespace))
 
+(defun db/replace-variables-in-string (string var-map)
+  "Replace variables in STRING as per VAR-MAP.
+VAR-MAP is an alist mapping variable names (strings or symbols)
+to values.  Variables are strings of alphabetic characters (no
+numbers allowed)."
+  (replace-regexp-in-string "[[:alpha:]]+"
+                            #'(lambda (var)
+                                (format "%s" (alist-get var var-map
+                                                        var ; default value
+                                                        nil ; not relevant REMOVE parameter
+                                                        #'string=)))
+                            string))
+
 
 ;;; Base45 Decoding
 
