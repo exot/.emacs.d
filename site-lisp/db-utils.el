@@ -464,7 +464,7 @@ Does not replace CRLF with CRCRLF, and so on."
   (delete-trailing-whitespace))
 
 
-;; Base45 Decoding
+;;; Base45 Decoding
 
 ;; This is based on https://datatracker.ietf.org/doc/draft-faltstrom-base45/,
 ;; which in turned may be used in data encoded for QR codes.
