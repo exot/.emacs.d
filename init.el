@@ -1138,22 +1138,18 @@ respectively."
                     (org-deadline-warning-days 30)))
                   (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>\"<now>\""
                              ((org-agenda-overriding-header "WIP List (TODO ∈ {CONT,ATTN}, not scheduled in the future)")
-                              (org-agenda-sorting-strategy '(priority-down effort-up category-keep))
                               (org-agenda-todo-ignore-scheduled 'future)))
                   (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE/-DONE"
                              ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled)")
                               (org-tags-match-list-sublevels t)
-                              (org-agenda-todo-ignore-scheduled t)
-                              (org-agenda-sorting-strategy '(priority-down effort-up category-keep))))))
+                              (org-agenda-todo-ignore-scheduled t)))))
                 ("B" "Backlog"
                  ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE/-DONE"
                              ((org-agenda-overriding-header "Backlog: Actionable items (no periodic tasks; includes waiting-fors)")
-                              (org-tags-match-list-sublevels t)
-                              (org-agenda-sorting-strategy '(priority-down effort-up category-keep))))
+                              (org-tags-match-list-sublevels t)))
                   (tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE"
                         ((org-agenda-overriding-header "Backlog: Complex tasks (i.e., goals)")
-                         (org-tags-match-list-sublevels t)
-                         (org-agenda-sorting-strategy '(priority-down effort-up category-keep))))))
+                         (org-tags-match-list-sublevels t)))))
                 ("O" "Open, non-periodic TODOs"
                  ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD-TEMPLATE"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
@@ -1164,8 +1160,7 @@ respectively."
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT-HOLD-SOMEWHEN"
                              ((org-agenda-overriding-header "Waiting For List")
-                              (org-agenda-todo-ignore-scheduled t)
-                              (org-agenda-sorting-strategy '(priority-down effort-up category-keep))))
+                              (org-agenda-todo-ignore-scheduled t)))
                   (tags-todo "DATE"
                              ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
                               (org-agenda-todo-ignore-timestamp 0)))
