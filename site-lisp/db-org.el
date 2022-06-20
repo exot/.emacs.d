@@ -1020,29 +1020,36 @@ referenced in `org-agenda-text-search-extra-files'."
                                `(and ,link-expression ,org-ql-match)
                              link-expression)))))
 
-(defun db/org--find-parent-marks ()
+(defun db/org--find-parent-marks (&optional depth)
   "Return list of markers of all parent headings of Org item at point.
 
 The list will include a marker to the current headline as well.
 The order of the list will be in ascending order of
 positions (i.e., the marker for the headline with the lowest
-level/position comes first)."
+level/position comes first).
+
+When optional parameter DEPTH is given, at most check only that
+many parents.  If DEPTH is zero, only return a list of a single
+marker pointing to the current headline."
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org mode buffer, cannot determine parent items"))
 
-  (save-mark-and-excursion
-    (save-restriction
-      (widen)
+  (let ((depth depth))                  ; do not modify argument
+    (save-mark-and-excursion
+      (save-restriction
+        (widen)
 
-      ;; Start at headline of current item
-      (or (org-at-heading-p)
-          (org-back-to-heading t))
+        ;; Start at headline of current item
+        (or (org-at-heading-p)
+            (org-back-to-heading t))
 
-      ;; Iterate over parents until at top-level
-      (let ((parent-markers (list (point-marker))))
-        (while (org-up-heading-safe)
-          (push (point-marker) parent-markers))
-        parent-markers))))
+        ;; Iterate over parents until at top-level
+        (let ((parent-markers (list (point-marker))))
+          (while (and (org-up-heading-safe)
+                      (or (null depth)
+                          (<= 0 (cl-decf depth))))
+            (push (point-marker) parent-markers))
+          parent-markers)))))
 
 (defun org-dblock-write:db/org-backlinks (params)
   "Write table of backlinks for current item and its parent items as Org table.
@@ -1052,17 +1059,26 @@ PARAMS may contain the following values:
   :org-ql-match   An org-ql-match expression in sexp syntax to filter
                   the resulting backlinks
 
-  :archives       If non-nil, include archives"
+  :archives       If non-nil, include archives
+
+  :parent-depth   How many parents to check for backlinks; value of nil means
+                  unrestricted, a value of 0 means only consider current item."
+
   (let* ((org-ql-match (plist-get params :org-ql-match))
          (archives (plist-get params :archives))
+         (parent-depth (plist-get params :parent-depth))
          headlines output-lines)
+
+    (when (and (not (null parent-depth))
+               (not (integerp parent-depth)))
+      (user-error ":parent-depth is not an integer"))
 
     ;; Get all backlinks as list of Org mode IDs.  Each list consists of the ID
     ;; of the headline (current or partent), followed by the IDs linking back to
     ;; that headline.  If any of the headlines (current or parent) does not have
     ;; an ID, it will not be included in that list.
     (setq headlines
-          (->> (db/org--find-parent-marks)
+          (->> (db/org--find-parent-marks parent-depth)
                (mapcar #'(lambda (mark)
                            (org-with-point-at mark
                              (when-let ((id-at-point (org-id-get)))
@@ -1121,7 +1137,9 @@ PARAMS may contain the following values:
   (interactive)
   (org-create-dblock
    (list :name "db/org-backlinks"
-         :org-ql-match '(todo)))
+         :org-ql-match '(todo)
+         :parent-depth nil
+         :archives nil))
   (org-update-dblock))
 
 (org-dynamic-block-define "db/org-backlinks" #'db/org-insert-backlink-block)
