@@ -1150,13 +1150,6 @@ respectively."
                   (tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE"
                         ((org-agenda-overriding-header "Backlog: Complex tasks (i.e., goals)")
                          (org-tags-match-list-sublevels t)))))
-                ("O" "Open, non-periodic TODOs"
-                 ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD-TEMPLATE"
-                             ((org-agenda-overriding-header "List of open, non-periodic TODO items")
-                              (org-use-tag-inheritance t)
-                              (org-agenda-sorting-strategy '(deadline-down priority-down effort-up category-keep))
-                              (org-agenda-prefix-format '((tags . "%-12c %-4e ")))))))
-
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT-HOLD-SOMEWHEN"
                              ((org-agenda-overriding-header "Waiting For List")
