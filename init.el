@@ -1146,10 +1146,10 @@ respectively."
                               (org-agenda-todo-ignore-scheduled t)
                               (org-agenda-sorting-strategy '(priority-down effort-up category-keep))))))
                 ("B" "Backlog"
-                 ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE/-DONE"
-                             ((org-agenda-overriding-header "Backlog items (next items list without periodic tasks; includes waiting-fors)")
-                              (org-tags-match-list-sublevels t)
-                              (org-agenda-sorting-strategy '(priority-down effort-up category-keep))))))
+                 ((tags "-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE-TODO={DONE\\|CANC}"
+                        ((org-agenda-overriding-header "Backlog items (no periodic tasks)")
+                         (org-tags-match-list-sublevels t)
+                         (org-agenda-sorting-strategy '(priority-down effort-up category-keep))))))
                 ("O" "Open, non-periodic TODOs"
                  ((tags-todo "-PERIODIC-SOMEWHEN-REGULAR-HOLD-TEMPLATE"
                              ((org-agenda-overriding-header "List of open, non-periodic TODO items")
