@@ -1114,7 +1114,7 @@ respectively."
               ;; here is that projects that have an explicit SCHEDULED entry
               ;; should not be considered before this date is due.
               org-stuck-projects
-              '("+TODO=\"\"-DATE-HOLD-NOTE-TAGS={NOP\\|TOPIC\\|SOMEWHEN\\|TEMPLATE}-SCHEDULED>=\"<+1d>\""
+              '("+TODO=\"\"-DATE-HOLD-NOTE-TAGS={NOP\\|TOPIC\\|SOMEWHEN\\|TEMPLATE}-SCHEDULED>=\"<+0d>\""
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
                 ()
                 "")
@@ -1137,12 +1137,12 @@ respectively."
                     (org-agenda-sorting-strategy '(deadline-up priority-down))
                     (org-deadline-warning-days 30)))
                   (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>\"<now>\""
-                             ((org-agenda-overriding-header "WIP List (TODO ∈ {CONT,ATTN}, not scheduled in the future)")
-                              (org-agenda-todo-ignore-scheduled 'future)))
+                             ((org-agenda-overriding-header "WIP List (TODO ∈ {CONT,ATTN}, not scheduled now or in the future)")
+                              (org-agenda-todo-ignore-scheduled 0)))
                   (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE/-DONE"
-                             ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled)")
+                             ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled now or in the future)")
                               (org-tags-match-list-sublevels t)
-                              (org-agenda-todo-ignore-scheduled t)))))
+                              (org-agenda-todo-ignore-scheduled 0)))))
                 ("B" "Backlog"
                  ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE/-DONE"
                              ((org-agenda-overriding-header "Backlog: Actionable items (no periodic tasks; includes waiting-fors)")
@@ -1153,7 +1153,7 @@ respectively."
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT-HOLD-SOMEWHEN"
                              ((org-agenda-overriding-header "Waiting For List")
-                              (org-agenda-todo-ignore-scheduled t)))
+                              (org-agenda-todo-ignore-scheduled 0)))
                   (tags-todo "DATE"
                              ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
                               (org-agenda-todo-ignore-timestamp 0)))
@@ -1164,8 +1164,8 @@ respectively."
                              ((org-agenda-overriding-header "Tasks on Hold")))))
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
-                 ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<+1d>\""
-                        ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no future SCHEDULED)")))
+                 ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<+0d>\""
+                        ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no now or future SCHEDULED)")))
                   (tags-todo "SOMEWHEN/-CANC-DONE"
                              ((org-agenda-overriding-header "Things To Do SOMEWHEN")
                               (org-agenda-todo-ignore-with-date t)
@@ -1173,13 +1173,12 @@ respectively."
 
                 ("P" "Current Projects and Topics"
                  ((stuck ""
-                         ((org-agenda-overriding-header "Stuck Complex Tasks")
-                          (org-agenda-todo-ignore-scheduled 'future)))
-                  (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP"
-                        ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP)")))
-                  (tags "TODO=\"\"+TAGS={TOPIC}-SCHEDULED>=\"<+1d>\""
+                         ((org-agenda-overriding-header "Stuck Complex Tasks")))
+                  (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
+                        ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")))
+                  (tags "TODO=\"\"+TAGS={TOPIC}-SCHEDULED>=\"<+0d>\""
                         ((org-agenda-overriding-header "Topics")))
-                  (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+1d>\""
+                  (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+0d>\""
                         ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")))))
 
                 ("W" "Weekly Review"
