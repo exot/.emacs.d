@@ -1187,7 +1187,7 @@ respectively."
                   (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
                         ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")
                          (org-agenda-prefix-format '((tags . "%-8c ")))))
-                  (tags "TODO=\"\"+TAGS={TOPIC}-SCHEDULED>=\"<+0d>\""
+                  (tags "TAGS={TOPIC}-SCHEDULED>=\"<+0d>\""
                         ((org-agenda-overriding-header "Topics")
                          (org-agenda-prefix-format '((tags . "%-8c%l ")))
                          (org-agenda-sorting-strategy nil)))
