@@ -1156,7 +1156,11 @@ respectively."
 
                 ("C" "Checks"
                  ((tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE-GOAL"
-                        ((org-agenda-overriding-header "Goals (i.e., complex tasks) not marked with GOAL")))))
+                        ((org-agenda-overriding-header "Goals (i.e., complex tasks) not marked with GOAL")))
+                  (org-ql-block '(and (not (tags "TOPIC"))
+                                     (descendants (tags "TOPIC")))
+                                ((org-ql-block-header "Non-TOPIC items containing TOPICs")
+                                 (org-agenda-sorting-strategy nil)))))
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT-HOLD-SOMEWHEN"
