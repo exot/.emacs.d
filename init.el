@@ -828,21 +828,23 @@
                   ("" ("HOLD") ("WAIT") ("DATE") ("READ")))
 
                 org-tag-alist
-                '((:startgroup . nil)
+                '((:startgroup)
                   ("WORK" . ?w)
                   ("HOME" . ?h)
                   ("FUN" . ?f)
                   ("UNTAGGED" . ?u)
-                  (:endgroup . nil)
+                  (:endgroup)
                   ("NOTE" . ?n)
+                  (:startgroup)
                   ("PERIODIC" . ?p)
-                  ("REGULAR" . ?r)
                   ("NOP" . ?o)
                   ("TOPIC" . ?t)
-                  ("TEMPLATE" . ?l))
+                  ("TEMPLATE" . ?l)
+                  ("GOAL" . ?g)
+                  (:endgroup))
 
                 org-tags-exclude-from-inheritance
-                '("NOP" "TOPIC")
+                '("NOP" "TOPIC" "GOAL")
 
                 org-fast-tag-selection-single-key 'expert)
 
