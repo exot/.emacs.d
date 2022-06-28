@@ -1152,6 +1152,9 @@ respectively."
                   (tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE"
                         ((org-agenda-overriding-header "Backlog: Complex tasks (i.e., goals)")
                          (org-tags-match-list-sublevels t)))))
+                ("C" "Checks"
+                 ((tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE-GOAL"
+                        ((org-agenda-overriding-header "Goals (i.e., complex tasks) not marked with GOAL")))))
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                  ((tags-todo "WAIT-HOLD-SOMEWHEN"
                              ((org-agenda-overriding-header "Waiting For List")
