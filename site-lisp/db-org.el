@@ -298,15 +298,7 @@ In ~%s~:
   (and
    ;; Exclude DONE state tasks from refile targets (from bh)
    (not (member (nth 2 (org-heading-components))
-                org-done-keywords))
-   ;; Exclude NOTE entries in `db/org-default-org-file', as those are project
-   ;; notes that should not have proper tasks as children (use links to connect
-   ;; those tasks to the project notes instead)
-   (not (and (member "NOTE" (org-get-tags))
-             (not (null (buffer-file-name)))
-             (not (null db/org-default-org-file))
-             (file-equal-p (buffer-file-name)
-                           db/org-default-org-file)))))
+                org-done-keywords))))
 
 
 ;;; Reset checklists
