@@ -1191,11 +1191,11 @@ respectively."
                   (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
                         ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")
                          (org-agenda-prefix-format '((tags . "%-8c ")))))
-                  (tags "TAGS={TOPIC}-SCHEDULED>=\"<+0d>\""
+                  (tags "TAGS={TOPIC}-TODO={DONE\\|CANC}-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
                         ((org-agenda-overriding-header "Topics")
                          (org-agenda-prefix-format '((tags . "%-8c%l ")))
                          (org-agenda-sorting-strategy nil)))
-                  (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+0d>\""
+                  (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
                         ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")
                          (org-agenda-prefix-format '((tags . "%-8c ")))))))
 
