@@ -1129,7 +1129,7 @@ PARAMS may contain the following values:
   (interactive)
   (org-create-dblock
    (list :name "db/org-backlinks"
-         :org-ql-match '(todo)
+         :org-ql-match '(not (done))
          :parent-depth nil
          :archives nil))
   (org-update-dblock))
