@@ -1228,66 +1228,40 @@ respectively."
                  ,(concat "* TODO [#B] %^{What}\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "%a\n"
-                          "%?"))
-                ("T" "Complex Tasks")
-                ("TC" "Record new complex task with first item"
+                          "%?")
+                 :empty-lines-after 1)
+                ("g" "Record new goal with first item"
                  entry
                  (file db/org-default-refile-file)
-                 ,(concat "* %^{Task Description}\n"
+                 ,(concat "* %^{Ticket Description} (%^{Ticket Number}) :GOAL:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n** TODO [#B] %^{First Thing to Do}\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%?"))
-                ("TT" "Record new ticket with first item"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* Ticket #%^{Ticket Number}: %^{Ticket Description}\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\nReference: %^{Reference}\n"
                           "\n** TODO [#B] %^{First Task}\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                           "\n%?"))
                 ("n" "Note"
                  entry
                  (file db/org-default-refile-file)
-                 "* %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?")
+                 "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
+                 :empty-lines-after 1)
                 ("d" "Date"
                  entry
                  (file db/org-default-refile-file)
-                 "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?")
+                 "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?"
+                 :empty-lines-after 1)
                 ("i" "Interruptions"
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%?")
-                 :clock-in t :clock-resume t)
+                          "\nInterrupted %K\n\n%?")
+                 :clock-in t :clock-resume t :empty-lines-after 1)
                 ("r" "respond"
                  entry
                  (file db/org-default-refile-file)
                  ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
                           ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%a\n%?"))
-                ("R" "read"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* TODO [#B] %^{Topic} :READ:\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%a\n%?"))
-                ("U" "Read current content of clipboard"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* TODO [#B] %^{Description} :READ:\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%(current-kill 0)"))
-                ("w" "Weekly Summary"
-                 entry
-                 (file+olp+datetree db/org-default-pensieve-file "Reviews")
-                 "* Weekly Review\n\n%?")
-                ("s" "Code Snippet"
-                 entry
-                 (file db/org-default-refile-file)
-                 "* %?\n%(db/org-capture-code-snippet \"%F\")")))
+                          "\n%a\n%?")
+                 :empty-lines-after 1)))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
