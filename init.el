@@ -2999,7 +2999,7 @@ With given ARG, display files in `db/important-document-path’."
 
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
             (add-hook 'python-mode-hook #'company-mode)
-            (add-hook 'python-mode-hook #'lsp)))
+            (add-hook 'python-mode-hook #'lsp-deferred)))
 
 ;; https://ddavis.io/posts/emacs-python-lsp/
 (use-package pyvenv
