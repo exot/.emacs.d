@@ -1987,7 +1987,7 @@ respectively."
                 dired-recursive-deletes 'top
                 dired-create-destination-dirs 'ask
                 dired-vc-rename-file t
-                dired-kill-when-opening-new-dired-buffer t
+                dired-kill-when-opening-new-dired-buffer nil
 
                 ;; Don’t use obsolete diredx local variables
                 dired-enable-local-variables nil
