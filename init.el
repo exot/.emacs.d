@@ -736,6 +736,7 @@
              hydra-org-agenda-view/body
              db/org-agenda-insert-efforts
              org-babel-execute:hy
+             db/org-eval-subtree-no-confirm
              db/org-timestamp-difference
              db/org-capture-code-snippet
              hydra-org-clock/body

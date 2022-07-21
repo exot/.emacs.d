@@ -484,6 +484,19 @@ forces clocking in of the default task."
          (format "hy %s" tempfile))
       (delete-file tempfile))))
 
+(defun db/org-eval-subtree-no-confirm (&optional arg)
+  "Evaluate subtree at point without asking for confirmation.
+
+Use with care!
+
+With given ARG, force reevaluation as described for
+`org-babel-execute-src-block'."
+  (interactive)
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org buffer, aborting"))
+  (let ((org-confirm-babel-evaluate nil))
+    (org-babel-execute-subtree arg)))
+
 
 ;;; Custom link handlers
 
