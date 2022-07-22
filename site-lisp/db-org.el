@@ -956,11 +956,8 @@ variables `org-agenda-files' and
 
 (defun db/org-add-link-to-current-clock ()
   "Insert link to currently clocked-in item at point.
-Error out when not in an Org Mode buffer or when the clock is not
-active."
+Error out when the clock is not active."
   (interactive)
-  (unless (derived-mode-p 'org-mode)
-    (user-error "Not in Org Mode, aborting"))
   (unless org-clock-marker
     (user-error "No clocked-in task, aborting"))
   (db/org-insert-link-to-pom org-clock-marker))
