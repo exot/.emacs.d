@@ -578,7 +578,12 @@
               math-units-table nil))
 
 (use-package tab-bar
-  :init (setq tab-bar-show t)
+  :init (setq tab-bar-show t
+              tab-bar-format '(tab-bar-format-tabs
+                               tab-bar-separator
+                               ;; tab-bar-format-align-right
+                               ;; current-time-string
+                               ))
   :config (progn
             (tab-bar-history-mode +1)))
 
