@@ -518,7 +518,8 @@
 
 (use-package bookmark
   :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
-                                                      emacs-d)))
+                                                      emacs-d)
+              bookmark-menu-confirm-deletion t))
 
 (use-package warnings
   :config (cl-pushnew '(undo discard-info) warning-suppress-types
