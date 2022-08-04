@@ -1535,6 +1535,7 @@ respectively."
       gnus-fetch-old-headers nil
       gnus-select-method '(nnnil "")
       gnus-refer-article-method 'current
+      gnus-search-use-parsed-queries t
 
       gnus-visible-headers (regexp-opt '("From:"
                                          "Newsgroups:"
