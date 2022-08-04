@@ -1535,7 +1535,6 @@ respectively."
       gnus-fetch-old-headers nil
       gnus-select-method '(nnnil "")
       gnus-refer-article-method 'current
-      gnus-search-use-parsed-queries t
 
       gnus-visible-headers (regexp-opt '("From:"
                                          "Newsgroups:"
@@ -1768,8 +1767,8 @@ respectively."
 
 ;; Searching
 
-(setq nnir-method-default-engines '((nnimap . imap)
-                                    (nntp . gmane)))
+(setq gnus-search-default-engines '((nnimap . gnus-search-imap))
+      gnus-search-use-parsed-queries t)
 
 ;; Agents
 
