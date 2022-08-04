@@ -403,9 +403,12 @@
       visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
       history-delete-duplicates t
       track-eol t
-      gc-cons-threshold (* 100 1024 1024) ; 100mb
+      gc-cons-threshold (* 100 1024 1024)   ; 100mb
       read-process-output-max (* 1024 1024) ; 1mb
-      next-error-message-highlight t)
+      next-error-message-highlight t
+      help-enable-symbol-autoload t
+      describe-bindings-outline t
+      redisplay-skip-fontification-on-input t)
 
 (when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
   (setq x-wait-for-event-timeout nil))
