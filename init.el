@@ -1971,6 +1971,9 @@ respectively."
   :commands (moody-replace-mode-line-buffer-identification
              moody-replace-vc-mode))
 
+(use-package smiley
+  :init (setq smiley-style 'emoji))
+
 
 ;; * Dired
 
