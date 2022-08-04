@@ -1506,7 +1506,7 @@ respectively."
       gnus-kill-files-directory gnus-directory
       gnus-startup-file (expand-file-name "private/gnus-newsrc" emacs-d)
       gnus-cache-directory (expand-file-name "cache/" gnus-directory)
-      gnus-verbose 10
+      gnus-verbose 6
 
       message-directory (expand-file-name "mail/" gnus-directory)
       nnmail-message-id-cache-file (expand-file-name ".nnmail-cache" gnus-directory)
