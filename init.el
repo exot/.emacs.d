@@ -1507,6 +1507,7 @@ respectively."
       gnus-startup-file (expand-file-name "private/gnus-newsrc" emacs-d)
       gnus-cache-directory (expand-file-name "cache/" gnus-directory)
       gnus-verbose 6
+      gnus-dbus-close-on-sleep t
 
       message-directory (expand-file-name "mail/" gnus-directory)
       nnmail-message-id-cache-file (expand-file-name ".nnmail-cache" gnus-directory)
