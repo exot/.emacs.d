@@ -137,7 +137,7 @@ With a prefix argument P, isearch for the symbol at point."
     (call-interactively
      (if p
          #'isearch-forward-symbol-at-point
-         #'isearch-forward))))
+       #'isearch-forward))))
 
 (defun endless/fill-or-unfill ()
   "Like `fill-paragraph', but unfill if used twice."
@@ -211,12 +211,12 @@ might depend on the coding system of the current buffer."
 HIGH and LOW must both be 8 digit hex strings.  If not given,
 FORMAT-STRING defaults to some ISO 8601-like format."
   (interactive (cl-flet ((read-hex (prompt)
-                                   (let ((input-proper (->> prompt
-                                                            (read-string)
-                                                            (replace-regexp-in-string "[\n\t ]" ""))))
-                                     (if (not (string-match-p "[0-9a-fA-F]\\{8\\}" input-proper))
-                                         (user-error "Input invalid, must be an 8 digit hex string.")
-                                       (string-to-number input-proper 16)))))
+                           (let ((input-proper (->> prompt
+                                                    (read-string)
+                                                    (replace-regexp-in-string "[\n\t ]" ""))))
+                             (if (not (string-match-p "[0-9a-fA-F]\\{8\\}" input-proper))
+                                 (user-error "Input invalid, must be an 8 digit hex string.")
+                               (string-to-number input-proper 16)))))
                  (list (read-hex "High (hex): ")
                        (read-hex "Low (hex): "))))
   (let* ((calc-internal-prec 30)
@@ -296,27 +296,27 @@ Will print a warning in case of failure."
 
   (save-mark-and-excursion
 
-   ;; First make it all into one line
-   (goto-char (point-min))
-   (while (re-search-forward "\n[\t ]*" nil 'no-error)
-     ;; In case there was a space, we have to keep at least one as a separator
-     (if (save-match-data (looking-back "[\t ]" 1))
-         (replace-match " ")
-       (replace-match "")))
+    ;; First make it all into one line
+    (goto-char (point-min))
+    (while (re-search-forward "\n[\t ]*" nil 'no-error)
+      ;; In case there was a space, we have to keep at least one as a separator
+      (if (save-match-data (looking-back "[\t ]" 1))
+          (replace-match " ")
+        (replace-match "")))
 
-   ;; Next break between tags
-   (goto-char (point-min))
-   (while (re-search-forward ">[\t ]*<" nil 'no-error)
-     (replace-match ">\n<"))
+    ;; Next break between tags
+    (goto-char (point-min))
+    (while (re-search-forward ">[\t ]*<" nil 'no-error)
+      (replace-match ">\n<"))
 
-   ;; Move opening and closing tags to same line in case there’s nothing in
-   ;; between
-   (goto-char (point-min))
-   (while (re-search-forward "<\\([^>]*\\)>\n</\\1>" nil 'no-error)
-     (replace-match "<\\1></\\1>"))
+    ;; Move opening and closing tags to same line in case there’s nothing in
+    ;; between
+    (goto-char (point-min))
+    (while (re-search-forward "<\\([^>]*\\)>\n</\\1>" nil 'no-error)
+      (replace-match "<\\1></\\1>"))
 
-   ;; Indent
-   (indent-region (point-min) (point-max))))
+    ;; Indent
+    (indent-region (point-min) (point-max))))
 
 (defun db/lookup-smime-key (mail)
   "Look up `MAIL' on ldap-server of the DFN.
@@ -379,12 +379,12 @@ This runs “git annex find” with MATCHING-OPTIONS (a string) in
 (defun db/system-open (path)
   "Open PATH with default program as defined by the underlying system."
   (cond
-   ((eq system-type 'windows-nt)
-    (w32-shell-execute "open" path))
-   ((eq system-type 'cygwin)
-    (start-process "" nil "cygstart" path))
-   (t
-    (start-process "" nil "xdg-open" path))))
+    ((eq system-type 'windows-nt)
+     (w32-shell-execute "open" path))
+    ((eq system-type 'cygwin)
+     (start-process "" nil "cygstart" path))
+    (t
+     (start-process "" nil "xdg-open" path))))
 
 (defun keyboard-quit-context+ ()
   "Quit current context.
@@ -404,10 +404,10 @@ regardless of the currently selected window."
         (current-prefix-arg
          nil)
         (defining-kbd-macro
-          (message
-           (substitute-command-keys
-            "Quit is ignored during macro defintion, use \\[kmacro-end-macro] if you want to stop macro definition"))
-          (cancel-kbd-macro-events))
+         (message
+          (substitute-command-keys
+           "Quit is ignored during macro defintion, use \\[kmacro-end-macro] if you want to stop macro definition"))
+            (cancel-kbd-macro-events))
         ((active-minibuffer-window)
          (when (get-buffer-window "*Completions*")
            ;; hide completions first so point stays in active window when
@@ -511,7 +511,7 @@ From: https://oremacs.com/2017/03/18/dired-ediff/."
 
   (-each-indexed (string-to-list base45-alphabet)
     (-lambda (index char)
-      (puthash char index decode-hash-table)
+        (puthash char index decode-hash-table)
       ;; Add an encode-hash-table here in case base45-encode-string will ever be
       ;; written, like so: (puthash index char encode-hash-table)
       ))
@@ -573,7 +573,7 @@ From: https://oremacs.com/2017/03/18/dired-ediff/."
            ("%69 VD92EX0" "Hello!!")
            ("VV4:97Y+AHA7MY831" "%69 VD92EX0"))
     (-lambda ((in out))
-      (should (equal out (db/base45-decode-string in))))))
+        (should (equal out (db/base45-decode-string in))))))
 
 (defun db/base45-decode-region (beg end)
   "Base45-decode region between BEG and END.

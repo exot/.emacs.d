@@ -824,7 +824,7 @@
                   (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
                   (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@)")
                   (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)"
-                            "|" "CANC(c@/!)" "PHONE" "MEETING"))
+                   "|" "CANC(c@/!)" "PHONE" "MEETING"))
 
                 org-todo-state-tags-triggers
                 '(("WAIT" ("HOLD") ("WAIT" . t))
@@ -980,30 +980,29 @@ If DESCRIPTION, match it in the description.  If TARGET, match it
 in the target.  If both DESCRIPTION and TARGET, match both,
 respectively."
               (cl-labels
-                  ((no-desc
-                    (match) (rx-to-string `(seq (or bol (1+ blank))
-                                                "[[" (0+ (not (any "]"))) (regexp ,match) (0+ (not (any "]")))
-                                                "]]")))
-                   (match-both
-                    (description target)
-                    (rx-to-string `(seq (or bol (1+ blank))
-                                        "[[" (0+ (not (any "]"))) (regexp ,target) (0+ (not (any "]")))
-                                        ;; Added .* wildcards
-                                        "][" (regexp ".*") (regexp ,description) (regexp ".*")
-                                        "]]")))
+                  ((no-desc (match)
+                     (rx-to-string `(seq (or bol (1+ blank))
+                                         "[[" (0+ (not (any "]"))) (regexp ,match) (0+ (not (any "]")))
+                                         "]]")))
+                   (match-both (description target)
+                     (rx-to-string `(seq (or bol (1+ blank))
+                                         "[[" (0+ (not (any "]"))) (regexp ,target) (0+ (not (any "]")))
+                                         ;; Added .* wildcards
+                                         "][" (regexp ".*") (regexp ,description) (regexp ".*")
+                                         "]]")))
                    ;; Note that these actually allow empty descriptions
                    ;; or targets, depending on what they are matching.
-                   (match-desc
-                    (match) (rx-to-string `(seq (or bol (1+ blank))
-                                                "[[" (0+ (not (any "]")))
-                                                ;; Added .* wildcards
-                                                "][" (regexp ".*") (regexp ,match) (regexp ".*")
-                                                "]]")))
-                   (match-target
-                    (match) (rx-to-string `(seq (or bol (1+ blank))
-                                                "[[" (0+ (not (any "]"))) (regexp ,match) (0+ (not (any "]")))
-                                                ;; Removed pattern for description
-                                                "][" ))))
+                   (match-desc (match)
+                     (rx-to-string `(seq (or bol (1+ blank))
+                                         "[[" (0+ (not (any "]")))
+                                         ;; Added .* wildcards
+                                         "][" (regexp ".*") (regexp ,match) (regexp ".*")
+                                         "]]")))
+                   (match-target (match)
+                     (rx-to-string `(seq (or bol (1+ blank))
+                                         "[[" (0+ (not (any "]"))) (regexp ,match) (0+ (not (any "]")))
+                                         ;; Removed pattern for description
+                                         "][" ))))
                 (cond (description-or-target
                        (rx-to-string `(or (regexp ,(no-desc description-or-target))
                                           (regexp ,(match-desc description-or-target))
@@ -1038,12 +1037,12 @@ respectively."
                                                         (and (boundp 'org-capture-mode)
                                                              org-capture-mode))
                                                    (cond
-                                                    ((member (org-get-todo-state)
-                                                             (list "TODO" "READ"))
-                                                     "CONT")
-                                                    ((member (org-get-todo-state)
-                                                             (list "GOTO"))
-                                                     "ATTN"))))
+                                                     ((member (org-get-todo-state)
+                                                              (list "TODO" "READ"))
+                                                      "CONT")
+                                                     ((member (org-get-todo-state)
+                                                              (list "GOTO"))
+                                                      "ATTN"))))
                 org-clock-persist t
                 org-clock-persist-query-resume nil
                 org-clock-ask-before-exiting nil
@@ -1112,12 +1111,12 @@ respectively."
 
               org-agenda-clock-consistency-checks
               '(:max-duration 9999999
-                              :min-duration 0
-                              :max-gap 0
-                              :gap-ok-around nil
-                              :default-face ((:background "DarkRed") (:foreground "white"))
-                              :overlap-face nil :gap-face nil :no-end-time-face nil
-                              :long-face nil :short-face nil)
+                :min-duration 0
+                :max-gap 0
+                :gap-ok-around nil
+                :default-face ((:background "DarkRed") (:foreground "white"))
+                :overlap-face nil :gap-face nil :no-end-time-face nil
+                :long-face nil :short-face nil)
 
               org-agenda-clockreport-parameter-plist
               '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
@@ -1140,81 +1139,81 @@ respectively."
 
               org-agenda-custom-commands
               `(("A" "Main Agenda"
-                 ((agenda
-                   ""
-                   ((org-agenda-entry-types '(:timestamp :sexp :scheduled))
-                    (org-deadline-warning-days 0)))
-                  (db/org-agenda-list-deadlines
-                   ""
-                   ((org-agenda-overriding-header "Deadlines")
-                    (org-agenda-sorting-strategy '(deadline-up priority-down))
-                    (org-deadline-warning-days 30)))
-                  (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>\"<now>\""
-                             ((org-agenda-overriding-header "WIP List (TODO ∈ {CONT,ATTN}, not scheduled now or in the future)")
-                              (org-agenda-todo-ignore-scheduled 0)))
-                  (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE/-DONE"
-                             ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled now or in the future)")
-                              (org-tags-match-list-sublevels t)
-                              (org-agenda-todo-ignore-scheduled 0)))))
+                     ((agenda
+                       ""
+                       ((org-agenda-entry-types '(:timestamp :sexp :scheduled))
+                        (org-deadline-warning-days 0)))
+                      (db/org-agenda-list-deadlines
+                       ""
+                       ((org-agenda-overriding-header "Deadlines")
+                        (org-agenda-sorting-strategy '(deadline-up priority-down))
+                        (org-deadline-warning-days 30)))
+                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>\"<now>\""
+                                 ((org-agenda-overriding-header "WIP List (TODO ∈ {CONT,ATTN}, not scheduled now or in the future)")
+                                  (org-agenda-todo-ignore-scheduled 0)))
+                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE/-DONE"
+                                 ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled now or in the future)")
+                                  (org-tags-match-list-sublevels t)
+                                  (org-agenda-todo-ignore-scheduled 0)))))
 
                 ("B" "Backlog"
-                 ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE/-DONE"
-                             ((org-agenda-overriding-header "Backlog: Actionable items (no periodic tasks; includes waiting-fors)")
-                              (org-tags-match-list-sublevels t)))
-                  (tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE"
-                        ((org-agenda-overriding-header "Backlog: Complex tasks (i.e., goals)")
-                         (org-tags-match-list-sublevels t)))))
+                     ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE/-DONE"
+                                 ((org-agenda-overriding-header "Backlog: Actionable items (no periodic tasks; includes waiting-fors)")
+                                  (org-tags-match-list-sublevels t)))
+                      (tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE"
+                            ((org-agenda-overriding-header "Backlog: Complex tasks (i.e., goals)")
+                             (org-tags-match-list-sublevels t)))))
 
                 ("C" "Checks"
-                 ((tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE-GOAL"
-                        ((org-agenda-overriding-header "Goals (i.e., complex tasks) not marked with GOAL")))
-                  (org-ql-block '(and (not (tags "TOPIC"))
-                                     (descendants (tags "TOPIC")))
-                                ((org-ql-block-header "Non-TOPIC items containing TOPICs")
-                                 (org-agenda-sorting-strategy nil)))))
+                     ((tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE-GOAL"
+                            ((org-agenda-overriding-header "Goals (i.e., complex tasks) not marked with GOAL")))
+                      (org-ql-block '(and (not (tags "TOPIC"))
+                                      (descendants (tags "TOPIC")))
+                                    ((org-ql-block-header "Non-TOPIC items containing TOPICs")
+                                     (org-agenda-sorting-strategy nil)))))
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
-                 ((tags-todo "WAIT-HOLD-SOMEWHEN"
-                             ((org-agenda-overriding-header "Waiting For List")
-                              (org-agenda-todo-ignore-scheduled 0)))
-                  (tags-todo "DATE"
-                             ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
-                              (org-agenda-todo-ignore-timestamp 0)))
-                  (tags "REFILE"
-                        ((org-agenda-files (list db/org-default-refile-file))
-                         (org-agenda-overriding-header "Things to refile (make it empty!)")))
-                  (tags-todo "HOLD"
-                             ((org-agenda-overriding-header "Tasks on Hold")))))
+                     ((tags-todo "WAIT-HOLD-SOMEWHEN"
+                                 ((org-agenda-overriding-header "Waiting For List")
+                                  (org-agenda-todo-ignore-scheduled 0)))
+                      (tags-todo "DATE"
+                                 ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")
+                                  (org-agenda-todo-ignore-timestamp 0)))
+                      (tags "REFILE"
+                            ((org-agenda-files (list db/org-default-refile-file))
+                             (org-agenda-overriding-header "Things to refile (make it empty!)")))
+                      (tags-todo "HOLD"
+                                 ((org-agenda-overriding-header "Tasks on Hold")))))
 
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
-                 ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<+0d>\""
-                        ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no now or future SCHEDULED)")))
-                  (tags-todo "SOMEWHEN/-CANC-DONE"
-                             ((org-agenda-overriding-header "Things To Do SOMEWHEN")
-                              (org-agenda-todo-ignore-with-date t)
-                              (org-tags-match-list-sublevels nil)))))
+                     ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<+0d>\""
+                            ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no now or future SCHEDULED)")))
+                      (tags-todo "SOMEWHEN/-CANC-DONE"
+                                 ((org-agenda-overriding-header "Things To Do SOMEWHEN")
+                                  (org-agenda-todo-ignore-with-date t)
+                                  (org-tags-match-list-sublevels nil)))))
 
 
                 ("P" "Current Projects and Topics"
-                 ((stuck ""
-                         ((org-agenda-overriding-header "Stuck Complex Tasks")))
-                  (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
-                        ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")
-                         (org-agenda-prefix-format '((tags . "%-8c ")))))
-                  (tags "TAGS={TOPIC}-TODO={DONE\\|CANC}-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
-                        ((org-agenda-overriding-header "Topics")
-                         (org-agenda-prefix-format '((tags . "%-8c%l ")))
-                         (org-agenda-sorting-strategy nil)))
-                  (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
-                        ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")
-                         (org-agenda-prefix-format '((tags . "%-8c ")))))))
+                     ((stuck ""
+                             ((org-agenda-overriding-header "Stuck Complex Tasks")))
+                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
+                            ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")
+                             (org-agenda-prefix-format '((tags . "%-8c ")))))
+                      (tags "TAGS={TOPIC}-TODO={DONE\\|CANC}-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
+                            ((org-agenda-overriding-header "Topics")
+                             (org-agenda-prefix-format '((tags . "%-8c%l ")))
+                             (org-agenda-sorting-strategy nil)))
+                      (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
+                            ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")
+                             (org-agenda-prefix-format '((tags . "%-8c ")))))))
 
                 ("W" "Weekly Review"
-                 ((agenda ""
-                          ((org-agenda-span 7)
-                           (org-agenda-dim-blocked-tasks nil)
-                           (org-agenda-skip-deadline-prewarning-if-scheduled t)))))))
+                     ((agenda ""
+                              ((org-agenda-span 7)
+                               (org-agenda-dim-blocked-tasks nil)
+                               (org-agenda-skip-deadline-prewarning-if-scheduled t)))))))
 
   :config (progn
             ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
@@ -1234,45 +1233,45 @@ respectively."
               org-capture-bookmark nil
               org-capture-templates
               `(("t" "Simple Task"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* TODO [#B] %^{What}\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "%a\n"
-                          "%?")
-                 :empty-lines-after 1)
+                     entry
+                     (file db/org-default-refile-file)
+                     ,(concat "* TODO [#B] %^{What}\n"
+                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                              "%a\n"
+                              "%?")
+                     :empty-lines-after 1)
                 ("g" "Record new goal with first item"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* %^{Ticket Description} (%^{Ticket Number}) :GOAL:\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n** TODO [#B] %^{First Task}\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%?"))
+                     entry
+                     (file db/org-default-refile-file)
+                     ,(concat "* %^{Ticket Description} (%^{Ticket Number}) :GOAL:\n"
+                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                              "\n** TODO [#B] %^{First Task}\n"
+                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                              "\n%?"))
                 ("n" "Note"
-                 entry
-                 (file db/org-default-refile-file)
-                 "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
-                 :empty-lines-after 1)
+                     entry
+                     (file db/org-default-refile-file)
+                     "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
+                     :empty-lines-after 1)
                 ("d" "Date"
-                 entry
-                 (file db/org-default-refile-file)
-                 "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?"
-                 :empty-lines-after 1)
+                     entry
+                     (file db/org-default-refile-file)
+                     "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?"
+                     :empty-lines-after 1)
                 ("i" "Interruptions"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (buffer-string))\n\n%?")
-                 :clock-in t :clock-resume t :empty-lines-after 1)
+                     entry
+                     (file db/org-default-refile-file)
+                     ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
+                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                              "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (buffer-string))\n\n%?")
+                     :clock-in t :clock-resume t :empty-lines-after 1)
                 ("r" "respond"
-                 entry
-                 (file db/org-default-refile-file)
-                 ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
-                          ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                          "\n%a\n%?")
-                 :empty-lines-after 1)))
+                     entry
+                     (file db/org-default-refile-file)
+                     ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
+                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                              "\n%a\n%?")
+                     :empty-lines-after 1)))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
@@ -1294,16 +1293,16 @@ respectively."
                                                       host port user password database)
               "Ask for PASSWORD if not given, and call ORIG-FUN with arguments afterwards."
               (cond
-               ((not (or (and user database host port)
-                         (and user database)))
-                (user-error "Insufficient login credentials given, aborting"))
-               (password
-                (funcall orig-fun host port user password database))
-               (t
-                (funcall orig-fun
-                         host port user
-                         (password-read (format "Password for %s@%s: " user database))
-                         database))))
+                ((not (or (and user database host port)
+                          (and user database)))
+                 (user-error "Insufficient login credentials given, aborting"))
+                (password
+                 (funcall orig-fun host port user password database))
+                (t
+                 (funcall orig-fun
+                          host port user
+                          (password-read (format "Password for %s@%s: " user database))
+                          database))))
 
             (advice-add #'org-babel-sql-dbstring-oracle
                         :around #'db/ob-sql-oracle-ask-for-password)))
@@ -2086,9 +2085,9 @@ respectively."
 
 (use-package dired-x
   :commands (dired-jump dired-jump-other-window) ; In Emacs 28.1, this has been
-                                                 ; moved to dired.el, but we'll
-                                                 ; keep it here to support Emacs
-                                                 ; 27.2 as well.
+                                        ; moved to dired.el, but we'll
+                                        ; keep it here to support Emacs
+                                        ; 27.2 as well.
   :init (setq dired-clean-confirm-killing-deleted-buffers t
               dired-x-hands-off-my-keys t
               dired-bind-man nil
@@ -2702,8 +2701,8 @@ With given ARG, display files in `db/important-document-path’."
 (use-package clojure-mode
   :config (progn
             (define-clojure-indent
-              (forall 'defun)
-              (exists 'defun)
+                (forall 'defun)
+                (exists 'defun)
               (dopar 'defun))
             (add-hook 'clojure-mode-hook 'turn-on-lispy-when-available)
             (add-hook 'clojure-mode-hook 'clj-refactor-mode)
@@ -2846,14 +2845,14 @@ With given ARG, display files in `db/important-document-path’."
                        (concat (cadr reftex-insert-label-flags) "TLPDRCE"))
 
                  (dolist (label-spec
-                          '(("Theorem" ?T "thm:" "~\\ref{%s}" t ("Theorem" "Thm.") nil)
-                            ("Lemma" ?L "lem:" "~\\ref{%s}" t ("Lemma" "Lem.") nil)
-                            ("Proposition" ?P "prop:" "~\\ref{%s}" t ("Proposition" "Prop.") nil)
-                            ("Satz" ?T "thm:" "~\\ref{%s}" t ("Satz") nil)
-                            ("Definition" ?D "def:" "~\\ref{%s}" t ("Definition" "Def.") nil)
-                            ("Remark" ?R "rem:" "~\\ref{%s}" t ("Remark" "Rem.") nil)
-                            ("Corollary" ?C "cor:" "~\\ref{%s}" t ("Corollary" "Cor.") nil)
-                            ("Example" ?E "expl:" "~\\ref{%s}" t ("Example") nil)))
+                           '(("Theorem" ?T "thm:" "~\\ref{%s}" t ("Theorem" "Thm.") nil)
+                             ("Lemma" ?L "lem:" "~\\ref{%s}" t ("Lemma" "Lem.") nil)
+                             ("Proposition" ?P "prop:" "~\\ref{%s}" t ("Proposition" "Prop.") nil)
+                             ("Satz" ?T "thm:" "~\\ref{%s}" t ("Satz") nil)
+                             ("Definition" ?D "def:" "~\\ref{%s}" t ("Definition" "Def.") nil)
+                             ("Remark" ?R "rem:" "~\\ref{%s}" t ("Remark" "Rem.") nil)
+                             ("Corollary" ?C "cor:" "~\\ref{%s}" t ("Corollary" "Cor.") nil)
+                             ("Example" ?E "expl:" "~\\ref{%s}" t ("Example") nil)))
                    (add-to-list 'reftex-label-alist label-spec)
                    (add-to-list 'LaTeX-label-alist (cons (nth 0 label-spec)
                                                          (nth 2 label-spec))))))
