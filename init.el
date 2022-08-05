@@ -1767,8 +1767,9 @@ respectively."
 
 ;; Searching
 
-(setq gnus-search-default-engines '((nnimap . gnus-search-imap))
-      gnus-search-use-parsed-queries t)
+(use-package gnus-search
+  :init (setq gnus-search-default-engines '((nnimap . gnus-search-imap))
+              gnus-search-use-parsed-queries t))
 
 ;; Agents
 
