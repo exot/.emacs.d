@@ -820,7 +820,7 @@
           ;; Keywords and Tags
 
           (setq org-todo-keywords
-                '((sequence "TODO(t)" "CONT(n!)" "|" "DONE(d@)")
+                '((sequence "TODO(t)" "CONT(n!)" "REFINE(f!)" "|" "DONE(d@)")
                   (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
                   (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@)")
                   (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)"
@@ -834,7 +834,8 @@
                   ("TODO" ("HOLD") ("WAIT") ("DATE") ("READ"))
                   ("READ" ("READ" . t) ("DATE") ("HOLD") ("WAIT"))
                   ("GOTO" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
-                  ("CONT" ("DATE") ("HOLD") ("WAIT"))
+                  ("CONT" ("DATE") ("HOLD") ("WAIT") ("READ"))
+                  ("REFINE" ("DATE") ("HOLD") ("WAIT") ("READ"))
                   ("ATTN" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
                   ("" ("HOLD") ("WAIT") ("DATE") ("READ")))
 
@@ -869,6 +870,7 @@
                   ("ATTN" :foreground "DeepSkyBlue" :weight normal)
                   ("DONE" :foreground "forest green" :weight normal)
                   ("DELG" :foreground "dark orange" :weight normal)
+                  ("REFINE" :foreground "tomato" :weight normal)
                   ("WAIT" :foreground "orange" :weight normal)
                   ("HOLD" :foreground "magenta" :weight normal)
                   ("CANC" :foreground "lime green" :weight normal)
