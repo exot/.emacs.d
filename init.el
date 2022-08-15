@@ -824,7 +824,7 @@
                   (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
                   (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@)")
                   (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)"
-                   "|" "CANC(c@/!)" "PHONE" "MEETING"))
+                   "|" "CANC(c@/!)"))
 
                 org-todo-state-tags-triggers
                 '(("WAIT" ("HOLD") ("WAIT" . t))
@@ -873,10 +873,7 @@
                   ("REFINE" :foreground "tomato" :weight normal)
                   ("WAIT" :foreground "orange" :weight normal)
                   ("HOLD" :foreground "magenta" :weight normal)
-                  ("CANC" :foreground "lime green" :weight normal)
-                  ("MEETING" :foreground "forest green" :weight normal)
-                  ("PHONE" :foreground "forest green" :weight normal)
-                  ("REPEAT" :foreground "indian red" :weight normal))
+                  ("CANC" :foreground "lime green" :weight normal))
 
                 org-priority-faces
                 '((?A . (:foreground "Red" :weight bold))
