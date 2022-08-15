@@ -1363,7 +1363,15 @@ respectively."
               ("<C-left>" . org-tree-slide-move-previous-tree)))
 
 (use-package org-roam
-  :init (setq org-roam-v2-ack t)
+  :init (progn
+          (add-to-list 'display-buffer-alist
+                       '("\\*org-roam\\*"
+                         (display-buffer-in-side-window)
+                         (side . right)
+                         (slot . 0)
+                         (window-width . 0.33)
+                         (window-parameters . ((no-other-window . t)
+                                               (no-delete-other-windows . t))))))
   :commands (org-roam-node-insert
              org-roam-node-find
              org-roam-capture)
