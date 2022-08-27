@@ -53,12 +53,28 @@
     (erase-buffer)
     (eshell-send-input)))
 
+(defun db/eshell-git-branch-string ()
+  ;; Inspired by https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org#special-prompt
+  "Return name of git branch of current directory, as a string.
+Return the empty string if the current directory is not part of a
+git repository."
+  (interactive)
+  (let ((pwd (eshell/pwd)))
+   (when (and (not (file-remote-p pwd))
+              (eshell-search-path "git")
+              (locate-dominating-file pwd ".git"))
+     (save-match-data
+      (string-trim
+       (shell-command-to-string "git rev-parse --abbrev-ref HEAD"))))))
+
 (defun eshell/default-prompt-function ()
   "A prompt for eshell of the form
 
-   ┌─[$USER@$HOST] [$PWD]
+   ┌─[$USER@$HOST] [$PWD] (current-git-branch)
    └─
 
+Information about the current git branch will be empty when
+the current directory is not part of a git repository.
 "
   (let ((head-face '(:foreground "#859900")))
     (concat (propertize "┌─" 'face head-face)
@@ -68,6 +84,8 @@
             " "
             (propertize (abbreviate-file-name (eshell/pwd))
                         'face '(:foreground "#dc322f"))
+            (when-let ((git-branch (db/eshell-git-branch-string)))
+              (format " (%s)" git-branch))
             "\n"
             (propertize "└─" 'face head-face)
             (if (zerop (user-uid)) "#" "$")
