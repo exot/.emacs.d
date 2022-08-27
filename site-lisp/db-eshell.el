@@ -56,16 +56,25 @@
 (defun db/eshell-git-branch-string ()
   ;; Inspired by https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org#special-prompt
   "Return name of git branch of current directory, as a string.
+
+The format will be BASE-DIR::BRANCH-NAME, where BASE-DIR is the
+directory containing the .git directory or link file of the
+current git repository, and BRANCH-NAME is the name of the
+current branch.
+
 Return the empty string if the current directory is not part of a
 git repository."
   (interactive)
-  (let ((pwd (eshell/pwd)))
-   (when (and (not (file-remote-p pwd))
-              (eshell-search-path "git")
-              (locate-dominating-file pwd ".git"))
-     (save-match-data
-      (string-trim
-       (shell-command-to-string "git rev-parse --abbrev-ref HEAD"))))))
+  (let ((pwd (eshell/pwd))
+        repo-dir)
+    (when (and (not (file-remote-p pwd))
+               (eshell-search-path "git")
+               (setq repo-dir (locate-dominating-file pwd ".git")))
+      (save-match-data
+        (let* ((git-branch (string-trim
+                            (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
+               (base-dir (file-name-base (string-trim-right repo-dir "/?"))))
+          (format "%s::%s" base-dir git-branch))))))
 
 (defun eshell/default-prompt-function ()
   "A prompt for eshell of the form
@@ -73,9 +82,10 @@ git repository."
    ┌─[$USER@$HOST] [$PWD] (current-git-branch)
    └─
 
-Information about the current git branch will be empty when
-the current directory is not part of a git repository.
-"
+Information about the current git branch will be empty when the
+current directory is not part of a git repository.  See
+`db/eshell-git-branch-string' for more details about the
+formatting."
   (let ((head-face '(:foreground "#859900")))
     (concat (propertize "┌─" 'face head-face)
             (user-login-name)
