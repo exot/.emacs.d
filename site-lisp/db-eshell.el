@@ -74,12 +74,12 @@ git repository."
         (let* ((git-branch (string-trim
                             (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
                (base-dir (file-name-base (string-trim-right repo-dir "/?"))))
-          (format "%s::%s" base-dir git-branch))))))
+          (format "%s@%s" git-branch base-dir))))))
 
 (defun eshell/default-prompt-function ()
   "A prompt for eshell of the form
 
-   ┌─[$USER@$HOST] [$PWD] (current-git-branch)
+   ┌─$USER@$HOST $PWD (current-git-branch)
    └─
 
 Information about the current git branch will be empty when the
@@ -95,7 +95,7 @@ formatting."
             (propertize (abbreviate-file-name (eshell/pwd))
                         'face '(:foreground "#dc322f"))
             (when-let ((git-branch (db/eshell-git-branch-string)))
-              (format " (%s)" git-branch))
+              (format " (git:%s)" git-branch))
             "\n"
             (propertize "└─" 'face head-face)
             (if (zerop (user-uid)) "#" "$")
