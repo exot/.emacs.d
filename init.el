@@ -766,7 +766,8 @@
              db/org-add-link-to-other-item
              db/org-add-link-to-current-clock
              hydra-org-linking/body
-             org-dblock-write:db/org-backlinks))
+             org-dblock-write:db/org-backlinks
+             db/org-goto-first-open-checkbox-in-subtree))
 
 (use-package org
   :pin "gnu"
