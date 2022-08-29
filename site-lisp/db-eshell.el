@@ -8,6 +8,7 @@
 
 ;;; Code:
 
+(require 'dash)
 (require 'subr-x)
 (require 'seq)
 (require 'eshell)
@@ -57,10 +58,13 @@
   ;; Inspired by https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org#special-prompt
   "Return name of git branch of current directory, as a string.
 
-The format will be BASE-DIR::BRANCH-NAME, where BASE-DIR is the
-directory containing the .git directory or link file of the
+The format will be BASE-NAME@BASE-DIR[STATE], where BASE-DIR is
+the directory containing the .git directory or link file of the
 current git repository, and BRANCH-NAME is the name of the
-current branch.
+current branch.  STATE will display information about whether the
+worktree is dirty or whether the repository needs pushing.  When
+no extra state information is available, STATE will be empty and
+the brackets will be ommitted.
 
 Return the empty string if the current directory is not part of a
 git repository."
@@ -73,8 +77,25 @@ git repository."
       (save-match-data
         (let* ((git-branch (string-trim
                             (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
-               (base-dir (file-name-base (string-trim-right repo-dir "/?"))))
-          (format "%s@%s" git-branch base-dir))))))
+               (base-dir (file-name-base (string-trim-right repo-dir "/?")))
+               (state-list (cl-remove-if #'null
+                                         (list
+                                          (when (file-exists-p (file-name-concat "." ".git" "MERGE_HEAD"))
+                                            "merge")
+                                          (when (= 1 (call-process "git" nil nil nil
+                                                                   "diff" "--no-ext-diff" "--quiet" "--exit-code"))
+                                            "dirty")
+                                          (when (= 1 (call-process "git" nil nil nil
+                                                                   "diff" "--no-ext-diff" "--quiet" "--exit-code" "--cached"))
+                                            "uncommitted")
+                                          (when (with-temp-buffer
+                                                  (and (= 0 (call-process "git" nil t nil
+                                                                          "stash" "list"))
+                                                       (not (= 0 (buffer-size)))))
+                                            "stash")))))
+          (if state-list
+              (format "%s@%s[%s]" git-branch base-dir (apply #'concat (-interpose "|" state-list)))
+            (format "%s@%s" git-branch base-dir)))))))
 
 (defun eshell/default-prompt-function ()
   "A prompt for eshell of the form
