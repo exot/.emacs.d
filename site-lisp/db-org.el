@@ -770,12 +770,20 @@ If there's no such open checkbox, emit a message and stay put."
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org buffer, exiting"))
   (save-restriction
-    (widen)
-    (org-back-to-heading 'invisible-ok)
-    (org-narrow-to-subtree)
-    (unless (or (re-search-forward "\\[-\\]" nil 'no-error)
-                (re-search-forward "\\[ \\]" nil 'no-error))
-      (message "No open checkbox in subtree"))))
+    (let ((original-point (point)))
+      (widen)
+      (org-back-to-heading 'invisible-ok)
+      (org-narrow-to-subtree)
+      (unless
+          ;; Yes, progn is not strictly necessary, but it feels cleaner this way.
+          (or (progn
+                (goto-char (point-min))
+                (re-search-forward " \\[-\\] " nil 'no-error))
+              (progn
+                (goto-char (point-min))
+                (re-search-forward " \\[ \\] " nil 'no-error)))
+        (message "No open checkbox in subtree")
+        (goto-char original-point)))))
 
 
 ;;; Calendar
