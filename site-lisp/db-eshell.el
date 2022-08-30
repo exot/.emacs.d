@@ -77,10 +77,10 @@ git repository."
       (save-match-data
         (let* ((git-branch (string-trim
                             (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
-               (base-dir (file-name-base (string-trim-right repo-dir "/?")))
+               (base-dir (file-name-nondirectory (string-trim-right repo-dir "/?")))
                (state-list (cl-remove-if #'null
                                          (list
-                                          (when (file-exists-p (file-name-concat "." ".git" "MERGE_HEAD"))
+                                          (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
                                             "merge")
                                           (when (= 1 (call-process "git" nil nil nil
                                                                    "diff" "--no-ext-diff" "--quiet" "--exit-code"))
