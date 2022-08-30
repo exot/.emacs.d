@@ -74,28 +74,35 @@ git repository."
     (when (and (not (file-remote-p pwd))
                (eshell-search-path "git")
                (setq repo-dir (locate-dominating-file pwd ".git")))
-      (save-match-data
-        (let* ((git-branch (string-trim
-                            (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
-               (base-dir (file-name-nondirectory (string-trim-right repo-dir "/?")))
-               (state-list (cl-remove-if #'null
-                                         (list
-                                          (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
-                                            "merge")
-                                          (when (= 1 (call-process "git" nil nil nil
-                                                                   "diff" "--no-ext-diff" "--quiet" "--exit-code"))
-                                            "dirty")
-                                          (when (= 1 (call-process "git" nil nil nil
-                                                                   "diff" "--no-ext-diff" "--quiet" "--exit-code" "--cached"))
-                                            "uncommitted")
-                                          (when (with-temp-buffer
-                                                  (and (= 0 (call-process "git" nil t nil
-                                                                          "stash" "list"))
-                                                       (not (= 0 (buffer-size)))))
-                                            "stash")))))
-          (if state-list
-              (format "%s@%s[%s]" git-branch base-dir (apply #'concat (-interpose "|" state-list)))
-            (format "%s@%s" git-branch base-dir)))))))
+      (if (string-prefix-p (file-truename (file-name-concat repo-dir ".git"))
+                           (file-truename pwd))
+          "GIT_DIR"
+          (save-match-data
+            (let* ((git-branch (string-trim
+                                (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
+                   (base-dir (file-name-nondirectory (string-trim-right repo-dir "/?")))
+                   state-list)
+
+              (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
+                (push "merge" state-list))
+
+              (when (= 1 (call-process "git" nil nil nil
+                                       "diff" "--no-ext-diff" "--quiet" "--exit-code"))
+                (push "dirty" state-list))
+
+              (when (= 1 (call-process "git" nil nil nil
+                                       "diff" "--no-ext-diff" "--quiet" "--exit-code" "--cached"))
+                (push "uncommitted" state-list))
+
+              (when (with-temp-buffer
+                      (and (= 0 (call-process "git" nil t nil
+                                              "stash" "list"))
+                           (not (= 0 (buffer-size)))))
+                (push "stash" state-list))
+
+              (if state-list
+                  (format "%s@%s[%s]" git-branch base-dir (apply #'concat (-interpose "|" state-list)))
+                (format "%s@%s" git-branch base-dir))))))))
 
 (defun eshell/default-prompt-function ()
   "A prompt for eshell of the form
