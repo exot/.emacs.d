@@ -8,6 +8,7 @@
 
 ;;; Code:
 
+(require 'db-customize)
 (require 'dash)
 (require 'subr-x)
 (require 'seq)
@@ -54,6 +55,19 @@
     (erase-buffer)
     (eshell-send-input)))
 
+(defcustom db/eshell-prompt-include-git-state (if (member system-type '(windows-nt cygwin)) nil t)
+  "Whether to include git state information in the eshell prompt.
+
+State information includes whether the worktree is dirty, whether
+the index contains uncommitted changes, whether a merge is in
+progress and whether the stash stack is non-empty.
+
+Including this in the prompt might be slow on certain
+systems (looking at you, Windows) and may thus not be desirable.
+Set to nil to disable."
+  :group 'personal-settings
+  :type '(choice (const nil) (const t)))
+
 (defun db/eshell-git-branch-string ()
   ;; Inspired by https://github.com/howardabrams/dot-files/blob/master/emacs-eshell.org#special-prompt
   "Return name of git branch of current directory, as a string.
@@ -83,22 +97,24 @@ git repository."
                    (base-dir (file-name-nondirectory (directory-file-name repo-dir)))
                    state-list)
 
-              (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
-                (push "merge" state-list))
+              (when db/eshell-prompt-include-git-state
 
-              (when (= 1 (call-process "git" nil nil nil
-                                       "diff" "--no-ext-diff" "--quiet" "--exit-code"))
-                (push "dirty" state-list))
+                (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
+                  (push "merge" state-list))
 
-              (when (= 1 (call-process "git" nil nil nil
-                                       "diff" "--no-ext-diff" "--quiet" "--exit-code" "--cached"))
-                (push "uncommitted" state-list))
+                (when (= 1 (call-process "git" nil nil nil
+                                         "diff" "--no-ext-diff" "--quiet" "--exit-code"))
+                  (push "dirty" state-list))
 
-              (when (with-temp-buffer
-                      (and (= 0 (call-process "git" nil t nil
-                                              "stash" "list"))
-                           (not (= 0 (buffer-size)))))
-                (push "stash" state-list))
+                (when (= 1 (call-process "git" nil nil nil
+                                         "diff" "--no-ext-diff" "--quiet" "--exit-code" "--cached"))
+                  (push "uncommitted" state-list))
+
+                (when (with-temp-buffer
+                        (and (= 0 (call-process "git" nil t nil
+                                                "stash" "list"))
+                             (not (= 0 (buffer-size)))))
+                  (push "stash" state-list)))
 
               (if state-list
                   (format "%s@%s[%s]" git-branch base-dir (apply #'concat (-interpose "|" state-list)))
