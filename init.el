@@ -150,6 +150,7 @@
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
+  (add-hook 'text-mode-hook 'page-break-lines-mode)
   (add-hook 'prog-mode-hook 'subword-mode)
   (add-hook 'prog-mode-hook 'hl-line-mode)
   (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)
