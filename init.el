@@ -741,6 +741,7 @@
              db/org-clock-in-home-task
              db/org-clock-in-work-task
              db/show-current-org-task
+             org-dblock-write:db/org-workload-report
              endless/org-ispell
              db/org-agenda-list-deadlines
              db/org-agenda-skip-tag

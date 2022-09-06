@@ -377,6 +377,82 @@ should not be clocked."
   (message org-clock-current-task))
 
 
+;;; Task Management
+
+(defun db/org-planned-tasks-in-range (start-date end-date)
+  "Return list of tasks planned between START-DATE and END-DATE.
+
+This function will search through the files returned by
+`org-agenda-files' (the function) for all tasks that are
+scheduled, have an active timestamp, or are deadline in the given
+time range.
+
+The result has the form (TOTAL-TIME . TASKS), where TASKS is a
+list of cons cells (ID . EFFORT).  The total time is given as an
+Org mode time string of the form hh:mm, as are all EFFORT
+entries."
+  (let* (;; Allow Org syntax for dates; the result should be understandable by
+         ;; `parse-time-string' and thus `org-ql-query' should be fine with that.
+         (start-date (org-read-date nil nil start-date))
+         (end-date (org-read-date nil nil end-date))
+         (tasks (org-ql-query
+                  :from (org-agenda-files)
+                  :select '(cons
+                            (org-id-get-create)
+                            (org-entry-get (point) "Effort"))
+                  :where `(and (todo)
+                               ;; Is this redundant?  Could we just stick with `ts-active'?
+                               (or (scheduled :from ,start-date :to ,end-date)
+                                   (deadline :from ,start-date :to ,end-date)
+                                   (ts-active :from ,start-date :to ,end-date)))))
+         (total-time (->> tasks
+                          (-map (-compose #'org-duration-to-minutes #'cdr))
+                          -sum
+                          org-duration-from-minutes)))
+    (cons total-time tasks)))
+
+(defun org-dblock-write:db/org-workload-report (params)
+  "Write workload report based on tasks in `org-agenda-files'.
+
+PARAMS is a property list of the following parameters:
+
+`:start-date':
+
+  Start date for the workload report.
+
+`:end-date':
+
+  End date of the workload report.
+
+All tasks between `:start-date' and `:end-date' will be collected
+and their effort summed up.  The date format is everything
+understood by `org-read-date'."
+  (let* ((start-date (plist-get params :start-date))
+         (end-date (plist-get params :end-date))
+         (task-summary (db/org-planned-tasks-in-range start-date end-date)))
+
+    (insert "| Task | Effort |\n|---|\n")
+    (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
+      (insert (format "| %s | %s |\n"
+                      (org-link-make-string (format "id:%s" task-id)
+                                            (org-entry-get (org-id-find task-id 'marker)
+                                                           "ITEM"))
+                      effort-string)))
+    (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
+    (org-table-align)))
+
+(defun db/org-insert-workload-report ()
+  "Create dynamic block of planned tasks in given time range."
+  (interactive)
+  (org-create-dblock
+   (list :name "db/org-workload-report"
+         :start-date (read-string "Start date: ")
+         :end-date (read-string "End date: ")))
+  (org-update-dblock))
+
+(org-dynamic-block-define "db/org-workload-report" #'db/org-insert-workload-report)
+
+
 ;;; Fixes
 
 (defun endless/org-ispell ()
