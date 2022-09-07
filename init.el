@@ -964,12 +964,16 @@
 ;; Extended query language and dynamic blocks
 (use-package org-ql-search
   :ensure org-ql
+  ;; XXX: Remove the following as soon as this is fixed in upstream
+  :init (setq org-ql-regexp-part-ts-time
+              (rx " " (repeat 1 2 digit) ":" (repeat 2 digit)
+                  (optional "-" (repeat 1 2 digit) ":" (repeat 2 digit))))
   :commands (org-ql-view
              org-ql-search
              org-dblock-write:org-ql)
-
   :config (progn
 
+            ;; XXX: Remove the following as soon as this is fixed in upstream
             ;; Redefine the regular expression for link searches to allow
             ;; brackets in the description.  This function comes straight from
             ;; org-ql.el
