@@ -438,9 +438,7 @@ understood by `org-read-date'."
     (insert "| Task | Effort |\n|---|\n")
     (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
       (insert (format "| %s | %s |\n"
-                      (org-link-make-string (format "id:%s" task-id)
-                                            (org-entry-get (org-id-find task-id 'marker)
-                                                           "ITEM"))
+                      (db/org--format-link-from-org-id task-id)
                       (or effort-string ""))))
     (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
     (org-table-align)))
