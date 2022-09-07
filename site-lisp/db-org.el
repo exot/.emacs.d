@@ -406,7 +406,11 @@ entries."
                                    (deadline :from ,start-date :to ,end-date)
                                    (ts-active :from ,start-date :to ,end-date)))))
          (total-time (->> tasks
-                          (-map (-compose #'org-duration-to-minutes #'cdr))
+                          (-map #'(lambda (task)
+                                    (let ((effort (cdr task)))
+                                      (if (null effort)
+                                          0
+                                        (org-duration-to-minutes effort)))))
                           -sum
                           org-duration-from-minutes)))
     (cons total-time tasks)))
@@ -437,7 +441,7 @@ understood by `org-read-date'."
                       (org-link-make-string (format "id:%s" task-id)
                                             (org-entry-get (org-id-find task-id 'marker)
                                                            "ITEM"))
-                      effort-string)))
+                      (or effort-string ""))))
     (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
     (org-table-align)))
 
