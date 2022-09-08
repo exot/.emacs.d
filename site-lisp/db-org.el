@@ -379,7 +379,7 @@ should not be clocked."
 
 ;;; Task Management
 
-(defun db/org-planned-tasks-in-range (start-date end-date)
+(defun db/org-planned-tasks-in-range (start-date end-date &optional org-ql-match)
   "Return list of tasks planned between START-DATE and END-DATE.
 
 This function will search through the files returned by
@@ -390,7 +390,11 @@ time range.
 The result has the form (TOTAL-TIME . TASKS), where TASKS is a
 list of cons cells (ID . EFFORT).  The total time is given as an
 Org mode time string of the form hh:mm, as are all EFFORT
-entries."
+entries.
+
+When ORG-QL-MATCH, an org-ql sexp, is given, filter the list of
+tasks in range by this expression.  When ORG-QL-MATCH is not
+given, default to `(todo)'."
   (let* (;; Allow Org syntax for dates; the result should be understandable by
          ;; `parse-time-string' and thus `org-ql-query' should be fine with that.
          (start-date (org-read-date nil nil start-date))
@@ -400,7 +404,7 @@ entries."
                   :select '(cons
                             (org-id-get-create)
                             (org-entry-get (point) "Effort"))
-                  :where `(and (todo)
+                  :where `(and ,(or org-ql-match '(todo))
                                ;; Is this redundant?  Could we just stick with `ts-active'?
                                (or (scheduled :from ,start-date :to ,end-date)
                                    (deadline :from ,start-date :to ,end-date)
@@ -428,12 +432,17 @@ PARAMS is a property list of the following parameters:
 
   End date of the workload report.
 
+`:org-ql-match'
+
+  `org-ql' expression (in sexp syntax) to filter the list of tasks.
+
 All tasks between `:start-date' and `:end-date' will be collected
 and their effort summed up.  The date format is everything
 understood by `org-read-date'."
   (let* ((start-date (plist-get params :start-date))
          (end-date (plist-get params :end-date))
-         (task-summary (db/org-planned-tasks-in-range start-date end-date)))
+         (org-ql-match (plist-get params :org-ql-match))
+         (task-summary (db/org-planned-tasks-in-range start-date end-date org-ql-match)))
 
     (insert "| Task | Effort |\n|---|\n")
     (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
