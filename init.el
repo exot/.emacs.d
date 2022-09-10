@@ -1150,14 +1150,14 @@ respectively."
                        ""
                        ((org-agenda-entry-types '(:timestamp :sexp :scheduled))
                         (org-deadline-warning-days 0)))
+                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>\"<now>\""
+                                 ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled now or in the future)")
+                                  (org-agenda-todo-ignore-scheduled 0)))
                       (db/org-agenda-list-deadlines
                        ""
                        ((org-agenda-overriding-header "Deadlines")
                         (org-agenda-sorting-strategy '(deadline-up priority-down))
                         (org-deadline-warning-days 30)))
-                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>\"<now>\""
-                                 ((org-agenda-overriding-header "WIP List (TODO ∈ {CONT,ATTN}, not scheduled now or in the future)")
-                                  (org-agenda-todo-ignore-scheduled 0)))
                       (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE/-DONE"
                                  ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled now or in the future)")
                                   (org-tags-match-list-sublevels t)
