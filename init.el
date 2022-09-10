@@ -151,7 +151,6 @@
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
   (add-hook 'text-mode-hook 'page-break-lines-mode)
-  (add-hook 'prog-mode-hook 'subword-mode)
   (add-hook 'prog-mode-hook 'hl-line-mode)
   (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)
 
@@ -2996,6 +2995,7 @@ With given ARG, display files in `db/important-document-path’."
                                (append '((company-capf company-dabbrev-code))
                                        company-backends))))
             (add-hook 'haskell-mode-hook 'flycheck-mode)
+            (add-hook 'haskle--mode-hook 'subword-mode)
 
             (with-demoted-errors "Non-Fatal Error: %s"
               (require 'haskell-indentation)
@@ -3020,11 +3020,7 @@ With given ARG, display files in `db/important-document-path’."
   :init (setq plantuml-output-type "svg"
               plantuml-default-exec-mode 'jar
               plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
-              plantuml-indent-level 2)
-  :config (progn
-            (add-hook 'plantuml-mode-hook
-                      #'(lambda ()
-                          (subword-mode -1)))))
+              plantuml-indent-level 2))
 
 (use-package python
   :config (progn
@@ -3033,7 +3029,8 @@ With given ARG, display files in `db/important-document-path’."
 
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
             (add-hook 'python-mode-hook #'company-mode)
-            (add-hook 'python-mode-hook #'lsp-deferred)))
+            (add-hook 'python-mode-hook #'lsp-deferred)
+            (add-hook 'python-mode-hook #'subword-mode)))
 
 ;; https://ddavis.io/posts/emacs-python-lsp/
 (use-package pyvenv
