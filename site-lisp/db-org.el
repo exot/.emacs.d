@@ -462,11 +462,20 @@ understood by `org-read-date'."
          (org-ql-match (plist-get params :org-ql-match))
          (task-summary (db/org-planned-tasks-in-range start-date end-date org-ql-match)))
 
-    (insert "| Task | Effort |\n|---|\n")
+    (insert "| Task | Effort | Timestamp | SCHEDULED | DEADLINE |\n|---|\n")
     (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
-      (insert (format "| %s | %s |\n"
+      (insert (format "| %s | %s | %s | %s | %s |\n"
                       (db/org--format-link-from-org-id task-id)
-                      (or effort-string ""))))
+                      (or effort-string "")
+                      (or (org-entry-get (org-id-find task-id 'marker)
+                                         "TIMESTAMP")
+                          "not set")
+                      (or (org-entry-get (org-id-find task-id 'marker)
+                                         "SCHEDULED")
+                          "not set")
+                      (or (org-entry-get (org-id-find task-id 'marker)
+                                         "DEADLINE")
+                          "not set"))))
     (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
     (org-table-align)))
 
