@@ -9,6 +9,7 @@
 ;;; Code:
 
 (require 'subr-x)
+(require 'dash)
 (require 'cl-lib)
 (require 'org)
 (require 'org-agenda)
@@ -394,11 +395,26 @@ entries.
 
 When ORG-QL-MATCH, an org-ql sexp, is given, filter the list of
 tasks in range by this expression.  When ORG-QL-MATCH is not
-given, default to `(todo)'."
-  (let* (;; Allow Org syntax for dates; the result should be understandable by
-         ;; `parse-time-string' and thus `org-ql-query' should be fine with that.
-         (start-date (org-read-date nil nil start-date))
-         (end-date (org-read-date nil nil end-date))
+given, default to `(todo)'.
+
+START-DATE and END-DATE must be strings formatted such that
+`org-read-date' can parse a date from them.  In particular,
+everything understood by `parse-time-string' should be fine.
+When START-DATE or END-DATE (or both) are nil, no constraints are
+imposed on the respective time range."
+
+  (unless (or (null start-date)
+              (stringp start-date))
+    (user-error "START-DATE must be nil or a string, but it's %s" start-date))
+
+  (unless (or (null end-date)
+              (stringp end-date))
+    (user-error "END-DATE must be nil or a string, but it's %s" end-date))
+
+  (let* ((start-date-expr (--when-let (and start-date (org-read-date nil nil start-date))
+                            (list :from it)))
+         (end-date-expr (--when-let (and end-date (org-read-date nil nil end-date))
+                          (list :to it)))
          (tasks (org-ql-query
                   :from (org-agenda-files)
                   :select '(cons
@@ -406,9 +422,9 @@ given, default to `(todo)'."
                             (org-entry-get (point) "Effort"))
                   :where `(and ,(or org-ql-match '(todo))
                                ;; Is this redundant?  Could we just stick with `ts-active'?
-                               (or (scheduled :from ,start-date :to ,end-date)
-                                   (deadline :from ,start-date :to ,end-date)
-                                   (ts-active :from ,start-date :to ,end-date)))))
+                               (or (scheduled ,@start-date-expr ,@end-date-expr)
+                                   (deadline  ,@start-date-expr ,@end-date-expr)
+                                   (ts-active ,@start-date-expr ,@end-date-expr)))))
          (total-time (->> tasks
                           (-map #'(lambda (task)
                                     (let ((effort (cdr task)))
