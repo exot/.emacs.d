@@ -963,7 +963,8 @@
 ;; Extended query language and dynamic blocks
 (use-package org-ql-search
   :ensure org-ql
-  ;; XXX: Remove the following as soon as this is fixed in upstream
+  ;; XXX: Remove the following as soon as this is fixed in upstream, see
+  ;; https://github.com/alphapapa/org-ql/pull/237
   :init (setq org-ql-regexp-part-ts-time
               (rx " " (repeat 1 2 digit) ":" (repeat 2 digit)
                   (optional "-" (repeat 1 2 digit) ":" (repeat 2 digit))))
@@ -973,6 +974,8 @@
   :config (progn
 
             ;; XXX: Remove the following as soon as this is fixed in upstream
+            ;; (see https://github.com/alphapapa/org-ql/issues/283);
+
             ;; Redefine the regular expression for link searches to allow
             ;; brackets in the description.  This function comes straight from
             ;; org-ql.el
