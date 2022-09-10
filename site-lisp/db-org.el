@@ -475,22 +475,29 @@ understood by `org-read-date'."
                                (otherwise (user-error ":sort-column value invalid, see docstring of `org-dblock-write:db/org-workload-report' for options"))))
          (task-summary (db/org-planned-tasks-in-range start-date end-date org-ql-match)))
 
-    (insert "| Task | Effort | Timestamp | SCHEDULED | DEADLINE |\n|---|\n")
-    (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
-      (insert (format "| %s | %s | %s | %s | %s |\n"
-                      (db/org--format-link-from-org-id task-id)
-                      (or effort-string "")
-                      (or (org-entry-get (org-id-find task-id 'marker)
-                                         "TIMESTAMP")
-                          "")
-                      (or (org-entry-get (org-id-find task-id 'marker)
-                                         "SCHEDULED")
-                          "")
-                      (or (org-entry-get (org-id-find task-id 'marker)
-                                         "DEADLINE")
-                          ""))))
-    (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
-    (org-table-align)
+    ;; Create table
+    (cl-flet ((ts-property-from-id (task-id property)
+                ;; Retrieve PROPERTY from task given by TASK-ID.  If found,
+                ;; assume PROPERTY to be a timestamp and unconditionally convert
+                ;; it into an inactive timestamp.  If PROPERTY is not found,
+                ;; return the empty string.
+                (--if-let (org-entry-get (org-id-find task-id 'marker)
+                                         property)
+                    (concat "[" (substring it 1 -1) "]")
+                  "")))
+
+      (insert "| Task | Effort | Timestamp | SCHEDULED | DEADLINE |\n|---|\n")
+      (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
+        (insert (format "| %s | %s | %s | %s | %s |\n"
+                        (db/org--format-link-from-org-id task-id)
+                        (or effort-string "")
+                        (ts-property-from-id task-id "TIMSTAMP")
+                        (ts-property-from-id task-id "SCHEDULED")
+                        (ts-property-from-id task-id "DEADLINE"))))
+      (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
+      (org-table-align))
+
+    ;; Sort table
     (forward-line -4)                   ; go back to actual data
     (beginning-of-line)
     (dotimes (_ sort-column-count)      ; move to column to sort
