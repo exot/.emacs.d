@@ -442,11 +442,13 @@ PARAMS is a property list of the following parameters:
 
 `:start-date':
 
-  Start date for the workload report.
+  Start date for the workload report.  Leave out if no constraint
+  on the start date is necessary.
 
 `:end-date':
 
-  End date of the workload report.
+  End date of the workload report.  Leave out if no constraint on
+  the start date is necessary.
 
 `:org-ql-match'
 
