@@ -454,12 +454,25 @@ PARAMS is a property list of the following parameters:
 
   `org-ql' expression (in sexp syntax) to filter the list of tasks.
 
+`:sort-column'
+
+  Specify the column to sort by.  Can be any of `task', `effort',
+  `timestamp', `scheduled', or `deadline'.
+
 All tasks between `:start-date' and `:end-date' will be collected
 and their effort summed up.  The date format is everything
 understood by `org-read-date'."
   (let* ((start-date (plist-get params :start-date))
          (end-date (plist-get params :end-date))
          (org-ql-match (plist-get params :org-ql-match))
+         (sort-column-count  (cl-case (plist-get params :sort-column)
+                               ((nil) 2) ; sort by effort by default
+                               ((task) 1)
+                               ((effort) 2)
+                               ((timestamp) 3)
+                               ((scheduled) 4)
+                               ((deadline) 5)
+                               (otherwise (user-error ":sort-column value invalid, see docstring of `org-dblock-write:db/org-workload-report' for options"))))
          (task-summary (db/org-planned-tasks-in-range start-date end-date org-ql-match)))
 
     (insert "| Task | Effort | Timestamp | SCHEDULED | DEADLINE |\n|---|\n")
@@ -469,15 +482,20 @@ understood by `org-read-date'."
                       (or effort-string "")
                       (or (org-entry-get (org-id-find task-id 'marker)
                                          "TIMESTAMP")
-                          "not set")
+                          "")
                       (or (org-entry-get (org-id-find task-id 'marker)
                                          "SCHEDULED")
-                          "not set")
+                          "")
                       (or (org-entry-get (org-id-find task-id 'marker)
                                          "DEADLINE")
-                          "not set"))))
+                          ""))))
     (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
-    (org-table-align)))
+    (org-table-align)
+    (forward-line -4)                   ; go back to actual data
+    (beginning-of-line)
+    (dotimes (_ sort-column-count)      ; move to column to sort
+      (org-table-next-field))
+    (org-table-sort-lines nil ?t)))
 
 (defun db/org-insert-workload-report ()
   "Create dynamic block of planned tasks in given time range."
