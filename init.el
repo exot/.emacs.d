@@ -149,14 +149,13 @@
 
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-  (add-hook 'prog-mode-hook 'page-break-lines-mode)
-  (add-hook 'text-mode-hook 'page-break-lines-mode)
-  (add-hook 'prog-mode-hook 'hl-line-mode)
-  (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)
 
+  (add-hook 'prog-mode-hook 'page-break-lines-mode)
+  (add-hook 'prog-mode-hook 'hl-line-mode)
   (when (<= 24 emacs-major-version)
     (add-hook 'prog-mode-hook 'electric-indent-local-mode))
 
+  (add-hook 'text-mode-hook 'page-break-lines-mode)
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
   (add-hook 'text-mode-hook 'abbrev-mode)
   (add-hook 'text-mode-hook 'hl-line-mode)
@@ -2716,7 +2715,8 @@ With given ARG, display files in `db/important-document-path’."
 (use-package elisp-mode
   :config (progn
             (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file)))
+            (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file)
+            (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)))
 
 (use-package geiser
   :commands (geiser-mode))
