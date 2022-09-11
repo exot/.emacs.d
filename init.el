@@ -899,6 +899,10 @@
                                            (emacs-lisp . t))))
   :config (progn
 
+            ;; Some hooks from text-mode-hook, Org mode does not seem to run those?
+            (add-hook 'org-mode-hook 'page-break-lines-mode)
+            (add-hook 'org-mode-hook 'turn-on-auto-fill)
+
             ;; Reset checkboxes if the RESET_CHECK_BOXES property is set
             (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
 
