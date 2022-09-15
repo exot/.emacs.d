@@ -491,7 +491,7 @@ understood by `org-read-date'."
         (insert (format "| %s | %s | %s | %s | %s |\n"
                         (db/org--format-link-from-org-id task-id)
                         (or effort-string "")
-                        (ts-property-from-id task-id "TIMSTAMP")
+                        (ts-property-from-id task-id "TIMESTAMP")
                         (ts-property-from-id task-id "SCHEDULED")
                         (ts-property-from-id task-id "DEADLINE"))))
       (insert (format "|---|\n| Total | %s |\n|---|" (car task-summary)))
