@@ -515,6 +515,106 @@ understood by `org-read-date'."
 
 (org-dynamic-block-define "db/org-workload-report" #'db/org-insert-workload-report)
 
+(defun org-dblock-write:db/org-workload-overview-report (params)
+  "Write an overview workload report based on tasks in `org-agenda-files'.
+
+This overview report will list the amount of work planned for
+increasing intervals of time until a given end date is reached.
+For example, if the amount to increase the intervals is two
+days (+2d) and the report is meant to start from today (.), then
+this report will list the total amount of work planned for the
+days .+2d, .+4d, .+6d, … until the end date is reached.
+
+PARAMS is a property list of the following parameters:
+
+`:start-date':
+
+  Start date for the workload report.  When not provided, will
+  default to today.  When provided, must be in a format
+  understood by `org-read-date'.
+
+`:end-date':
+
+  End date of the workload report.  Must be provided and provided
+  in a format understood by `org-read-date'.  The end date is
+  inclusive.
+
+`:increment':
+
+  Amount of days to increase the intervals.  Defaults to \"+1d\"
+  and must be provided in a format understandable by
+  `org-read-date'.
+
+`:org-ql-match'
+
+  `org-ql' expression (in sexp syntax) to filter the list of
+  tasks to consider.  Defaults to (todo)."
+  (let* ((start-date (or (plist-get params :start-date)
+                         (org-read-date nil nil ".")))
+         (end-date (or (plist-get params :end-date)
+                       (user-error "No end-date provided")))
+         (increment (or (plist-get params :increment)
+                        "+1d"))
+         (org-ql-match (or (plist-get params :org-ql-match)
+                           '(todo)))
+         (current start-date)
+         (date-range nil))
+
+    ;; Check input
+    (unless (string-match-p (org-re-timestamp 'inactive)
+                            (format "[%s]" start-date))
+      (user-error "Invalid start date given: %s" start-date))
+
+    (unless (string-match-p (org-re-timestamp 'inactive)
+                            (format "[%s]" end-date))
+      (user-error "Invalid end date given: %s" end-date))
+
+    (unless (string-match-p (rx bos "+" (+ digit) (in "dwmy") eos)
+                            increment)
+      (user-error "Increment must be of the form +1d, +2m, +3y, …, but it's %s" increment))
+
+    ;; Compute range of dates to check; simple but potentially costly approach
+    ;; taken from https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/;
+    ;; maybe consider `org-read-date-get-relative' as well?
+    (while (or (string< current end-date)
+               (string= current end-date))
+      (push current date-range)
+      (setq current (org-read-date nil
+                                   nil
+                                   ;; Add an extra + to ensure we increase the
+                                   ;; default time string.
+                                   ;; amount of time relative to the given
+                                   (format "+%s" increment)
+                                   nil
+                                   (org-time-string-to-time current))))
+    (setq date-range (nreverse date-range))
+
+    ;; Compute workload report for each date and record the total time; XXX:
+    ;; this might be slow, try to reduce the calls to
+    ;; `db/org-planned-tasks-in-range'.
+    (insert "| Until | Planned Total |\n| <r> | <r> |\n|---|\n")
+    (dolist (interval-end-date (cdr date-range)) ; `cdr' is for ignoring the `start-date' itself
+      (let ((total-time (car (db/org-planned-tasks-in-range start-date
+                                                            interval-end-date
+                                                            org-ql-match))))
+        (insert "| ")
+        (org-insert-time-stamp (org-time-string-to-time interval-end-date) nil 'inactive)
+        (insert (format " | %s |\n" total-time))))
+    (insert "|--|")
+    (org-table-align)))
+
+(defun db/org-insert-workload-overview-report ()
+  "Create dynamic block of planned tasks in given time range."
+  (interactive)
+  (org-create-dblock
+   (list :name "db/org-workload-overview-report"
+         :end-date (org-read-date nil nil nil "End date: ")
+         :increment (read-string "Increment (default: +1d): " nil nil "+1d")))
+  (org-update-dblock))
+
+(org-dynamic-block-define "db/org-workload-overview-report"
+                          #'db/org-insert-workload-overview-report)
+
 
 ;;; Fixes
 
