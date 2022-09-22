@@ -786,6 +786,7 @@
                 org-log-into-drawer "LOGBOOK"
                 org-log-reschedule 'note
                 org-log-redeadline 'note
+                org-log-refile 'note
                 org-log-note-clock-out nil
                 org-log-done 'note
                 org-clone-delete-id t
