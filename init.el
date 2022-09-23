@@ -1153,7 +1153,7 @@ respectively."
               `(("A" "Main Agenda"
                      ((agenda
                        ""
-                       ((org-agenda-entry-types '(:timestamp :sexp :scheduled))
+                       ((org-agenda-entry-types '(:timestamp :sexp :scheduled :deadline))
                         (org-deadline-warning-days 0)))
                       (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>\"<now>\""
                                  ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled now or in the future)")
