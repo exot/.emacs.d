@@ -193,12 +193,14 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 (defun db/org-agenda-calculate-efforts (limit)
   "Sum efforts of day entries up to LIMIT in the agenda buffer.
 Entries included are those scheduled for that day, scheduled at
-some past day (and still on display) and active timestamps (appointments)."
+some past day (and still on display), active
+timestamps (appointments), and deadlines (assuming they are only
+shown because they are due)."
   (let (total)
     (save-excursion
       (while (< (point) limit)
         (when (member (org-get-at-bol 'type)
-                      '("scheduled" "past-scheduled" "timestamp"))
+                      '("scheduled" "past-scheduled" "timestamp" "deadline"))
           (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total))
         (forward-line)))
     (org-duration-from-minutes
