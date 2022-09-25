@@ -1215,7 +1215,7 @@ respectively."
                              (org-agenda-prefix-format '((tags . "%-8c ")))))
                       (tags "TAGS={TOPIC}-TODO={DONE\\|CANC}-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Topics")
-                             (org-agenda-prefix-format '((tags . "%-8c%l ")))
+                             (org-agenda-prefix-format '((tags . "%-8c ")))
                              (org-agenda-sorting-strategy nil)))
                       (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")
