@@ -485,7 +485,9 @@ understood by `org-read-date'."
                 ;; return the empty string.
                 (--if-let (org-entry-get (org-id-find task-id 'marker)
                                          property)
-                    (concat "[" (substring it 1 -1) "]")
+                    (->> it
+                         (string-replace "<" "[")
+                         (string-replace ">" "]"))
                   "")))
 
       (insert "| Task | Effort | Timestamp | SCHEDULED | DEADLINE |\n|---|\n")
