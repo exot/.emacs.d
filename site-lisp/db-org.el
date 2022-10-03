@@ -924,25 +924,26 @@ it.  Adds newline before and after the template."
                 (save-mark-and-excursion
                   (let ((template-element (org-with-point-at pom
                                             (org-element-at-point))))
-                    (let ((content-end (org-element-property :contents-end template-element))
-                          current-element
-                          content-begin)
-                      ;; Start finding the beginning of the template contents from the top …
-                      (goto-char (org-element-property :contents-begin template-element))
-                      ;; … but skip any drawers we may find.
-                      (setq current-element (org-element-at-point))
-                      (while (memq (org-element-type current-element)
-                                   '(drawer property-drawer))
-                        (goto-char (org-element-property :end current-element))
-                        (setq current-element (org-element-at-point)))
-                      ;; Now we are at the beginning of the contents, let's copy
-                      ;; that, but only if it exists and is not empty.
-                      (setq content-begin (org-element-property :begin current-element))
-                      (unless (and content-begin
-                                   (< content-begin content-end))
-                        (user-error "Cannot find content in template, or content is empty"))
-                      (string-trim-right
-                       (buffer-substring-no-properties content-begin content-end))))))))
+                    (with-current-buffer (if (markerp pom) (marker-buffer pom) (current-buffer))
+                      (let ((content-end (org-element-property :contents-end template-element))
+                            current-element
+                            content-begin)
+                        ;; Start finding the beginning of the template contents from the top …
+                        (goto-char (org-element-property :contents-begin template-element))
+                        ;; … but skip any drawers we may find.
+                        (setq current-element (org-element-at-point))
+                        (while (memq (org-element-type current-element)
+                                     '(drawer property-drawer))
+                          (goto-char (org-element-property :end current-element))
+                          (setq current-element (org-element-at-point)))
+                        ;; Now we are at the beginning of the contents, let's copy
+                        ;; that, but only if it exists and is not empty.
+                        (setq content-begin (org-element-property :begin current-element))
+                        (unless (and content-begin
+                                     (< content-begin content-end))
+                          (user-error "Cannot find content in template, or content is empty"))
+                        (string-trim-right
+                         (buffer-substring-no-properties content-begin content-end)))))))))
     (insert "\n")
     (insert body)
     (insert "\n")
