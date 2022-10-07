@@ -534,7 +534,7 @@ PARAMS is a property list of the following parameters:
 `:start-date':
 
   Start date for the workload report.  When not provided, will
-  default to today.  When provided, must be in a format
+  default to no start date.  When provided, must be in a format
   understood by `org-read-date'.
 
 `:end-date':
@@ -554,19 +554,21 @@ PARAMS is a property list of the following parameters:
   `org-ql' expression (in sexp syntax) to filter the list of
   tasks to consider.  Defaults to (todo)."
   (let* ((start-date (or (plist-get params :start-date)
-                         (org-read-date nil nil ".")))
+                         nil))
          (end-date (or (plist-get params :end-date)
                        (user-error "No end-date provided")))
          (increment (or (plist-get params :increment)
                         "+1d"))
          (org-ql-match (or (plist-get params :org-ql-match)
                            '(todo)))
-         (current start-date)
+         (current (or start-date
+                      (org-read-date nil nil ".")))
          (date-range nil))
 
     ;; Check input
-    (unless (string-match-p (org-re-timestamp 'inactive)
-                            (format "[%s]" start-date))
+    (unless (or (null start-date)
+                (string-match-p (org-re-timestamp 'inactive)
+                                (format "[%s]" start-date)))
       (user-error "Invalid start date given: %s" start-date))
 
     (unless (string-match-p (org-re-timestamp 'inactive)
@@ -597,7 +599,7 @@ PARAMS is a property list of the following parameters:
     ;; this might be slow, try to reduce the calls to
     ;; `db/org-planned-tasks-in-range'.
     (insert "| Until | Planned Total |\n| <r> | <r> |\n|---|\n")
-    (dolist (interval-end-date (cdr date-range)) ; `cdr' is for ignoring the `start-date' itself
+    (dolist (interval-end-date date-range)
       (let ((total-time (car (db/org-planned-tasks-in-range start-date
                                                             interval-end-date
                                                             org-ql-match))))
