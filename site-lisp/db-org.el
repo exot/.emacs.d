@@ -553,10 +553,12 @@ PARAMS is a property list of the following parameters:
 
   `org-ql' expression (in sexp syntax) to filter the list of
   tasks to consider.  Defaults to (todo)."
-  (let* ((start-date (or (plist-get params :start-date)
+  (let* ((start-date (or (--if-let (plist-get params :start-date)
+                             (org-read-date nil nil it))
                          nil))
-         (end-date (or (plist-get params :end-date)
-                       (user-error "No end-date provided")))
+         (end-date (or (--if-let (plist-get params :end-date)
+                           (org-read-date nil nil it))
+                       (user-error "No valid end-date provided")))
          (increment (or (plist-get params :increment)
                         "+1d"))
          (org-ql-match (or (plist-get params :org-ql-match)
