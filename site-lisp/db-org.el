@@ -876,8 +876,10 @@ barf otherwise."
     (unless template-pom
       (user-error "Cannot find template via TEMPLATE_ID property or top-most sibling"))
 
-    (insert "\nBacklinks (not DONE, all parents, no archives):\n\n")
-    (org-dblock-write:db/org-backlinks '(:org-ql-match (not (done))
+    (insert "\nBacklinks (not DONE, no TEMPLATE, all parents, no archives):\n\n")
+    (org-dblock-write:db/org-backlinks '(:org-ql-match (and
+                                                        (not (done))
+                                                        (not (ltags "TEMPLATE")))
                                          :parent-depth nil
                                          :archive nil))
     (insert "\n\nTemplate:\n")
