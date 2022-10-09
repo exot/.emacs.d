@@ -870,6 +870,11 @@ otherwise."
     (unless template-pom
       (user-error "Cannot find template via TEMPLATE_ID property or top-most sibling"))
 
+    (insert "\nBacklinks (not DONE, all parents, no archives):\n\n")
+    (org-dblock-write:db/org-backlinks '(:org-ql-match (not (done))
+                                         :parent-depth nil
+                                         :archive nil))
+    (insert "\n\nTemplate:\n")
     (db/org-copy-body-from-item-to-point template-pom)))
 
 (defun db/org-copy-body-from-item-to-point (pom)
