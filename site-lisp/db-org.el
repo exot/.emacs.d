@@ -831,15 +831,21 @@ Work task and home task are determined by the current values of
                                    org-home-task-id))
       (org-clock-mark-default-task))))
 
-(defun db/org-copy-template ()
-  "Copy template for the current Org Mode item to point.
-The template is determined by the TEMPLATE_ID property, which
-must be an ID referencing the proper template item.  If that
-property is not set, search for the topmost sibling of the
-current item and see whether its headline is matching
-\"^Template.*\"; if so, use its body as template, and barf
-otherwise."
+(defun db/org-insert-checklist ()
+  "Insert checklist for Org Mode item at point.
+
+The checklist consists of a listing of all backlinks to the
+current item and its parents (without archives) as well as a
+template.  The template is determined by the TEMPLATE_ID
+property, which must be an ID referencing the proper template
+item.  If that property is not set, search for the topmost
+sibling of the current item and see whether its headline is
+matching \"^Template.*\"; if so, use its body as template, and
+barf otherwise."
   (interactive)
+
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org mode, aborting"))
 
   (let (template-pom)
 
@@ -876,6 +882,10 @@ otherwise."
                                          :archive nil))
     (insert "\n\nTemplate:\n")
     (db/org-copy-body-from-item-to-point template-pom)))
+
+(define-obsolete-function-alias 'db/org-copy-template
+    'db/org-insert-checklist
+  "2022-10-09")
 
 (defun db/org-copy-body-from-item-to-point (pom)
   "Copy body from item given by POM to point.

@@ -149,7 +149,7 @@ in the main agenda view."
     ("Info Lookup" ?I counsel-info-lookup-symbol)
     ("Unicode Lookup" ?U counsel-unicode-char)
     ("Timeline of Day" ?T timeline-tools-format-timeline-of-day)
-    ("Copy template to point" ?C db/org-copy-template))
+    ("Copy template to point" ?C db/org-insert-checklist))
   "Mapping of frequently used features to functions implementing
 them.  Can be used in application shortcuts such as
 `db/helm-shortcuts’.  Each entry is a list of three items: a

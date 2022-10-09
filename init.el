@@ -759,6 +759,7 @@
              db/find-csv-in-org
              db/org-mark-current-default-task
              db/export-diary
+             db/org-insert-checklist
              db/org-copy-template
              db/org-copy-body-from-item-to-point
              db/org-find-links-to-current-item
