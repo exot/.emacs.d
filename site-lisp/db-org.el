@@ -831,49 +831,6 @@ Work task and home task are determined by the current values of
                                    org-home-task-id))
       (org-clock-mark-default-task))))
 
-(defun db/org-copy-template-for-periodic-task ()
-  "Copy body of the enclosing periodic task to item at point.
-The body must be placed into an item titled 'Template',
-called the body item.  The body item must be the first
-headline of the periodic task, i.e., of the parent of the current
-item at point.  The body of the body item, without any
-drawers, will be copied to point."
-  (interactive)
-  (let ((template-pom (save-restriction
-                        (save-mark-and-excursion
-                          ;; Navigate to the body, which is supposed to be
-                          ;; the first item of the periodic task.  One could
-                          ;; think about putting the body also directly
-                          ;; below the periodic task, but this is not supported
-                          ;; yet.
-                          (outline-up-heading 1 'invisible-ok)
-                          (outline-next-heading)
-                          (point)))))
-
-    (unless (string-equal (org-element-property
-                           :title
-                           (org-with-point-at template-pom
-                             (org-element-at-point)))
-                          "Template")
-      (user-error "Template must be first headline in periodic task"))
-
-    (db/org-copy-body-from-item-to-point template-pom)))
-
-(defun db/org-copy-template-from-id ()
-  "Copy template given by current value of TEMPLATE_ID property to point.
-The TEMPLATE_ID property must be an ID property of another item
-from which the contents is supposed to be copied to point."
-  ;; This function might be obsoleted by `db/org-copy-template'.
-  (interactive)
-  (let ((template-id (org-entry-get (point) "TEMPLATE_ID"))
-        template-pom)
-    (unless template-id
-      (user-error "Property TEMPLATE_ID not set, cannot copy from there"))
-    (setq template-pom (org-id-find template-id :get-marker))
-    (unless template-pom
-      (user-error "Cannot find item with id %s" template-id))
-    (db/org-copy-body-from-item-to-point template-pom)))
-
 (defun db/org-copy-template ()
   "Copy template for the current Org Mode item to point.
 The template is determined by the TEMPLATE_ID property, which
