@@ -2592,7 +2592,6 @@ With given ARG, display files in `db/important-document-path’."
   :commands (db/run-or-hide-eshell
              eshell-clear-buffer
              eshell/default-prompt-function
-             eshell/gst
              eshell-insert-history
              pcomplete/git))
 

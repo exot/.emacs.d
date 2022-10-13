@@ -145,10 +145,6 @@ formatting."
             (if (zerop (user-uid)) "#" "$")
             (propertize " " 'face '(:weight bold)))))
 
-(defun eshell/gst (&rest args)
-  (magit-status (pop args) nil)
-  (eshell/echo))
-
 (defun eshell-insert-history ()
   "Displays the eshell history to select and insert back into your eshell."
   ;; directly taken from Howard Abrams
