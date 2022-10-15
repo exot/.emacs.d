@@ -1234,7 +1234,14 @@ respectively."
             (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)
 
             (advice-add 'org-agenda
-                        :before #'db/check-special-org-files-in-agenda)))
+                        :before #'db/check-special-org-files-in-agenda)
+
+            (define-advice org-agenda-redo-all (:around (old-func &rest r) goto-top-and-execute)
+              "Avoid recentering the Org agenda buffer after redo by moving
+point to the beginning of buffer first."
+              (save-mark-and-excursion
+                (goto-char (point-min))
+                (apply old-func r)))))
 
 ;; Capturing
 
