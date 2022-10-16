@@ -1,14 +1,11 @@
 ;;; db-projects.el -- Simple Directory-Based Project Management -*- lexical-binding: t -*-
 
-;; TODO: this package is deprecated and should be replaced or at least built
-;; upon either project.el or projectile.
-
 ;;; Commentary:
 
 ;; A project is simply a directory under `projects-main-project-directory'
 ;; containing either .git or .projectile.  This little collection of functions
-;; helps to manage these project directories and also integration them
-;; consistently with the projectile package.
+;; helps to manage these project directories and integrate them consistently
+;; with the projectile package.
 
 ;; To start, first customize `projects-main-project-directory' and
 ;; `projects-archive-directory' as needed.  Then use `projects-add-project' to
