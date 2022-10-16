@@ -75,8 +75,6 @@ SHORT-NAME."
                                               projects-main-project-directory))
          (default-directory project-directory))
     (make-directory project-directory)
-    (make-directory (expand-file-name "scripts"))
-    (make-directory (expand-file-name "data"))
     (if-let ((git-executable (executable-find "git")))
         (call-process git-executable nil nil nil "init")
       (write-region "" nil (expand-file-name ".projectile")))
