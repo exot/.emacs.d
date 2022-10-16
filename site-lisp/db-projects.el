@@ -60,9 +60,7 @@
   "Add new project with SHORT-NAME and LONG-NAME.
 The project directory will be located under
 `projects-main-project-directory' within a directory named
-SHORT-NAME.  A bookmark to the project diary will be created,
-using the given LONG-NAME.  The project diary will be pre-filled
-with some standard information like title and creation date."
+SHORT-NAME."
   (interactive "sShort Name: \nsLong Name: ")
   (when (projects-project-exists-p short-name)
     (user-error "Project %s already exists, exiting" short-name))
@@ -75,27 +73,10 @@ with some standard information like title and creation date."
     (make-directory project-directory)
     (make-directory (expand-file-name "scripts"))
     (make-directory (expand-file-name "data"))
-    (with-temp-buffer
-      (insert (format "#+title: %s\n" long-name))
-      (insert (format "#+created: %s\n\n"
-                      (format-time-string "[%Y-%m-%d %a %H:%M]" (current-time))))
-      (write-file (expand-file-name "projekttagebuch.org"))
-      (bookmark-set (format "Projekttagebuch %s" long-name)))
     (if-let ((git-executable (executable-find "git")))
         (call-process git-executable nil nil nil "init")
       (write-region "" nil (expand-file-name ".projectile")))
     (projectile-add-known-project project-directory)))
-
-(defun projects--find-bookmarks-for-path (path)
-  "Find all bookmark names that point into PATH."
-  (unless (file-name-absolute-p path)
-    (user-error "Given path %s is not absolute" path))
-  (let ((path (file-truename path)))
-    (cl-remove-if-not #'(lambda (bmk)
-                          (let ((filename (bookmark-get-filename bmk)))
-                            (and (not (file-remote-p filename))
-                                 (string-prefix-p path (file-truename filename)))))
-                      (bookmark-all-names))))
 
 ;;;###autoload
 (defun projects-archive-project (short-name)
@@ -114,9 +95,6 @@ project, and updating projectile's cache."
 
     (when (file-exists-p archive-path)
       (user-error "Archived project named %s already exists, aborting" short-name))
-
-    ;; Remove bookmarks first
-    (mapc #'bookmark-delete (projects--find-bookmarks-for-path project-path))
 
     ;; Move project directory into archive
     (unless (file-exists-p projects-archive-directory)
@@ -153,31 +131,6 @@ in `org-agenda-files'."
                       (gethash (file-truename org-file) extra-files nil))
                   (projects--org-files))))
 
-(defun projects-check-project-diary-bookmarks ()
-  "Check that all known projects have a bookmark to their diary.
-Return list of short names of projects whose project diaries do
-not have a corresponding bookmark."
-  ;; Make hash table of all diary paths to all known projects; as values we
-  ;; keep the short names, because these are the ones we want to return in the
-  ;; end
-  (let ((projects (make-hash-table :test #'equal)))
-
-    (dolist (project (projects-existing-projects))
-      (let ((project-diary-path (expand-file-name (concat (file-name-as-directory project)
-                                                          "projekttagebuch.org")
-                                                  projects-main-project-directory)))
-        (when (file-exists-p project-diary-path)
-          (puthash (file-truename project-diary-path) project projects))))
-
-    ;; Delete all those diary links that have a bookmark
-    (dolist (bmkn (bookmark-all-names))
-      (unless (file-remote-p (bookmark-get-filename bmkn))
-        (remhash (file-truename (bookmark-get-filename bmkn)) projects)))
-
-    ;; Return remaining short names; those are the ones that do not have a
-    ;; bookmark yet
-    (hash-table-values projects)))
-
 ;;;###autoload
 (defun projects-lint-projects ()
   "Check all known projects for proper configuration.
@@ -194,9 +147,6 @@ through all included Org Mode files."
       (dolist (file unsearched-org-files)
         (insert "\n  " file))
       (insert "\n\n"))
-
-    (when-let ((missing-bookmarks (projects-check-project-diary-bookmarks)))
-      (insert "The following projects do not have a project diary bookmark: " (apply #'concat missing-bookmarks)))
 
     (display-buffer (current-buffer))))
 
