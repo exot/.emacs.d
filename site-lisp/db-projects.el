@@ -56,12 +56,12 @@
                                      nil "^[^.]")))
 
 ;;;###autoload
-(defun projects-add-project (short-name long-name)
-  "Add new project with SHORT-NAME and LONG-NAME.
+(defun projects-add-project (short-name)
+  "Add new project with SHORT-NAME.
 The project directory will be located under
 `projects-main-project-directory' within a directory named
 SHORT-NAME."
-  (interactive "sShort Name: \nsLong Name: ")
+  (interactive "sShort Name: ")
   (when (projects-project-exists-p short-name)
     (user-error "Project %s already exists, exiting" short-name))
   (when (file-exists-p (expand-file-name short-name
