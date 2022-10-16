@@ -24,8 +24,10 @@
 (require 'bookmark)
 (require 'projectile)
 
+
+
 (defgroup projects nil
-  "Simple directory-based project management"
+  "Simple directory-based project management."
   :tag "Project Management"
   :group 'projects)
 
@@ -38,6 +40,8 @@
   "Directory to archive projects into."
   :group 'projects
   :type 'directory)
+
+
 
 (defun projects-project-exists-p (short-name)
   "Check whether a project named SHORT-NAME already exists."
