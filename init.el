@@ -822,7 +822,7 @@
           ;; Keywords and Tags
 
           (setq org-todo-keywords
-                '((sequence "TODO(t)" "CONT(n!)" "REFINE(f!)" "|" "DONE(d@)")
+                '((sequence "TODO(t)" "CONT(n!)" "REFINE(f!)" "|" "DONE(d@)" "CANC(c@/!)" "MRGD(m@)")
                   (sequence "GOTO(g)" "ATTN(a)" "|" "DONE(d@)")
                   (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@)")
                   (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)"
@@ -871,6 +871,7 @@
                   ("CONT" :foreground "DeepSkyBlue" :weight normal)
                   ("ATTN" :foreground "DeepSkyBlue" :weight normal)
                   ("DONE" :foreground "forest green" :weight normal)
+                  ("MRGD" :foreground "dark cyan" :weight normal)
                   ("DELG" :foreground "dark orange" :weight normal)
                   ("REFINE" :foreground "tomato" :weight normal)
                   ("WAIT" :foreground "orange" :weight normal)
@@ -1040,7 +1041,7 @@ respectively."
                 org-clock-into-drawer t
                 org-clock-idle-time nil
                 org-clock-out-remove-zero-time-clocks t
-                org-clock-out-when-done '("DONE" "CANC" "WAIT" "HOLD")
+                org-clock-out-when-done '("DONE" "CANC" "MRGD" "WAIT" "HOLD")
                 org-clock-auto-clock-resolution 'when-no-clock-is-running
                 org-clock-mode-line-total 'auto
                 org-clock-report-include-clocking-task t
@@ -1206,17 +1207,16 @@ respectively."
                                   (org-agenda-todo-ignore-with-date t)
                                   (org-tags-match-list-sublevels nil)))))
 
-
                 ("P" "Current Projects and Topics"
                      ((stuck ""
                              ((org-agenda-overriding-header "Stuck Complex Tasks")))
-                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
+                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
                             ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")
                              (org-agenda-prefix-format '((tags . "%-8c ")))))
-                      (tags "TAGS={TOPIC}-TODO={DONE\\|CANC}-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
+                      (tags "TAGS={TOPIC}-TODO={DONE\\|CANC\\|MRGD}-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Topics")
                              (org-agenda-prefix-format '((tags . "%-8c ")))))
-                      (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC}-HOLD-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
+                      (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC\\|MRGD}-HOLD-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")
                              (org-agenda-prefix-format '((tags . "%-8c ")))))))
 
