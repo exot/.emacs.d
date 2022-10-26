@@ -1163,13 +1163,13 @@ respectively."
                        ((org-agenda-overriding-header "Deadlines")
                         (org-agenda-sorting-strategy '(deadline-up priority-down))
                         (org-deadline-warning-days 30)))
-                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE/-DONE"
+                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE"
                                  ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled now or in the future)")
                                   (org-tags-match-list-sublevels t)
                                   (org-agenda-todo-ignore-scheduled 0)))))
 
                 ("B" "Backlog"
-                     ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE/-DONE"
+                     ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE"
                                  ((org-agenda-overriding-header "Backlog: Actionable items (no periodic tasks; includes waiting-fors)")
                                   (org-tags-match-list-sublevels t)))
                       (tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE"
@@ -1201,7 +1201,7 @@ respectively."
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
                      ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<+0d>\""
                             ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no now or future SCHEDULED)")))
-                      (tags-todo "SOMEWHEN/-CANC-DONE"
+                      (tags-todo "SOMEWHEN"
                                  ((org-agenda-overriding-header "Things To Do SOMEWHEN")
                                   (org-agenda-todo-ignore-with-date t)
                                   (org-tags-match-list-sublevels nil)))))
