@@ -1207,14 +1207,11 @@ respectively."
                      ((stuck ""
                              ((org-agenda-overriding-header "Stuck Complex Tasks")))
                       (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SCHEDULED>=\"<+0d>\""
-                            ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")
-                             (org-agenda-prefix-format '((tags . "%-8c ")))))
+                            ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")))
                       (tags "TAGS={TOPIC}-TODO={DONE\\|CANC\\|MRGD}-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
-                            ((org-agenda-overriding-header "Topics")
-                             (org-agenda-prefix-format '((tags . "%-8c ")))))
+                            ((org-agenda-overriding-header "Topics")))
                       (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC\\|MRGD}-HOLD-SCHEDULED>=\"<+0d>\"-HOLD-WAIT"
-                            ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")
-                             (org-agenda-prefix-format '((tags . "%-8c ")))))))
+                            ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")))))
 
                 ("W" "Weekly Review"
                      ((agenda ""
