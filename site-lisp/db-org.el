@@ -1160,17 +1160,8 @@ their plain link part."
       (setq item (org-entry-get (point) "ITEM")
             id (org-id-get-create)))
 
-    ;; When item is a link, only use it's description when available; otherwise
-    ;; use the link part
-    (save-match-data
-      (while (string-match org-link-bracket-re item)
-        (let ((desc (or (match-string-no-properties 2 item)
-                        (match-string-no-properties 1 item))))
-          (setq item (concat (substring item 0 (match-beginning 0))
-                             desc
-                             (substring item (match-end 0)))))))
-
-    (org-link-make-string (format "id:%s" id) item)))
+    (org-link-make-string (format "id:%s" id)
+                          (org-link-display-format item))))
 
 (defun db/org--format-link-from-org-id (id)
   "Format ID as an Org mode link [[ID][item-headline]].
