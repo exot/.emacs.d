@@ -836,12 +836,21 @@ Work task and home task are determined by the current values of
 
 The checklist consists of a listing of all backlinks to the
 current item and its parents (without archives) as well as a
-template.  The template is determined by the TEMPLATE_ID
-property, which must be an ID referencing the proper template
-item.  If that property is not set, search for the topmost
-sibling of the current item and see whether its headline is
-matching \"^Template.*\"; if so, use its body as template, and
-barf otherwise."
+template.
+
+The depth to which backlinks to parents are considered can be
+configured via the CHECKLIST_BACKLINK_DEPTH property.  This
+property is looked up only at the current item, i.e., no
+inheritance is considered.  If this property is not set, the
+depth to which backlinks to parents is considered is unlimited by
+default (i.e., nil).
+
+The template is determined by the TEMPLATE_ID property, which
+must be an ID referencing the proper template item.  If that
+property is not set, search for the topmost sibling of the
+current item and see whether its headline is matching
+\"^Template.*\"; if so, use its body as template, and barf
+otherwise."
   (interactive)
 
   (unless (derived-mode-p 'org-mode)
@@ -876,12 +885,20 @@ barf otherwise."
     (unless template-pom
       (user-error "Cannot find template via TEMPLATE_ID property or top-most sibling"))
 
-    (insert "\nBacklinks (not DONE, no TEMPLATE, all parents, no archives):\n\n")
-    (org-dblock-write:db/org-backlinks '(:org-ql-match (and
-                                                        (not (done))
-                                                        (not (ltags "TEMPLATE")))
-                                         :parent-depth nil
-                                         :archive nil))
+    (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                          (string-to-number it))))
+
+      (insert (format "\nBacklinks (not DONE, no TEMPLATE, %s, no archives):\n\n"
+                      (if parent-depth
+                          (format "parent-depth %d" parent-depth)
+                        "all parents")))
+      (org-dblock-write:db/org-backlinks (list
+                                          :org-ql-match '(and
+                                                          (not (done))
+                                                          (not (ltags "TEMPLATE")))
+                                          :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                                                          (string-to-number it))
+                                          :archive nil)))
     (insert "\n\nTemplate:\n")
     (db/org-copy-body-from-item-to-point template-pom)))
 
@@ -1312,7 +1329,7 @@ PARAMS may contain the following values:
 
     (when (and (not (null parent-depth))
                (not (integerp parent-depth)))
-      (user-error ":parent-depth is not an integer"))
+      (user-error ":parent-depth is not an integer: %s" parent-depth))
 
     ;; Get all backlinks as list of Org mode IDs.  Each list consists of the ID
     ;; of the headline (current or partent), followed by the IDs linking back to
