@@ -641,8 +641,10 @@ Functions returning a modified copy of the input list.
  -- Function: -concat (&rest sequences)
      Concatenate all the arguments and make the result a list.  The
      result is a list whose elements are the elements of all the
-     arguments.  Each argument may be a list, vector or string.  The
-     last argument is not copied, just used as the tail of the new list.
+     arguments.  Each argument may be a list, vector or string.
+
+     All arguments except the last argument are copied.  The last
+     argument is just used as the tail of the new list.
 
           (-concat '(1))
               ⇒ (1)
@@ -4469,8 +4471,8 @@ Index
                                                               (line 373)
 * -fixfn:                                Function combinators.
                                                               (line 224)
-* -flatten:                              List to list.        (line  36)
-* -flatten-n:                            List to list.        (line  58)
+* -flatten:                              List to list.        (line  38)
+* -flatten-n:                            List to list.        (line  60)
 * -flip:                                 Function combinators.
                                                               (line  95)
 * -fourth-item:                          Other list operations.
@@ -4482,7 +4484,7 @@ Index
 * -if-let:                               Binding.             (line  34)
 * -if-let*:                              Binding.             (line  45)
 * -inits:                                Reductions.          (line 222)
-* -insert-at:                            List to list.        (line 112)
+* -insert-at:                            List to list.        (line 114)
 * -interleave:                           Other list operations.
                                                               (line  56)
 * -interpose:                            Other list operations.
@@ -4555,16 +4557,16 @@ Index
 * -reductions-r:                         Reductions.          (line 154)
 * -reductions-r-from:                    Reductions.          (line 118)
 * -remove:                               Sublist selection.   (line  26)
-* -remove-at:                            List to list.        (line 149)
-* -remove-at-indices:                    List to list.        (line 162)
+* -remove-at:                            List to list.        (line 151)
+* -remove-at-indices:                    List to list.        (line 164)
 * -remove-first:                         Sublist selection.   (line  44)
 * -remove-item:                          Sublist selection.   (line  84)
 * -remove-last:                          Sublist selection.   (line  65)
 * -repeat:                               Unfolding.           (line  44)
-* -replace:                              List to list.        (line  70)
-* -replace-at:                           List to list.        (line 123)
-* -replace-first:                        List to list.        (line  84)
-* -replace-last:                         List to list.        (line  98)
+* -replace:                              List to list.        (line  72)
+* -replace-at:                           List to list.        (line 125)
+* -replace-first:                        List to list.        (line  86)
+* -replace-last:                         List to list.        (line 100)
 * -rotate:                               Other list operations.
                                                               (line   8)
 * -rotate-args:                          Function combinators.
@@ -4618,7 +4620,7 @@ Index
 * -union:                                Set operations.      (line   8)
 * -unzip:                                Other list operations.
                                                               (line 147)
-* -update-at:                            List to list.        (line 135)
+* -update-at:                            List to list.        (line 137)
 * -when-let:                             Binding.             (line   9)
 * -when-let*:                            Binding.             (line  21)
 * -zip:                                  Other list operations.
@@ -4675,176 +4677,176 @@ Ref: -select-column20467
 Node: List to list20930
 Ref: -keep21122
 Ref: -concat21698
-Ref: -flatten22181
-Ref: -flatten-n22943
-Ref: -replace23327
-Ref: -replace-first23788
-Ref: -replace-last24283
-Ref: -insert-at24771
-Ref: -replace-at25096
-Ref: -update-at25483
-Ref: -remove-at26024
-Ref: -remove-at-indices26509
-Node: Reductions27088
-Ref: -reduce-from27284
-Ref: -reduce-r-from28008
-Ref: -reduce29271
-Ref: -reduce-r30022
-Ref: -reductions-from31300
-Ref: -reductions-r-from32106
-Ref: -reductions32936
-Ref: -reductions-r33647
-Ref: -count34392
-Ref: -sum34622
-Ref: -running-sum34810
-Ref: -product35131
-Ref: -running-product35339
-Ref: -inits35680
-Ref: -tails35925
-Ref: -common-prefix36169
-Ref: -common-suffix36463
-Ref: -min36757
-Ref: -min-by36983
-Ref: -max37504
-Ref: -max-by37729
-Ref: -frequencies38255
-Node: Unfolding38870
-Ref: -iterate39111
-Ref: -unfold39558
-Ref: -repeat40363
-Ref: -cycle40647
-Node: Predicates41046
-Ref: -some41223
-Ref: -every41652
-Ref: -any?42366
-Ref: -all?42715
-Ref: -none?43457
-Ref: -only-some?43777
-Ref: -contains?44322
-Ref: -is-prefix?44828
-Ref: -is-suffix?45160
-Ref: -is-infix?45492
-Ref: -cons-pair?45852
-Node: Partitioning46183
-Ref: -split-at46371
-Ref: -split-with47035
-Ref: -split-on47675
-Ref: -split-when48346
-Ref: -separate48989
-Ref: -partition49523
-Ref: -partition-all49972
-Ref: -partition-in-steps50397
-Ref: -partition-all-in-steps50943
-Ref: -partition-by51457
-Ref: -partition-by-header51835
-Ref: -partition-after-pred52436
-Ref: -partition-before-pred52889
-Ref: -partition-before-item53274
-Ref: -partition-after-item53581
-Ref: -group-by53883
-Node: Indexing54316
-Ref: -elem-index54518
-Ref: -elem-indices55005
-Ref: -find-index55464
-Ref: -find-last-index56133
-Ref: -find-indices56784
-Ref: -grade-up57546
-Ref: -grade-down57953
-Node: Set operations58367
-Ref: -union58550
-Ref: -difference58980
-Ref: -intersection59408
-Ref: -powerset59837
-Ref: -permutations60114
-Ref: -distinct60552
-Ref: -same-items?60946
-Node: Other list operations61555
-Ref: -rotate61780
-Ref: -cons*62133
-Ref: -snoc62555
-Ref: -interpose62967
-Ref: -interleave63261
-Ref: -iota63627
-Ref: -zip-with64110
-Ref: -zip64824
-Ref: -zip-lists65653
-Ref: -zip-fill66351
-Ref: -unzip66673
-Ref: -pad67415
-Ref: -table67900
-Ref: -table-flat68686
-Ref: -first69691
-Ref: -last70224
-Ref: -first-item70570
-Ref: -second-item70982
-Ref: -third-item71399
-Ref: -fourth-item71774
-Ref: -fifth-item72152
-Ref: -last-item72527
-Ref: -butlast72888
-Ref: -sort73133
-Ref: -list73625
-Ref: -fix74194
-Node: Tree operations74683
-Ref: -tree-seq74879
-Ref: -tree-map75740
-Ref: -tree-map-nodes76180
-Ref: -tree-reduce77044
-Ref: -tree-reduce-from77926
-Ref: -tree-mapreduce78526
-Ref: -tree-mapreduce-from79385
-Ref: -clone80670
-Node: Threading macros80997
-Ref: ->81222
-Ref: ->>81710
-Ref: -->82213
-Ref: -as->82769
-Ref: -some->83223
-Ref: -some->>83608
-Ref: -some-->84055
-Ref: -doto84622
-Node: Binding85175
-Ref: -when-let85382
-Ref: -when-let*85843
-Ref: -if-let86372
-Ref: -if-let*86738
-Ref: -let87361
-Ref: -let*93451
-Ref: -lambda94388
-Ref: -setq95194
-Node: Side effects95995
-Ref: -each96189
-Ref: -each-while96716
-Ref: -each-indexed97336
-Ref: -each-r97928
-Ref: -each-r-while98370
-Ref: -dotimes99014
-Node: Destructive operations99567
-Ref: !cons99785
-Ref: !cdr99989
-Node: Function combinators100182
-Ref: -partial100386
-Ref: -rpartial100904
-Ref: -juxt101552
-Ref: -compose102004
-Ref: -applify102611
-Ref: -on103041
-Ref: -flip103813
-Ref: -rotate-args104337
-Ref: -const104966
-Ref: -cut105308
-Ref: -not105788
-Ref: -orfn106332
-Ref: -andfn107125
-Ref: -iteratefn107912
-Ref: -fixfn108614
-Ref: -prodfn110188
-Node: Development111349
-Node: Contribute111638
-Node: Contributors112650
-Node: FDL114743
-Node: GPL140063
-Node: Index177812
+Ref: -flatten22226
+Ref: -flatten-n22988
+Ref: -replace23372
+Ref: -replace-first23833
+Ref: -replace-last24328
+Ref: -insert-at24816
+Ref: -replace-at25141
+Ref: -update-at25528
+Ref: -remove-at26069
+Ref: -remove-at-indices26554
+Node: Reductions27133
+Ref: -reduce-from27329
+Ref: -reduce-r-from28053
+Ref: -reduce29316
+Ref: -reduce-r30067
+Ref: -reductions-from31345
+Ref: -reductions-r-from32151
+Ref: -reductions32981
+Ref: -reductions-r33692
+Ref: -count34437
+Ref: -sum34667
+Ref: -running-sum34855
+Ref: -product35176
+Ref: -running-product35384
+Ref: -inits35725
+Ref: -tails35970
+Ref: -common-prefix36214
+Ref: -common-suffix36508
+Ref: -min36802
+Ref: -min-by37028
+Ref: -max37549
+Ref: -max-by37774
+Ref: -frequencies38300
+Node: Unfolding38915
+Ref: -iterate39156
+Ref: -unfold39603
+Ref: -repeat40408
+Ref: -cycle40692
+Node: Predicates41091
+Ref: -some41268
+Ref: -every41697
+Ref: -any?42411
+Ref: -all?42760
+Ref: -none?43502
+Ref: -only-some?43822
+Ref: -contains?44367
+Ref: -is-prefix?44873
+Ref: -is-suffix?45205
+Ref: -is-infix?45537
+Ref: -cons-pair?45897
+Node: Partitioning46228
+Ref: -split-at46416
+Ref: -split-with47080
+Ref: -split-on47720
+Ref: -split-when48391
+Ref: -separate49034
+Ref: -partition49568
+Ref: -partition-all50017
+Ref: -partition-in-steps50442
+Ref: -partition-all-in-steps50988
+Ref: -partition-by51502
+Ref: -partition-by-header51880
+Ref: -partition-after-pred52481
+Ref: -partition-before-pred52934
+Ref: -partition-before-item53319
+Ref: -partition-after-item53626
+Ref: -group-by53928
+Node: Indexing54361
+Ref: -elem-index54563
+Ref: -elem-indices55050
+Ref: -find-index55509
+Ref: -find-last-index56178
+Ref: -find-indices56829
+Ref: -grade-up57591
+Ref: -grade-down57998
+Node: Set operations58412
+Ref: -union58595
+Ref: -difference59025
+Ref: -intersection59453
+Ref: -powerset59882
+Ref: -permutations60159
+Ref: -distinct60597
+Ref: -same-items?60991
+Node: Other list operations61600
+Ref: -rotate61825
+Ref: -cons*62178
+Ref: -snoc62600
+Ref: -interpose63012
+Ref: -interleave63306
+Ref: -iota63672
+Ref: -zip-with64155
+Ref: -zip64869
+Ref: -zip-lists65698
+Ref: -zip-fill66396
+Ref: -unzip66718
+Ref: -pad67460
+Ref: -table67945
+Ref: -table-flat68731
+Ref: -first69736
+Ref: -last70269
+Ref: -first-item70615
+Ref: -second-item71027
+Ref: -third-item71444
+Ref: -fourth-item71819
+Ref: -fifth-item72197
+Ref: -last-item72572
+Ref: -butlast72933
+Ref: -sort73178
+Ref: -list73670
+Ref: -fix74239
+Node: Tree operations74728
+Ref: -tree-seq74924
+Ref: -tree-map75785
+Ref: -tree-map-nodes76225
+Ref: -tree-reduce77089
+Ref: -tree-reduce-from77971
+Ref: -tree-mapreduce78571
+Ref: -tree-mapreduce-from79430
+Ref: -clone80715
+Node: Threading macros81042
+Ref: ->81267
+Ref: ->>81755
+Ref: -->82258
+Ref: -as->82814
+Ref: -some->83268
+Ref: -some->>83653
+Ref: -some-->84100
+Ref: -doto84667
+Node: Binding85220
+Ref: -when-let85427
+Ref: -when-let*85888
+Ref: -if-let86417
+Ref: -if-let*86783
+Ref: -let87406
+Ref: -let*93496
+Ref: -lambda94433
+Ref: -setq95239
+Node: Side effects96040
+Ref: -each96234
+Ref: -each-while96761
+Ref: -each-indexed97381
+Ref: -each-r97973
+Ref: -each-r-while98415
+Ref: -dotimes99059
+Node: Destructive operations99612
+Ref: !cons99830
+Ref: !cdr100034
+Node: Function combinators100227
+Ref: -partial100431
+Ref: -rpartial100949
+Ref: -juxt101597
+Ref: -compose102049
+Ref: -applify102656
+Ref: -on103086
+Ref: -flip103858
+Ref: -rotate-args104382
+Ref: -const105011
+Ref: -cut105353
+Ref: -not105833
+Ref: -orfn106377
+Ref: -andfn107170
+Ref: -iteratefn107957
+Ref: -fixfn108659
+Ref: -prodfn110233
+Node: Development111394
+Node: Contribute111683
+Node: Contributors112695
+Node: FDL114788
+Node: GPL140108
+Node: Index177857
 
 End Tag Table
 
