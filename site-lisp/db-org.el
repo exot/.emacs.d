@@ -886,20 +886,35 @@ otherwise."
       (user-error "Cannot find template via TEMPLATE_ID property or top-most sibling"))
 
     (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                          (string-to-number it))))
+                          (string-to-number it)))
+          number-of-backlinks
+          point-before-backlinks)
 
       (insert (format "\nBacklinks (not DONE, no TEMPLATE, %s, no archives, not scheduled in the future):\n\n"
                       (if parent-depth
                           (format "parent-depth %d" parent-depth)
                         "all parents")))
-      (org-dblock-write:db/org-backlinks (list
-                                          :org-ql-match '(and
-                                                          (not (done))
-                                                          (not (ltags "TEMPLATE"))
-                                                          (not (scheduled :from 1)))
-                                          :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                                                          (string-to-number it))
-                                          :archive nil)))
+
+      ;; Store where we are (minus the two newlines) so we can delete the
+      ;; checklist in case it's empty.
+      (setq point-before-backlinks (- (point) 2))
+
+      (setq number-of-backlinks
+            (org-dblock-write:db/org-backlinks (list
+                                                :org-ql-match '(and
+                                                                (not (done))
+                                                                (not (ltags "TEMPLATE"))
+                                                                (not (scheduled :from 1)))
+                                                :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                                                                (string-to-number it))
+                                                :archive nil)))
+
+      ;; When no backlinks have been found, remove the empty table head and just
+      ;; print "none".
+      (when (zerop number-of-backlinks)
+        (delete-region point-before-backlinks (point))
+        (insert " none.")))
+
     (insert "\n\nTemplate:\n")
     (db/org-copy-body-from-item-to-point template-pom)))
 
@@ -1313,6 +1328,8 @@ marker pointing to the current headline."
 (defun org-dblock-write:db/org-backlinks (params)
   "Write table of backlinks for current item and its parent items as Org table.
 
+Returns the number of backlinks.
+
 PARAMS may contain the following values:
 
   :org-ql-match   An org-ql-match expression in sexp syntax to filter
@@ -1389,7 +1406,9 @@ PARAMS may contain the following values:
                    priority
                    (apply #'concat (-interpose ", " backlink-targets)))))
         (insert "\n|---|")))
-    (org-table-align)))
+    (org-table-align)
+
+    (length output-lines)))
 
 (defun db/org-insert-backlink-block ()
   "Create dynamic block of backlinks to current item or any of its parents."
