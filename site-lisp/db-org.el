@@ -888,14 +888,15 @@ otherwise."
     (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
                           (string-to-number it))))
 
-      (insert (format "\nBacklinks (not DONE, no TEMPLATE, %s, no archives):\n\n"
+      (insert (format "\nBacklinks (not DONE, no TEMPLATE, %s, no archives, not scheduled in the future):\n\n"
                       (if parent-depth
                           (format "parent-depth %d" parent-depth)
                         "all parents")))
       (org-dblock-write:db/org-backlinks (list
                                           :org-ql-match '(and
                                                           (not (done))
-                                                          (not (ltags "TEMPLATE")))
+                                                          (not (ltags "TEMPLATE"))
+                                                          (not (scheduled :from 1)))
                                           :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
                                                           (string-to-number it))
                                           :archive nil)))
