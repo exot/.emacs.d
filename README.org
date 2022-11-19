@@ -95,6 +95,4 @@ it.
 
 * License
 
-ⓒ 2017–2021 Daniel Borchmann
-
 This configuration is available under the MIT license, see [[LICENSE]] for details.
