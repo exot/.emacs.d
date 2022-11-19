@@ -145,7 +145,7 @@ in the main agenda view."
     ("Shell" ?s db/run-or-hide-shell)
     ("EShell" ?e db/run-or-hide-eshell)
     ("Refile File" ?r #'(lambda () (interactive) (find-file db/org-default-refile-file)))
-    ("Org Clock Goto" ?c org-clock-goto)
+    ("Goto Currnet Clock" ?c db/org-clock-goto-first-open-checkbox)
     ("Info Lookup" ?I counsel-info-lookup-symbol)
     ("Unicode Lookup" ?U counsel-unicode-char)
     ("Timeline of Day" ?T timeline-tools-format-timeline-of-day)
