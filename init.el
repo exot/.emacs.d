@@ -1085,7 +1085,8 @@ respectively."
   :commands (org-agenda)
   :bind (:map org-agenda-mode-map
               ("i" . org-agenda-clock-in)
-              ("v" . hydra-org-agenda-view/body))
+              ("v" . hydra-org-agenda-view/body)
+              ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox))
   :init (setq org-agenda-include-diary t
               org-agenda-span 1
               org-agenda-insert-diary-strategy 'top-level
