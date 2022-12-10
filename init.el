@@ -1180,8 +1180,30 @@ respectively."
                 ("C" "Checks"
                      ((tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE-GOAL"
                             ((org-agenda-overriding-header "Goals (i.e., complex tasks) not marked with GOAL")))
-                      ;; TODO: add check that NOT_BEFORE is always before DEADLINE and before SCHEDULED
-                      ;; TODO: add check for items whose NOT_BEFORE is too far in the future
+
+                      ;; Note: checking whether any SCHEDULED is behind a
+                      ;; DEADLINE is not necessary, as items will appear on the
+                      ;; deadline view anyway.
+
+                      ;; Check whether any NOT_BEFORE entries are not actually timestaps
+                      (org-ql-block '(and (property "NOT_BEFORE")
+                                          (not (string-match-p org-element--timestamp-regexp
+                                                               (property "NOT_BEFORE"))))
+                                    ((org-ql-block-header "Items whose NOT_BEFORE entry is not a timestamp")))
+
+                      ;; Check whether any NOT_BEFORE is behind a SCHEDULED
+                      (org-ql-block '(and (property "NOT_BEFORE")
+                                          (scheduled)
+                                          (> (org-2ft (property "NOT_BEFORE"))
+                                             (org-2ft (scheduled))))
+                                    ((org-ql-block-header "Items whose NOT_BEFORE value is after SCHEDULED")))
+
+                      ;; Check whether any NOT_BEFORE is beind their DEADLINE
+                      (org-ql-block '(and (property "NOT_BEFORE") (deadline)
+                                          (> (org-2ft (property "NOT_BEFORE"))
+                                             (org-2ft (deadline))))
+                                    ((org-ql-block-header "Items whose NOT_BEFORE value is after their DEADLINE")))
+
                       ))
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
