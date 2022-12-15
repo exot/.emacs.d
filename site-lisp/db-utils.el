@@ -500,6 +500,61 @@ From: https://oremacs.com/2017/03/18/dired-ediff/."
                         (set-window-configuration wnd))))
       (error "No more than 2 files should be marked"))))
 
+(defun db/grep-read-files (_ regexp)
+  "As for file pattern similar to `grep-read-files' but more direct.
+
+This function is meant as a replacement for `grep-read-files',
+replacing it by not calling calling `read-file-name-internal'.
+
+REGEXP is only used for display at the completion prompt, the
+same way `grep-read-files' does.
+
+Also add the default as initial input instead of as default
+proper.  The latter does not play well with my current completion
+framework, as it always tries to match my input with default
+entries, even if I want to use the input directly."
+  (let* ((bn (funcall grep-read-files-function))
+         (fn (and bn
+                  (stringp bn)
+                  (file-name-nondirectory bn)))
+         (default-alias
+           (and fn
+                (let ((aliases (remove (assoc "all" grep-files-aliases)
+                                       grep-files-aliases))
+                      alias)
+                  (while aliases
+                    (setq alias (car aliases)
+                          aliases (cdr aliases))
+                    (if (string-match (mapconcat
+                                       #'wildcard-to-regexp
+                                       (split-string (cdr alias) nil t)
+                                       "\\|")
+                                      fn)
+                        (setq aliases nil)
+                      (setq alias nil)))
+                  (cdr alias))))
+         (default-extension
+           (and fn
+                (let ((ext (file-name-extension fn)))
+                  (and ext (concat "*." ext)))))
+         (default
+           (or default-alias
+               default-extension
+               (car grep-files-history)
+               (car (car grep-files-aliases))))
+         (files (completing-read
+                 (format "Search for \"%s\" in files matching wildcard: "
+                         regexp)
+                 nil nil nil
+                 (delete-dups
+                  (delq nil
+                        (append (list default default-alias default-extension)
+                                (mapcar #'car grep-files-aliases))))
+                 'grep-files-history)))
+    (and files
+         (or (cdr (assoc files grep-files-aliases))
+             files))))
+
 
 ;;; Base45 Decoding
 
@@ -511,7 +566,7 @@ From: https://oremacs.com/2017/03/18/dired-ediff/."
 
   (-each-indexed (string-to-list base45-alphabet)
     (-lambda (index char)
-        (puthash char index decode-hash-table)
+      (puthash char index decode-hash-table)
       ;; Add an encode-hash-table here in case base45-encode-string will ever be
       ;; written, like so: (puthash index char encode-hash-table)
       ))

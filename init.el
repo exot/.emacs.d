@@ -476,7 +476,13 @@
   :commands (rgrep zrgrep)
   :bind (:map grep-mode-map
               ("C-x C-q" . wgrep-change-to-wgrep-mode)
-              ("C-c C-c" . wgrep-finish-edit)))
+              ("C-c C-c" . wgrep-finish-edit))
+  :config (progn
+
+            ;; I am not quite sure why `grep-read-files' is prompting for file
+            ;; names when asking for a file pattern, so let's just hook it up
+            ;; and replace it with something more straightforward.
+            (advice-add 'grep-read-files :around #'db/grep-read-files)))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
@@ -638,7 +644,8 @@
              db/convert-crlf-to-lf-in-buffer
              db/sync-magit-repos-from-projectile
              db/replace-variables-in-string
-             db/dired-ediff-files))
+             db/dired-ediff-files
+             db/grep-read-files))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
