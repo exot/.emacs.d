@@ -831,6 +831,43 @@ Work task and home task are determined by the current values of
                                    org-home-task-id))
       (org-clock-mark-default-task))))
 
+(defun db/org--find-template ()
+  "Return marker to template item associated with item at point.
+
+Return NIL if no template is associated with item at point.
+
+See `db/org-insert-checklist' for how this template item is
+determined."
+
+  (let (template-marker)
+
+    ;; Check for TEMPLATE_ID property
+    (when-let ((template-id (org-entry-get (point) "TEMPLATE_ID")))
+      (setq template-marker (org-id-find template-id :get-marker))
+      (unless template-marker
+        (warn "TEMPLATE_ID is set, but could not be resolved: %s"
+              template-id)))
+
+    ;; If no template has been found so far, search for top-most sibling and
+    ;; whether its headline starts with “Template”; use that when found.
+    (unless template-marker
+      (let ((top-most-sibling (condition-case _
+                                  (save-restriction
+                                    (save-mark-and-excursion
+                                      (outline-up-heading 1 'invisible-ok)
+                                      (outline-next-heading)
+                                      (point)))
+                                (t nil))))
+        (when (and top-most-sibling
+                   (integerp top-most-sibling) ; just to make sure we have a point here
+                   (string-match-p "^Template.*"
+                                   (org-entry-get top-most-sibling "ITEM")))
+          (setq template-marker (org-with-point-at top-most-sibling
+                               (point-marker))))))
+
+    ;; Return `template-marker', which is either `nil' or a marker.
+    template-marker))
+
 (defun db/org-insert-checklist ()
   "Insert checklist for Org Mode item at point.
 
@@ -887,41 +924,30 @@ current item and see whether its headline is matching
         (insert " none.")))
 
   ;; Insert template, when avilable.
-  (let (template-pom)
-
+  (let ((template-marker (db/org--find-template)))
     (insert "\n\nTemplate:")
-
-    ;; Check for TEMPLATE_ID property
-    (when-let ((template-id (org-entry-get (point) "TEMPLATE_ID")))
-      (setq template-pom (org-id-find template-id :get-marker))
-      (unless template-pom
-        (warn "TEMPLATE_ID is set, but could not be resolved: %s"
-              template-id)))
-
-    ;; If no template has been found so far, search for top-most sibling and
-    ;; whether its headline starts with “Template”; use that when found.
-    (unless template-pom
-      (let ((top-most-sibling (condition-case _
-                                  (save-restriction
-                                    (save-mark-and-excursion
-                                      (outline-up-heading 1 'invisible-ok)
-                                      (outline-next-heading)
-                                      (point)))
-                                (t nil))))
-        (when (and top-most-sibling
-                   (integerp top-most-sibling) ; just to make sure we have a point here
-                   (string-match-p "^Template.*"
-                                   (org-entry-get top-most-sibling "ITEM")))
-          (setq template-pom top-most-sibling))))
-
-    (if (not template-pom)
+    (if (not template-marker)
         (insert " none.")
       (insert "\n")
-      (db/org-copy-body-from-item-to-point template-pom))))
+      (db/org-copy-body-from-item-to-point template-marker))))
 
 (define-obsolete-function-alias 'db/org-copy-template
     'db/org-insert-checklist
   "2022-10-09")
+
+(defun db/org-goto-checklist-item-of-point ()
+  "Go to template item associated with current item.
+
+Error out if no such template item exists.
+
+See `db/org-insert-checklist' for how this template item is
+determined."
+  (interactive)
+  (--if-let (db/org--find-template)
+      (progn
+        (push-mark)
+        (org-goto-marker-or-bmk it))
+    (user-error "No template associated with item at point")))
 
 (defun db/org-copy-body-from-item-to-point (pom)
   "Copy body from item given by POM to point.
