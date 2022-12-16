@@ -798,7 +798,7 @@
                 org-log-note-clock-out nil
                 org-log-done 'note
                 org-clone-delete-id t
-                org-catch-invisible-edits 'error
+                org-catch-invisible-edits 'show-and-error
                 org-M-RET-may-split-line '((default . nil))
                 org-highlight-latex-and-related '(latex)
                 org-use-sub-superscripts '{}
@@ -1097,7 +1097,6 @@ respectively."
   :init (setq org-agenda-include-diary t
               org-agenda-span 1
               org-agenda-insert-diary-strategy 'top-level
-              org-catch-invisible-edits 'show
               org-agenda-sorting-strategy '((agenda time-up priority-down effort-up category-keep)
                                             (todo priority-down effort-up category-keep)
                                             (tags priority-down effort-up category-keep)
