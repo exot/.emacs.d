@@ -951,7 +951,11 @@
             (add-to-list 'org-link-abbrev-alist
                          '("ddg" . "https://duckduckgo.com/?q=%s"))
             (add-to-list 'org-link-abbrev-alist
-                         '("omap" . "http://nominatim.openstreetmap.org/search?q=%s&polygon=1"))
+                         '("omap" . "https://nominatim.openstreetmap.org/search?q=%s&polygon=1"))
+            (add-to-list 'org-link-abbrev-alist
+                         '("github" . "https://github.com/"))
+            (add-to-list 'org-link-abbrev-alist
+                         '("gitlab" . "https://gitlab.com/"))
 
             ;; Some timers
 
