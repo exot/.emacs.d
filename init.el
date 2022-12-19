@@ -903,10 +903,20 @@
                 org-outline-path-complete-in-steps nil
                 org-refile-target-verify-function 'db/verify-refile-target)
 
-          ;; Bable
+          ;; Babel
 
           (setq org-babel-load-languages '((shell . t)
-                                           (emacs-lisp . t))))
+                                           (emacs-lisp . t)))
+
+          ;; Link shortcuts (some taken from the documentation)
+
+          (setq org-link-abbrev-alist
+                '(("wpen" . "https://en.wikipedia.org/wiki/")
+                  ("wpde" . "https://de.wikipedia.org/wiki/")
+                  ("ddg" . "https://duckduckgo.com/?q=%s")
+                  ("omap" . "https://nominatim.openstreetmap.org/search?q=%s&polygon=1")
+                  ("github" . "https://github.com/")
+                  ("gitlab" . "https://gitlab.com/"))))
   :config (progn
 
             ;; Some hooks from text-mode-hook, Org mode does not seem to run those?
@@ -942,20 +952,6 @@
 
             ;; Link type for RFCs
             (org-link-set-parameters "rfc" :follow #'db/org-rfc-open)
-
-            ;; Link shortcuts (some taken from the documentation)
-            (add-to-list 'org-link-abbrev-alist
-                         '("wpen" . "https://en.wikipedia.org/wiki/"))
-            (add-to-list 'org-link-abbrev-alist
-                         '("wpde" . "https://de.wikipedia.org/wiki/"))
-            (add-to-list 'org-link-abbrev-alist
-                         '("ddg" . "https://duckduckgo.com/?q=%s"))
-            (add-to-list 'org-link-abbrev-alist
-                         '("omap" . "https://nominatim.openstreetmap.org/search?q=%s&polygon=1"))
-            (add-to-list 'org-link-abbrev-alist
-                         '("github" . "https://github.com/"))
-            (add-to-list 'org-link-abbrev-alist
-                         '("gitlab" . "https://gitlab.com/"))
 
             ;; Some timers
 
