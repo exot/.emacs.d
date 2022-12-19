@@ -943,6 +943,16 @@
             ;; Link type for RFCs
             (org-link-set-parameters "rfc" :follow #'db/org-rfc-open)
 
+            ;; Link shortcuts (some taken from the documentation)
+            (add-to-list 'org-link-abbrev-alist
+                         '("wpen" . "https://en.wikipedia.org/wiki/"))
+            (add-to-list 'org-link-abbrev-alist
+                         '("wpde" . "https://de.wikipedia.org/wiki/"))
+            (add-to-list 'org-link-abbrev-alist
+                         '("ddg" . "https://duckduckgo.com/?q=%s"))
+            (add-to-list 'org-link-abbrev-alist
+                         '("omap" . "http://nominatim.openstreetmap.org/search?q=%s&polygon=1"))
+
             ;; Some timers
 
             (unless (memq #'org-clock-save
