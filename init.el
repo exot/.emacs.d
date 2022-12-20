@@ -761,7 +761,6 @@
              db/org-onenote-open
              db/org-outlook-open
              db/org-rfc-open
-             db/org-clear-stored-links
              db/org-cleanup-continuous-clocks
              db/find-csv-in-org
              db/org-mark-current-default-task
@@ -1047,7 +1046,29 @@ respectively."
 
 (use-package ol
   :init (setq org-link-keep-stored-after-insertion t)
-  :commands (org-store-link))
+  :commands (org-store-link)
+  :config (progn
+
+            (define-advice org-store-link (:around
+                                           (orig-func &rest args)
+                                           db/org--push-new-links-to-beginning)
+              "Ensure that new links in `org-store-link' are always at the beginning."
+              ;; The idea here is to store the list of already known links,
+              ;; stored in `org-stored-links', and call `org-store-link' with an
+              ;; empty value of `org-stored-links'.  This way, the link to the
+              ;; current item is store in any case, and we prepend these new
+              ;; values (can be more than one if CUSTOM_ID is set) to the old
+              ;; list of links.  We also remove the newly prepended links from
+              ;; the list of already known links.
+              (let ((org-stored-links--original org-stored-links)
+                    (org-stored-links--new (let (org-stored-links)
+                                             ;; This is the call to `org-store-link'.
+                                             (apply orig-func args)
+                                             org-stored-links)))
+                (setq org-stored-links (nconc org-stored-links--new
+                                              (cl-remove-if #'(lambda (x)
+                                                                (member x org-stored-links--new))
+                                                            org-stored-links--original)))))))
 
 (use-package org-id
   :init (setq org-id-link-to-org-use-id t))
