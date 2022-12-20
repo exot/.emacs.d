@@ -1361,23 +1361,21 @@ point to the beginning of buffer first."
 (use-package ob-sql
   :config (progn
 
-            (defun db/ob-sql-oracle-ask-for-password (orig-fun
-                                                      host port user password database)
+            (define-advice org-babel-sql-dbstring-oracle (:around
+                                                          (orig-fun host port user password database)
+                                                          ask-for-password)
               "Ask for PASSWORD if not given, and call ORIG-FUN with arguments afterwards."
               (cond
-                ((not (or (and user database host port)
-                          (and user database)))
-                 (user-error "Insufficient login credentials given, aborting"))
-                (password
-                 (funcall orig-fun host port user password database))
-                (t
-                 (funcall orig-fun
-                          host port user
-                          (password-read (format "Password for %s@%s: " user database))
-                          database))))
-
-            (advice-add #'org-babel-sql-dbstring-oracle
-                        :around #'db/ob-sql-oracle-ask-for-password)))
+               ((not (or (and user database host port)
+                         (and user database)))
+                (user-error "Insufficient login credentials given, aborting"))
+               (password
+                (funcall orig-fun host port user password database))
+               (t
+                (funcall orig-fun
+                         host port user
+                         (password-read (format "Password for %s@%s: " user database))
+                         database))))))
 
 ;; Exporting
 
@@ -1788,16 +1786,15 @@ point to the beginning of buffer first."
             ;; Move to end of message buffer before attaching a file
             ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
 
-            (defun db/mml-attach-file--go-to-eob (orig-fun &rest args)
+            (define-advice mml-attach-file (:around
+                                            (orig-fun &rest args)
+                                            go-to-eob)
               "Go to the end of buffer before attaching files."
               (save-excursion
                 (save-restriction
                   (widen)
                   (goto-char (point-max))
-                  (apply orig-fun args))))
-
-            (advice-add 'mml-attach-file
-                        :around #'db/mml-attach-file--go-to-eob)))
+                  (apply orig-fun args))))))
 
 (use-package mm-encode
   :init (setq mm-encrypt-option nil
@@ -1827,14 +1824,11 @@ point to the beginning of buffer first."
             ;; A previous version of this worked, but the following has not been
             ;; tested with Outlook proper.
 
-            (defun db/smime-add-crlf-when-pkcs7 (cont)
+            (define-advice mml-smime-epg-sign (:after (cont) add-crlf-when-pkcs7)
               "If CONT signifies encryption with smime, replace all \n with \r\n."
               (when (and (eq (car cont) 'part)
                          (string= "smime" (or (cdr (assq 'encrypt cont)) "")))
-                (db/convert-lf-to-crlf-in-buffer)))
-
-            (advice-add 'mml-smime-epg-sign
-                        :after #'db/smime-add-crlf-when-pkcs7)))
+                (db/convert-lf-to-crlf-in-buffer)))))
 
 ;; Archiving
 
