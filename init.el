@@ -964,7 +964,10 @@
             ;; this to only parse what we are looking for.  This makes tag
             ;; search *much* faster!
             (with-eval-after-load 'org
-              (defun org-cached-entry-get (pom property)
+              (define-advice org-cached-entry-get (:around
+                                                   (orig-fun pom property)
+                                                   speed-up-cache-lookup)
+                (ignore orig-fun)
                 (if (or (eq t org-use-property-inheritance)
                         (and (stringp org-use-property-inheritance)
                              (let ((case-fold-search t))
@@ -1761,8 +1764,9 @@ point to the beginning of buffer first."
             ;; and the mail as well.  Redefining `mm-copy-to-buffer' to also
             ;; search for ^\r\n might help.
 
-            (defun mm-copy-to-buffer ()
-              "Copy the contents of the current buffer to a fresh buffer."
+            (define-advice mm-copy-to-buffer (:around (orig-fun) also-consider-crlf)
+              "Overwrite `mm-copy-to-buffer' to allow for CRLF in addition to LF."
+              (ignore orig-fun)
               (let ((obuf (current-buffer))
                     (mb enable-multibyte-characters)
                     beg)
