@@ -1063,15 +1063,34 @@ respectively."
               ;; values (can be more than one if CUSTOM_ID is set) to the old
               ;; list of links.  We also remove the newly prepended links from
               ;; the list of already known links.
+
               (let ((org-stored-links--original org-stored-links)
-                    (org-stored-links--new (let (org-stored-links)
-                                             ;; This is the call to `org-store-link'.
-                                             (apply orig-func args)
-                                             org-stored-links)))
-                (setq org-stored-links (nconc org-stored-links--new
-                                              (cl-remove-if #'(lambda (x)
-                                                                (member x org-stored-links--new))
-                                                            org-stored-links--original)))))))
+                    (org-stored-links--new nil)
+                    (org-store-link--return-value nil))
+
+                (let ((org-stored-links nil))
+                  ;; This is the actual call to `org-store-link', which may (and
+                  ;; usually will) update `org-stored-links'.  Note that the new
+                  ;; value of `org-stored-links' is only available after
+                  ;; `org-store-link' as finished, which is why we make two
+                  ;; separate calls to `setq' here instead of only one.
+                  (setq org-store-link--return-value (apply orig-func args))
+                  (setq org-stored-links--new org-stored-links))
+
+                ;; Note: `org-stored-links--new' might still be nil after
+                ;; calling `org-store-link', as under some circumstances (and
+                ;; only when the `interactive?' argument to `org-store-link' is
+                ;; non-nil), `org-store-link' may only return a link and not
+                ;; update `org-stored-links'; in this case, we do not have to
+                ;; touch the original value of `org-stored-links' at all.
+
+                (unless (null org-stored-links--new)
+                  (setq org-stored-links (nconc org-stored-links--new
+                                                (cl-remove-if #'(lambda (x)
+                                                                  (member x org-stored-links--new))
+                                                              org-stored-links--original))))
+
+                org-store-link--return-value))))
 
 (use-package org-id
   :init (setq org-id-link-to-org-use-id t))
