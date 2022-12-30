@@ -1281,7 +1281,7 @@ respectively."
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
                      ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
                             ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no now or future SCHEDULED)")))
-                      (tags-todo "SOMEWHEN-NOT_BEFORE>=\"<today>\""
+                      (tags-todo "SOMEWHEN-NOT_BEFORE>=\"<today>\"-ALLTAGS={HOLD}"
                                  ((org-agenda-overriding-header "Things To Do SOMEWHEN")
                                   (org-agenda-todo-ignore-with-date t)
                                   (org-tags-match-list-sublevels nil)))))
