@@ -200,7 +200,7 @@ shown because they are due)."
     (save-excursion
       (while (< (point) limit)
         (when (member (org-get-at-bol 'type)
-                      '("scheduled" "past-scheduled" "timestamp" "deadline"))
+                      '("scheduled" "past-scheduled" "timestamp" "deadline" "block"))
           (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total))
         (forward-line)))
     (org-duration-from-minutes
