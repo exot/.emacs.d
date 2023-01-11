@@ -545,7 +545,7 @@ PARAMS is a property list of the following parameters:
 `:start-date':
 
   Start date for the workload report.  When not provided, will
-  default to no start date.  When provided, must be in a format
+  default to today at 00:00.  When provided, must be in a format
   understood by `org-read-date'.
 
 `:end-date':
@@ -575,7 +575,7 @@ PARAMS is a property list of the following parameters:
          (org-ql-match (or (plist-get params :org-ql-match)
                            '(todo)))
          (current (or start-date
-                      (org-read-date nil nil ".")))
+                      (org-read-date nil nil ". 00:00")))
          (date-range nil))
 
     ;; Check input
