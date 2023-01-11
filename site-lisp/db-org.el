@@ -218,6 +218,17 @@ Add this function to `org-agenda-finalize-hook' to enable this."
                         (point) (point-max) 'org-agenda-date-header t))
         (goto-char pos)
         (end-of-line)
+
+        ;; When there is already an effort sum shown, delete it first
+        (when (re-search-backward " ([0-9]+:[0-9]\\{2\\})"
+                                  (save-mark-and-excursion
+                                    ;; Only search until start of line
+                                    (beginning-of-line)
+                                    (point))
+                                  t)
+          (kill-line))
+
+        ;; Insert effort sum
         (insert-and-inherit
          (concat " ("
                  (db/org-agenda-calculate-efforts
