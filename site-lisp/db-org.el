@@ -501,6 +501,14 @@ understood by `org-read-date'."
                          (string-replace ">" "]"))
                   "")))
 
+      (insert (format "#+CAPTION: Workload Report at %s for [%s]--[%s] .\n"
+                      (with-temp-buffer
+                        ;; Is there an easier way to get the current time as an
+                        ;; inactive timestamp?
+                        (org-insert-time-stamp (current-time) t t)
+                        (buffer-string))
+                      (org-read-date nil nil start-date)
+                      (org-read-date nil nil end-date)))
       (insert "| Task | Effort | Timestamp | SCHEDULED | DEADLINE |\n|---|\n")
       (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
         (insert (format "| %s | %s | %s | %s | %s |\n"
@@ -608,10 +616,16 @@ PARAMS is a property list of the following parameters:
                                    (org-time-string-to-time current))))
     (setq date-range (nreverse date-range))
 
+    (insert (format "#+CAPTION: Workload Overview Report at %s.\n"
+                    (with-temp-buffer
+                      ;; Is there an easier way to get the current time as an
+                      ;; inactive timestamp?
+                      (org-insert-time-stamp (current-time) t t)
+                      (buffer-string))))
+    (insert "| Until | Planned Total |\n| <r> | <r> |\n|---|\n")
     ;; Compute workload report for each date and record the total time; XXX:
     ;; this might be slow, try to reduce the calls to
     ;; `db/org-planned-tasks-in-range'.
-    (insert "| Until | Planned Total |\n| <r> | <r> |\n|---|\n")
     (dolist (interval-end-date date-range)
       (let ((total-time (car (db/org-planned-tasks-in-range start-date
                                                             interval-end-date
