@@ -355,18 +355,18 @@ should not be clocked."
              (not org-clock-resolving-clocks-due-to-idleness))
     (let ((parent-task (db/find-parent-task)))
       (save-mark-and-excursion
-       (cond
-        (parent-task
-         ;; found parent task
-         (org-with-point-at parent-task
-           (org-clock-in)))
-        ((and (markerp org-clock-default-task)
-              (marker-buffer org-clock-default-task))
-         ;; default task is set
-         (org-with-point-at org-clock-default-task
-           (org-clock-in)))
-        (t
-         (org-clock-in '(4))))))))
+        (cond
+         (parent-task
+          ;; found parent task
+          (org-with-point-at parent-task
+            (org-clock-in)))
+         ((and (markerp org-clock-default-task)
+               (marker-buffer org-clock-default-task))
+          ;; default task is set
+          (org-with-point-at org-clock-default-task
+            (org-clock-in)))
+         (t
+          (org-clock-in '(4))))))))
 
 (defun db/save-current-org-task-to-file ()
   "Format currently clocked task and write it to`db/org-clock-current-task-file'."
@@ -880,7 +880,7 @@ determined."
                    (string-match-p "^Template.*"
                                    (org-entry-get top-most-sibling "ITEM")))
           (setq template-marker (org-with-point-at top-most-sibling
-                               (point-marker))))))
+                                  (point-marker))))))
 
     ;; Return `template-marker', which is either `nil' or a marker.
     template-marker))
@@ -911,34 +911,34 @@ current item and see whether its headline is matching
 
   ;; Insert relevant backlinks, when available.
   (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                          (string-to-number it)))
-          number-of-backlinks
-          point-before-backlinks)
+                        (string-to-number it)))
+        number-of-backlinks
+        point-before-backlinks)
 
-      (insert (format "\nBacklinks (not DONE, no TEMPLATE, %s, no archives, not scheduled in the future):\n\n"
-                      (if parent-depth
-                          (format "parent-depth %d" parent-depth)
-                        "all parents")))
+    (insert (format "\nBacklinks (not DONE, no TEMPLATE, %s, no archives, not scheduled in the future):\n\n"
+                    (if parent-depth
+                        (format "parent-depth %d" parent-depth)
+                      "all parents")))
 
-      ;; Store where we are (minus the two newlines) so we can delete the
-      ;; checklist in case it's empty.
-      (setq point-before-backlinks (- (point) 2))
+    ;; Store where we are (minus the two newlines) so we can delete the
+    ;; checklist in case it's empty.
+    (setq point-before-backlinks (- (point) 2))
 
-      (setq number-of-backlinks
-            (org-dblock-write:db/org-backlinks (list
-                                                :org-ql-match '(and
-                                                                (not (done))
-                                                                (not (ltags "TEMPLATE"))
-                                                                (not (scheduled :from 1)))
-                                                :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                                                                (string-to-number it))
-                                                :archive nil)))
+    (setq number-of-backlinks
+          (org-dblock-write:db/org-backlinks (list
+                                              :org-ql-match '(and
+                                                              (not (done))
+                                                              (not (ltags "TEMPLATE"))
+                                                              (not (scheduled :from 1)))
+                                              :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                                                              (string-to-number it))
+                                              :archive nil)))
 
-      ;; When no backlinks have been found, remove the empty table head and just
-      ;; print "none".
-      (when (zerop number-of-backlinks)
-        (delete-region point-before-backlinks (point))
-        (insert " none.")))
+    ;; When no backlinks have been found, remove the empty table head and just
+    ;; print "none".
+    (when (zerop number-of-backlinks)
+      (delete-region point-before-backlinks (point))
+      (insert " none.")))
 
   ;; Insert template, when avilable.
   (let ((template-marker (db/org--find-template)))
@@ -949,7 +949,7 @@ current item and see whether its headline is matching
       (db/org-copy-body-from-item-to-point template-marker))))
 
 (define-obsolete-function-alias 'db/org-copy-template
-    'db/org-insert-checklist
+  'db/org-insert-checklist
   "2022-10-09")
 
 (defun db/org-goto-checklist-item-of-point ()
@@ -1193,8 +1193,8 @@ linking to any item."
         ;; search through it; otherwise, use the default Org Mode file as
         ;; default buffer
         (default-buffer (if (and (buffer-file-name) (derived-mode-p 'org-mode))
-                           (current-buffer)
-                         (find-file-noselect db/org-default-org-file))))
+                            (current-buffer)
+                          (find-file-noselect db/org-default-org-file))))
     (when (null default-buffer)
       (user-error "Current buffer is not associated with a file and `db/org-default-org-file' does not exist; nothing to search through"))
     (let* ((org-refile-targets (append (and arg
