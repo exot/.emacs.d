@@ -888,22 +888,46 @@ determined."
 (defun db/org-insert-checklist ()
   "Insert checklist for Org Mode item at point.
 
-The checklist consists of a listing of all backlinks to the
+The checklist consists of a listing of relevant backlinks of the
 current item and its parents (without archives) as well as a
 template.
 
-The depth to which backlinks to parents are considered can be
-configured via the CHECKLIST_BACKLINK_DEPTH property.  This
-property is looked up only at the current item, i.e., no
-inheritance is considered.  If this property is not set, the
-depth to which backlinks to parents is considered is unlimited by
-default (i.e., nil).
+Relevant backlinks are Org items and are determined as follows:
 
-The template is determined by the TEMPLATE_ID property, which
-must be an ID referencing the proper template item.  If that
-property is not set, search for the topmost sibling of the
-current item and see whether its headline is matching
-\"^Template.*\"; if so, use its body as template."
+- for an Org item to be considered as backlink item, it must
+  reference the item at point directly, or one of its parents,
+  via an Org link using the id: link type (also see the
+  `db/org-backlinks' dynamic block);
+
+- the backlink item must not be done and must not be tagged with
+  TEMPLATE;
+
+- the backlink item must not be scheduled in the future;
+
+- the backlink item must be contained in a file from
+  `org-agenda-files' or `org-agenda-text-search-extra-files', but
+  not in an archive file (i.e., archives are excluded from the search)
+
+- the backlink item must not have the CHECKLIST_NO_BACKLINK
+  property set to nil (with inheritance not being considered,
+  i.e., the property must be set directly at the item to exclude
+  it as backlink).
+
+The depth to which backlinks to parents are considered can be
+configured via the CHECKLIST_BACKLINK_DEPTH property at the item
+at point.  This property is looked up only at the current item,
+i.e., again no inheritance is considered.  If this property is
+not set, the depth to which backlinks to parents is considered is
+unlimited by default (i.e., nil).
+
+After the table of backlinks, a template is inserted.  This
+templates is usually a checklist copied from another Org item
+tagged with :TEMPLATE:.  The item to copy the template from is
+determined by the TEMPLATE_ID property, which must be an ID
+referencing the proper template item.  If that property is not
+set, search for the topmost sibling of the current item is
+conducted to see whether its headline is matching
+\"^Template.*\"; if so, its body is used as template."
   (interactive)
 
   (unless (derived-mode-p 'org-mode)
@@ -915,7 +939,7 @@ current item and see whether its headline is matching
         number-of-backlinks
         point-before-backlinks)
 
-    (insert (format "\nBacklinks (not DONE, no TEMPLATE, %s, no archives, not scheduled in the future):\n\n"
+    (insert (format "\nRelevant backlinks (%s):\n\n"
                     (if parent-depth
                         (format "parent-depth %d" parent-depth)
                       "all parents")))
@@ -929,7 +953,8 @@ current item and see whether its headline is matching
                                               :org-ql-match '(and
                                                               (not (done))
                                                               (not (ltags "TEMPLATE"))
-                                                              (not (scheduled :from 1)))
+                                                              (not (scheduled :from 1))
+                                                              (not (property "CHECKLIST_NO_BACKLINK" "t" :inherit nil)))
                                               :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
                                                               (string-to-number it))
                                               :archive nil)))
