@@ -3046,6 +3046,9 @@ With given ARG, display files in `db/important-document-path’."
   :commands (dictcc)
   :config (require 'gnutls))
 
+(use-package dictionary
+  :init (setq dictionary-server "dict.org"))
+
 (use-package edit-list
   :ensure t
   :commands edit-list)
@@ -3136,12 +3139,6 @@ With given ARG, display files in `db/important-document-path’."
               shr-max-image-proportion 0.7
               shr-image-animate nil
               shr-width (current-fill-column)))
-
-;; Interactive interface to sdcv, the StarDict concole version.  To use sdcv,
-;; put the dictionary data under ~/.stardict/dic.
-(use-package sdcv
-  :commands (sdcv-search-pointer
-             sdcv-search-input))
 
 (use-package sh-script
   :init (setq sh-basic-offset 2))
