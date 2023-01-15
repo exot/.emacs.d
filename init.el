@@ -1274,8 +1274,8 @@ respectively."
                       (tags "REFILE"
                             ((org-agenda-files (list db/org-default-refile-file))
                              (org-agenda-overriding-header "Things to refile (make it empty!)")))
-                      (tags-todo "HOLD"
-                                 ((org-agenda-overriding-header "Tasks on Hold")))))
+                      (tags "HOLD"
+                            ((org-agenda-overriding-header "Tasks on Hold")))))
 
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
