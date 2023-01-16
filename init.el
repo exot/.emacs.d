@@ -977,7 +977,15 @@
                     ;; Caching is not possible, check it directly.
                     (org-entry-get pom property 'inherit)
                   ;; This is different in the original implementation
-                  (org-entry-get pom property))))))
+                  (org-entry-get pom property))))
+
+            ;; Fix (Org 9.5.5): the variable `org-time-was-given' dynamically
+            ;; bound to signify when `org-read-date-analyze' has found a hh:mm
+            ;; part; it's only considered, however, when it has previously been
+            ;; bound, resulting in some prior calls of `org-read-date' to ignore
+            ;; the hh:mm part.  So let's bind this variable now to make things
+            ;; work.
+            (setq org-time-was-given nil)))
 
 ;; Drag-and-Drop images into org-mode buffer
 (use-package org-download
