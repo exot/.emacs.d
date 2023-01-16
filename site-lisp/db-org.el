@@ -541,9 +541,6 @@ understood by `org-read-date'."
 (defun org-dblock-write:db/org-workload-overview-report (params)
   "Write an overview workload report based on tasks in `org-agenda-files'.
 
-FIXME: this function is buggy, it is not treating the time-parts
-correctly.  Use with care!
-
 This overview report will list the amount of work planned for
 increasing intervals of time until a given end date is reached.
 For example, if the amount to increase the intervals is two
