@@ -575,29 +575,20 @@ PARAMS is a property list of the following parameters:
 
   `org-ql' expression (in sexp syntax) to filter the list of
   tasks to consider.  Defaults to (todo)."
-  (let* ((start-date (or (--if-let (plist-get params :start-date)
-                             (org-read-date nil nil it))
-                         (org-read-date t nil ". 00:00")))
+  (let* ((start-date (org-read-date t t
+                                    (or (plist-get params :start-date)
+                                        "00:00")))
          (end-date (or (--if-let (plist-get params :end-date)
-                           (org-read-date nil nil it))
+                           (org-read-date t t it))
                        (user-error "No valid end-date provided")))
          (increment (or (plist-get params :increment)
                         "+1d"))
          (org-ql-match (or (plist-get params :org-ql-match)
                            '(todo)))
-         (current start-date)
-         (date-range nil))
+         (timestamp-format "%Y-%m-%d %a %H:%M")
+         date-range)
 
     ;; Check input
-    (unless (or (null start-date)
-                (string-match-p (org-re-timestamp 'inactive)
-                                (format "[%s]" start-date)))
-      (user-error "Invalid start date given: %s" start-date))
-
-    (unless (string-match-p (org-re-timestamp 'inactive)
-                            (format "[%s]" end-date))
-      (user-error "Invalid end date given: %s" end-date))
-
     (unless (string-match-p (rx bos "+" (+ digit) (in "dwmy") eos)
                             increment)
       (user-error "Increment must be of the form +1d, +2m, +3y, …, but it's %s" increment))
@@ -605,37 +596,32 @@ PARAMS is a property list of the following parameters:
     ;; Compute range of dates to check; simple but potentially costly approach
     ;; taken from https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/;
     ;; maybe consider `org-read-date-get-relative' as well?
-    (while (or (string< current end-date)
-               (string= current end-date))
-      (setq current (org-read-date nil
-                                   nil
-                                   ;; Add an extra + to ensure we increase the
-                                   ;; amount of time relative to the given
-                                   ;; default time string.
-                                   (format "+%s" increment)
-                                   nil
-                                   (org-time-string-to-time current)))
-      (push current date-range))
+    (let ((current start-date))
+      (while (or (time-less-p current end-date)
+                 (time-equal-p current end-date))
+        (setq current (org-read-date t t
+                                     ;; Add an extra + to ensure we increase the
+                                     ;; amount of time relative to the given
+                                     ;; default time string.
+                                     (format "+%s" increment)
+                                     nil current))
+        (push current date-range)))
     (setq date-range (nreverse date-range))
 
     (insert (format "#+CAPTION: Workload Overview Report at %s with start date [%s]\n"
-                    (with-temp-buffer
-                      ;; Is there an easier way to get the current time as an
-                      ;; inactive timestamp?
-                      (org-insert-time-stamp (current-time) t t)
-                      (buffer-string))
-                    start-date))
+                    (format-time-string timestamp-format (current-time))
+                    (format-time-string timestamp-format start-date)))
     (insert "| End Time | Planned Total |\n| <r> | <r> |\n|---|\n")
-    ;; Compute workload report for each date and record the total time; XXX:
-    ;; this might be slow, try to reduce the calls to
+    ;; Compute workload report for each date and record the total time;
+    ;; XXX: this might be slow, try to reduce the calls to
     ;; `db/org-planned-tasks-in-range'.
     (dolist (interval-end-date date-range)
-      (let ((total-time (car (db/org-planned-tasks-in-range start-date
-                                                            interval-end-date
+      (let ((total-time (car (db/org-planned-tasks-in-range (format-time-string timestamp-format start-date)
+                                                            (format-time-string timestamp-format interval-end-date)
                                                             org-ql-match))))
-        (insert "| ")
-        (org-insert-time-stamp (org-time-string-to-time interval-end-date) t 'inactive)
-        (insert (format " | %s |\n" total-time))))
+        (insert (format "| [%s] | %s |\n"
+                        (format-time-string timestamp-format interval-end-date)
+                        total-time))))
     (insert "|--|")
     (org-table-align)))
 
