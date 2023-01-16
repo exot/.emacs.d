@@ -541,6 +541,9 @@ understood by `org-read-date'."
 (defun org-dblock-write:db/org-workload-overview-report (params)
   "Write an overview workload report based on tasks in `org-agenda-files'.
 
+FIXME: this function is buggy, it is not treating the time-parts
+correctly.  Use with care!
+
 This overview report will list the amount of work planned for
 increasing intervals of time until a given end date is reached.
 For example, if the amount to increase the intervals is two
@@ -574,7 +577,7 @@ PARAMS is a property list of the following parameters:
   tasks to consider.  Defaults to (todo)."
   (let* ((start-date (or (--if-let (plist-get params :start-date)
                              (org-read-date nil nil it))
-                         nil))
+                         (org-read-date t nil ". 00:00")))
          (end-date (or (--if-let (plist-get params :end-date)
                            (org-read-date nil nil it))
                        (user-error "No valid end-date provided")))
@@ -582,8 +585,7 @@ PARAMS is a property list of the following parameters:
                         "+1d"))
          (org-ql-match (or (plist-get params :org-ql-match)
                            '(todo)))
-         (current (or start-date
-                      (org-read-date nil nil ". 00:00")))
+         (current start-date)
          (date-range nil))
 
     ;; Check input
@@ -605,24 +607,25 @@ PARAMS is a property list of the following parameters:
     ;; maybe consider `org-read-date-get-relative' as well?
     (while (or (string< current end-date)
                (string= current end-date))
-      (push current date-range)
       (setq current (org-read-date nil
                                    nil
                                    ;; Add an extra + to ensure we increase the
-                                   ;; default time string.
                                    ;; amount of time relative to the given
+                                   ;; default time string.
                                    (format "+%s" increment)
                                    nil
-                                   (org-time-string-to-time current))))
+                                   (org-time-string-to-time current)))
+      (push current date-range))
     (setq date-range (nreverse date-range))
 
-    (insert (format "#+CAPTION: Workload Overview Report at %s.\n"
+    (insert (format "#+CAPTION: Workload Overview Report at %s with start date [%s]\n"
                     (with-temp-buffer
                       ;; Is there an easier way to get the current time as an
                       ;; inactive timestamp?
                       (org-insert-time-stamp (current-time) t t)
-                      (buffer-string))))
-    (insert "| Until | Planned Total |\n| <r> | <r> |\n|---|\n")
+                      (buffer-string))
+                    start-date))
+    (insert "| End Time | Planned Total |\n| <r> | <r> |\n|---|\n")
     ;; Compute workload report for each date and record the total time; XXX:
     ;; this might be slow, try to reduce the calls to
     ;; `db/org-planned-tasks-in-range'.
@@ -631,7 +634,7 @@ PARAMS is a property list of the following parameters:
                                                             interval-end-date
                                                             org-ql-match))))
         (insert "| ")
-        (org-insert-time-stamp (org-time-string-to-time interval-end-date) nil 'inactive)
+        (org-insert-time-stamp (org-time-string-to-time interval-end-date) t 'inactive)
         (insert (format " | %s |\n" total-time))))
     (insert "|--|")
     (org-table-align)))
