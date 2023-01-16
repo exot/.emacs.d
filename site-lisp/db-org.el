@@ -608,7 +608,7 @@ PARAMS is a property list of the following parameters:
         (push current date-range)))
     (setq date-range (nreverse date-range))
 
-    (insert (format "#+CAPTION: Workload Overview Report at %s with start date [%s]\n"
+    (insert (format "#+CAPTION: Workload Overview Report at [%s] with start date [%s]\n"
                     (format-time-string timestamp-format (current-time))
                     (format-time-string timestamp-format start-date)))
     (insert "| End Time | Planned Total |\n| <r> | <r> |\n|---|\n")
