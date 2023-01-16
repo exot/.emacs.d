@@ -606,7 +606,7 @@ PARAMS is a property list of the following parameters:
                                      (format "+%s" increment)
                                      nil current))
         (push current date-range)))
-    (setq date-range (nreverse date-range))
+    (setq date-range (nreverse (cdr date-range)))
 
     (insert (format "#+CAPTION: Workload Overview Report at [%s] with start date [%s]\n"
                     (format-time-string timestamp-format (current-time))
