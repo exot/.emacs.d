@@ -1188,11 +1188,17 @@ not."
 (defun db/org-get-location (&optional arg)
   "Interactively query for location and return mark.
 
-Searches through the current buffer if that one is an Org buffer
-and is associated with a file, or `db/org-default-org-file'.
+When ARG is nil, this functions by default searches through the
+current buffer if that one is an Org buffer and is associated
+with a file, and `db/org-default-org-file' otherwise.  If the
+current buffer is associated with a file from `org-agenda-files',
+though, the search is extended through all agenda files (the
+rationale being that Org agenda files are always considered to be
+one large data collection).
+
 When ARG is non-nil, search through all files in the variables
 `org-agenda-files', `org-agenda-text-search-extra-files', and the
-current file or `db/org-default-org-file'.
+current file or `db/org-default-org-file' as described above.
 
 Search is always conducted up to level 9.  If the selected
 location does not have an associated point or mark, error out.
@@ -1206,14 +1212,34 @@ linking to any item."
         (default-buffer (if (and (buffer-file-name) (derived-mode-p 'org-mode))
                             (current-buffer)
                           (find-file-noselect db/org-default-org-file))))
+
     (when (null default-buffer)
       (user-error "Current buffer is not associated with a file and `db/org-default-org-file' does not exist; nothing to search through"))
-    (let* ((org-refile-targets (append (and arg
-                                            `((org-agenda-files :maxlevel . 9)
-                                              (,(cl-remove-if-not #'stringp
+
+    (let* ((current-buffer-is-in-org-agenda-files? (--when-let (buffer-file-name)
+                                                     (-any (-partial #'file-equal-p it)
+                                                           org-agenda-files)))
+
+           ;; Default file(s) to search through; note that `default-buffer' is
+           ;; provided later to `org-refile-get-location' as additional argument
+           (org-refile-targets (append (if current-buffer-is-in-org-agenda-files?
+                                           '((org-agenda-files :maxlevel . 9))
+                                         '((nil :maxlevel . 9)))
+
+                                       ;; When ARG is non-nil, add all agenda
+                                       ;; files, but only if not already done
+                                       ;; so.
+                                       (and arg
+                                            (not current-buffer-is-in-org-agenda-files?)
+                                            '((org-agenda-files :maxlevel . 9)))
+
+                                       ;; When ARG is non-nil, add extra file
+                                       ;; files to search though.
+                                       (and arg
+                                            `((,(cl-remove-if-not #'stringp
                                                                   org-agenda-text-search-extra-files)
-                                               :maxlevel . 9)))
-                                       '((nil :maxlevel . 9))))
+                                               :maxlevel . 9)))))
+
            (target-pointer (org-refile-get-location nil default-buffer))
            (pom (nth 3 target-pointer)))
       (cond
