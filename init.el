@@ -3073,7 +3073,7 @@ With given ARG, display files in `db/important-document-path’."
   :ensure t
   :commands (define-word-at-point define-word))
 
-(use-package dilctcc
+(use-package dictcc
   :ensure t
   :commands (dictcc)
   :config (require 'gnutls))
