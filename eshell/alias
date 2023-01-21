@@ -4,4 +4,5 @@ alias l ls -1
 alias ll ls -l $*
 alias la ls -al $*
 alias d dired-other-window $1
+alias less view-file $1
 alias ff find-file-other-window $1
