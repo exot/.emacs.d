@@ -1541,7 +1541,8 @@ point to the beginning of buffer first."
 
 (use-package magit
   :ensure t
-  :commands (magit-status)
+  :commands (magit-status
+             magit-list-repositories)
   :init (setq magit-diff-refine-hunk nil
               magit-commit-show-diff nil)
   :config (progn
@@ -1550,9 +1551,6 @@ point to the beginning of buffer first."
             (global-git-commit-mode +1)
 
             (db/sync-magit-repos-from-projectile)))
-
-(use-package magit-repos
-  :commands (magit-list-repositories))
 
 (use-package projectile
   :ensure t
