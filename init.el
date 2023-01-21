@@ -469,6 +469,8 @@
 
 ;; * Basic Builtin Packages
 
+;; All packages configured here should be part of Emacs core.
+
 (use-package abbrev
   :init (setq save-abbrevs 'silently
               abbrev-file-name (expand-file-name "private/abbrev_defs"))
@@ -531,6 +533,13 @@
               diary-show-holidays-flag t
               calendar-view-holidays-initially-flag nil))
 
+(use-package dictionary
+  :init (setq dictionary-server "dict.org"))
+
+(use-package eww
+  :init (setq eww-bookmarks-directory
+              (expand-file-name "private/" emacs-d)))
+
 (use-package ffap
   ;; Inhibit Emacs from pinging hostnames; see
   ;; https://www.n16f.net/blog/investigating-a-ffap-issue-in-emacs/
@@ -580,6 +589,13 @@
 (use-package re-builder
   :commands (re-builder)
   :init (setq reb-re-syntax 'string))
+
+(use-package shr
+  :init (setq shr-use-fonts nil
+              shr-use-colors nil
+              shr-max-image-proportion 0.7
+              shr-image-animate nil
+              shr-width (current-fill-column)))
 
 (use-package server
   :commands (server-running-p server-start)
@@ -3027,8 +3043,8 @@ With given ARG, display files in `db/important-document-path’."
 
 ;; * Various Mode Configurations
 
-;; These are packages that are not essential, but still nice to have.  They
-;; provide optional functionality and may redefine builtin commands.
+;; These are external packages that are not essential, but still nice to have.
+;; They provide optional functionality and may redefine builtin commands.
 
 (use-package cperl-mode
   :ensure t
@@ -3059,13 +3075,10 @@ With given ARG, display files in `db/important-document-path’."
   :ensure t
   :commands (define-word-at-point define-word))
 
-(use-package dictcc
+(use-package dilctcc
   :ensure t
   :commands (dictcc)
   :config (require 'gnutls))
-
-(use-package dictionary
-  :init (setq dictionary-server "dict.org"))
 
 (use-package edit-list
   :ensure t
@@ -3084,10 +3097,6 @@ With given ARG, display files in `db/important-document-path’."
               (add-hook 'message-setup-hook
                         #'(lambda ()
                             (eproject-mode -1))))))
-
-(use-package eww
-  :init (setq eww-bookmarks-directory
-              (expand-file-name "private/" emacs-d)))
 
 (use-package haskell-mode
   :config (progn
@@ -3150,13 +3159,6 @@ With given ARG, display files in `db/important-document-path’."
             ;; environments; this does not work when only calling
             ;; `pyvenv-deactivate', though.
             (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
-
-(use-package shr
-  :init (setq shr-use-fonts nil
-              shr-use-colors nil
-              shr-max-image-proportion 0.7
-              shr-image-animate nil
-              shr-width (current-fill-column)))
 
 (use-package sh-script
   :init (setq sh-basic-offset 2))
