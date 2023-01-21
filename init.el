@@ -1512,6 +1512,9 @@ point to the beginning of buffer first."
 
 ;; * General Programming
 
+;; Configuration that pertains to programming in general, without referring to
+;; any programming language in particular.
+
 (use-package ediff
   :init (setq ediff-diff-options "-w"
               ediff-window-setup-function 'ediff-setup-windows-plain
@@ -1524,6 +1527,11 @@ point to the beginning of buffer first."
                           (bind-key "k" #'ediff-previous-difference ediff-mode-map)))
 
             (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
+
+(use-package flycheck
+  :ensure t
+  :commands (global-flycheck-mode flycheck-mode)
+  :init (setq flycheck-emacs-lisp-load-path 'inherit))
 
 (use-package git-commit
   :commands (global-git-commit-mode)
@@ -1539,6 +1547,22 @@ point to the beginning of buffer first."
                                                 "Tested-by"
                                                 "Reviewed-by")))
 
+(use-package highlight-indentation
+  :commands highlight-indentation-mode)
+
+(use-package iedit
+  :ensure t
+  :commands (iedit-mode))
+
+(use-package lsp-mode
+  :ensure t
+  :init (setq lsp-keymap-prefix "C-c C-l")
+  :commands (lsp lsp-deferred))
+
+(use-package lsp-ui
+  :ensure t
+  :commands (lsp-ui-mode))
+
 (use-package magit
   :ensure t
   :commands (magit-status
@@ -1552,6 +1576,11 @@ point to the beginning of buffer first."
 
             (db/sync-magit-repos-from-projectile)))
 
+(use-package page-break-lines
+  :pin "melpa-stable"
+  :commands (page-break-lines-mode)
+  :diminish page-break-lines-mode)
+
 (use-package projectile
   :ensure t
   :commands (projectile-mode)
@@ -1564,35 +1593,6 @@ point to the beginning of buffer first."
               projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
                                                                emacs-d))
   :diminish projectile-mode)
-
-(use-package counsel-projectile
-  :commands counsel-projectile)
-
-(use-package highlight-indentation
-  :commands highlight-indentation-mode)
-
-(use-package iedit
-  :ensure t
-  :commands (iedit-mode))
-
-(use-package page-break-lines
-  :pin "melpa-stable"
-  :commands (page-break-lines-mode)
-  :diminish page-break-lines-mode)
-
-(use-package flycheck
-  :ensure t
-  :commands (global-flycheck-mode flycheck-mode)
-  :init (setq flycheck-emacs-lisp-load-path 'inherit))
-
-(use-package lsp-mode
-  :ensure t
-  :init (setq lsp-keymap-prefix "C-c C-l")
-  :commands (lsp lsp-deferred))
-
-(use-package lsp-ui
-  :ensure t
-  :commands (lsp-ui-mode))
 
 
 ;; * Mail
