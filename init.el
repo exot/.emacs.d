@@ -932,7 +932,8 @@
           ;; Babel
 
           (setq org-babel-load-languages '((shell . t)
-                                           (emacs-lisp . t)))
+                                           (emacs-lisp . t)
+                                           (sql . t)))
 
           ;; Link shortcuts (some taken from the documentation)
 
