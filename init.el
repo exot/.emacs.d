@@ -467,25 +467,7 @@
 (define-key special-event-map [config-changed-event] 'ignore)
 
 
-;; * Builtin Packages
-
-(use-package misc
-  :commands (zap-up-to-char zap-to-char))
-
-(use-package grep
-  :commands (rgrep zrgrep)
-  :bind (:map grep-mode-map
-              ("C-x C-q" . wgrep-change-to-wgrep-mode)
-              ("C-c C-c" . wgrep-finish-edit))
-  :config (progn
-
-            ;; I am not quite sure why `grep-read-files' is prompting for file
-            ;; names when asking for a file pattern, so let's just hook it up
-            ;; and replace it with something more straightforward.
-            (advice-add 'grep-read-files :around #'db/grep-read-files)))
-
-(use-package winner
-  :commands (winner-mode winner-undo winner-redo))
+;; * Basic Builtin Packages
 
 (use-package abbrev
   :init (setq save-abbrevs 'silently
@@ -496,39 +478,24 @@
   :commands (appt-activate)
   :init (setq appt-display-mode-line nil))
 
-(use-package ispell
-  :commands (ispell-change-directory))
-
-(use-package mailcap
-  :config (progn
-            ;; Remove doc-view so pdf will open with default viewer
-            (setcdr
-             (assoc "application" mailcap-mime-data)
-             (remove '("pdf"
-                       (viewer . doc-view-mode)
-                       (type . "application/pdf")
-                       (test eq window-system 'x))
-                     (cdr (assoc "application" mailcap-mime-data))))))
-
-(use-package quail
-  :config (add-hook 'input-method-activate-hook
-                    #'db/add-symbols-to-TeX-input-method))
-
-(use-package isearch
-  :init (setq isearch-allow-scroll t))
-
-(use-package server
-  :commands (server-running-p server-start)
-  :init (setq server-log t))
-
 (use-package bookmark
   :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
                                                       emacs-d)
               bookmark-menu-confirm-deletion t))
 
-(use-package warnings
-  :config (cl-pushnew '(undo discard-info) warning-suppress-types
-                      :test #'equal))
+(use-package browser-url
+  :init (setq browse-url-browser-function 'browse-url-generic
+              browse-url-generic-program "firefox"))
+
+(use-package calc
+  ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
+  :defines (math-additional-units
+            math-units-table)
+  :init (setq math-additional-units
+              '((bit nil "Bit")
+                (byte "8 * bit" "Byte")
+                (bps "bit / s" "Bit per second"))
+              math-units-table nil))
 
 (use-package calender
   :init (setq calendar-date-style 'iso
@@ -564,27 +531,59 @@
               diary-show-holidays-flag t
               calendar-view-holidays-initially-flag nil))
 
+(use-package ffap
+  ;; Inhibit Emacs from pinging hostnames; see
+  ;; https://www.n16f.net/blog/investigating-a-ffap-issue-in-emacs/
+  :init (setq ffap-machine-p-local 'accept
+              ffap-machine-p-known 'accept
+              ffap-machine-p-unknown 'reject))
+
+(use-package grep
+  :commands (rgrep zrgrep)
+  :bind (:map grep-mode-map
+              ("C-x C-q" . wgrep-change-to-wgrep-mode)
+              ("C-c C-c" . wgrep-finish-edit))
+  :config (progn
+
+            ;; I am not quite sure why `grep-read-files' is prompting for file
+            ;; names when asking for a file pattern, so let's just hook it up
+            ;; and replace it with something more straightforward.
+            (advice-add 'grep-read-files :around #'db/grep-read-files)))
+
+(use-package image
+  :init (setq image-use-external-converter t))
+
+(use-package isearch
+  :init (setq isearch-allow-scroll t))
+
+(use-package ispell
+  :commands (ispell-change-directory))
+
+(use-package mailcap
+  :config (progn
+            ;; Remove doc-view so pdf will open with default viewer
+            (setcdr
+             (assoc "application" mailcap-mime-data)
+             (remove '("pdf"
+                       (viewer . doc-view-mode)
+                       (type . "application/pdf")
+                       (test eq window-system 'x))
+                     (cdr (assoc "application" mailcap-mime-data))))))
+
+(use-package misc
+  :commands (zap-up-to-char zap-to-char))
+
+(use-package quail
+  :config (add-hook 'input-method-activate-hook
+                    #'db/add-symbols-to-TeX-input-method))
+
 (use-package re-builder
   :commands (re-builder)
   :init (setq reb-re-syntax 'string))
 
-(use-package browser-url
-  :init (setq browse-url-browser-function 'browse-url-generic
-              browse-url-generic-program "firefox"))
-
-(use-package tramp
-  :init (setq tramp-default-method (if on-windows "pscp" "scp")
-              tramp-completion-use-auth-sources nil))
-
-(use-package calc
-  ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
-  :defines (math-additional-units
-            math-units-table)
-  :init (setq math-additional-units
-              '((bit nil "Bit")
-                (byte "8 * bit" "Byte")
-                (bps "bit / s" "Bit per second"))
-              math-units-table nil))
+(use-package server
+  :commands (server-running-p server-start)
+  :init (setq server-log t))
 
 (use-package tab-bar
   :init (setq tab-bar-show t
@@ -596,15 +595,16 @@
   :config (progn
             (tab-bar-history-mode +1)))
 
-(use-package ffap
-  ;; Inhibit Emacs from pinging hostnames; see
-  ;; https://www.n16f.net/blog/investigating-a-ffap-issue-in-emacs/
-  :init (setq ffap-machine-p-local 'accept
-              ffap-machine-p-known 'accept
-              ffap-machine-p-unknown 'reject))
+(use-package tramp
+  :init (setq tramp-default-method (if on-windows "pscp" "scp")
+              tramp-completion-use-auth-sources nil))
 
-(use-package image
-  :init (setq image-use-external-converter t))
+(use-package warnings
+  :config (cl-pushnew '(undo discard-info) warning-suppress-types
+                      :test #'equal))
+
+(use-package winner
+  :commands (winner-mode winner-undo winner-redo))
 
 
 ;; * Essential external packages
