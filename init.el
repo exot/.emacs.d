@@ -603,6 +603,9 @@
               ffap-machine-p-known 'accept
               ffap-machine-p-unknown 'reject))
 
+(use-package image
+  :init (setq image-use-external-converter t))
+
 
 ;; * Essential external packages
 
