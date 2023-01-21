@@ -596,6 +596,13 @@
   :config (progn
             (tab-bar-history-mode +1)))
 
+(use-package ffap
+  ;; Inhibit Emacs from pinging hostnames; see
+  ;; https://www.n16f.net/blog/investigating-a-ffap-issue-in-emacs/
+  :init (setq ffap-machine-p-local 'accept
+              ffap-machine-p-known 'accept
+              ffap-machine-p-unknown 'reject))
+
 
 ;; * Essential external packages
 
