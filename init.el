@@ -407,7 +407,8 @@
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
-      redisplay-skip-fontification-on-input t)
+      redisplay-skip-fontification-on-input t
+      switch-to-buffer-obey-display-actions t)
 
 (when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
   (setq x-wait-for-event-timeout nil))
