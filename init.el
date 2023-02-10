@@ -3168,6 +3168,13 @@ With given ARG, display files in `db/important-document-path’."
 (use-package sh-script
   :init (setq sh-basic-offset 2))
 
+(use-package textile-mode
+  :config (progn
+            ;; Do not wrap lines automatically in textile mode, as text produced
+            ;; in this mode is usually copied to Redmine Wiki pages later on.
+            (add-hook 'textile-mode-hook #'turn-off-auto-fill)
+            (add-hook 'textile-mode-hook #'turn-on-visual-line-mode)))
+
 (use-package timeline-tools
   :load-path "site-lisp"
   :commands (timeline-tools-format-timeline
