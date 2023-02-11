@@ -385,7 +385,6 @@
       mouse-yank-at-point t
       require-final-newline nil
       sentence-end-double-space t
-      recenter-positions '(top middle bottom)
       scroll-conservatively 10
       message-log-max t
       inhibit-eol-conversion nil
@@ -398,7 +397,6 @@
       delete-by-moving-to-trash t
       delete-trailing-lines nil
       x-underline-at-descent-line t
-      search-whitespace-regexp "[ \t\r\n]+"
       visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
       history-delete-duplicates t
       track-eol t
@@ -407,8 +405,7 @@
       next-error-message-highlight t
       help-enable-symbol-autoload t
       describe-bindings-outline t
-      redisplay-skip-fontification-on-input t
-      switch-to-buffer-obey-display-actions t)
+      redisplay-skip-fontification-on-input t)
 
 (when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
   (setq x-wait-for-event-timeout nil))
@@ -564,7 +561,8 @@
   :init (setq image-use-external-converter t))
 
 (use-package isearch
-  :init (setq isearch-allow-scroll t))
+  :init (setq isearch-allow-scroll t
+              search-whitespace-regexp "[ \t\r\n]+"))
 
 (use-package ispell
   :commands (ispell-change-directory))
@@ -619,6 +617,11 @@
 (use-package warnings
   :config (cl-pushnew '(undo discard-info) warning-suppress-types
                       :test #'equal))
+
+(use-package window
+  :init (setq switch-to-buffer-obey-display-actions t
+              switch-to-buffer-in-dedicated-window 'pop
+              recenter-positions '(top middle bottom)))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
