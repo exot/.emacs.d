@@ -28,25 +28,24 @@
   ;; idea to split the current window is from
   ;; http://howardism.org/Technical/Emacs/eshell-fun.html
   (interactive "P")
-  (if (string= "eshell-mode" major-mode)
+  (if (derived-mode-p 'eshell-mode)
       ;; bury buffer; reopen with current working directory if arg is given
       (progn
         (bury-buffer)
-        (delete-window)
         (and arg (db/run-or-hide-eshell arg)))
     (if-let ((eshell-window (db/find-window-by-buffer-mode 'eshell-mode)))
         (select-window eshell-window)
       ;; open eshell
-      (let ((current-dir (expand-file-name default-directory))
-            (height      (/ (window-total-height) 3)))
-        (split-window-vertically (- height))
-        (other-window 1)
+      (let* ((current-dir (expand-file-name default-directory))
+             (height      (/ (frame-text-lines) 3)))
+        (select-window (split-window (frame-root-window) (- height) 'below))
         (eshell 1)
         (when arg
           (end-of-line)
           (eshell-kill-input)
           (insert (format "cd '%s'" current-dir))
-          (eshell-send-input))))))
+          (eshell-send-input))))
+    (set-window-dedicated-p (selected-window) t)))
 
 (defun eshell-clear-buffer ()
   "Clear terminal."

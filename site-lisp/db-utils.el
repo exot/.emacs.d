@@ -75,15 +75,15 @@ If already in `*ansi-term*' buffer, bury it."
               (if-let ((shell-window (db/find-window-by-buffer-mode 'shell-mode)))
                   (select-window shell-window)
                 ;; open shell in buffer with height of ⅓ of current window
-                (let ((height (/ (window-total-height) 3)))
-                  (shell)
-                  (enlarge-window (- height (window-total-height)))))))
+                (let ((height (/ (frame-text-lines) 3)))
+                  (select-window (split-window (frame-root-window) (- height) 'below))
+                  (shell)))
+              (set-window-dedicated-p (selected-window) t)))
     (if (not arg)
         ;; toggle shell window
         (if (not (derived-mode-p 'shell-mode))
             (change-to-shell)
-          (bury-buffer)
-          (delete-window))
+          (bury-buffer))
 
       ;; unconditionally go to shell, and also change to cwd
       (let ((current-dir (expand-file-name default-directory)))
