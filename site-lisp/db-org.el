@@ -198,11 +198,15 @@ timestamps (appointments), and deadlines (assuming they are only
 shown because they are due)."
   (let (total)
     (save-excursion
-      (while (< (point) limit)
-        (when (member (org-get-at-bol 'type)
-                      '("scheduled" "past-scheduled" "timestamp" "deadline" "block"))
-          (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total))
-        (forward-line)))
+      (let (already-seen)
+        (while (< (point) limit)
+          (when (member (org-get-at-bol 'type)
+                        '("scheduled" "past-scheduled" "timestamp" "deadline" "block"))
+            (let ((item-id (org-with-point-at (org-get-at-bol 'org-hd-marker) (org-id-get-create))))
+              (unless (member item-id already-seen)
+                (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total)
+                (push item-id already-seen))))
+          (forward-line))))
     (org-duration-from-minutes
      (cl-reduce #'+
                 (mapcar #'org-duration-to-minutes
