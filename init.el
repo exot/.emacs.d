@@ -628,7 +628,13 @@
               recenter-positions '(top middle bottom))
   :config (progn
             (add-to-list 'display-buffer-alist
-                         '("^\\*Async Shell Command*" . (display-buffer-no-window)))))
+                         '("^\\*Async Shell Command*" display-buffer-no-window))
+            (add-to-list 'display-buffer-alist
+                         '("^\\*Warnings\\*"
+                           (display-buffer-in-side-window)
+                           (side . right)
+                           (slot . 0)
+                           (window-width . 0.33)))))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
