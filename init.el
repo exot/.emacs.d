@@ -346,7 +346,9 @@
             db/after-init-load-files))
 
 
-;; * General configuration
+;; * Core Configuration
+
+;; Configuration of C-level variables, startup.el, MULE, simple.el
 
 (use-package cl-lib
   :demand t)
@@ -361,16 +363,15 @@
 (setq buffer-file-coding-system 'utf-8)
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
+;; Startup configuration
 (setq inhibit-startup-message t
       inhibit-default-init t
       frame-inhibit-implied-resize t
       initial-scratch-message nil
       initial-major-mode 'fundamental-mode
       ring-bell-function #'ignore
-      garbage-collection-messages nil
       load-prefer-newer nil             ; t breaks `org-reload'
-      auth-sources '("~/.authinfo.gpg")
-      auth-source-save-behavior nil)
+      )
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
@@ -379,20 +380,20 @@
 
 (setq frame-title-format "emacs")
 
-(setq select-enable-clipboard t
-      select-enable-primary t
+(setq select-enable-clipboard t         ; TODO select.el
+      select-enable-primary t           ; TODO select.el
       save-interprogram-paste-before-kill t
-      mouse-yank-at-point t
-      require-final-newline nil
-      sentence-end-double-space t
+      mouse-yank-at-point t             ; TODO? mouse.el
+      require-final-newline nil         ; TODO files.el
+      sentence-end-double-space t       ; TODO? paragraphs.el
       scroll-conservatively 10
       message-log-max t
       inhibit-eol-conversion nil
-      tab-always-indent 'complete
-      completion-cycle-threshold 10
+      tab-always-indent 'complete       ; TODO indent.el
+      completion-cycle-threshold 10     ; TODO minibuffer.el
       enable-recursive-minibuffers t
       set-mark-command-repeat-pop t
-      large-file-warning-threshold 10000000
+      large-file-warning-threshold 10000000 ; TODO files.el
       echo-keystrokes 0.1
       delete-by-moving-to-trash t
       delete-trailing-lines nil
@@ -400,11 +401,12 @@
       visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
       history-delete-duplicates t
       track-eol t
+      garbage-collection-messages nil
       gc-cons-threshold (* 100 1024 1024)   ; 100mb
       read-process-output-max (* 1024 1024) ; 1mb
       next-error-message-highlight t
-      help-enable-symbol-autoload t
-      describe-bindings-outline t
+      help-enable-symbol-autoload t     ; TODO? help.el
+      describe-bindings-outline t       ; TODO? help.el
       redisplay-skip-fontification-on-input t)
 
 (when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
@@ -439,8 +441,6 @@
 (setq undo-limit 80000000)
 
 (setq-default async-shell-command-buffer 'new-buffer)
-(add-to-list 'display-buffer-alist
-             '("^\\*Async Shell Command*" . (display-buffer-no-window)))
 
 (put 'set-goal-column 'disabled nil)
 (put 'upcase-region 'disabled nil)
@@ -477,6 +477,10 @@
 (use-package appt
   :commands (appt-activate)
   :init (setq appt-display-mode-line nil))
+
+(use-package auth-sources
+  :init (setq auth-sources '("~/.authinfo.gpg")
+              auth-source-save-behavior nil))
 
 (use-package bookmark
   :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
@@ -621,7 +625,10 @@
 (use-package window
   :init (setq switch-to-buffer-obey-display-actions t
               switch-to-buffer-in-dedicated-window 'pop
-              recenter-positions '(top middle bottom)))
+              recenter-positions '(top middle bottom))
+  :config (progn
+            (add-to-list 'display-buffer-alist
+                         '("^\\*Async Shell Command*" . (display-buffer-no-window)))))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
