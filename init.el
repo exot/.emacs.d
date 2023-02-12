@@ -325,7 +325,7 @@
 (add-hook 'after-init-hook #'db/run-init)
 
 
-;; * Personal customization
+;; * Personal Customization Variables
 
 (use-package db-customize
   :demand t
@@ -347,8 +347,6 @@
 
 
 ;; * Core Configuration
-
-;; Configuration of C-level variables, startup.el, MULE, simple.el
 
 (use-package cl-lib
   :demand t)
@@ -447,27 +445,12 @@
 (put 'downcase-region 'disabled nil)
 (put 'narrow-to-region 'disabled nil)
 
-(setq-default savehist-file (expand-file-name "savehist" emacs-d))
-
-(setq default-input-method "TeX")
-
-
-;; * Fixes
-
-(with-eval-after-load 'enriched
-  (defun enriched-decode-display-prop (start end &optional params)
-    (ignore params)
-    (list start end)))
-
-;; Disable gconf settings, as it might interfere with ours.  Cf.
+;; Fix: disable gconf settings, as it might interfere with ours, see
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25228 and
 ;; https://emacs.stackexchange.com/questions/32641/something-changes-the-default-face-in-my-emacs.
 (define-key special-event-map [config-changed-event] 'ignore)
 
-
-;; * Basic Builtin Packages
-
-;; All packages configured here should be part of Emacs core.
+;; Individual package configuration from here on.
 
 (use-package abbrev
   :init (setq save-abbrevs 'silently
@@ -586,6 +569,7 @@
   :commands (zap-up-to-char zap-to-char))
 
 (use-package quail
+  :init (setq default-input-method "TeX")
   :config (add-hook 'input-method-activate-hook
                     #'db/add-symbols-to-TeX-input-method))
 
@@ -593,16 +577,20 @@
   :commands (re-builder)
   :init (setq reb-re-syntax 'string))
 
+(use-package savehist
+  :commands (savehist-mode)
+  :init (setq savehist-file (expand-file-name "savehist" emacs-d)))
+
+(use-package server
+  :commands (server-running-p server-start)
+  :init (setq server-log t))
+
 (use-package shr
   :init (setq shr-use-fonts nil
               shr-use-colors nil
               shr-max-image-proportion 0.7
               shr-image-animate nil
               shr-width (current-fill-column)))
-
-(use-package server
-  :commands (server-running-p server-start)
-  :init (setq server-log t))
 
 (use-package tab-bar
   :init (setq tab-bar-show t
@@ -3104,6 +3092,15 @@ With given ARG, display files in `db/important-document-path’."
 (use-package edit-list
   :ensure t
   :commands edit-list)
+
+(use-package enriched
+  :defer t
+  :config (progn
+            ;; https://www.opencve.io/cve/CVE-2017-14482 for Emacs before 25.3
+            (when (version< emacs-version "25.3")
+              (defun enriched-decode-display-prop (start end &optional params)
+                (ignore params)
+                (list start end)))))
 
 (use-package expand-region
   :ensure t
