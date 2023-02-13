@@ -622,7 +622,12 @@
                            (display-buffer-in-side-window)
                            (side . right)
                            (slot . 0)
-                           (window-width . 0.33)))))
+                           (window-width . 0.33)))
+            (add-to-list 'display-buffer-alist
+                         '("^\\*Help\\*"
+                           (display-buffer-reuse-window
+                            display-buffer-pop-up-window)
+                           (inhibit-same-window . t)))))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
