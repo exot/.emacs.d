@@ -23,10 +23,8 @@
 ;; Various
 
 (defun db/run-or-hide-eshell (arg)
-  "Opens an eshell buffer if not already in one, and otherwise
-  returns to where we have been before."
-  ;; idea to split the current window is from
-  ;; http://howardism.org/Technical/Emacs/eshell-fun.html
+  "Opens an eshell buffer if not already in one.
+Otherwise moves the cursor to the window where we have been before."
   (interactive "P")
   (if (derived-mode-p 'eshell-mode)
       ;; bury buffer; reopen with current working directory if arg is given
@@ -35,17 +33,16 @@
         (and arg (db/run-or-hide-eshell arg)))
     (if-let ((eshell-window (db/find-window-by-buffer-mode 'eshell-mode)))
         (select-window eshell-window)
-      ;; open eshell
-      (let* ((current-dir (expand-file-name default-directory))
-             (height      (/ (frame-text-lines) 3)))
-        (select-window (split-window (frame-root-window) (- height) 'below))
-        (eshell 1)
+      ;; No running eshell found, open new one.
+      (let* ((current-dir (expand-file-name default-directory)))
+        (--if-let (display-buffer (eshell 1))
+            (select-window it)
+          (error "Could not start eshell (`display-buffer' returned nil)"))
         (when arg
           (end-of-line)
           (eshell-kill-input)
           (insert (format "cd '%s'" current-dir))
-          (eshell-send-input))))
-    (set-window-dedicated-p (selected-window) t)))
+          (eshell-send-input))))))
 
 (defun eshell-clear-buffer ()
   "Clear terminal."

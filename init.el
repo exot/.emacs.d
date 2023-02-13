@@ -623,11 +623,20 @@
                            (side . right)
                            (slot . 0)
                            (window-width . 0.33)))
+            ;; Inspired by masteringemacs
             (add-to-list 'display-buffer-alist
                          '("^\\*Help\\*"
                            (display-buffer-reuse-window
                             display-buffer-pop-up-window)
-                           (inhibit-same-window . t)))))
+                           (inhibit-same-window . t)))
+            ;; Inspired by masteringemacs
+            (add-to-list 'display-buffer-alist
+                         '("^\\*e?shell\\*"
+                           display-buffer-in-direction
+                           (direction . bottom)
+                           (window . root)
+                           (window-height . 0.33)
+                           (dedicated . t)))))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))

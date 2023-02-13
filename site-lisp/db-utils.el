@@ -74,11 +74,9 @@ If already in `*ansi-term*' buffer, bury it."
   (cl-flet ((change-to-shell ()
               (if-let ((shell-window (db/find-window-by-buffer-mode 'shell-mode)))
                   (select-window shell-window)
-                ;; open shell in buffer with height of ⅓ of current window
-                (let ((height (/ (frame-text-lines) 3)))
-                  (select-window (split-window (frame-root-window) (- height) 'below))
-                  (shell)))
-              (set-window-dedicated-p (selected-window) t)))
+                (--if-let (display-buffer (shell))
+                    (select-window it)
+                  (error "Could not start shell (`display-buffer' returned nil)")))))
     (if (not arg)
         ;; toggle shell window
         (if (not (derived-mode-p 'shell-mode))
