@@ -642,19 +642,21 @@
   :commands (winner-mode winner-undo winner-redo))
 
 
-;; * Essential external packages
+;; * Basic External Packages
+
+(use-package crux
+  :ensure t
+  :commands (crux-eval-and-replace
+             crux-smart-open-line-above
+             crux-kill-whole-line
+             crux-cleanup-buffer-or-region
+             crux-delete-buffer-and-file))
 
 (use-package dash
   :defer nil
   :config (progn
             (global-dash-fontify-mode)
             (dash-register-info-lookup)))
-
-(use-package hydra
-  :pin "melpa-stable")
-
-;; `lv' is a dependency of `hydra'
-(add-to-list 'package-pinned-packages '(lv . "melpa-stable"))
 
 (use-package db-utils
   :commands (endless/fill-or-unfill
@@ -703,13 +705,24 @@
   :pin "melpa-stable"
   :commands (exec-path-from-shell-copy-envs))
 
-(use-package crux
+(use-package hydra
+  :pin "melpa-stable")
+
+;; `lv' is a dependency of `hydra'
+(add-to-list 'package-pinned-packages '(lv . "melpa-stable"))
+
+(use-package projectile
   :ensure t
-  :commands (crux-eval-and-replace
-             crux-smart-open-line-above
-             crux-kill-whole-line
-             crux-cleanup-buffer-or-region
-             crux-delete-buffer-and-file))
+  :commands (projectile-mode)
+  :defines (projectile-known-projects)
+  :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
+  :init (setq projectile-switch-project-action 'projectile-dired
+              projectile-completion-system 'helm
+              projectile-ignored-project-function #'file-remote-p
+              projectile-create-missing-test-files t
+              projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
+                                                               emacs-d))
+  :diminish projectile-mode)
 
 
 ;; * Text editing
@@ -1605,19 +1618,6 @@ point to the beginning of buffer first."
   :pin "melpa-stable"
   :commands (page-break-lines-mode)
   :diminish page-break-lines-mode)
-
-(use-package projectile
-  :ensure t
-  :commands (projectile-mode)
-  :defines (projectile-known-projects)
-  :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
-  :init (setq projectile-switch-project-action 'projectile-dired
-              projectile-completion-system 'helm
-              projectile-ignored-project-function #'file-remote-p
-              projectile-create-missing-test-files t
-              projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
-                                                               emacs-d))
-  :diminish projectile-mode)
 
 
 ;; * Mail
