@@ -1058,17 +1058,14 @@ cache if that's in use."
         ;; Update headline
         (org-edit-headline new-headline)
 
-        ;; Store note manually (I tried using `org-add-log-note', but did not
-        ;; succeed …); maybe use the logging function from
+        ;; Code to add note interactively taken from
         ;; https://sachachua.com/blog/2022/11/logging-sent-messages-to-org-mode-with-message-sent-hook/
-        ;; instead?
-        (goto-char (org-log-beginning 'create))
-        (indent-according-to-mode)
-        (insert "- Note taken on ")
-        (org-insert-time-stamp (current-time) t t)
-        (insert " \\\\\n")
-        (indent-according-to-mode)
-        (insert (format "  Changed headline from: %s\n" old-headline)))))
+        (move-marker org-log-note-return-to (point))
+        (move-marker org-log-note-marker (point))
+        (with-temp-buffer
+          (insert (format "Changed headline from: %s\n" old-headline))
+          (let ((org-log-note-purpose 'note))
+            (org-store-log-note))))))
 
   (when org-refile-use-cache
     (org-refile-cache-clear))
