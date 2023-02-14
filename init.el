@@ -568,6 +568,9 @@
 (use-package misc
   :commands (zap-up-to-char zap-to-char))
 
+(use-package project
+  :init (setq project-switch-commands 'project-dired))
+
 (use-package quail
   :init (setq default-input-method "TeX")
   :config (add-hook 'input-method-activate-hook
