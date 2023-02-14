@@ -1058,7 +1058,10 @@ cache if that's in use."
         ;; Update headline
         (org-edit-headline new-headline)
 
-        ;; Store note manually (I tried using `org-add-log-note', but did not succeed …)
+        ;; Store note manually (I tried using `org-add-log-note', but did not
+        ;; succeed …); maybe use the logging function from
+        ;; https://sachachua.com/blog/2022/11/logging-sent-messages-to-org-mode-with-message-sent-hook/
+        ;; instead?
         (goto-char (org-log-beginning 'create))
         (indent-according-to-mode)
         (insert "- Note taken on ")
