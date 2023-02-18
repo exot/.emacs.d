@@ -455,11 +455,6 @@
 
 ;; Individual package configuration from here on.
 
-(use-package abbrev
-  :init (setq save-abbrevs 'silently
-              abbrev-file-name (expand-file-name "private/abbrev_defs"))
-  :diminish abbrev-mode)
-
 (use-package appt
   :commands (appt-activate)
   :init (setq appt-display-mode-line nil))
@@ -467,11 +462,6 @@
 (use-package auth-sources
   :init (setq auth-sources '("~/.authinfo.gpg")
               auth-source-save-behavior nil))
-
-(use-package bookmark
-  :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
-                                                      emacs-d)
-              bookmark-menu-confirm-deletion t))
 
 (use-package browser-url
   :init (setq browse-url-browser-function 'browse-url-generic
@@ -521,9 +511,6 @@
               diary-show-holidays-flag t
               calendar-view-holidays-initially-flag nil))
 
-(use-package dictionary
-  :init (setq dictionary-server "dict.org"))
-
 (use-package eww
   :init (setq eww-bookmarks-directory
               (expand-file-name "private/" emacs-d)))
@@ -550,13 +537,6 @@
 (use-package image
   :init (setq image-use-external-converter t))
 
-(use-package isearch
-  :init (setq isearch-allow-scroll t
-              search-whitespace-regexp "[ \t\r\n]+"))
-
-(use-package ispell
-  :commands (ispell-change-directory))
-
 (use-package mailcap
   :config (progn
             ;; Remove doc-view so pdf will open with default viewer
@@ -567,9 +547,6 @@
                        (type . "application/pdf")
                        (test eq window-system 'x))
                      (cdr (assoc "application" mailcap-mime-data))))))
-
-(use-package misc
-  :commands (zap-up-to-char zap-to-char))
 
 (use-package project
   :init (setq project-switch-commands 'project-dired))
@@ -731,6 +708,14 @@
 
 
 ;; * Text editing
+
+(use-package abbrev
+  :init (setq save-abbrevs 'silently
+              abbrev-file-name (expand-file-name "private/abbrev_defs"))
+  :diminish abbrev-mode)
+
+(use-package dictionary
+  :init (setq dictionary-server "dict.org"))
 
 (use-package electric
   :commands (electric-quote-mode))
@@ -2493,6 +2478,11 @@ With given ARG, display files in `db/important-document-path’."
               bm-wrap-immediately t
               bm-wrap-search t))
 
+(use-package bookmark
+  :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
+                                                      emacs-d)
+              bookmark-menu-confirm-deletion t))
+
 (use-package dumb-jump
   :commands (dumb-jump-xref-activate)
   :init (progn
@@ -2510,6 +2500,10 @@ With given ARG, display files in `db/important-document-path’."
               imenu-max-item-length 100
               imenu-use-popup-menu nil
               imenu-eager-completion-buffer t))
+
+(use-package isearch
+  :init (setq isearch-allow-scroll t
+              search-whitespace-regexp "[ \t\r\n]+"))
 
 (use-package goto-last-change
   :commands goto-last-change)
@@ -3065,7 +3059,7 @@ With given ARG, display files in `db/important-document-path’."
                       #'(lambda () (setq ispell-parser 'tex)))))
 
 
-;; * Various Mode Configurations
+;; * Other Mode Configurations
 
 ;; These are external packages that are not essential, but still nice to have.
 ;; They provide optional functionality and may redefine builtin commands.
