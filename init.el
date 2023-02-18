@@ -420,6 +420,10 @@
                                      face minibuffer-prompt
                                      cursor-intangible t))
 
+(setq suggest-key-bindings t
+      extended-command-suggest-shorter t
+      completions-detailed t)
+
 ;; Make M-v undo C-v
 (setq scroll-preserve-screen-position 'always)
 
