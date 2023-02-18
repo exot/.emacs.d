@@ -2321,9 +2321,6 @@ The password is assumed to be stored at the PASSWORD property."
 
 ;; * Completion
 
-(use-package hippie-exp
-  :commands (hippie-expand))
-
 (use-package helm
   :ensure t
   :diminish helm-mode
@@ -2385,14 +2382,12 @@ The password is assumed to be stored at the PASSWORD property."
               ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
   :config (progn
             ;; Since we are using `ivy--regex-ignore-order' for completion
-            ;; anyway, providing the an individual restriction in the ivy buffer
-            ;; is not necessary anymore.  Since I often mistype S-SPC for SPC,
+            ;; anyway, providing an individual restriction in the ivy buffer is
+            ;; not necessary anymore.  Since I often mistype S-SPC for SPC,
             ;; loosing the current candidate and annoying myself, removing this
             ;; shortcut is both helpful and not removing necessary
             ;; functionality.
             (define-key ivy-minibuffer-map (kbd "S-SPC") nil)))
-
-(use-package ivy-hydra)
 
 (use-package counsel
   :ensure t
