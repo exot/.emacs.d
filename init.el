@@ -634,8 +634,7 @@
             (add-to-list 'display-buffer-alist
                          '("^\\*Help\\*"
                            (display-buffer-reuse-window
-                            display-buffer-pop-up-window)
-                           (inhibit-same-window . t)))
+                            display-buffer-pop-up-window)))
             ;; Inspired by masteringemacs
             (add-to-list 'display-buffer-alist
                          '("^\\*e?shell\\*"
