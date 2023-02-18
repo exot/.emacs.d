@@ -117,6 +117,7 @@
   ;; Activate modes (packages)
 
   (dolist (mode '(global-undo-tree-mode
+                  minibuffer-depth-indicate-mode
                   ace-window-display-mode
                   key-chord-mode
                   ivy-mode
@@ -353,6 +354,7 @@
 (use-package subr-x
   :demand t)
 
+;; Encoding: use UTF-8 everywhere
 (set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -381,18 +383,14 @@
       select-enable-primary t           ; TODO select.el
       save-interprogram-paste-before-kill t
       mouse-yank-at-point t             ; TODO? mouse.el
-      require-final-newline nil         ; TODO files.el
-      sentence-end-double-space t       ; TODO? paragraphs.el
       scroll-conservatively 10
+      scroll-preserve-screen-position 'always ; Make M-v undo C-v
       message-log-max t
       inhibit-eol-conversion nil
       tab-always-indent 'complete       ; TODO indent.el
-      completion-cycle-threshold 10     ; TODO minibuffer.el
       enable-recursive-minibuffers t
       set-mark-command-repeat-pop t
-      large-file-warning-threshold 10000000 ; TODO files.el
       echo-keystrokes 0.1
-      delete-by-moving-to-trash t
       delete-trailing-lines nil
       x-underline-at-descent-line t
       visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
@@ -404,13 +402,17 @@
       next-error-message-highlight t
       help-enable-symbol-autoload t     ; TODO? help.el
       describe-bindings-outline t       ; TODO? help.el
-      redisplay-skip-fontification-on-input t)
+      redisplay-skip-fontification-on-input t
+      undo-limit 80000000
+      async-shell-command-buffer 'new-buffer)
+
+(put 'set-goal-column 'disabled nil)
 
 (when (memq system-type '(gnu gnu/linux gnu/kfreebsd))
   (setq x-wait-for-event-timeout nil))
 
 (when on-windows
-  ;; treat memory for display time ...  but hey, this is Windows, memory doesn’t
+  ;; Fix: treat memory for display time ... hey, this is Windows, memory doesn’t
   ;; matter!
   (setq inhibit-compacting-font-caches t))
 
@@ -418,31 +420,6 @@
 (setq minibuffer-prompt-properties '(read-only t
                                      face minibuffer-prompt
                                      cursor-intangible t))
-
-;; Make M-v undo C-v
-(setq scroll-preserve-screen-position 'always)
-
-;; Backups and Autosave
-(defvar backup-dir (expand-file-name "ebackup/" emacs-d))
-(defvar autosave-dir (expand-file-name "eautosave/" emacs-d))
-(setq make-backup-files               t
-      backup-directory-alist          (list (cons ".*" backup-dir))
-      auto-save-list-file-prefix      autosave-dir
-      auto-save-file-name-transforms  `((".*" ,autosave-dir t))
-      version-control                 t
-      kept-old-versions               2
-      kept-new-versions               4
-      delete-old-versions             t
-      vc-make-backup-files            t)
-
-(setq undo-limit 80000000)
-
-(setq-default async-shell-command-buffer 'new-buffer)
-
-(put 'set-goal-column 'disabled nil)
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'narrow-to-region 'disabled nil)
 
 ;; Fix: disable gconf settings, as it might interfere with ours, see
 ;; https://debbugs.gnu.org/cgi/bugreport.cgi?bug=25228 and
@@ -661,6 +638,12 @@
 
 
 ;; * Text editing
+
+(setq sentence-end-double-space t)
+
+(put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
 
 (use-package abbrev
   :init (setq save-abbrevs 'silently
@@ -2107,6 +2090,22 @@ The password is assumed to be stored at the PASSWORD property."
 
 ;; * File Handling
 
+(setq large-file-warning-threshold 10000000
+      delete-by-moving-to-trash t)
+
+;; Backups and Autosave
+(defvar backup-dir (expand-file-name "ebackup/" emacs-d))
+(defvar autosave-dir (expand-file-name "eautosave/" emacs-d))
+(setq make-backup-files               t
+      backup-directory-alist          (list (cons ".*" backup-dir))
+      auto-save-list-file-prefix      autosave-dir
+      auto-save-file-name-transforms  `((".*" ,autosave-dir t))
+      version-control                 t
+      kept-old-versions               2
+      kept-new-versions               4
+      delete-old-versions             t
+      vc-make-backup-files            t)
+
 (use-package dired
   :bind (:map dired-mode-map
               ("e" . db/dired-ediff-files)
@@ -2283,7 +2282,8 @@ The password is assumed to be stored at the PASSWORD property."
 
 (setq suggest-key-bindings t
       extended-command-suggest-shorter t
-      completions-detailed t)
+      completions-detailed t
+      completion-cycle-threshold 10)
 
 (use-package helm
   :ensure t
