@@ -419,10 +419,6 @@
                                      face minibuffer-prompt
                                      cursor-intangible t))
 
-(setq suggest-key-bindings t
-      extended-command-suggest-shorter t
-      completions-detailed t)
-
 ;; Make M-v undo C-v
 (setq scroll-preserve-screen-position 'always)
 
@@ -511,17 +507,6 @@
               diary-show-holidays-flag t
               calendar-view-holidays-initially-flag nil))
 
-(use-package eww
-  :init (setq eww-bookmarks-directory
-              (expand-file-name "private/" emacs-d)))
-
-(use-package ffap
-  ;; Inhibit Emacs from pinging hostnames; see
-  ;; https://www.n16f.net/blog/investigating-a-ffap-issue-in-emacs/
-  :init (setq ffap-machine-p-local 'accept
-              ffap-machine-p-known 'accept
-              ffap-machine-p-unknown 'reject))
-
 (use-package grep
   :commands (rgrep zrgrep)
   :bind (:map grep-mode-map
@@ -534,31 +519,10 @@
             ;; and replace it with something more straightforward.
             (advice-add 'grep-read-files :around #'db/grep-read-files)))
 
-(use-package image
-  :init (setq image-use-external-converter t))
-
-(use-package mailcap
-  :config (progn
-            ;; Remove doc-view so pdf will open with default viewer
-            (setcdr
-             (assoc "application" mailcap-mime-data)
-             (remove '("pdf"
-                       (viewer . doc-view-mode)
-                       (type . "application/pdf")
-                       (test eq window-system 'x))
-                     (cdr (assoc "application" mailcap-mime-data))))))
-
-(use-package project
-  :init (setq project-switch-commands 'project-dired))
-
 (use-package quail
   :init (setq default-input-method "TeX")
   :config (add-hook 'input-method-activate-hook
                     #'db/add-symbols-to-TeX-input-method))
-
-(use-package re-builder
-  :commands (re-builder)
-  :init (setq reb-re-syntax 'string))
 
 (use-package savehist
   :commands (savehist-mode)
@@ -567,13 +531,6 @@
 (use-package server
   :commands (server-running-p server-start)
   :init (setq server-log t))
-
-(use-package shr
-  :init (setq shr-use-fonts nil
-              shr-use-colors nil
-              shr-max-image-proportion 0.7
-              shr-image-animate nil
-              shr-width (current-fill-column)))
 
 (use-package tab-bar
   :init (setq tab-bar-show t
@@ -584,10 +541,6 @@
                                ))
   :config (progn
             (tab-bar-history-mode +1)))
-
-(use-package tramp
-  :init (setq tramp-default-method (if on-windows "pscp" "scp")
-              tramp-completion-use-auth-sources nil))
 
 (use-package warnings
   :config (cl-pushnew '(undo discard-info) warning-suppress-types
@@ -2152,7 +2105,7 @@ The password is assumed to be stored at the PASSWORD property."
   :init (setq smiley-style 'emoji))
 
 
-;; * Dired
+;; * File Handling
 
 (use-package dired
   :bind (:map dired-mode-map
@@ -2267,13 +2220,6 @@ The password is assumed to be stored at the PASSWORD property."
               dired-bind-info nil
               dired-clean-up-buffers-too t))
 
-(use-package dired-subtree
-  :commands (dired-subtree-toggle))
-
-(use-package find-dired
-  :commands (find-dired)
-  :init (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
-
 (use-package dired-open
   :ensure t
   :init (progn
@@ -2292,8 +2238,37 @@ The password is assumed to be stored at the PASSWORD property."
   :commands (dired-recent-mode
              dired-recent-open))
 
+(use-package dired-subtree
+  :commands (dired-subtree-toggle))
+
+(use-package ffap
+  ;; Inhibit Emacs from pinging hostnames; see
+  ;; https://www.n16f.net/blog/investigating-a-ffap-issue-in-emacs/
+  :init (setq ffap-machine-p-local 'accept
+              ffap-machine-p-known 'accept
+              ffap-machine-p-unknown 'reject))
+
+(use-package find-dired
+  :commands (find-dired)
+  :init (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld")))
+
+(use-package mailcap
+  :config (progn
+            ;; Remove doc-view so pdf will open with default viewer
+            (setcdr
+             (assoc "application" mailcap-mime-data)
+             (remove '("pdf"
+                       (viewer . doc-view-mode)
+                       (type . "application/pdf")
+                       (test eq window-system 'x))
+                     (cdr (assoc "application" mailcap-mime-data))))))
+
 (use-package gnus-dired
   :commands (turn-on-gnus-dired-mode))
+
+(use-package tramp
+  :init (setq tramp-default-method (if on-windows "pscp" "scp")
+              tramp-completion-use-auth-sources nil))
 
 (use-package trashed
   ;; A simple dired-like interface to the system trash bin
@@ -2305,6 +2280,10 @@ The password is assumed to be stored at the PASSWORD property."
 
 
 ;; * Completion
+
+(setq suggest-key-bindings t
+      extended-command-suggest-shorter t
+      completions-detailed t)
 
 (use-package helm
   :ensure t
@@ -2511,6 +2490,17 @@ With given ARG, display files in `db/important-document-path’."
 
 ;; * Media
 
+(use-package db-music
+  :init (setq db/auto-playlist-file-function
+              #'(lambda ()
+                  (db/playlist-files-from-git-annex-find
+                   "--metadata db-playlist=include")))
+  :commands (db/play-auto-playlist
+             db/playlist-files-from-git-annex-find
+             db/play-auto-playlist-from-git-annex-find
+             music-control/body
+             db/update-playlist-files))
+
 (use-package emms
   :pin "melpa-stable"
   :commands (emms
@@ -2606,10 +2596,11 @@ With given ARG, display files in `db/important-document-path’."
 
             (run-with-timer 0 3600 #'emms-cache-save)))
 
-;; Make sure emms is up and running when we call functions such as
-;; `emms-play-dired’ etc.
 (use-package emms-source-file
-  :config (require 'emms))
+  :config (progn
+            ;; Make sure emms is up and running when we call functions such as
+            ;; `emms-play-dired’ etc.
+            (require 'emms)))
 
 (use-package db-emms
   :commands (db/emms-source-file-directory-tree-find
@@ -2626,16 +2617,8 @@ With given ARG, display files in `db/important-document-path’."
             (require 'emms)
             (require 'helm-adaptive)))
 
-(use-package db-music
-  :init (setq db/auto-playlist-file-function
-              #'(lambda ()
-                  (db/playlist-files-from-git-annex-find
-                   "--metadata db-playlist=include")))
-  :commands (db/play-auto-playlist
-             db/playlist-files-from-git-annex-find
-             db/play-auto-playlist-from-git-annex-find
-             music-control/body
-             db/update-playlist-files))
+(use-package image
+  :init (setq image-use-external-converter t))
 
 
 ;; * Shells and such
@@ -3061,9 +3044,6 @@ With given ARG, display files in `db/important-document-path’."
 
 ;; * Other Mode Configurations
 
-;; These are external packages that are not essential, but still nice to have.
-;; They provide optional functionality and may redefine builtin commands.
-
 (use-package cperl-mode
   :ensure t
   :commands (cperl-mode)
@@ -3111,10 +3091,6 @@ With given ARG, display files in `db/important-document-path’."
                 (ignore params)
                 (list start end)))))
 
-(use-package expand-region
-  :ensure t
-  :commands (er/expand-region))
-
 (use-package eproject
   ;; This configuration is only present to inhibit eproject overriding
   ;; keybindings in `message-mode'
@@ -3124,6 +3100,14 @@ With given ARG, display files in `db/important-document-path’."
               (add-hook 'message-setup-hook
                         #'(lambda ()
                             (eproject-mode -1))))))
+
+(use-package expand-region
+  :ensure t
+  :commands (er/expand-region))
+
+(use-package eww
+  :init (setq eww-bookmarks-directory
+              (expand-file-name "private/" emacs-d)))
 
 (use-package haskell-mode
   :config (progn
@@ -3163,6 +3147,9 @@ With given ARG, display files in `db/important-document-path’."
               plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
               plantuml-indent-level 2))
 
+(use-package project
+  :init (setq project-switch-commands 'project-dired))
+
 (use-package python
   :config (progn
             (unless (require 'lsp-pyright nil :no-error)
@@ -3187,8 +3174,19 @@ With given ARG, display files in `db/important-document-path’."
             ;; `pyvenv-deactivate', though.
             (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
 
+(use-package re-builder
+  :commands (re-builder)
+  :init (setq reb-re-syntax 'string))
+
 (use-package sh-script
   :init (setq sh-basic-offset 2))
+
+(use-package shr
+  :init (setq shr-use-fonts nil
+              shr-use-colors nil
+              shr-max-image-proportion 0.7
+              shr-image-animate nil
+              shr-width (current-fill-column)))
 
 (use-package textile-mode
   :config (progn
