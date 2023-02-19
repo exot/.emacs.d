@@ -1532,8 +1532,16 @@ point to the beginning of buffer first."
   :ensure t
   :commands (magit-status
              magit-list-repositories)
-  :init (setq magit-diff-refine-hunk nil
-              magit-commit-show-diff nil)
+
+  :init (progn
+          (setq magit-diff-refine-hunk nil
+                magit-commit-show-diff nil)
+
+          (when on-windows
+            ;; Experimental: on Windows, do not refresh magit-status-buffers
+            ;; that are not select, to increase performance.
+            (setq magit-refresh-status-buffer nil)))
+
   :config (progn
             (when (fboundp 'global-magit-file-mode)
               (global-magit-file-mode -1))
