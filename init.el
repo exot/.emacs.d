@@ -1370,14 +1370,15 @@ point to the beginning of buffer first."
 ;; Babel
 
 (use-package ob-core
-  :init (setq org-export-use-babel nil
+  :init (setq org-export-use-babel t
               org-babel-default-header-args '((:session . "none")
                                               (:results . "output code replace")
                                               (:exports . "both")
                                               (:cache . "no")
                                               (:noweb . "no")
                                               (:hlines . "no")
-                                              (:tangle . "no"))))
+                                              (:tangle . "no")
+                                              (:eval . "never-export"))))
 
 (use-package ob-sql
   :config (progn
