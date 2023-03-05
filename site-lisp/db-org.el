@@ -875,7 +875,7 @@ determined."
     ;; Return `template-marker', which is either `nil' or a marker.
     template-marker))
 
-(defun db/org-insert-checklist ()
+(defun db/org-insert-checklist (arg)
   "Insert checklist for Org Mode item at point.
 
 The checklist consists of a listing of relevant backlinks of the
@@ -917,51 +917,61 @@ determined by the TEMPLATE_ID property, which must be an ID
 referencing the proper template item.  If that property is not
 set, search for the topmost sibling of the current item is
 conducted to see whether its headline is matching
-\"^Template.*\"; if so, its body is used as template."
-  (interactive)
+\"^Template.*\"; if so, its body is used as template.
+
+When ARG is given, jump to the current template instead of
+inserting the checklist."
+  (interactive "P")
 
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org mode, aborting"))
 
-  ;; Insert relevant backlinks, when available.
-  (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                        (string-to-number it)))
-        number-of-backlinks
-        point-before-backlinks)
+  (cond (arg
+         ;; Universal argument given, just jump to the checklist of the item at
+         ;; point.
+         (db/org-goto-checklist-item-of-point))
 
-    (insert (format "\nRelevant backlinks (%s):\n\n"
-                    (if parent-depth
-                        (format "parent-depth %d" parent-depth)
-                      "all parents")))
+        (t
+         ;; Default action: insert complete checklist.  Start with inserting
+         ;; relevant backlinks, when available.
+         (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                               (string-to-number it)))
+               number-of-backlinks
+               point-before-backlinks)
 
-    ;; Store where we are (minus the two newlines) so we can delete the
-    ;; checklist in case it's empty.
-    (setq point-before-backlinks (- (point) 2))
+           (insert (format "\nRelevant backlinks (%s):\n\n"
+                           (if parent-depth
+                               (format "parent-depth %d" parent-depth)
+                             "all parents")))
 
-    (setq number-of-backlinks
-          (org-dblock-write:db/org-backlinks (list
-                                              :org-ql-match '(and
-                                                              (not (done))
-                                                              (not (ltags "TEMPLATE"))
-                                                              (not (scheduled :from 1))
-                                                              (not (property "CHECKLIST_NO_BACKLINK" "t" :inherit nil)))
-                                              :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                                                              (string-to-number it))
-                                              :archive nil)))
+           ;; Store where we are (minus the two newlines) so we can delete the
+           ;; checklist in case it's empty.
+           (setq point-before-backlinks (- (point) 2))
 
-    ;; When no backlinks have been found, remove the empty table head and just
-    ;; print "none".
-    (when (zerop number-of-backlinks)
-      (delete-region point-before-backlinks (point))
-      (insert " none.")))
+           (setq number-of-backlinks
+                 (org-dblock-write:db/org-backlinks (list
+                                                     :org-ql-match '(and
+                                                                     (not (done))
+                                                                     (not (ltags "TEMPLATE"))
+                                                                     (not (scheduled :from 1))
+                                                                     (not (property "CHECKLIST_NO_BACKLINK" "t" :inherit nil)))
+                                                     :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                                                                     (string-to-number it))
+                                                     :archive nil)))
 
-  ;; Insert template, when avilable.
-  (let ((template-marker (db/org--find-template)))
-    (insert "\n\nTemplate:")
-    (if (not template-marker)
-        (insert " none.")
-      (insert "\n")
-      (db/org-copy-body-from-item-to-point template-marker))))
+           ;; When no backlinks have been found, remove the empty table head and just
+           ;; print "none".
+           (when (zerop number-of-backlinks)
+             (delete-region point-before-backlinks (point))
+             (insert " none.")))
+
+         ;; Insert template, when avilable.
+         (let ((template-marker (db/org--find-template)))
+           (insert "\n\nTemplate:")
+           (if (not template-marker)
+               (insert " none.")
+             (insert "\n")
+             (db/org-copy-body-from-item-to-point template-marker))))))
 
 (define-obsolete-function-alias 'db/org-copy-template
   'db/org-insert-checklist
