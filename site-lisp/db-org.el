@@ -939,7 +939,14 @@ inserting the checklist."
                number-of-backlinks
                point-before-backlinks)
 
-           (insert (format "\nRelevant backlinks (%s):\n\n"
+           ;; Insert blank line, but only if the previous line is not blank
+           ;; already.
+           (unless (save-mark-and-excursion
+                     (forward-line -1)
+                     (looking-at (rx bol (* space) eol)))
+             (insert "\n"))
+
+           (insert (format "Relevant backlinks (%s):\n\n"
                            (if parent-depth
                                (format "parent-depth %d" parent-depth)
                              "all parents")))
@@ -970,7 +977,6 @@ inserting the checklist."
            (insert "\n\nTemplate:")
            (if (not template-marker)
                (insert " none.")
-             (insert "\n")
              (db/org-copy-body-from-item-to-point template-marker))))))
 
 (define-obsolete-function-alias 'db/org-copy-template
@@ -996,7 +1002,8 @@ determined."
 This can be used to copy checklists from templates to the current
 item, which might be an instance of a periodic task.  If POM is
 not given, use `db/org-get-location' to interactively query for
-it.  Adds newline before and after the template."
+it.  Ensures that there are newlines before and after the
+inserted template."
   (interactive (list (db/org-get-location t)))
   (unless (number-or-marker-p pom)
     (user-error "Argument is neither point nor mark: %s" pom))
@@ -1024,9 +1031,26 @@ it.  Adds newline before and after the template."
                           (user-error "Cannot find content in template, or content is empty"))
                         (string-trim-right
                          (buffer-substring-no-properties content-begin content-end)))))))))
-    (insert "\n")
+
+    (cond
+     ;; Open next line if the current line is not blank
+     ((not (looking-at (rx bol eol)))
+      (insert "\n\n"))
+
+     ;; Add newline, but only if the previous line is not blank already.
+     ((not (save-mark-and-excursion
+             (forward-line -1)
+             (looking-at (rx bol (* space) eol))))
+      (insert "\n")))
+
     (insert body)
-    (insert "\n")
+
+    ;; Insert final newline, but only when no blank line follows.
+    (unless (save-mark-and-excursion
+              (forward-line 1)
+              (looking-at (rx bol (* space) eol)))
+      (insert "\n"))
+
     (org-update-statistics-cookies nil)))
 
 (defun db/org-update-headline-log-note (&optional new-headline)
