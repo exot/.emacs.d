@@ -1249,13 +1249,14 @@ respectively."
                       (org-ql-block '(and (property "NOT_BEFORE")
                                           (scheduled)
                                           (> (org-2ft (property "NOT_BEFORE"))
-                                             (org-2ft (scheduled))))
+                                             (org-2ft (property "SCHEDULED"))))
                                     ((org-ql-block-header "Items whose NOT_BEFORE value is after SCHEDULED")))
 
                       ;; Check whether any NOT_BEFORE is beind their DEADLINE
-                      (org-ql-block '(and (property "NOT_BEFORE") (deadline)
+                      (org-ql-block '(and (property "NOT_BEFORE")
+                                          (deadline)
                                           (> (org-2ft (property "NOT_BEFORE"))
-                                             (org-2ft (deadline))))
+                                             (org-2ft (property "DEADLINE"))))
                                     ((org-ql-block-header "Items whose NOT_BEFORE value is after their DEADLINE")))
 
                       ))
