@@ -878,6 +878,9 @@ determined."
 (defun db/org-insert-checklist (arg)
   "Insert checklist for Org Mode item at point.
 
+Checklists are inserted before the first child, if existent, or
+at the end of the subtree.
+
 The checklist consists of a listing of relevant backlinks of the
 current item and its parents (without archives) as well as a
 template.
@@ -931,9 +934,19 @@ inserting the checklist."
          ;; point.
          (db/org-goto-checklist-item-of-point))
 
-        (t
-         ;; Default action: insert complete checklist.  Start with inserting
-         ;; relevant backlinks, when available.
+        (t ;; Default action: insert complete checklist.
+
+         ;; Checklists are inserted directly before first child, if existent, or
+         ;; at end of subtree
+         (org-show-subtree)
+         (or (org-goto-first-child)
+             (org-end-of-subtree 'invisible-ok 'to-heading))
+         ;; Move back from heading, unless we are at the end of the buffer
+         (when (org-at-heading-p)
+           ;; Go to end of line before heading
+           (forward-char -1))
+
+         ;; Insert relevant backlinks, when available.
          (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
                                (string-to-number it)))
                number-of-backlinks
@@ -976,7 +989,7 @@ inserting the checklist."
          (let ((template-marker (db/org--find-template)))
            (insert "\n\nTemplate:")
            (if (not template-marker)
-               (insert " none.")
+               (insert " none.\n")
              (db/org-copy-body-from-item-to-point template-marker))))))
 
 (define-obsolete-function-alias 'db/org-copy-template
