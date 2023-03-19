@@ -394,6 +394,53 @@ should not be clocked."
   (interactive)
   (message org-clock-current-task))
 
+(defun db/org-clocked-time-for-current-item ()
+  "Return all clocked time for Org item at point.
+
+Also includes the currently running clock when the current item
+is clocked in."
+
+  (unless (derived-mode-p 'org-mode)
+    (user-error "Not in Org mode buffer, aborting"))
+
+  (let ((at-current-clock-p (and (markerp org-clock-hd-marker)
+                                 (save-mark-and-excursion ; from `org-clock-in'
+                                   (org-back-to-heading t)
+                                   (and (eq (marker-buffer org-clock-hd-marker)
+                                            (org-base-buffer (current-buffer)))
+                                        (= (point) (marker-position org-clock-hd-marker))
+                                        (equal org-clock-current-task (org-get-heading t t t t)))))))
+
+    (+ (org-clock-sum-current-item)
+       (if at-current-clock-p
+           ;; From `org-clock-get-clocked-time'
+           (floor (org-time-convert-to-integer
+                   (org-time-since org-clock-start-time))
+                  60)
+         0))))
+
+(defun db/org-remaining-effort-of-current-item ()
+  "Return remaining effort of Org item at point, as duration.
+
+The remaining effort is computed as the planned effort minus the
+already clocked time.  If this result is negative, return zero.
+
+If no effort is specified, return nil."
+
+  (if (derived-mode-p 'org-agenda-mode)
+
+      ;; XXX: is this the right way to do it?
+      (org-agenda-with-point-at-orig-entry
+       nil (db/org-remaining-effort-of-current-item))
+
+    (unless (derived-mode-p 'org-mode)
+      (user-error "Not in Org mode buffer, aborting"))
+
+    (when-let ((effort (org-entry-get (point) "Effort")))
+      (org-duration-from-minutes
+       (max 0 (- (org-duration-to-minutes effort)
+                 (db/org-clocked-time-for-current-item)))))))
+
 
 ;;; Task Management
 
@@ -406,9 +453,10 @@ scheduled, have an active timestamp, or are deadline in the given
 time range.
 
 The result has the form (TOTAL-TIME . TASKS), where TASKS is a
-list of cons cells (ID . EFFORT).  The total time is given as an
-Org mode time string of the form hh:mm, as are all EFFORT
-entries.
+list of cons cells (ID . REMAINING-EFFORT).  REMAINING-EFFORT is
+computed as per `db/org-remaining-effort-of-current-item', which
+see.  The total time is given as an Org mode time string of the
+form hh:mm, as is REMAINING-EFFORT entries.
 
 When ORG-QL-MATCH, an org-ql sexp, is given, filter the list of
 tasks in range by this expression.  When ORG-QL-MATCH is not
@@ -436,7 +484,7 @@ imposed on the respective time range."
                   :from (org-agenda-files)
                   :select '(cons
                             (org-id-get-create)
-                            (org-entry-get (point) "Effort"))
+                            (db/org-remaining-effort-of-current-item))
                   :where `(and ,(or org-ql-match '(todo))
                                ;; Is this redundant?  Could we just stick with `ts-active'?
                                (or (scheduled ,@start-date-expr ,@end-date-expr)
@@ -477,8 +525,8 @@ PARAMS is a property list of the following parameters:
   `timestamp', `scheduled', or `deadline'.
 
 All tasks between `:start-date' and `:end-date' will be collected
-and their effort summed up.  The date format is everything
-understood by `org-read-date'."
+and their remaining effort summed up.  The date format is
+everything understood by `org-read-date'."
   (let* ((start-date (plist-get params :start-date))
          (end-date (plist-get params :end-date))
          (org-ql-match (plist-get params :org-ql-match))
