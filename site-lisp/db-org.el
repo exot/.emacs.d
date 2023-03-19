@@ -881,6 +881,11 @@ determined."
 Checklists are inserted before the first child, if existent, or
 at the end of the subtree.
 
+After inserting a checklist, add the property
+CHECKLIST_INSERTED_P with value `t' to item at point.  Checklists
+are not inserted if this property with this value is already
+present, to avoid double insertions of checklists.
+
 The checklist consists of a listing of relevant backlinks of the
 current item and its parents (without archives) as well as a
 template.
@@ -933,6 +938,10 @@ inserting the checklist."
          ;; Universal argument given, just jump to the checklist of the item at
          ;; point.
          (db/org-goto-checklist-item-of-point))
+
+        ((string= (org-entry-get (point) "CHECKLIST_INSERTED_P")
+                  "t")
+         (message "Checklist already inserted, not inserting again."))
 
         (t ;; Default action: insert complete checklist.
 
@@ -990,7 +999,9 @@ inserting the checklist."
            (insert "\n\nTemplate:")
            (if (not template-marker)
                (insert " none.\n")
-             (db/org-copy-body-from-item-to-point template-marker))))))
+             (db/org-copy-body-from-item-to-point template-marker)))
+
+         (org-entry-put (point) "CHECKLIST_INSERTED_P" "t"))))
 
 (define-obsolete-function-alias 'db/org-copy-template
   'db/org-insert-checklist
