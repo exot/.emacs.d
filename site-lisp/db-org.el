@@ -995,7 +995,7 @@ inserting the checklist."
 
          ;; Checklists are inserted directly before first child, if existent, or
          ;; at end of subtree
-         (org-show-subtree)
+         (org-show-entry)
          (or (org-goto-first-child)
              (org-end-of-subtree 'invisible-ok 'to-heading))
          ;; Move back from heading, unless we are at the end of the buffer
@@ -1049,7 +1049,8 @@ inserting the checklist."
                (insert " none.\n")
              (db/org-copy-body-from-item-to-point template-marker)))
 
-         (org-entry-put (point) "CHECKLIST_INSERTED_P" "t"))))
+         (org-entry-put (point) "CHECKLIST_INSERTED_P" "t")
+         (db/org-goto-first-open-checkbox-in-subtree))))
 
 (define-obsolete-function-alias 'db/org-copy-template
   'db/org-insert-checklist
