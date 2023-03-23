@@ -105,8 +105,8 @@ git repository."
             (when (and db/eshell-prompt-include-git-state
                        has-HEAD)
 
-              ;; XXX: This does not work in repositories with gitdir files
-              (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
+              (when (zerop (call-process "git" nil nil nil "rev-parse" "MERGE_HEAD"))
+                ;; MERGE_HEAD exists, so we are in a merge
                 (push "merge" state-list))
 
               (when (= 1 (call-process "git" nil nil nil
