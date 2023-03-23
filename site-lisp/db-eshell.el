@@ -83,38 +83,50 @@ git repository."
         repo-dir)
     (when (and (not (file-remote-p pwd))
                (eshell-search-path "git")
-               (setq repo-dir (locate-dominating-file pwd ".git")))
+               (setq repo-dir (locate-dominating-file (file-truename pwd) ".git")))
+
       (if (string-prefix-p (file-truename (file-name-concat repo-dir ".git"))
                            (file-truename pwd))
           "GIT_DIR"
-          (save-match-data
-            (let* ((git-branch (string-trim
-                                (shell-command-to-string "git rev-parse --abbrev-ref HEAD")))
-                   (base-dir (file-name-nondirectory (directory-file-name repo-dir)))
-                   state-list)
 
-              (when db/eshell-prompt-include-git-state
+        (save-match-data
+          (let* ((has-HEAD nil)
+                 (git-branch (with-temp-buffer
+                               (if (zerop (call-process "git" nil t nil
+                                                        "rev-parse" "--abbrev-ref" "HEAD"))
+                                   (progn
+                                     (setq has-HEAD t)
+                                     (string-trim (buffer-string)))
 
-                (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
-                  (push "merge" state-list))
+                                 ;; When resolving HEAD fails, we do not have any commits yet.
+                                 "UNINITIALIZED")))
+                 state-list)
 
-                (when (= 1 (call-process "git" nil nil nil
-                                         "diff" "--no-ext-diff" "--quiet" "--exit-code"))
-                  (push "dirty" state-list))
+            (when (and db/eshell-prompt-include-git-state
+                       has-HEAD)
 
-                (when (= 1 (call-process "git" nil nil nil
-                                         "diff" "--no-ext-diff" "--quiet" "--exit-code" "--cached"))
-                  (push "uncommitted" state-list))
+              ;; XXX: This does not work in repositories with gitdir files
+              (when (file-exists-p (file-name-concat repo-dir ".git" "MERGE_HEAD"))
+                (push "merge" state-list))
 
-                (when (with-temp-buffer
-                        (and (= 0 (call-process "git" nil t nil
-                                                "stash" "list"))
-                             (not (= 0 (buffer-size)))))
-                  (push "stash" state-list)))
+              (when (= 1 (call-process "git" nil nil nil
+                                       "diff" "--no-ext-diff" "--quiet" "--exit-code"))
+                (push "dirty" state-list))
 
+              (when (= 1 (call-process "git" nil nil nil
+                                       "diff" "--no-ext-diff" "--quiet" "--exit-code" "--cached"))
+                (push "uncommitted" state-list))
+
+              (when (with-temp-buffer
+                      (and (= 0 (call-process "git" nil t nil
+                                              "stash" "list"))
+                           (not (= 0 (buffer-size)))))
+                (push "stash" state-list)))
+
+            (let ((base-dir (file-name-nondirectory (directory-file-name repo-dir))))
               (if state-list
                   (format "%s@%s[%s]" git-branch base-dir (apply #'concat (-interpose "|" state-list)))
-                (format "%s@%s" git-branch base-dir))))))))
+                (format "%s@%s" git-branch base-dir)))))))))
 
 (defun eshell/default-prompt-function ()
   "A prompt for eshell of the form
