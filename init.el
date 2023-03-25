@@ -983,6 +983,7 @@
 ;; Extended query language and dynamic blocks
 (use-package org-ql-search
   :ensure org-ql
+  :pin "melpa-stable"
   ;; XXX: Remove the following as soon as this is fixed in upstream, see
   ;; https://github.com/alphapapa/org-ql/pull/237
   :init (setq org-ql-regexp-part-ts-time
@@ -990,56 +991,7 @@
                   (optional "-" (repeat 1 2 digit) ":" (repeat 2 digit))))
   :commands (org-ql-view
              org-ql-search
-             org-dblock-write:org-ql)
-  :config (progn
-
-            ;; XXX: Remove the following as soon as this is fixed in upstream
-            ;; (see https://github.com/alphapapa/org-ql/issues/283);
-
-            ;; Redefine the regular expression for link searches to allow
-            ;; brackets in the description.  This function comes straight from
-            ;; org-ql.el
-            (cl-defun org-ql--link-regexp (&key description-or-target description target)
-              "Return a regexp matching Org links according to arguments.
-Each argument is treated as a regexp (so non-regexp strings
-should be quoted before being passed to this function).  If
-DESCRIPTION-OR-TARGET, match it in either description or target.
-If DESCRIPTION, match it in the description.  If TARGET, match it
-in the target.  If both DESCRIPTION and TARGET, match both,
-respectively."
-              (cl-labels
-                  ((no-desc (match)
-                     (rx-to-string `(seq (or bol (1+ blank))
-                                         "[[" (0+ (not (any "]"))) (regexp ,match) (0+ (not (any "]")))
-                                         "]]")))
-                   (match-both (description target)
-                     (rx-to-string `(seq (or bol (1+ blank))
-                                         "[[" (0+ (not (any "]"))) (regexp ,target) (0+ (not (any "]")))
-                                         ;; Added .* wildcards
-                                         "][" (regexp ".*") (regexp ,description) (regexp ".*")
-                                         "]]")))
-                   ;; Note that these actually allow empty descriptions
-                   ;; or targets, depending on what they are matching.
-                   (match-desc (match)
-                     (rx-to-string `(seq (or bol (1+ blank))
-                                         "[[" (0+ (not (any "]")))
-                                         ;; Added .* wildcards
-                                         "][" (regexp ".*") (regexp ,match) (regexp ".*")
-                                         "]]")))
-                   (match-target (match)
-                     (rx-to-string `(seq (or bol (1+ blank))
-                                         "[[" (0+ (not (any "]"))) (regexp ,match) (0+ (not (any "]")))
-                                         ;; Removed pattern for description
-                                         "][" ))))
-                (cond (description-or-target
-                       (rx-to-string `(or (regexp ,(no-desc description-or-target))
-                                          (regexp ,(match-desc description-or-target))
-                                          (regexp ,(match-target description-or-target)))))
-                      ((and description target)
-                       (match-both description target))
-                      (description (match-desc description))
-                      (target (rx-to-string `(or (regexp ,(no-desc target))
-                                                 (regexp ,(match-target target))))))))))
+             org-dblock-write:org-ql))
 
 (use-package ol
   :init (setq org-link-keep-stored-after-insertion t)
