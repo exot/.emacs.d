@@ -1352,7 +1352,7 @@ point to the beginning of buffer first."
                      (file db/org-default-refile-file)
                      ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (buffer-string))\n\n%?")
+                              "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))\n\n%?")
                      :clock-in t :clock-resume t :empty-lines-after 0)
                 ("r" "respond"
                      entry
