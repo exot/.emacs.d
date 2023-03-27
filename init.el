@@ -981,7 +981,7 @@
   :init (setq org-download-method 'attach))
 
 ;; Extended query language and dynamic blocks
-(use-package org-ql-search
+(use-package org-ql
   :ensure org-ql
   :pin "melpa-stable"
   ;; XXX: Remove the following as soon as this is fixed in upstream, see
