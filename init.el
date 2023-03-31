@@ -982,7 +982,6 @@
 
 ;; Extended query language and dynamic blocks
 (use-package org-ql
-  :ensure org-ql
   :pin "melpa-stable"
   ;; XXX: Remove the following as soon as this is fixed in upstream, see
   ;; https://github.com/alphapapa/org-ql/pull/237
@@ -991,7 +990,11 @@
                   (optional "-" (repeat 1 2 digit) ":" (repeat 2 digit))))
   :commands (org-ql-view
              org-ql-search
-             org-dblock-write:org-ql))
+             org-dblock-write:org-ql)
+  ;; `org-ql-search' defines the dblock features of `org-ql' but is not loaded
+  ;; by default, so let's do this here; note that this implicitly loads
+  ;; `org-ql-view' as well.
+  :config (require 'org-ql-search))
 
 (use-package ol
   :init (setq org-link-keep-stored-after-insertion t)
