@@ -204,7 +204,9 @@ shown because they are due)."
                         '("scheduled" "past-scheduled" "timestamp" "deadline" "block"))
             (let ((item-id (org-with-point-at (org-get-at-bol 'org-hd-marker) (org-id-get-create))))
               (unless (member item-id already-seen)
-                (push (org-entry-get (org-get-at-bol 'org-hd-marker) "Effort") total)
+                (push (org-with-point-at (org-get-at-bol 'org-hd-marker)
+                        (db/org-remaining-effort-of-current-item))
+                      total)
                 (push item-id already-seen))))
           (forward-line))))
     (org-duration-from-minutes
@@ -429,9 +431,14 @@ If no effort is specified, return nil."
 
   (if (derived-mode-p 'org-agenda-mode)
 
-      ;; XXX: is this the right way to do it?
-      (org-agenda-with-point-at-orig-entry
-       nil (db/org-remaining-effort-of-current-item))
+      (if-let ((hd-marker (org-get-at-bol 'org-hd-marker)))
+          ;; `org-hd-marker' is set, there is some Org item that corresponds to
+          ;; this line.  Get the remaining effort from there.
+          (org-with-point-at hd-marker
+            (db/org-remaining-effort-of-current-item))
+        ;; We are at some special item in the Org agenda (e.g. some diary
+        ;; entry), just show nothing.
+        "")
 
     (unless (derived-mode-p 'org-mode)
       (user-error "Not in Org mode buffer, aborting"))

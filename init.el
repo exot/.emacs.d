@@ -730,6 +730,7 @@
              db/org-clock-in-home-task
              db/org-clock-in-work-task
              db/show-current-org-task
+             db/org-remaining-effort-of-current-item
              org-dblock-write:db/org-workload-report
              endless/org-ispell
              db/org-agenda-list-deadlines
@@ -1156,10 +1157,10 @@
                 "")
 
               org-agenda-prefix-format
-              '((agenda . "%11s%?-12t%-4e ")
-                (todo . "%-8c%-4e ")
-                (tags . "%-8c%-4e ")
-                (search . "%-8c%-4e "))
+              '((agenda . "%11s%?-12t%-4(db/org-remaining-effort-of-current-item) ")
+                (todo . "%-8c%-4(db/org-remaining-effort-of-current-item) ")
+                (tags . "%-8c%-4(db/org-remaining-effort-of-current-item) ")
+                (search . "%-8c%-4(db/org-remaining-effort-of-current-item) "))
 
               org-agenda-custom-commands
               `(("A" "Main Agenda"
