@@ -731,6 +731,7 @@
              db/org-clock-in-work-task
              db/show-current-org-task
              db/org-remaining-effort-of-current-item
+             db/org-cmp-remaining-effort
              org-dblock-write:db/org-workload-report
              endless/org-ispell
              db/org-agenda-list-deadlines
@@ -1101,10 +1102,11 @@
   :init (setq org-agenda-include-diary t
               org-agenda-span 1
               org-agenda-insert-diary-strategy 'top-level
-              org-agenda-sorting-strategy '((agenda time-up priority-down effort-up category-keep)
-                                            (todo priority-down effort-up category-keep)
-                                            (tags priority-down effort-up category-keep)
-                                            (search priority-down effort-up category-keep))
+              org-agenda-sorting-strategy '((agenda time-up priority-down user-defined-up category-keep)
+                                            (todo priority-down user-defined-up category-keep)
+                                            (tags priority-down user-defined-up category-keep)
+                                            (search priority-down user-defined-up category-keep))
+              org-agenda-cmp-user-defined #'db/org-cmp-remaining-effort
               org-agenda-window-setup 'current-window
               org-agenda-restore-windows-after-quit t
               org-agenda-compact-blocks nil

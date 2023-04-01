@@ -448,6 +448,33 @@ If no effort is specified, return nil."
        (max 0 (- (org-duration-to-minutes effort)
                  (db/org-clocked-time-for-current-item)))))))
 
+(defun db/org-cmp-remaining-effort (a b)
+  "Compare the remaining efforts of Org items A and B.
+
+A and B are strings only, but their corresponding Org items are
+accessible via the `org-hd-marker' text property."
+  (let* ((def (if org-agenda-sort-noeffort-is-high 32767 -1))
+         (ma (or (get-text-property 1 'org-marker a)
+                 (get-text-property 1 'org-hd-marker a)))
+         (mb (or (get-text-property 1 'org-marker b)
+                 (get-text-property 1 'org-hd-marker b)))
+         (ea (or (and (markerp ma)
+                      (marker-buffer ma)
+                      (org-with-point-at ma
+                        (--if-let (db/org-remaining-effort-of-current-item)
+                            (org-duration-to-minutes it)
+                          0)))
+                 def))
+         (eb (or (and (markerp mb)
+                      (marker-buffer mb)
+                      (org-with-point-at mb
+                        (--if-let (db/org-remaining-effort-of-current-item)
+                            (org-duration-to-minutes it)
+                          0)))
+                 def)))
+    (cond ((> ea eb) +1)
+          ((< ea eb) -1))))
+
 
 ;;; Task Management
 
