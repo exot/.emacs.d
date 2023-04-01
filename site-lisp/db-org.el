@@ -427,7 +427,7 @@ is clocked in."
 The remaining effort is computed as the planned effort minus the
 already clocked time.  If this result is negative, return zero.
 
-If no effort is specified, return nil."
+If no effort is specified, return an empty string."
 
   (if (derived-mode-p 'org-agenda-mode)
 
@@ -443,10 +443,11 @@ If no effort is specified, return nil."
     (unless (derived-mode-p 'org-mode)
       (user-error "Not in Org mode buffer, aborting"))
 
-    (when-let ((effort (org-entry-get (point) "Effort")))
-      (org-duration-from-minutes
-       (max 0 (- (org-duration-to-minutes effort)
-                 (db/org-clocked-time-for-current-item)))))))
+    (if-let ((effort (org-entry-get (point) "Effort")))
+        (org-duration-from-minutes
+         (max 0 (- (org-duration-to-minutes effort)
+                   (db/org-clocked-time-for-current-item))))
+      "")))
 
 (defun db/org-cmp-remaining-effort (a b)
   "Compare the remaining efforts of Org items A and B.
@@ -461,16 +462,14 @@ accessible via the `org-hd-marker' text property."
          (ea (or (and (markerp ma)
                       (marker-buffer ma)
                       (org-with-point-at ma
-                        (--if-let (db/org-remaining-effort-of-current-item)
-                            (org-duration-to-minutes it)
-                          0)))
+                        (org-duration-to-minutes ; this is inefficient
+                         (db/org-remaining-effort-of-current-item))))
                  def))
          (eb (or (and (markerp mb)
                       (marker-buffer mb)
                       (org-with-point-at mb
-                        (--if-let (db/org-remaining-effort-of-current-item)
-                            (org-duration-to-minutes it)
-                          0)))
+                        (org-duration-to-minutes
+                         (db/org-remaining-effort-of-current-item))))
                  def)))
     (cond ((> ea eb) +1)
           ((< ea eb) -1))))
