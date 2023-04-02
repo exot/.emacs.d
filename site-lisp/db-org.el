@@ -421,13 +421,17 @@ is clocked in."
                   60)
          0))))
 
-(defun db/org-remaining-effort-of-current-item ()
-  "Return remaining effort of Org item at point, as duration.
+(defun db/org-remaining-effort-of-current-item (&optional as-number)
+  "Return remaining effort of Org item at point.
 
 The remaining effort is computed as the planned effort minus the
 already clocked time.  If this result is negative, return zero.
 
-If no effort is specified, return an empty string."
+Return the remaining effort as duration string by default.  When
+optional AS-NUMBER is non-nil, return the effort as number.
+
+If no effort is specified at the item at point, return an empty
+string, or nil when AS-NUMBER is non-nil."
 
   (if (derived-mode-p 'org-agenda-mode)
 
@@ -444,10 +448,12 @@ If no effort is specified, return an empty string."
       (user-error "Not in Org mode buffer, aborting"))
 
     (if-let ((effort (org-entry-get (point) "Effort")))
-        (org-duration-from-minutes
-         (max 0 (- (org-duration-to-minutes effort)
-                   (db/org-clocked-time-for-current-item))))
-      "")))
+        (let ((remaining-effort (max 0 (- (org-duration-to-minutes effort)
+                                          (db/org-clocked-time-for-current-item)))))
+          (if as-number
+              remaining-effort
+            (org-duration-from-minutes remaining-effort)))
+      (if as-number nil ""))))
 
 (defun db/org-cmp-remaining-effort (a b)
   "Compare the remaining efforts of Org items A and B.
@@ -462,14 +468,12 @@ accessible via the `org-hd-marker' text property."
          (ea (or (and (markerp ma)
                       (marker-buffer ma)
                       (org-with-point-at ma
-                        (org-duration-to-minutes ; this is inefficient
-                         (db/org-remaining-effort-of-current-item))))
+                        (db/org-remaining-effort-of-current-item 'as-number)))
                  def))
          (eb (or (and (markerp mb)
                       (marker-buffer mb)
                       (org-with-point-at mb
-                        (org-duration-to-minutes
-                         (db/org-remaining-effort-of-current-item))))
+                        (db/org-remaining-effort-of-current-item 'as-number)))
                  def)))
     (cond ((> ea eb) +1)
           ((< ea eb) -1))))
