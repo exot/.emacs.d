@@ -405,6 +405,9 @@ is clocked in."
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org mode buffer, aborting"))
 
+  ;; XXX: This does not take into account the current setting of
+  ;; CLOCK_MODELINE_TOTAL.
+
   (let ((at-current-clock-p (and (markerp org-clock-hd-marker)
                                  (save-mark-and-excursion ; from `org-clock-in'
                                    (org-back-to-heading t)
