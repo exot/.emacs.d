@@ -1263,11 +1263,34 @@ Move point to first open checkbox there, if there's one.  See
 If SELECT is non-nil, offer a choice of the most recently
 clocked-in tasks to jump to."
   (interactive "@P")
-  (org-clock-goto select)
-  ;; `org-clock-goto' will barf if there's no currently clocked-in task, so
-  ;; there is no need to check this again; just try to find the first checkbox
-  ;; now.
-  (db/org-goto-first-open-checkbox-in-subtree :silent))
+  ;; This codes comes from `org-clock-goto', but has been adapted slightly to
+  ;; use `display-buffer' instead of `pop-to-buffer-same-window', and to jump to
+  ;; the first checklist item.
+  (let* ((recent nil)
+	 (m (cond
+	     (select
+	      (or (org-clock-select-task "Select task to go to: ")
+		  (user-error "No task selected")))
+	     ((org-clocking-p) org-clock-marker)
+	     ((and org-clock-goto-may-find-recent-task
+		   (car org-clock-history)
+		   (marker-buffer (car org-clock-history)))
+	      (setq recent t)
+	      (car org-clock-history))
+	     (t (user-error "No active or recent clock task")))))
+    (if-let ((target-window (display-buffer (marker-buffer m))))
+        (progn
+          (select-window target-window)
+          (if (or (< m (point-min)) (> m (point-max))) (widen))
+          (goto-char m)
+          (org-show-entry)
+          (db/org-goto-first-open-checkbox-in-subtree :silent)
+          (recenter org-clock-goto-before-context)
+          (org-reveal)
+          (if recent
+	      (message "No running clock, this is the most recently clocked task"))
+          (run-hooks 'org-clock-goto-hook))
+      (user-error "Cannot display target buffer"))))
 
 
 ;;; Calendar
