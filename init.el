@@ -526,7 +526,8 @@
 (use-package window
   :init (setq switch-to-buffer-obey-display-actions t
               switch-to-buffer-in-dedicated-window 'pop
-              recenter-positions '(top middle bottom))
+              recenter-positions '(top middle bottom)
+              display-buffer-base-action '(display-buffer-reuse-window))
   :config (progn
             (add-to-list 'display-buffer-alist
                          '("^\\*Async Shell Command*" display-buffer-no-window))
