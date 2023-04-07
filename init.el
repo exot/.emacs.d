@@ -519,10 +519,6 @@
   :config (progn
             (tab-bar-history-mode +1)))
 
-(use-package warnings
-  :config (cl-pushnew '(undo discard-info) warning-suppress-types
-                      :test #'equal))
-
 (use-package window
   :init (setq switch-to-buffer-obey-display-actions t
               switch-to-buffer-in-dedicated-window 'pop
