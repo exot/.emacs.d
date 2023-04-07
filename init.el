@@ -404,7 +404,8 @@
       describe-bindings-outline t       ; TODO? help.el
       redisplay-skip-fontification-on-input t
       undo-limit 80000000
-      async-shell-command-buffer 'new-buffer)
+      async-shell-command-buffer 'new-buffer
+      byte-compile-warnings '(not docstrings))
 
 (put 'set-goal-column 'disabled nil)
 
@@ -1451,7 +1452,15 @@ point to the beginning of buffer first."
 (use-package flycheck
   :ensure t
   :commands (global-flycheck-mode flycheck-mode)
-  :init (setq flycheck-emacs-lisp-load-path 'inherit))
+  :init (setq flycheck-emacs-lisp-load-path 'inherit
+              ;; Hack: inherit `byte-compile-warnings' setting in Emacs
+              ;; subprocess; this value is only set once upon starting Emacs, so
+              ;; make sure to manually update this setting when updating
+              ;; `byte-compile-warnings'.
+              flycheck-emacs-args `("-Q"
+                                    "--batch"
+                                    "--eval" ,(message "(setq byte-compile-warnings (quote %s))"
+                                                       byte-compile-warnings))))
 
 (use-package git-commit
   :commands (global-git-commit-mode)
