@@ -186,6 +186,66 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
      (org-agenda-redo)))
   ("q" (message "Abort") :exit t))
 
+
+;;; Effort computation and display
+
+(defun db/org-remaining-effort-of-current-item (&optional as-number)
+  "Return remaining effort of Org item at point.
+
+The remaining effort is computed as the planned effort minus the
+already clocked time.  If this result is negative, return zero.
+
+Return the remaining effort as duration string by default.  When
+optional AS-NUMBER is non-nil, return the effort as number.
+
+If no effort is specified at the item at point, return an empty
+string, or nil when AS-NUMBER is non-nil."
+
+  (if (derived-mode-p 'org-agenda-mode)
+
+      (if-let ((hd-marker (org-get-at-bol 'org-hd-marker)))
+          ;; `org-hd-marker' is set, there is some Org item that corresponds to
+          ;; this line.  Get the remaining effort from there.
+          (org-with-point-at hd-marker
+            (db/org-remaining-effort-of-current-item))
+        ;; We are at some special item in the Org agenda (e.g. some diary
+        ;; entry), just show nothing.
+        "")
+
+    (unless (derived-mode-p 'org-mode)
+      (user-error "Not in Org mode buffer, aborting"))
+
+    (if-let ((effort (org-entry-get (point) "Effort")))
+        (let ((remaining-effort (max 0 (- (org-duration-to-minutes effort)
+                                          (db/org-clocked-time-for-current-item)))))
+          (if as-number
+              remaining-effort
+            (org-duration-from-minutes remaining-effort)))
+      (if as-number nil ""))))
+
+(defun db/org-cmp-remaining-effort (a b)
+  "Compare the remaining efforts of Org items A and B.
+
+A and B are strings only, but their corresponding Org items are
+accessible via the `org-hd-marker' text property."
+  (let* ((def (if org-agenda-sort-noeffort-is-high 32767 -1))
+         (ma (or (get-text-property 1 'org-marker a)
+                 (get-text-property 1 'org-hd-marker a)))
+         (mb (or (get-text-property 1 'org-marker b)
+                 (get-text-property 1 'org-hd-marker b)))
+         (ea (or (and (markerp ma)
+                      (marker-buffer ma)
+                      (org-with-point-at ma
+                        (db/org-remaining-effort-of-current-item 'as-number)))
+                 def))
+         (eb (or (and (markerp mb)
+                      (marker-buffer mb)
+                      (org-with-point-at mb
+                        (db/org-remaining-effort-of-current-item 'as-number)))
+                 def)))
+    (cond ((> ea eb) +1)
+          ((< ea eb) -1))))
+
 ;; Show sum of daily efforts in agenda, the following two functions are from
 ;; anpandey,
 ;; cf. https://emacs.stackexchange.com/questions/21380/show-sum-of-efforts-for-a-day-in-org-agenda-day-title#21902
@@ -321,18 +381,6 @@ In ~%s~:
                 org-done-keywords))))
 
 
-;;; Reset checklists
-
-;; from `org-checklist’ by James TD Smith (@ ahktenzero (. mohorovi cc)),
-;; version: 1.0
-(defun org-reset-checkbox-state-maybe ()
-  "Reset all checkboxes in an entry if `RESET_CHECK_BOXES' property is set."
-  (interactive "*")
-  (when (org-entry-get (point) "RESET_CHECK_BOXES")
-    (warn "Using the RESET_CHECK_BOXES property is deprecated, user periodic tasks instead")
-    (org-reset-checkbox-state-subtree)))
-
-
 ;;; Helper Functions for Clocking
 
 (defun db/find-parent-task ()
@@ -424,65 +472,17 @@ is clocked in."
                   60)
          0))))
 
-(defun db/org-remaining-effort-of-current-item (&optional as-number)
-  "Return remaining effort of Org item at point.
-
-The remaining effort is computed as the planned effort minus the
-already clocked time.  If this result is negative, return zero.
-
-Return the remaining effort as duration string by default.  When
-optional AS-NUMBER is non-nil, return the effort as number.
-
-If no effort is specified at the item at point, return an empty
-string, or nil when AS-NUMBER is non-nil."
-
-  (if (derived-mode-p 'org-agenda-mode)
-
-      (if-let ((hd-marker (org-get-at-bol 'org-hd-marker)))
-          ;; `org-hd-marker' is set, there is some Org item that corresponds to
-          ;; this line.  Get the remaining effort from there.
-          (org-with-point-at hd-marker
-            (db/org-remaining-effort-of-current-item))
-        ;; We are at some special item in the Org agenda (e.g. some diary
-        ;; entry), just show nothing.
-        "")
-
-    (unless (derived-mode-p 'org-mode)
-      (user-error "Not in Org mode buffer, aborting"))
-
-    (if-let ((effort (org-entry-get (point) "Effort")))
-        (let ((remaining-effort (max 0 (- (org-duration-to-minutes effort)
-                                          (db/org-clocked-time-for-current-item)))))
-          (if as-number
-              remaining-effort
-            (org-duration-from-minutes remaining-effort)))
-      (if as-number nil ""))))
-
-(defun db/org-cmp-remaining-effort (a b)
-  "Compare the remaining efforts of Org items A and B.
-
-A and B are strings only, but their corresponding Org items are
-accessible via the `org-hd-marker' text property."
-  (let* ((def (if org-agenda-sort-noeffort-is-high 32767 -1))
-         (ma (or (get-text-property 1 'org-marker a)
-                 (get-text-property 1 'org-hd-marker a)))
-         (mb (or (get-text-property 1 'org-marker b)
-                 (get-text-property 1 'org-hd-marker b)))
-         (ea (or (and (markerp ma)
-                      (marker-buffer ma)
-                      (org-with-point-at ma
-                        (db/org-remaining-effort-of-current-item 'as-number)))
-                 def))
-         (eb (or (and (markerp mb)
-                      (marker-buffer mb)
-                      (org-with-point-at mb
-                        (db/org-remaining-effort-of-current-item 'as-number)))
-                 def)))
-    (cond ((> ea eb) +1)
-          ((< ea eb) -1))))
+(defun db/org-mark-current-default-task ()
+  "Mark current task as default when equal to work task or home task.
+Work task and home task are determined by the current values of
+`org-working-task-id’ and `org-home-task-id’, respectively."
+  (let ((current-id (org-id-get org-clock-marker)))
+    (when (member current-id (list org-working-task-id
+                                   org-home-task-id))
+      (org-clock-mark-default-task))))
 
 
-;;; Task Management
+;;; Workload Reports
 
 (defun db/org-planned-tasks-in-range (start-date end-date &optional org-ql-match)
   "Return list of tasks planned between START-DATE and END-DATE.
@@ -738,7 +738,7 @@ PARAMS is a property list of the following parameters:
   (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
 
 
-;;; Hydra
+;;; Clocking Hydra
 
 (defun db/clock-in-task-by-id (task-id)
   "Clock in org mode task as given by TASK-ID."
@@ -820,19 +820,6 @@ forces clocking in of the default task."
 
 
 ;;; Babel
-
-(defun org-babel-execute:hy (body params)
-  ;; http://kitchingroup.cheme.cmu.edu/blog/2016/03/30/OMG-A-Lisp-that-runs-python/
-  "Execute hy code BODY with parameters PARAMS."
-  (ignore params)
-  (let* ((temporary-file-directory ".")
-         (tempfile (make-temp-file "hy-")))
-    (with-temp-file tempfile
-      (insert body))
-    (unwind-protect
-        (shell-command-to-string
-         (format "hy %s" tempfile))
-      (delete-file tempfile))))
 
 (defun db/org-eval-subtree-no-confirm (&optional arg)
   "Evaluate subtree at point without asking for confirmation.
@@ -917,14 +904,62 @@ by passing a non-nil value for ARG."
     (org-mode)
     (org-table-convert-region (point-min) (point-max) separator)))
 
-(defun db/org-mark-current-default-task ()
-  "Mark current task as default when equal to work task or home task.
-Work task and home task are determined by the current values of
-`org-working-task-id’ and `org-home-task-id’, respectively."
-  (let ((current-id (org-id-get org-clock-marker)))
-    (when (member current-id (list org-working-task-id
-                                   org-home-task-id))
-      (org-clock-mark-default-task))))
+(defun db/org-update-headline-log-note (&optional new-headline)
+  "Replace headline of item at point with NEW-HEADLINE.
+
+Interactively query for HEADLINE when not provided.  Clear refile
+cache if that's in use."
+  (interactive)
+
+  (unless (derived-mode-p 'org-mode 'org-agenda-mode)
+    (user-error "Neither in an Org mode nor Org agenda buffer, aborting"))
+
+  (unless new-headline
+    (let ((default-value (cond
+                          ((derived-mode-p 'org-mode)
+                           (org-entry-get (point) "ITEM"))
+                          ((derived-mode-p 'org-agenda-mode)
+                           (org-agenda-with-point-at-orig-entry
+                            nil (org-entry-get (point) "ITEM"))))))
+      (setq new-headline (read-string "New Headline: "
+                                      nil nil
+                                      default-value))))
+
+  (unless (stringp new-headline)
+    (user-error "New headline must be string"))
+
+  (when (string-match-p "\n" new-headline)
+    (user-error "New headline contains newlines, aborting"))
+
+  (save-window-excursion
+    (save-mark-and-excursion
+      (when (derived-mode-p 'org-agenda-mode)
+        (org-agenda-goto))
+
+      (when (org-before-first-heading-p)
+        (user-error "Point is before first headline, aborting"))
+
+      (let ((old-headline (org-entry-get (point) "ITEM")))
+        ;; Update headline
+        (org-edit-headline new-headline)
+
+        ;; Code to add note interactively taken from
+        ;; https://sachachua.com/blog/2022/11/logging-sent-messages-to-org-mode-with-message-sent-hook/
+        (move-marker org-log-note-return-to (point))
+        (move-marker org-log-note-marker (point))
+        (with-temp-buffer
+          (insert (format "Changed headline from: %s\n" old-headline))
+          (let ((org-log-note-purpose 'note))
+            (org-store-log-note))))))
+
+  (when org-refile-use-cache
+    (org-refile-cache-clear))
+
+  (when (derived-mode-p 'org-agenda-mode)
+    (org-agenda-redo)))
+
+
+;;; Checklist Handling
 
 (defun db/org--find-template ()
   "Return marker to template item associated with item at point.
@@ -1165,60 +1200,6 @@ inserted template."
       (insert "\n"))
 
     (org-update-statistics-cookies nil)))
-
-(defun db/org-update-headline-log-note (&optional new-headline)
-  "Replace headline of item at point with NEW-HEADLINE.
-
-Interactively query for HEADLINE when not provided.  Clear refile
-cache if that's in use."
-  (interactive)
-
-  (unless (derived-mode-p 'org-mode 'org-agenda-mode)
-    (user-error "Neither in an Org mode nor Org agenda buffer, aborting"))
-
-  (unless new-headline
-    (let ((default-value (cond
-                          ((derived-mode-p 'org-mode)
-                           (org-entry-get (point) "ITEM"))
-                          ((derived-mode-p 'org-agenda-mode)
-                           (org-agenda-with-point-at-orig-entry
-                            nil (org-entry-get (point) "ITEM"))))))
-      (setq new-headline (read-string "New Headline: "
-                                      nil nil
-                                      default-value))))
-
-  (unless (stringp new-headline)
-    (user-error "New headline must be string"))
-
-  (when (string-match-p "\n" new-headline)
-    (user-error "New headline contains newlines, aborting"))
-
-  (save-window-excursion
-    (save-mark-and-excursion
-      (when (derived-mode-p 'org-agenda-mode)
-        (org-agenda-goto))
-
-      (when (org-before-first-heading-p)
-        (user-error "Point is before first headline, aborting"))
-
-      (let ((old-headline (org-entry-get (point) "ITEM")))
-        ;; Update headline
-        (org-edit-headline new-headline)
-
-        ;; Code to add note interactively taken from
-        ;; https://sachachua.com/blog/2022/11/logging-sent-messages-to-org-mode-with-message-sent-hook/
-        (move-marker org-log-note-return-to (point))
-        (move-marker org-log-note-marker (point))
-        (with-temp-buffer
-          (insert (format "Changed headline from: %s\n" old-headline))
-          (let ((org-log-note-purpose 'note))
-            (org-store-log-note))))))
-
-  (when org-refile-use-cache
-    (org-refile-cache-clear))
-
-  (when (derived-mode-p 'org-agenda-mode)
-    (org-agenda-redo)))
 
 (defun db/org-goto-first-open-checkbox-in-subtree (&optional silent)
   "Jump to first open checkbox in the current subtree.

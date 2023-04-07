@@ -721,7 +721,6 @@
 (use-package db-org
   :commands (db/check-special-org-files-in-agenda
              db/verify-refile-target
-             org-reset-checkbox-state-maybe
              db/find-parent-task
              db/ensure-running-clock
              db/save-current-org-task-to-file
@@ -739,7 +738,6 @@
              db/org-agenda-skip-tag
              hydra-org-agenda-view/body
              db/org-agenda-insert-efforts
-             org-babel-execute:hy
              db/org-eval-subtree-no-confirm
              db/org-timestamp-difference
              db/org-capture-code-snippet
