@@ -487,10 +487,10 @@ Work task and home task are determined by the current values of
 (defun db/org-planned-tasks-in-range (start-date end-date &optional org-ql-match)
   "Return list of tasks planned between START-DATE and END-DATE.
 
-This function will search through the files returned by
-`org-agenda-files' (the function) for all tasks that are
-scheduled, have an active timestamp, or are deadline in the given
-time range.
+This function will search through the files returned by calling
+the function `org-agenda-files' for all tasks that are scheduled,
+have an active timestamp, or are deadline in the given time
+range.
 
 The result has the form (TOTAL-TIME . TASKS), where TASKS is a
 list of cons cells (ID . REMAINING-EFFORT).  REMAINING-EFFORT is
@@ -541,7 +541,9 @@ imposed on the respective time range."
     (cons total-time tasks)))
 
 (defun org-dblock-write:db/org-workload-report (params)
-  "Write workload report based on tasks in `org-agenda-files'.
+  "Write workload report for all tasks.
+
+Tasks are read from files in the variable `org-agenda-files'
 
 PARAMS is a property list of the following parameters:
 
@@ -631,7 +633,9 @@ everything understood by `org-read-date'."
 (org-dynamic-block-define "db/org-workload-report" #'db/org-insert-workload-report)
 
 (defun org-dblock-write:db/org-workload-overview-report (params)
-  "Write an overview workload report based on tasks in `org-agenda-files'.
+  "Write an overview workload report for all tasks.
+
+Tasks are read from files in the variable `org-agenda-files'.
 
 This overview report will list the amount of work planned for
 increasing intervals of time until a given end date is reached.
@@ -804,7 +808,8 @@ forces clocking in of the default task."
   ("b" (db/org-clock-in-break-task) "break")
   ("i" (lambda ()
          (interactive)
-         (org-clock-in '(4))) "interactive")
+         (org-clock-in '(4)))
+      "interactive")
   ("a" counsel-org-goto-all "goto")
   ("o" org-clock-out "clock out")
   ("l" db/org-clock-in-last-task "last")
@@ -1005,7 +1010,7 @@ Checklists are inserted before the first child, if existent, or
 at the end of the subtree.
 
 After inserting a checklist, add the property
-CHECKLIST_INSERTED_P with value `t' to item at point.  Checklists
+CHECKLIST_INSERTED_P with value t to item at point.  Checklists
 are not inserted if this property with this value is already
 present, to avoid double insertions of checklists.
 
@@ -1025,9 +1030,10 @@ Relevant backlinks are Org items and are determined as follows:
 
 - the backlink item must not be scheduled in the future;
 
-- the backlink item must be contained in a file from
+- the backlink item must be contained in a file in the variables
   `org-agenda-files' or `org-agenda-text-search-extra-files', but
-  not in an archive file (i.e., archives are excluded from the search)
+  not in an archive file (i.e., archives are excluded from the
+  search);
 
 - the backlink item must not have the CHECKLIST_NO_BACKLINK
   property set to nil (with inheritance not being considered,
@@ -1346,10 +1352,10 @@ not."
 When ARG is nil, this functions by default searches through the
 current buffer if that one is an Org buffer and is associated
 with a file, and `db/org-default-org-file' otherwise.  If the
-current buffer is associated with a file from `org-agenda-files',
-though, the search is extended through all agenda files (the
-rationale being that Org agenda files are always considered to be
-one large data collection).
+current buffer is associated with a file from the variable
+`org-agenda-files', though, the search is extended through all
+agenda files (the rationale being that Org agenda files are
+always considered to be one large data collection).
 
 When ARG is non-nil, search through all files in the variables
 `org-agenda-files', `org-agenda-text-search-extra-files', and the
@@ -1528,9 +1534,9 @@ If the optional ORG-QL-MATCH is given and is a valid `org-ql' query in
 sexp syntax, filter the list for all items matching this query.
 If ARCHIVES is given, also include archive files.
 
-The search is conducted over all files returned by
-`org-agenda-files' including archives, as well as all files
-referenced in `org-agenda-text-search-extra-files'."
+The search is conducted over all files returned by calling the
+function `org-agenda-files', including archives, as well as all
+files referenced in `org-agenda-text-search-extra-files'."
 
   (let ((extra-files org-agenda-text-search-extra-files)
         files)
