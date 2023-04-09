@@ -906,9 +906,6 @@
             (add-hook 'org-mode-hook 'page-break-lines-mode)
             (add-hook 'org-mode-hook 'turn-on-auto-fill)
 
-            ;; Reset checkboxes if the RESET_CHECK_BOXES property is set
-            (add-hook 'org-after-todo-state-change-hook 'org-reset-checkbox-state-maybe)
-
             ;; Statically color links sponding to whether the file exists, but
             ;; this turns out to be slow on Windows; we can use `org-lint' for
             ;; this when necessary)
