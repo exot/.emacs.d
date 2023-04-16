@@ -66,22 +66,31 @@ If already in `*ansi-term*' buffer, bury it."
 
 (defun db/run-or-hide-shell (arg)
   "Opens a shell buffer in new window if not already in one.
-  Otherwise, closes the current shell window.  With ARG, switch
-  to `default-directory' of the current buffer first."
-  ;; idea to split the current window is from
-  ;; http://howardism.org/Technical/Emacs/eshell-fun.html
+
+Otherwise, closes the current shell window.
+
+The buffer's name has to start with “*shell*” to be recognized
+by this function.  Otherwise the current buffer is not treated as
+a shell buffer.
+
+With ARG, switch to `default-directory' of the current buffer first."
   (interactive "P")
   (cl-flet ((change-to-shell ()
-              (if-let ((shell-window (db/find-window-by-buffer-mode 'shell-mode)))
+              (if-let ((shell-window (cl-find-if (lambda (window)
+                                                   (with-current-buffer (window-buffer window)
+                                                     (and (derived-mode-p 'shell-mode)
+                                                          (string-match-p "^\\*shell\\*" (buffer-name)))))
+                                                 (window-list-1))))
                   (select-window shell-window)
                 (--if-let (display-buffer (shell))
                     (select-window it)
                   (error "Could not start shell (`display-buffer' returned nil)")))))
     (if (not arg)
         ;; toggle shell window
-        (if (not (derived-mode-p 'shell-mode))
-            (change-to-shell)
-          (bury-buffer))
+        (if (and (derived-mode-p 'shell-mode)
+                 (string-match-p "^\\*shell\\*" (buffer-name)))
+            (bury-buffer)
+          (change-to-shell))
 
       ;; unconditionally go to shell, and also change to cwd
       (let ((current-dir (expand-file-name default-directory)))

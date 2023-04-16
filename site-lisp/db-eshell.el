@@ -17,21 +17,32 @@
 (require 'em-dirs)
 (require 'em-hist)
 (autoload 'magit-status "magit")
-(autoload 'db/find-window-by-buffer-mode "db-utils")
 
 
 ;; Various
 
 (defun db/run-or-hide-eshell (arg)
   "Opens an eshell buffer if not already in one.
-Otherwise moves the cursor to the window where we have been before."
+
+Otherwise moves the cursor to the window where we have been before.
+
+The buffer's name has to start with “*eshell*” to be recognized
+by this function.  Otherwise the current buffer is not treated as
+an eshell buffer.
+
+When ARG is given, also switch to `default-directory'."
   (interactive "P")
-  (if (derived-mode-p 'eshell-mode)
+  (if (and (derived-mode-p 'eshell-mode)
+           (string-match-p "^\\*eshell\\*" (buffer-name)))
       ;; bury buffer; reopen with current working directory if arg is given
       (progn
         (bury-buffer)
         (and arg (db/run-or-hide-eshell arg)))
-    (if-let ((eshell-window (db/find-window-by-buffer-mode 'eshell-mode)))
+    (if-let ((eshell-window (cl-find-if (lambda (window)
+                                          (with-current-buffer (window-buffer window)
+                                            (and (derived-mode-p 'eshell-mode)
+                                                 (string-match-p "^\\*eshell\\*" (buffer-name)))))
+                                        (window-list-1))))
         (select-window eshell-window)
       ;; No running eshell found, open new one.
       (let* ((current-dir (expand-file-name default-directory)))
