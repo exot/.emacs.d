@@ -546,13 +546,17 @@
                            display-buffer-in-side-window
                            (side . bottom)
                            (slot . -1)
-                           (window-height . 0.33)))
+                           (window-height . 0.33)
+                           (window-parameters . ((no-other-window . t)
+                                                 (no-delete-other-windows . t)))))
             (add-to-list 'display-buffer-alist
                          '("^\\*shell\\*"
                            display-buffer-in-side-window
                            (side . bottom)
                            (slot . 1)
-                           (window-height . 0.33)))))
+                           (window-height . 0.33)
+                           (window-parameters . ((no-other-window . t)
+                                                 (no-delete-other-windows . t)))))))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
