@@ -542,11 +542,10 @@
             ;; Inspired by masteringemacs
             (add-to-list 'display-buffer-alist
                          '("^\\*e?shell\\*"
-                           display-buffer-in-direction
-                           (direction . bottom)
-                           (window . root)
-                           (window-height . 0.33)
-                           (dedicated . t)))))
+                           display-buffer-in-side-window
+                           (side . bottom)
+                           (slot . 0)
+                           (window-height . 0.33)))))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
