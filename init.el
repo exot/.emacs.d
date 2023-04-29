@@ -2798,7 +2798,7 @@ With given ARG, display files in `db/important-document-path’."
 ;; General Stuff first
 
 (use-package lisp-mode
-  :init (setq lisp-indent-function #'lisp-indent-function))
+  :init (setq lisp-indent-function #'common-lisp-indent-function))
 
 (use-package lispy
   :ensure t
