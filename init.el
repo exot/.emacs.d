@@ -741,7 +741,6 @@
              org-dblock-write:db/org-workload-report
              endless/org-ispell
              db/org-agenda-list-deadlines
-             db/org-agenda-skip-tag
              db/org-agenda-insert-active-filters
              hydra-org-agenda-view/body
              db/org-agenda-insert-efforts

@@ -146,24 +146,6 @@ Add this function to `org-agenda-finalize-hook' to enable this."
            (propertize (format " [%s]" ff)
                        'db/active-filter-display t)))))))
 
-(defun db/org-agenda-skip-tag (tag &optional others)
-  ;; https://stackoverflow.com/questions/10074016/org-mode-filter-on-tag-in-agenda-view
-  "Skip all entries that correspond to TAG.
-
-If OTHERS is true, skip all entries that do not correspond to TAG."
-  (let* ((next-headline    (save-mark-and-excursion
-                             (or (outline-next-heading) (point-max))))
-         (current-headline (or (and (org-at-heading-p)
-                                    (point))
-                               (save-mark-and-excursion
-                                 ;; remember to also consider invisible headings
-                                 (org-back-to-heading t))))
-         (has-tag          (member tag (org-get-tags current-headline))))
-    (if (or (and others (not has-tag))
-            (and (not others) has-tag))
-        next-headline
-      nil)))
-
 ;; A Hydra for changing agenda appearance
 ;; http://oremacs.com/2016/04/04/hydra-doc-syntax/
 
