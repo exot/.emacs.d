@@ -123,7 +123,7 @@ Add this function to `org-agenda-finalize-hook' to enable this."
   ;; First delete any present active filter display, as it might be obsolete.
   (save-excursion
     (when-let ((pos (text-property-any
-                     (point) (point-max) 'db/active-filter-display t)))
+                     (point-min) (point-max) 'db/active-filter-display t)))
       (goto-char pos)
       (kill-line)))
 
@@ -131,7 +131,7 @@ Add this function to `org-agenda-finalize-hook' to enable this."
   (when (org-agenda-filter-any)
     (save-excursion
       (when-let ((pos (text-property-any
-                       (point) (point-max) 'org-agenda-structural-header t)))
+                       (point-min) (point-max) 'org-agenda-structural-header t)))
         (goto-char pos)
         (end-of-line)
 
