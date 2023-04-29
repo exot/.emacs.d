@@ -742,6 +742,7 @@
              endless/org-ispell
              db/org-agenda-list-deadlines
              db/org-agenda-skip-tag
+             db/org-agenda-insert-active-filters
              hydra-org-agenda-view/body
              db/org-agenda-insert-efforts
              db/org-eval-subtree-no-confirm
@@ -1134,9 +1135,6 @@
               org-agenda-search-headline-for-time nil
               org-agenda-search-view-always-boolean t
 
-              ;; Show daily efforts directly in the agenda
-              org-agenda-finalize-hook '(db/org-agenda-insert-efforts)
-
               org-agenda-clock-consistency-checks
               '(:max-duration 9999999
                 :min-duration 0
@@ -1257,14 +1255,24 @@
                                (org-agenda-skip-deadline-prewarning-if-scheduled t)))))))
 
   :config (progn
-            ;; avoid important buffers to end up in `org-agenda-new-buffers’ by
+            ;; Avoid important buffers to end up in `org-agenda-new-buffers’ by
             ;; opening them manually
             (mapc #'find-file-noselect org-agenda-files)
 
-            (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)
-
+            ;; Check that all expected agenda files are being displayed.
             (advice-add 'org-agenda
                         :before #'db/check-special-org-files-in-agenda)
+
+            (add-hook 'org-agenda-mode-hook #'hl-line-mode 'append)
+
+            ;; Show daily efforts directly in the agenda
+            (add-hook 'org-agenda-finalize-hook #'db/org-agenda-insert-efforts)
+
+            ;; Prominently display active filters on top of agenda view; also
+            ;; update current agenda view when updating filters to make sure our
+            ;; display is always correct.
+            (add-hook 'org-agenda-finalize-hook #'db/org-agenda-insert-active-filters)
+            (add-hook 'org-agenda-filter-hook #'org-agenda-redo-all)
 
             (define-advice org-agenda-redo-all (:around (old-func &rest r) goto-top-and-execute)
               "Avoid recentering the Org agenda buffer after redo by moving

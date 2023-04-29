@@ -112,6 +112,40 @@ deadlines."
       (setq buffer-read-only t)
       (message ""))))
 
+(defun db/org-agenda-insert-active-filters (&optional match)
+  "Insert string showing the current agenda filters.
+
+The filter display is added after the structural header.
+
+If no agenda filters are active, nothing will be inserted.
+
+Add this function to `org-agenda-finalize-hook' to enable this."
+  ;; First delete any present active filter display, as it might be obsolete.
+  (save-excursion
+    (when-let ((pos (text-property-any
+                     (point) (point-max) 'db/active-filter-display t)))
+      (goto-char pos)
+      (kill-line)))
+
+  ;; Insert current active filters if there are any.
+  (when (org-agenda-filter-any)
+    (save-excursion
+      (when-let ((pos (text-property-any
+                       (point) (point-max) 'org-agenda-structural-header t)))
+        (goto-char pos)
+        (end-of-line)
+
+        ;; Current filter display shamelessly stolen from `org-agenda-filter'.
+        ;; Is there a function to do this?
+        (let* ((cf (mapconcat #'identity org-agenda-category-filter ""))
+	       (tf (mapconcat #'identity org-agenda-tag-filter ""))
+	       (ef (replace-regexp-in-string "^\\+" "" (or (car org-agenda-effort-filter) "")))
+	       (rf (replace-regexp-in-string "^\\+" "" (or (car org-agenda-regexp-filter) "")))
+	       (ff (concat cf tf ef (when (not (equal rf "")) (concat "/" rf "/")))))
+          (insert-and-inherit
+           (propertize (format " [%s]" ff)
+                       'db/active-filter-display t)))))))
+
 (defun db/org-agenda-skip-tag (tag &optional others)
   ;; https://stackoverflow.com/questions/10074016/org-mode-filter-on-tag-in-agenda-view
   "Skip all entries that correspond to TAG.
