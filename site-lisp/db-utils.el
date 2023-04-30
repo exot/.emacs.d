@@ -250,16 +250,6 @@ FORMAT-STRING defaults to some ISO 8601-like format."
         (message time-string)
       time-string)))
 
-(defun conditionally-enable-lispy ()
-  "Enable lispy-mode when in `eval-expression’ or in
-`pp-eval-expression’.  lispy must have been loaded for this
-first, i.e., this function will not automatically load
-lispy."
-  (when (and (featurep 'lispy)
-             (or (eq this-command 'eval-expression)
-                 (eq this-command 'pp-eval-expression)))
-    (lispy-mode 1)))
-
 (defun turn-on-lispy-when-available ()
   "Activate `lispy’ in current buffer when possible.
 Will print a warning in case of failure."

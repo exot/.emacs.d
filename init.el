@@ -589,7 +589,6 @@
              db/run-or-hide-ansi-term
              db/hex-to-ascii
              db/text-to-hex
-             conditionally-enable-lispy
              turn-on-lispy-when-available
              turn-on-flycheck-when-file
              db/sort-nsm-permanent-settings
