@@ -552,6 +552,60 @@ entries, even if I want to use the input directly."
          (or (cdr (assoc files grep-files-aliases))
              files))))
 
+(defun db/make-selector-from-table-header (header)
+  "Return selector function based on names contained in HEADER.
+
+A selector function is a function that receives a KEY (a symbol)
+and a ROW (list of values) and returns the value in ROW with the
+same index that KEY has in HEADER.  A use-case for such a
+selector function is to have a table represented as a list of
+lists (rows), where the first list (row) is the header and all
+subsequent lists (rows) are the actual values; to access values
+in all subsequent rows by name, one can use a selector function
+on the header to do so.
+
+HEADER must be a list of strings or symbols and must not contain
+duplicates when elements are considered as symbols."
+
+  (unless (listp header)
+    (user-error "Header is not a list, cannot create selector"))
+
+  (unless (-all? (-orfn #'stringp #'symbolp) header)
+    (user-error "Header must consist of strings or symbols, cannot create selector"))
+
+  (let ((header (-map #'(lambda (elt)
+                          (cond
+                            ((symbolp elt) elt)
+                            ((stringp elt) (intern (downcase elt)))))
+                      header)))
+
+    ;; Check for duplicates in HEADER
+    (when (-reduce-from #'(lambda (val tail)
+                            (or val (memq (cl-first tail)
+                                          (cl-rest tail))))
+                        nil
+                        (-tails header))
+      (user-error "Header contains duplicates, cannot create selector"))
+
+    ;; Return actual selector
+    (let* ((lookup-table (make-hash-table)))
+
+      (mapc #'(lambda (idx)
+                (puthash (nth idx header)
+                         idx
+                         lookup-table))
+            (-iota (length header)))
+
+      #'(lambda (column row)
+          (let ((key (if (symbolp column)
+                         column
+                       (user-error "Unknow key type %s of key %s"
+                                   (type-of column)
+                                   column))))
+            (if-let ((idx (gethash key lookup-table)))
+                (nth idx row)
+              (user-error "Unknow column name %s" column)))))))
+
 
 ;;; Base45 Decoding
 
