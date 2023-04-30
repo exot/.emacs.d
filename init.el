@@ -435,7 +435,9 @@
 
 (use-package auth-sources
   :init (setq auth-sources '("~/.authinfo.gpg")
-              auth-source-save-behavior nil))
+              auth-source-save-behavior nil)
+  :config (progn
+            (auth-source-pass-enable)))
 
 (use-package browser-url
   :init (setq browse-url-browser-function 'browse-url-generic
