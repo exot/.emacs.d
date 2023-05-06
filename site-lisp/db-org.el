@@ -1090,69 +1090,89 @@ inserting the checklist."
 
         (t ;; Default action: insert complete checklist.
 
-         ;; Let's remember where we are, so that latter on CHECKLIST_INSERTED_P
-         ;; will be inserted at the original heading (where we are now) and not
-         ;; at possible new subtrees coming from the template.
-         (save-mark-and-excursion
+         (let (point-before-template
+               point-after-template)
 
-           ;; Checklists are inserted directly before first child, if existent, or
-           ;; at end of subtree
-           (org-show-entry)
-           (or (org-goto-first-child)
-               (org-end-of-subtree 'invisible-ok 'to-heading))
-           ;; Move back from heading, unless we are at the end of the buffer
-           (when (org-at-heading-p)
-             ;; Go to end of line before heading
-             (forward-char -1))
+           ;; Let's remember where we are, so that latter on CHECKLIST_INSERTED_P
+           ;; will be inserted at the original heading (where we are now) and not
+           ;; at possible new subtrees coming from the template.
+           (save-mark-and-excursion
 
-           ;; Insert relevant backlinks, when available.
-           (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                                 (string-to-number it)))
-                 number-of-backlinks
-                 point-before-backlinks)
+             ;; Checklists are inserted directly before first child, if existent, or
+             ;; at end of subtree
+             (org-show-entry)
+             (or (org-goto-first-child)
+                 (org-end-of-subtree 'invisible-ok 'to-heading))
+             ;; Move back from heading, unless we are at the end of the buffer
+             (when (org-at-heading-p)
+               ;; Go to end of line before heading
+               (forward-char -1))
 
-             ;; Insert blank line, but only if the previous line is not blank
-             ;; already.
-             (unless (save-mark-and-excursion
-                       (forward-line -1)
-                       (looking-at (rx bol (* space) eol)))
-               (insert "\n"))
+             ;; Insert relevant backlinks, when available.
+             (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                                   (string-to-number it)))
+                   number-of-backlinks
+                   point-before-backlinks)
 
-             (insert (format "Relevant backlinks (%s):\n\n"
-                             (if parent-depth
-                                 (format "parent-depth %d" parent-depth)
-                               "all parents")))
+               ;; Insert blank line, but only if the previous line is not blank
+               ;; already.
+               (unless (save-mark-and-excursion
+                         (forward-line -1)
+                         (looking-at (rx bol (* space) eol)))
+                 (insert "\n"))
 
-             ;; Store where we are (minus the two newlines) so we can delete the
-             ;; checklist in case it's empty.
-             (setq point-before-backlinks (- (point) 2))
+               (insert (format "Relevant backlinks (%s):\n\n"
+                               (if parent-depth
+                                   (format "parent-depth %d" parent-depth)
+                                 "all parents")))
 
-             (setq number-of-backlinks
-                   (org-dblock-write:db/org-backlinks (list
-                                                       :org-ql-match '(and
-                                                                       (not (done))
-                                                                       (not (ltags "TEMPLATE"))
-                                                                       (not (scheduled :from 1))
-                                                                       (not (property "CHECKLIST_NO_BACKLINK" "t" :inherit nil)))
-                                                       :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                                                                       (string-to-number it))
-                                                       :archive nil)))
+               ;; Store where we are (minus the two newlines) so we can delete the
+               ;; checklist in case it's empty.
+               (setq point-before-backlinks (- (point) 2))
 
-             ;; When no backlinks have been found, remove the empty table head and just
-             ;; print "none".
-             (when (zerop number-of-backlinks)
-               (delete-region point-before-backlinks (point))
-               (insert " none.")))
+               (setq number-of-backlinks
+                     (org-dblock-write:db/org-backlinks (list
+                                                         :org-ql-match '(and
+                                                                         (not (done))
+                                                                         (not (ltags "TEMPLATE"))
+                                                                         (not (scheduled :from 1))
+                                                                         (not (property "CHECKLIST_NO_BACKLINK" "t" :inherit nil)))
+                                                         :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                                                                         (string-to-number it))
+                                                         :archive nil)))
 
-           ;; Insert template, when avilable.
-           (let ((template-marker (db/org--find-template)))
-             (insert "\n\nTemplate:")
-             (if (not template-marker)
-                 (insert " none.\n")
-               (db/org-copy-body-from-item-to-point template-marker))))
+               ;; When no backlinks have been found, remove the empty table head and just
+               ;; print "none".
+               (when (zerop number-of-backlinks)
+                 (delete-region point-before-backlinks (point))
+                 (insert " none.")))
 
-         (org-entry-put (point) "CHECKLIST_INSERTED_P" "t")
-         (db/org-goto-first-open-checkbox-in-subtree))))
+             ;; Insert template, when avilable.
+             (let ((template-marker (db/org--find-template)))
+               (insert "\n\nTemplate:")
+               (setq point-before-template (point))
+               (if (not template-marker)
+                   (insert " none.\n")
+                 (db/org-copy-body-from-item-to-point template-marker))
+               (setq point-after-template (point))))
+
+           (org-entry-put (point) "CHECKLIST_INSERTED_P" "t")
+           (org-update-statistics-cookies nil)
+
+           ;; Remove any existing ID properties, as they would be duplicates
+           ;; now.  Only do this in the part inserted with template, though, and
+           ;; leave previously existing child items and the item itself as they
+           ;; are.
+           (save-mark-and-excursion
+             (set-mark point-before-template)
+             (goto-char point-after-template)
+             (org-map-entries #'(lambda ()
+                                  (org-entry-delete (point) "ID")
+                                  (org-entry-delete (point) "CUSTOM_ID"))
+                              nil
+                              'region))
+
+           (db/org-goto-first-open-checkbox-in-subtree)))))
 
 (define-obsolete-function-alias 'db/org-copy-template
   'db/org-insert-checklist
@@ -1183,6 +1203,7 @@ inserted template."
   (unless (number-or-marker-p pom)
     (user-error "Argument is neither point nor mark: %s" pom))
   (let ((body (save-restriction
+                (widen)
                 (save-mark-and-excursion
                   (let ((template-element (org-with-point-at pom
                                             (org-element-at-point))))
@@ -1208,15 +1229,15 @@ inserted template."
                          (buffer-substring-no-properties content-begin content-end)))))))))
 
     (cond
-     ;; Open next line if the current line is not blank
-     ((not (looking-at (rx bol eol)))
-      (insert "\n\n"))
+      ;; Open next line if the current line is not blank
+      ((not (looking-at (rx bol eol)))
+       (insert "\n\n"))
 
-     ;; Add newline, but only if the previous line is not blank already.
-     ((not (save-mark-and-excursion
-             (forward-line -1)
-             (looking-at (rx bol (* space) eol))))
-      (insert "\n")))
+      ;; Add newline, but only if the previous line is not blank already.
+      ((not (save-mark-and-excursion
+              (forward-line -1)
+              (looking-at (rx bol (* space) eol))))
+       (insert "\n")))
 
     (insert body)
 
@@ -1224,9 +1245,7 @@ inserted template."
     (unless (save-mark-and-excursion
               (forward-line 1)
               (looking-at (rx bol (* space) eol)))
-      (insert "\n"))
-
-    (org-update-statistics-cookies nil)))
+      (insert "\n"))))
 
 (defun db/org-goto-first-open-checkbox-in-subtree (&optional silent)
   "Jump to first open checkbox in the current subtree.
