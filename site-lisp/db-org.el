@@ -1002,19 +1002,20 @@ determined."
     ;; If no template has been found so far, search for top-most sibling and
     ;; whether its headline starts with “Template”; use that when found.
     (unless template-marker
-      (let ((top-most-sibling (condition-case _
-                                  (save-restriction
+      (save-excursion
+        (widen)
+        (let ((top-most-sibling (condition-case _
                                     (save-mark-and-excursion
                                       (outline-up-heading 1 'invisible-ok)
                                       (outline-next-heading)
-                                      (point)))
-                                (t nil))))
-        (when (and top-most-sibling
-                   (integerp top-most-sibling) ; just to make sure we have a point here
-                   (string-match-p "^Template.*"
-                                   (org-entry-get top-most-sibling "ITEM")))
-          (setq template-marker (org-with-point-at top-most-sibling
-                                  (point-marker))))))
+                                      (point))
+                                  (t nil))))
+          (when (and top-most-sibling
+                     (integerp top-most-sibling) ; just to make sure we have a point here
+                     (string-match-p "^Template.*"
+                                     (org-entry-get top-most-sibling "ITEM")))
+            (setq template-marker (org-with-point-at top-most-sibling
+                                    (point-marker)))))))
 
     ;; Return `template-marker', which is either `nil' or a marker.
     template-marker))
@@ -1202,31 +1203,29 @@ inserted template."
   (interactive (list (db/org-get-location t)))
   (unless (number-or-marker-p pom)
     (user-error "Argument is neither point nor mark: %s" pom))
-  (let ((body (save-restriction
-                (widen)
-                (save-mark-and-excursion
-                  (let ((template-element (org-with-point-at pom
-                                            (org-element-at-point))))
-                    (with-current-buffer (if (markerp pom) (marker-buffer pom) (current-buffer))
-                      (let ((content-end (org-element-property :contents-end template-element))
-                            current-element
-                            content-begin)
-                        ;; Start finding the beginning of the template contents from the top …
-                        (goto-char (org-element-property :contents-begin template-element))
-                        ;; … but skip any drawers we may find.
-                        (setq current-element (org-element-at-point))
-                        (while (memq (org-element-type current-element)
-                                     '(drawer property-drawer))
-                          (goto-char (org-element-property :end current-element))
-                          (setq current-element (org-element-at-point)))
-                        ;; Now we are at the beginning of the contents, let's copy
-                        ;; that, but only if it exists and is not empty.
-                        (setq content-begin (org-element-property :begin current-element))
-                        (unless (and content-begin
-                                     (< content-begin content-end))
-                          (user-error "Cannot find content in template, or content is empty"))
-                        (string-trim-right
-                         (buffer-substring-no-properties content-begin content-end)))))))))
+  (let ((body (save-mark-and-excursion
+                (let ((template-element (org-with-point-at pom
+                                          (org-element-at-point))))
+                  (with-current-buffer (if (markerp pom) (marker-buffer pom) (current-buffer))
+                    (let ((content-end (org-element-property :contents-end template-element))
+                          current-element
+                          content-begin)
+                      ;; Start finding the beginning of the template contents from the top …
+                      (goto-char (org-element-property :contents-begin template-element))
+                      ;; … but skip any drawers we may find.
+                      (setq current-element (org-element-at-point))
+                      (while (memq (org-element-type current-element)
+                                   '(drawer property-drawer))
+                        (goto-char (org-element-property :end current-element))
+                        (setq current-element (org-element-at-point)))
+                      ;; Now we are at the beginning of the contents, let's copy
+                      ;; that, but only if it exists and is not empty.
+                      (setq content-begin (org-element-property :begin current-element))
+                      (unless (and content-begin
+                                   (< content-begin content-end))
+                        (user-error "Cannot find content in template, or content is empty"))
+                      (string-trim-right
+                       (buffer-substring-no-properties content-begin content-end))))))))
 
     (cond
       ;; Open next line if the current line is not blank
