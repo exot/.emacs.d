@@ -433,7 +433,7 @@
   :commands (appt-activate)
   :init (setq appt-display-mode-line nil))
 
-(use-package auth-sources
+(use-package auth-source
   :init (setq auth-sources '("~/.authinfo.gpg")
               auth-source-save-behavior nil)
   :config (progn
