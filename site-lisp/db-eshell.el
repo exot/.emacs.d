@@ -151,7 +151,7 @@ current directory is not part of a git repository.  See
 formatting."
   (let ((head-face '(:foreground "#859900")))
     (concat (propertize "┌─" 'face head-face)
-            (user-login-name)
+            (downcase (user-login-name))
             "@"
             (system-name)
             " "
