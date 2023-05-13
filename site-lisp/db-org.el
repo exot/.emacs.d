@@ -1077,6 +1077,9 @@ When ARG is given, jump to the current template instead of
 inserting the checklist."
   (interactive "P")
 
+  (when (derived-mode-p 'org-agenda-mode)
+    (org-agenda-goto))
+
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org mode, aborting"))
 
