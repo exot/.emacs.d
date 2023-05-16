@@ -1314,7 +1314,6 @@ clocked-in tasks to jump to."
           (goto-char m)
           (org-show-entry)
           (db/org-goto-first-open-checkbox-in-subtree :silent)
-          (recenter org-clock-goto-before-context)
           (org-reveal)
           (if recent
 	      (message "No running clock, this is the most recently clocked task"))
