@@ -1300,7 +1300,7 @@ clocked-in tasks to jump to."
 	     (select
 	      (or (org-clock-select-task "Select task to go to: ")
 		  (user-error "No task selected")))
-	     ((org-clocking-p) org-clock-marker)
+	     ((org-clocking-p) org-clock-hd-marker)
 	     ((and org-clock-goto-may-find-recent-task
 		   (car org-clock-history)
 		   (marker-buffer (car org-clock-history)))
