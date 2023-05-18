@@ -25,6 +25,8 @@
 (autoload 'async-start "async")
 (autoload 'lispy-mode "lispy")
 (autoload 'ldap-search "ldap")
+(autoload 'find-libary-name "find-func")
+(autoload 'lm-header "lisp-mnt")
 
 (declare-function w32-shell-execute "w32fns.c")
 
@@ -605,6 +607,14 @@ duplicates when elements are considered as symbols."
             (if-let ((idx (gethash key lookup-table)))
                 (nth idx row)
               (user-error "Unknow column name %s" column)))))))
+
+(defun db/get-library-version (library)
+  ;; From bbatsov: https://emacs.stackexchange.com/a/69923
+  "Return a version string for LIBRARY."
+  (with-temp-buffer
+    (insert-file-contents (find-library-name library))
+    (or (lm-header "package-version")
+        (lm-header "version"))))
 
 
 ;;; Base45 Decoding

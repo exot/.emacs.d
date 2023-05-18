@@ -612,7 +612,8 @@
              db/replace-variables-in-string
              db/dired-ediff-files
              db/grep-read-files
-             db/make-selector-from-table-header))
+             db/make-selector-from-table-header
+             db/get-library-version))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
