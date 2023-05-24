@@ -725,9 +725,14 @@ PARAMS is a property list of the following parameters:
     ;; XXX: this might be slow, try to reduce the calls to
     ;; `db/org-planned-tasks-in-range'.
     (dolist (interval-end-date date-range)
-      (let ((total-time (car (db/org-planned-tasks-in-range (format-time-string timestamp-format start-date)
-                                                            (format-time-string timestamp-format interval-end-date)
-                                                            org-ql-match))))
+      (let ((total-time (car (db/org-planned-tasks-in-range
+                              ;; Set start date to nil to also include tasks
+                              ;; scheduled or deadlined before `start-date', as
+                              ;; those are also still open and need to be done
+                              ;; somewhen.
+                              nil
+                              (format-time-string timestamp-format interval-end-date)
+                              org-ql-match))))
         (insert (format "| [%s] | %s |\n"
                         (format-time-string timestamp-format interval-end-date)
                         total-time))))
