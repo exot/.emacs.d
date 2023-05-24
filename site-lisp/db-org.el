@@ -611,14 +611,18 @@ everything understood by `org-read-date'."
                          (string-replace ">" "]"))
                   "")))
 
-      (insert (format "#+CAPTION: Workload Report at %s for [%s]--[%s] .\n"
+      (insert (format "#+CAPTION: Workload Report at %s from %s until %s.\n"
                       (with-temp-buffer
                         ;; Is there an easier way to get the current time as an
                         ;; inactive timestamp?
                         (org-insert-time-stamp (current-time) t t)
                         (buffer-string))
-                      (org-read-date nil nil start-date)
-                      (org-read-date nil nil end-date)))
+                      (if start-date
+                          (format "[%s]" (org-read-date nil nil start-date))
+                        "The Beginning Of Time")
+                      (if end-date
+                          (format "[%s]" (org-read-date nil nil end-date))
+                        "The End of Things")))
       (insert "| Task | Effort | Timestamp | SCHEDULED | DEADLINE |\n|---|\n")
       (pcase-dolist (`(,task-id . ,effort-string) (cdr task-summary))
         (insert (format "| %s | %s | %s | %s | %s |\n"
