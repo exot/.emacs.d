@@ -1537,16 +1537,12 @@ with a file.  If ARG is non-nil, include all files in the
 variables `org-agenda-files' and
 `org-agenda-text-search-extra-files' in this search."
   (interactive "P")
-  (unless (derived-mode-p 'org-mode)
-    (user-error "Not in Org Mode"))
   (db/org-insert-link-to-pom (db/org-get-location arg)))
 
 (defun db/org-add-link-to-current-clock ()
   "Insert link to currently clocked-in item at point.
 Error out when the clock is not active."
   (interactive)
-  (unless org-clock-marker
-    (user-error "No clocked-in task, aborting"))
   (db/org-insert-link-to-pom org-clock-marker))
 
 (defun db/org-add-link-to-org-clock-select-task ()
