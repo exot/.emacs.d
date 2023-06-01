@@ -1241,10 +1241,10 @@
                 ("P" "Current Projects and Topics"
                      ((stuck ""
                              ((org-agenda-overriding-header "Stuck Complex Tasks")))
-                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
-                            ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP, not scheduled now or in the future)")))
-                      (tags "TAGS={TOPIC}-TODO={DONE\\|CANC\\|MRGD}-SCHEDULED>=\"<today>\"-HOLD-WAIT-NOT_BEFORE>=\"<today>\""
-                            ((org-agenda-overriding-header "Topics")))
+                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
+                            ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP)")))
+                      (tags "TAGS={TOPIC}-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-HOLD-WAIT-NOT_BEFORE>=\"<today>\""
+                            ((org-agenda-overriding-header "Topics (items directly tagged with TOPIC)")))
                       (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC\\|MRGD}-HOLD-SCHEDULED>=\"<today>\"-HOLD-WAIT-NOT_BEFORE>=\"<today>\""
                             ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")))))
 
