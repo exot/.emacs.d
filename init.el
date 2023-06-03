@@ -497,6 +497,14 @@
             ;; and replace it with something more straightforward.
             (advice-add 'grep-read-files :around #'db/grep-read-files)))
 
+(use-package proced
+  :custom ((proced-tree-flag t)
+           (proced-auto-update-flag t)
+           (proced-format 'medium)
+           (proced-auto-update-interval 1)
+           (proced-goal-attribute nil)
+           (proced-enable-color-flag t)))
+
 (use-package quail
   :init (setq default-input-method "TeX")
   :config (add-hook 'input-method-activate-hook
