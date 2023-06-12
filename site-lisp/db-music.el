@@ -184,7 +184,9 @@ OVERWRITE is non-nil."
   (message "Update favorites playlist")
   (db/write-m3u-playlist-from-git-annex-find
    "~/Documents/media/audio/others/daniels-favorite.m3u"
-   "../songs/ --metadata rating-daniel>=0.9 --and --not --metadata tag=exclude-favorite-playlist"
+   ;; We explicitly make sure the values for the `rating-daniel' metadata entry
+   ;; are numbers before comparing them to 0.9
+   "../songs/ -( --metadata=rating-daniel=1.0 --or --metadata=rating-daniel=0.[0-9]* -) --and --metadata rating-daniel>=0.9 --and --not --metadata tag=exclude-favorite-playlist"
    "~/Documents/media/audio/others/"
    'overwrite)
   (message "Update work playlist")
