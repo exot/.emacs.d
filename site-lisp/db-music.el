@@ -102,16 +102,13 @@ more details."
    (call-interactively #'db/playlist-files-from-git-annex-find)))
 
 (defhydra music-control (:color red :hint none)
-  "
-Playing: %s(db/emms-track-status)
+  "\nPlaying: %s(db/emms-track-status)
 
   _n_: ?n?          _p_: ?p?
 _RET_: ?RET?    _s_: ?s?
   _-_: lower volume  _+_: ?+?
   _P_: ?P?
-  _M_: ?M?
-
-"
+  _M_: ?M?\n"
   ("n" emms-next         "next")
   ("p" emms-previous     "previous")
   ("RET" emms-pause      "play/pause")
@@ -200,4 +197,4 @@ OVERWRITE is non-nil."
 
 (provide 'db-music)
 
-;;; db-music ends here
+;;; db-music.el ends here
