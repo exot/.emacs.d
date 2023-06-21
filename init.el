@@ -1177,8 +1177,8 @@
                        ""
                        ((org-agenda-entry-types '(:timestamp :sexp :scheduled :deadline))
                         (org-deadline-warning-days 0)))
-                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>=\"<today>\"-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
-                                 ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled now or in the future)")))
+                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>=\"<today>\"-SCHEDULED<>\"\"-NOT_BEFORE>=\"<today>\""
+                                 ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled)")))
                       (db/org-agenda-list-deadlines
                        ""
                        ((org-agenda-overriding-header "Deadlines")
