@@ -1185,7 +1185,7 @@
                         (org-agenda-sorting-strategy '(deadline-up priority-down))
                         (org-deadline-warning-days 30)))
                       (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
-                                 ((org-agenda-overriding-header "Next Actions List (not WIP, not scheduled now or in the future)")
+                                 ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled now or in the future)")
                                   (org-tags-match-list-sublevels t)))))
 
                 ("B" "Backlog"
