@@ -825,6 +825,36 @@ This is `db-light' and `solarized-light'."
   (load-theme 'db-light))
 
 
+;;; SSH-Key-Handling
+
+(defun db/add-ssh-key-with-password (key-file password)
+  "Add key in KEY-FILE with PASSWORD to currently running ssh-agent."
+  (with-environment-variables (("SSH_ASKPASS_REQUIRE" "never"))
+    (with-temp-buffer
+      (unless (zerop (call-process-region password nil
+                                          "ssh-add" ; XXX: generalize to also allow pageant?
+                                          nil t nil
+                                          (expand-file-name key-file)))
+        (error "Adding SSH key %s failed: %s" key-file (buffer-string))))))
+
+(defcustom db/known-ssh-keys nil
+  "A alist mapping SSH key-files to their password entries.
+This alist maps key-files (file-names) to pass password entries
+holding the password to unlock the key."
+  :group 'personal-settings
+  :type '(alist
+          :key-type (file :tag "SSH-Key")
+          :value-type (string :tag "Password Entry")))
+
+(defun db/load-known-ssh-keys ()
+  "Add all keys from `db/known-ssh-keys' to currently running ssh-agent."
+  ;; XXX: error handling
+  (interactive)
+  (pcase-dolist (`(,ssh-key . ,pass-entry) db/known-ssh-keys)
+    ;; XXX: generalize to other password sources
+    (db/add-ssh-key-with-password ssh-key (auth-source-pass-get 'secret pass-entry))))
+
+
 ;;; End
 
 (provide 'db-utils)
