@@ -831,7 +831,7 @@ This is `db-light' and `solarized-light'."
   "Add key in KEY-FILE with PASSWORD to currently running ssh-agent."
   (with-environment-variables (("SSH_ASKPASS_REQUIRE" "never"))
     (with-temp-buffer
-      (unless (zerop (call-process-region password nil
+      (unless (zerop (call-process-region password nil ; XXX: only compute password when it's needed?
                                           "ssh-add" ; XXX: generalize to also allow pageant?
                                           nil t nil
                                           (expand-file-name key-file)))
@@ -864,11 +864,11 @@ holding the password to unlock the key."
 (cl-defgeneric db/password-from-storage (type entry-key)
   "Retrieve password from storage of type TYPE with lookup key ENTRY-KEY.")
 
-(cl-defmethod db/password-from-storage ((type (eql :pass)) pass-entry)
+(cl-defmethod db/password-from-storage ((_ (eql :pass)) pass-entry)
   "Retrieve password via the UNIX password manager and PASS-ENTRY key."
   (auth-source-pass-get 'secret pass-entry))
 
-(cl-defmethod db/password-from-storage ((type (eql :org-password-manager)) org-id)
+(cl-defmethod db/password-from-storage ((_ (eql :org-password-manager)) org-id)
   "Retrieve password via Org password manager :ID: property ORG-ID."
   (org-password-manager-get-password-by-id org-id))
 
