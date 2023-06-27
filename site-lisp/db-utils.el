@@ -808,7 +808,7 @@ as completing instead."
   (db/bookmark-add-with-handler name url #'eww))
 
 
-;;; Appearance
+;;; Switching Themes
 
 (defun db/switch-to-dark-theme ()
   "Switch to dark theme.
