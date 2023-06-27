@@ -843,16 +843,34 @@ This alist maps key-files (file-names) to pass password entries
 holding the password to unlock the key."
   :group 'personal-settings
   :type '(alist
-          :key-type (file :tag "SSH-Key")
-          :value-type (string :tag "Password Entry")))
+          :key-type (file :tag "SSH key file")
+          :value-type (choice :tag "Password Storage Type"
+                       (list :tag "UNIX pass"
+                        (const :pass)
+                        (string :tag "pass key"))
+                       (list :tag "Org Password Manager"
+                        (const :org-password-manager)
+                        (string :tag "Entry ID property")))))
+
+;; XXX: could we implement this via `auth-source' and additional backends?
 
 (defun db/load-known-ssh-keys ()
   "Add all keys from `db/known-ssh-keys' to currently running ssh-agent."
   ;; XXX: error handling
   (interactive)
   (pcase-dolist (`(,ssh-key . ,pass-entry) db/known-ssh-keys)
-    ;; XXX: generalize to other password sources
-    (db/add-ssh-key-with-password ssh-key (auth-source-pass-get 'secret pass-entry))))
+    (db/add-ssh-key-with-password ssh-key (apply #'db/password-from-storage pass-entry))))
+
+(cl-defgeneric db/password-from-storage (type entry-key)
+  "Retrieve password from storage of type TYPE with lookup key ENTRY-KEY.")
+
+(cl-defmethod db/password-from-storage ((type (eql :pass)) pass-entry)
+  "Retrieve password via the UNIX password manager and PASS-ENTRY key."
+  (auth-source-pass-get 'secret pass-entry))
+
+(cl-defmethod db/password-from-storage ((type (eql :org-password-manager)) org-id)
+  "Retrieve password via Org password manager :ID: property ORG-ID."
+  (org-password-manager-get-password-by-id org-id))
 
 
 ;;; End
