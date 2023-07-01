@@ -618,7 +618,10 @@
              db/dired-ediff-files
              db/grep-read-files
              db/make-selector-from-table-header
-             db/get-library-version))
+             db/get-library-version
+             db/dired-back-to-top
+             db/dired-jump-to-bottom
+             db/dired-get-size))
 
 (use-package db-hydras
   :commands (hydra-toggle/body
@@ -2101,9 +2104,9 @@ The password is assumed to be stored at the PASSWORD property."
 (use-package dired
   :bind (:map dired-mode-map
               ("e" . db/dired-ediff-files)
-              ("z" . dired-get-size)
-              ([remap beginning-of-buffer] . dired-back-to-top)
-              ([remap end-of-buffer] . dired-jump-to-bottom)
+              ("z" . db/dired-get-size)
+              ([remap beginning-of-buffer] . db/dired-back-to-top)
+              ([remap end-of-buffer] . db/dired-jump-to-bottom)
               ("<f1>" . nil)
               ("<tab>" . dired-subtree-toggle)
               ("<C-tab>" . dired-subtree-cycle))
@@ -2174,31 +2177,7 @@ The password is assumed to be stored at the PASSWORD property."
             (add-hook 'dired-mode-hook 'dired-omit-mode)
             (add-hook 'dired-mode-hook 'dired-hide-details-mode)
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
-              (add-to-list 'dired-latex-unclean-extensions extension))
-
-            (defun dired-back-to-top ()
-              "Jump to first non-trivial line in dired."
-              (interactive)
-              (goto-char (point-min))
-              (dired-next-line 1))
-
-            (defun dired-jump-to-bottom ()
-              "Jump to last non-trivial line in dired."
-              (interactive)
-              (goto-char (point-max))
-              (dired-next-line -1))
-
-            (defun dired-get-size ()    ; from emacswiki, via oremacs
-              "Print size of all files marked in the current dired buffer."
-              (interactive)
-              (let ((files (dired-get-marked-files)))
-                (with-temp-buffer
-                  (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-                  (message
-                   "size of all marked files: %s"
-                   (progn
-                     (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
-                     (match-string 1))))))))
+              (add-to-list 'dired-latex-unclean-extensions extension))))
 
 (use-package dired-x
   :commands (dired-jump dired-jump-other-window) ; In Emacs 28.1, this has been

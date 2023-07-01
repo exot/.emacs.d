@@ -873,6 +873,35 @@ holding the password to unlock the key."
   (org-password-manager-get-password-by-id org-id))
 
 
+;;; Dired
+
+(declare-function dired-next-line "dired.el")
+
+(defun db/dired-back-to-top ()
+  "Jump to first non-trivial line in Dired."
+  (interactive)
+  (goto-char (point-min))
+  (dired-next-line 1))
+
+(defun db/dired-jump-to-bottom ()
+  "Jump to last non-trivial line in Dired."
+  (interactive)
+  (goto-char (point-max))
+  (dired-next-line -1))
+
+(defun db/dired-get-size ()    ; from emacswiki, via oremacs
+  "Print size of all files marked in the current Dired buffer."
+  (interactive)
+  (let ((files (dired-get-marked-files)))
+    (with-temp-buffer
+      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+      (message
+       "size of all marked files: %s"
+       (progn
+         (re-search-backward "\\(^[0-9.,]+[a-za-z]+\\).*total$")
+         (match-string 1))))))
+
+
 ;;; End
 
 (provide 'db-utils)
