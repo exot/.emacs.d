@@ -86,8 +86,7 @@
   (transient-mark-mode 1)
   (global-font-lock-mode 1)
   (column-number-mode 1)
-  ;; (display-time)
-  (delete-selection-mode 1)
+  (delete-selection-mode -1)
 
   (dolist (mode '(tool-bar-mode
                   scroll-bar-mode
