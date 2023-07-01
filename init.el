@@ -2633,7 +2633,9 @@ With given ARG, display files in `db/important-document-path’."
 
             ;; we need to set keys starting with C-x after `ansi-term' has been
             ;; called, as it resets the escape character to C-x.
-            (defadvice ansi-term (after ansi-term-set-keys activate)
+            (define-advice ansi-term (:after
+                                      (&rest _)
+                                      db/ansi-term--unbind-annoying-keys)
               (unbind-key "C-x C-j" term-raw-map)
               (unbind-key "C-x g" term-raw-map))
 
