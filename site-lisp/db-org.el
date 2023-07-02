@@ -1563,14 +1563,12 @@ buffer at point."
 Add link at point to …
  … _c_urrent clock
  … _s_elect clock item from the recent clock history
- … _o_ther item (from current file buffer or default Org file)
- … _O_ther item (from all Org mode text search files)
+ … _o_ther item (from all Org mode text search files)
 
 Show _b_acklinks to current item."
   ("c" db/org-add-link-to-current-clock)
   ("s" db/org-add-link-to-org-clock-select-task)
-  ("o" (db/org-add-link-to-other-item nil))
-  ("O" (db/org-add-link-to-other-item t))
+  ("o" (db/org-add-link-to-other-item t))
   ("b" db/org-find-links-to-current-item))
 
 (defun db/org--backlinks-for-id (item-id &optional org-ql-match archives)
