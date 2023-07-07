@@ -383,7 +383,16 @@ This runs “git annex find” with MATCHING-OPTIONS (a string) in
     ((eq system-type 'cygwin)
      (start-process "" nil "cygstart" path))
     (t
-     (start-process "" nil "xdg-open" path))))
+     ;; Somehow calling xdg-open via `start-process' does not start any
+     ;; application, the subprocess spawned by xdg-open seems to be die
+     ;; somewhen; the same behavior can be observed when using
+     ;; `async-shell-command' instead of `start-process' with the appropriate
+     ;; command.  However, using `shell-command' or `call-process' seem to work,
+     ;; but they are blocking Emacs while the programm is running.  Wrapping
+     ;; those in an `async-start' does the trick then.
+     (async-start
+      #'(lambda ()
+          (call-process "xdg-open" nil nil nil path))))))
 
 (defun keyboard-quit-context+ ()
   "Quit current context.
