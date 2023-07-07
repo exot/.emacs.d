@@ -2356,10 +2356,15 @@ The password is assumed to be stored at the PASSWORD property."
 
 (defun db/helm-shortcuts (arg)
   "Open helm completion on common locations.
-With given ARG, display files in `db/important-document-path’."
-  (interactive "p")
-  (require 'helm-bookmark)
-  (require 'helm-for-files)             ; for helm-source-recentf
+
+With universal argument ARG, inhibit display of files in
+`db/important-document-path’.  This might be helpful when loading
+is too slow (in this case, `db/important-document-path' should
+eventuelly be set to nil, however)."
+  (interactive "P")
+  (eval-when-compile
+    (require 'helm-bookmark)
+    (require 'helm-for-files))          ; for helm-source-recentf
   (helm :sources (list
                   (helm-make-source "Frequently Used" 'helm-source-sync
                     :candidates (mapcar #'(lambda (entry)
@@ -2376,7 +2381,7 @@ With given ARG, display files in `db/important-document-path’."
 
                   ;; if prefix arg is given, extract files from
                   ;; `db/important-documents-path’ and list them as well
-                  (when (and (= arg 4)
+                  (when (and (not arg)
                              (file-directory-p db/important-documents-path))
                     (let ((search-path (expand-file-name db/important-documents-path)))
                       (helm-make-source "Important files" 'helm-source-sync
