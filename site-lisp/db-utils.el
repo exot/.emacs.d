@@ -841,14 +841,39 @@ This is `db-light' and `solarized-light'."
 
 PASSWORD-FN is supposed to be a function returning the password
 for KEY-FILE."
+  ;; XXX: check whether the key is already loaded in the current agent.
   (with-environment-variables (("SSH_ASKPASS_REQUIRE" "never"))
-    (with-temp-buffer
-      (unless (zerop (call-process-region (funcall password-fn) ; XXX: only compute password when it's needed?
-                                          nil
-                                          "ssh-add" ; XXX: generalize to also allow pageant?
-                                          nil t nil
-                                          (expand-file-name key-file)))
-        (error "Adding SSH key %s failed: %s" key-file (buffer-string))))))
+    (let* ((key-file (expand-file-name key-file))
+           (proc (make-process :name "ssh-add"
+                               :buffer nil
+                               :command (list "ssh-add" key-file)
+                               :filter #'(lambda (process output)
+                                           (cond
+                                             ((string= (format "Enter passphrase for %s: "
+                                                               key-file)
+                                                       output)
+                                              (process-send-string process (funcall password-fn))
+                                              (process-send-string process "\n"))
+                                             ((or (save-match-data
+                                                    (string-match (format "^Identity added: %s" key-file)
+                                                                  output))
+                                                  (string= output "\n"))
+                                              ;; Ignore harmless output
+                                              t)
+                                             (t (message "Unknown output received from ssh-agent: %s" output))))
+                               :sentinel #'(lambda (_ event)
+                                             (cond
+                                               ((string= event "finished\n")
+                                                (message "Successfully added %s to local SSH agent"
+                                                         key-file))
+                                               (t (message "Adding SSH key %s failed, ssh-add process reached state %s"
+                                                           key-file
+                                                           event)))))))
+      ;; We are waiting for the process to finish, to not let its output
+      ;; intermingle with others.  XXX: is there a more standard way to wait for
+      ;; a process to finish?
+      (while (process-live-p proc)
+        (sit-for 0.2)))))
 
 (defcustom db/known-ssh-keys nil
   "A alist mapping SSH key-files to their password entries.
