@@ -1186,8 +1186,8 @@
                         (org-deadline-warning-days 30)))
                       (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>=\"<today>\"-SCHEDULED<>\"\"-NOT_BEFORE>=\"<today>\""
                                  ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled)")))
-                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
-                                 ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled now or in the future)")
+                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE-SCHEDULED<>\"\"-NOT_BEFORE>=\"<today>\""
+                                 ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled)")
                                   (org-tags-match-list-sublevels t)))))
 
                 ("B" "Backlog"
