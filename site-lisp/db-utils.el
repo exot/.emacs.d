@@ -836,11 +836,15 @@ This is `db-light' and `solarized-light'."
 
 ;;; SSH-Key-Handling
 
-(defun db/add-ssh-key-with-password (key-file password)
-  "Add key in KEY-FILE with PASSWORD to currently running ssh-agent."
+(defun db/add-ssh-key-with-password (key-file password-fn)
+  "Add key in KEY-FILE to currently running ssh-agent.
+
+PASSWORD-FN is supposed to be a function returning the password
+for KEY-FILE."
   (with-environment-variables (("SSH_ASKPASS_REQUIRE" "never"))
     (with-temp-buffer
-      (unless (zerop (call-process-region password nil ; XXX: only compute password when it's needed?
+      (unless (zerop (call-process-region (funcall password-fn) ; XXX: only compute password when it's needed?
+                                          nil
                                           "ssh-add" ; XXX: generalize to also allow pageant?
                                           nil t nil
                                           (expand-file-name key-file)))
@@ -868,7 +872,9 @@ holding the password to unlock the key."
   ;; XXX: error handling
   (interactive)
   (pcase-dolist (`(,ssh-key . ,pass-entry) db/known-ssh-keys)
-    (db/add-ssh-key-with-password ssh-key (apply #'db/password-from-storage pass-entry))))
+    (db/add-ssh-key-with-password ssh-key
+                                  #'(lambda ()
+                                      (apply #'db/password-from-storage pass-entry)))))
 
 (cl-defgeneric db/password-from-storage (type entry-key)
   "Retrieve password from storage of type TYPE with lookup key ENTRY-KEY.")
