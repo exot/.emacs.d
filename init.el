@@ -1229,14 +1229,14 @@
                       ))
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
-                     ((tags "WAIT-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
+                     ((tags "WAIT-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
                                  ((org-agenda-overriding-header "Waiting For List")))
                       (tags-todo "DATE-TIMESTAMP>=\"<today>\""
                                  ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")))
                       (tags "REFILE"
                             ((org-agenda-files (list db/org-default-refile-file))
                              (org-agenda-overriding-header "Things to refile (make it empty!)")))
-                      (tags "HOLD-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
+                      (tags "HOLD-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
                             ((org-agenda-overriding-header "Tasks on Hold")))))
 
 
