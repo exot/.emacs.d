@@ -1230,7 +1230,7 @@
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                      ((tags "WAIT-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
-                                 ((org-agenda-overriding-header "Waiting For List")))
+                            ((org-agenda-overriding-header "Waiting For List")))
                       (tags-todo "DATE-TIMESTAMP>=\"<today>\""
                                  ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")))
                       (tags "REFILE"
