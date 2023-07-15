@@ -875,6 +875,27 @@ for KEY-FILE."
       (while (process-live-p proc)
         (sit-for 0.2)))))
 
+(defun db/-filter-already-loaded-ssh-keys (key-entries)
+  "Filter those values in KEY-ENTRIES that corresponed to loaded SSH keys.
+
+KEY-ENTRIES is a list of values as specified for
+`db/known-ssh-keys'.  This function then returns a list of those
+entries whose SSH keys are not yet loaded in the currently
+running ssh-agent."
+  (let ((loaded-ssh-keys (mapcar #'(lambda (line)
+                                     (cl-second (split-string line)))
+                                 (split-string (shell-command-to-string "ssh-add -l") "\n" t))))
+    (cl-remove-if #'(lambda (key-entry)
+                      (let* ((key-file (expand-file-name (car key-entry))))
+                        (and (file-exists-p key-file)
+                             (file-readable-p key-file)
+                             (let ((key-hash (->> (shell-command-to-string (format "ssh-keygen -l -f %s" key-file))
+                                                  (split-string)
+                                                  (cl-second))))
+                               (cl-member key-hash loaded-ssh-keys
+                                          :test #'string=)))))
+                  key-entries)))
+
 (defcustom db/known-ssh-keys nil
   "A alist mapping SSH key-files to their password entries.
 This alist maps key-files (file-names) to pass password entries
@@ -896,10 +917,13 @@ holding the password to unlock the key."
   "Add all keys from `db/known-ssh-keys' to currently running ssh-agent."
   ;; XXX: error handling
   (interactive)
-  (pcase-dolist (`(,ssh-key . ,pass-entry) db/known-ssh-keys)
-    (db/add-ssh-key-with-password ssh-key
-                                  #'(lambda ()
-                                      (apply #'db/password-from-storage pass-entry)))))
+  (pcase-dolist (`(,ssh-key . ,pass-entry) (db/-filter-already-loaded-ssh-keys db/known-ssh-keys))
+    (if (not (file-readable-p (expand-file-name ssh-key)))
+        (warn "SSH key file %s is not readable or does not exist, skipping" ssh-key)
+      (db/add-ssh-key-with-password ssh-key
+                                    #'(lambda ()
+                                        (apply #'db/password-from-storage pass-entry)))))
+  (message "All known SSH keys loaded."))
 
 (cl-defgeneric db/password-from-storage (type entry-key)
   "Retrieve password from storage of type TYPE with lookup key ENTRY-KEY.")
