@@ -29,6 +29,7 @@
 (autoload 'lm-header "lisp-mnt")
 
 (declare-function w32-shell-execute "w32fns.c")
+(declare-function org-password-manager-get-password-by-id nil)
 
 
 ;;; Application Shortcuts
@@ -115,7 +116,7 @@ With ARG, switch to `default-directory' of the current buffer first."
 
 (defun db/test-emacs ()
   ;; from oremacs
-  "Test whether emacs' configuration is not throwing any errors."
+  "Test whether Emacs' configuration is not throwing any errors."
   (interactive)
   (require 'async)
   (async-start
@@ -139,7 +140,7 @@ With ARG, switch to `default-directory' of the current buffer first."
 
 (defun db/isearch-forward-symbol-with-prefix (p)
   ;; http://endlessparentheses.com/quickly-search-for-occurrences-of-the-symbol-at-point.html
-  "Like `isearch-forward', unless prefix argument is provided.
+  "Like the function `isearch-forward', unless prefix argument is provided.
 With a prefix argument P, isearch for the symbol at point."
   (interactive "P")
   (let ((current-prefix-arg nil))
@@ -165,8 +166,7 @@ With a prefix argument P, isearch for the symbol at point."
     (delete-trailing-whitespace)))
 
 (defun db/find-window-by-buffer-mode (mode)
-  "Return first window in current frame displaying a buffer with
-major mode MODE."
+  "Return first window in current frame displaying a buffer with major mode MODE."
   (cl-find-if (lambda (window)
                 (with-current-buffer (window-buffer window)
                   (eq major-mode mode)))
@@ -224,7 +224,7 @@ FORMAT-STRING defaults to some ISO 8601-like format."
                                                     (read-string)
                                                     (replace-regexp-in-string "[\n\t ]" ""))))
                              (if (not (string-match-p "[0-9a-fA-F]\\{8\\}" input-proper))
-                                 (user-error "Input invalid, must be an 8 digit hex string.")
+                                 (user-error "Input invalid, must be an 8 digit hex string")
                                (string-to-number input-proper 16)))))
                  (list (read-hex "High (hex): ")
                        (read-hex "Low (hex): "))))
@@ -486,7 +486,7 @@ numbers allowed)."
                             string))
 
 (defun db/dired-ediff-files ()
-  "Compare marked files in dired with ediff.
+  "Compare marked files in Dired with ediff.
 
 From: https://oremacs.com/2017/03/18/dired-ediff/."
   (interactive)
@@ -683,7 +683,7 @@ duplicates when elements are considered as symbols."
       (apply #'string list-of-bytes))))
 
 (ert-deftest db/base45-decode-string--basic-tests ()
-  "Test basic decoding examples"
+  "Test basic decoding examples."
   ;; dash is funny :)
   (-each `(("QED8WEX0" "ietf!")
            ("X.CT3EGEC" "foobar")
@@ -798,7 +798,7 @@ it.  The bookmarks will finally be sorted by their name."
 (defun db/bookmark-add-external (location name)
   "Add NAME as bookmark to LOCATION that is opened by the operating system.
 Offers simple completing from the list of recently opened files.
-In dired, offer all marked files or the currently selected file
+In Dired, offer all marked files or the currently selected file
 as completing instead."
   (interactive (list (completing-read "Location: " (if (derived-mode-p 'dired-mode)
                                                        (dired-get-marked-files)
