@@ -841,7 +841,6 @@ This is `db-light' and `solarized-light'."
 
 PASSWORD-FN is supposed to be a function returning the password
 for KEY-FILE."
-  ;; XXX: check whether the key is already loaded in the current agent.
   (with-environment-variables (("SSH_ASKPASS_REQUIRE" "never"))
     (let* ((key-file (expand-file-name key-file))
            (proc (make-process :name "ssh-add"
@@ -875,26 +874,22 @@ for KEY-FILE."
       (while (process-live-p proc)
         (sit-for 0.2)))))
 
-(defun db/-filter-already-loaded-ssh-keys (key-entries)
-  "Filter those values in KEY-ENTRIES that corresponed to loaded SSH keys.
+(defun db/ssh-key-hash-from-filename (key-file)
+  "Return the SHA256 hash value of the SSH key located in KEY-FILE.
 
-KEY-ENTRIES is a list of values as specified for
-`db/known-ssh-keys'.  This function then returns a list of those
-entries whose SSH keys are not yet loaded in the currently
-running ssh-agent."
-  (let ((loaded-ssh-keys (mapcar #'(lambda (line)
-                                     (cl-second (split-string line)))
-                                 (split-string (shell-command-to-string "ssh-add -l") "\n" t))))
-    (cl-remove-if #'(lambda (key-entry)
-                      (let* ((key-file (expand-file-name (car key-entry))))
-                        (and (file-exists-p key-file)
-                             (file-readable-p key-file)
-                             (let ((key-hash (->> (shell-command-to-string (format "ssh-keygen -l -f %s" key-file))
-                                                  (split-string)
-                                                  (cl-second))))
-                               (cl-member key-hash loaded-ssh-keys
-                                          :test #'string=)))))
-                  key-entries)))
+Return nil if KEY-FILE is not readable or does not contain an SSH key."
+  (let* ((key-file (expand-file-name key-file)))
+    (and (file-exists-p key-file)
+         (file-readable-p key-file)
+         (->> (shell-command-to-string (format "ssh-keygen -l -E sha256 -f %s" key-file))
+              (split-string)
+              (cl-second)))))
+
+(defun db/ssh-loaded-key-hashes ()
+  "Return list of SHA256 hash values of all keys that are currently loaded."
+  (mapcar #'(lambda (line)
+              (cl-second (split-string line)))
+          (split-string (shell-command-to-string "ssh-add -E sha256 -l") "\n" t)))
 
 (defcustom db/known-ssh-keys nil
   "A alist mapping SSH key-files to their password entries.
@@ -915,15 +910,19 @@ holding the password to unlock the key."
 
 (defun db/load-known-ssh-keys ()
   "Add all keys from `db/known-ssh-keys' to currently running ssh-agent."
-  ;; XXX: error handling
   (interactive)
-  (pcase-dolist (`(,ssh-key . ,pass-entry) (db/-filter-already-loaded-ssh-keys db/known-ssh-keys))
-    (if (not (file-readable-p (expand-file-name ssh-key)))
-        (warn "SSH key file %s is not readable or does not exist, skipping" ssh-key)
-      (db/add-ssh-key-with-password ssh-key
-                                    #'(lambda ()
-                                        (apply #'db/password-from-storage pass-entry)))))
-  (message "All known SSH keys loaded."))
+  (let ((loaded-ssh-key-hashes (db/ssh-loaded-key-hashes)))
+    (pcase-dolist (`(,ssh-key . ,pass-entry) db/known-ssh-keys)
+      (let ((ssh-key-hash (db/ssh-key-hash-from-filename ssh-key)))
+        (cond
+          ((null ssh-key-hash)
+           (warn "SSH key file %s is not readable or does not exist, skipping" ssh-key))
+          ((cl-member ssh-key-hash loaded-ssh-key-hashes :test #'string=)
+           (message "SSH key file %s already loaded, skipping" ssh-key))
+          (t
+           (db/add-ssh-key-with-password ssh-key
+                                         #'(lambda ()
+                                             (apply #'db/password-from-storage pass-entry)))))))))
 
 (cl-defgeneric db/password-from-storage (type entry-key)
   "Retrieve password from storage of type TYPE with lookup key ENTRY-KEY.")
