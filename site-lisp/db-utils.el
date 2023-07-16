@@ -851,31 +851,37 @@ running ssh-agent and waits for the process to finish."
       (user-error "SSH key %s does not exist, aborting" key-file))
 
     (with-environment-variables (("SSH_ASKPASS_REQUIRE" "never"))
-      (let ((proc (make-process :name "ssh-add"
-                                :buffer nil
-                                :command (list "ssh-add" key-file)
-                                :filter #'(lambda (process output)
-                                            (cond
-                                              ((string= (format "Enter passphrase for %s: "
-                                                                key-file)
-                                                        output)
-                                               (process-send-string process (funcall password-fn))
-                                               (process-send-string process "\n"))
-                                              ((or (save-match-data
-                                                     (string-match (format "^Identity added: %s" key-file)
-                                                                   output))
-                                                   (string= output "\n"))
-                                               ;; Ignore harmless output
-                                               t)
-                                              (t (message "Unknown output received from ssh-agent: %s" output))))
-                                :sentinel #'(lambda (_ event)
+
+      (let* ((ssh-add-handle-output #'(lambda (process output)
+                                        (cond
+                                          ((string= (format "Enter passphrase for %s: "
+                                                            key-file)
+                                                    output)
+                                           (process-send-string process (funcall password-fn))
+                                           (process-send-string process "\n"))
+                                          ((or (save-match-data
+                                                 (string-match (format "^Identity added: %s" key-file)
+                                                               output))
+                                               (string= output "\n"))
+                                           ;; Ignore harmless output
+                                           t)
+                                          (t (message "Unknown output received from ssh-agent: %s" output)))))
+
+             (ssh-add-handle-event-change #'(lambda (_ event)
                                               (cond
                                                 ((string= event "finished\n")
                                                  (message "Successfully added %s to local SSH agent"
                                                           key-file))
                                                 (t (message "Adding SSH key %s failed, ssh-add process reached state %s"
                                                             key-file
-                                                            event)))))))
+                                                            event)))))
+
+             (proc (make-process :name "ssh-add"
+                                 :buffer nil
+                                 :command (list "ssh-add" key-file)
+                                 :filter ssh-add-handle-output
+                                 :sentinel ssh-add-handle-event-change)))
+
         ;; We are waiting for the process to finish, to not let its output
         ;; intermingle with others.  XXX: is there a more standard way to wait for
         ;; a process to finish?
