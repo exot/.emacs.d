@@ -837,10 +837,13 @@ This is `db-light' and `solarized-light'."
 ;;; SSH-Key-Handling
 
 (defun db/add-ssh-key-with-password (key-file password-fn)
-  "Add key in KEY-FILE to currently running ssh-agent.
+  "Synchronously add key in KEY-FILE to currently running ssh-agent.
 
 PASSWORD-FN is supposed to be a function returning the password
-for KEY-FILE."
+for KEY-FILE; PASSWORD-FN is called on demand.
+
+This function uses ssh-add to add the key to the currently
+running ssh-agent and waits for the process to finish."
   (with-environment-variables (("SSH_ASKPASS_REQUIRE" "never"))
     (let* ((key-file (expand-file-name key-file))
            (proc (make-process :name "ssh-add"
