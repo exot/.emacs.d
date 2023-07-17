@@ -1168,10 +1168,10 @@
                 "")
 
               org-agenda-prefix-format
-              '((agenda . "%11s%?-12t%-4(db/org-remaining-effort-of-current-item) ")
-                (todo . "%-8c%-4(db/org-remaining-effort-of-current-item) ")
-                (tags . "%-8c%-4(db/org-remaining-effort-of-current-item) ")
-                (search . "%-8c%-4(db/org-remaining-effort-of-current-item) "))
+              '((agenda . " %11s%?-12t%-4(db/org-remaining-effort-of-current-item) ")
+                (todo . " %-8c%-4(db/org-remaining-effort-of-current-item) ")
+                (tags . " %-8c%-4(db/org-remaining-effort-of-current-item) ")
+                (search . " %-8c%-4(db/org-remaining-effort-of-current-item) "))
 
               org-agenda-custom-commands
               `(("A" "Main Agenda"
