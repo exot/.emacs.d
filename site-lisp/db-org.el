@@ -861,8 +861,15 @@ With given ARG, force reevaluation as described for
   (interactive)
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org buffer, aborting"))
-  (let ((org-confirm-babel-evaluate nil))
-    (org-babel-execute-subtree arg)))
+
+  ;; Since Org 9.6, we expand all folding before evaluating the current subtree,
+  ;; because `org-string-width' (called by `org-table-align') sometimes computes
+  ;; the wrong cell width in tables if those contain links.  Is this a bug in
+  ;; Org mode?  Maybe the input to `org-string-width' is not correct?
+  (org-fold-core-save-visibility :use-markers
+    (org-fold-show-all)
+    (let ((org-confirm-babel-evaluate nil))
+      (org-babel-execute-subtree arg))))
 
 
 ;;; Custom link handlers
