@@ -963,21 +963,22 @@
             ;; parsing all properties of an entry by default.  Let’s simplify
             ;; this to only parse what we are looking for.  This makes tag
             ;; search *much* faster!
-            (with-eval-after-load 'org
-              (define-advice org-cached-entry-get (:around
-                                                   (orig-fun pom property)
-                                                   speed-up-cache-lookup)
-                (ignore orig-fun)
-                (if (or (eq t org-use-property-inheritance)
-                        (and (stringp org-use-property-inheritance)
-                             (let ((case-fold-search t))
-                               (string-match-p org-use-property-inheritance property)))
-                        (and (listp org-use-property-inheritance)
-                             (member-ignore-case property org-use-property-inheritance)))
-                    ;; Caching is not possible, check it directly.
-                    (org-entry-get pom property 'inherit)
-                  ;; This is different in the original implementation
-                  (org-entry-get pom property))))
+            (when (version<= org-version "9.5.5")
+              (with-eval-after-load 'org
+                (define-advice org-cached-entry-get (:around
+                                                     (orig-fun pom property)
+                                                     speed-up-cache-lookup)
+                  (ignore orig-fun)
+                  (if (or (eq t org-use-property-inheritance)
+                          (and (stringp org-use-property-inheritance)
+                               (let ((case-fold-search t))
+                                 (string-match-p org-use-property-inheritance property)))
+                          (and (listp org-use-property-inheritance)
+                               (member-ignore-case property org-use-property-inheritance)))
+                      ;; Caching is not possible, check it directly.
+                      (org-entry-get pom property 'inherit)
+                    ;; This is different in the original implementation
+                    (org-entry-get pom property)))))
 
             ;; Fix (Org 9.5.5): the variable `org-time-was-given' dynamically
             ;; bound to signify when `org-read-date-analyze' has found a hh:mm
