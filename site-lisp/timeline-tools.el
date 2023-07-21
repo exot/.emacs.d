@@ -200,30 +200,6 @@ unpredictable behavior."
           (save-mark-and-excursion
             (funcall headline-fn))))))))
 
-(defvar timeline-tools-org-inactive-timestamp-format
-  (concat "[" (substring (cdr org-time-stamp-formats) 1 -1) "]")
-  "Format of inactive `org-mode’ timestamps.
-Can be used as format string for `format-time’.")
-
-(defun timeline-tools-insert-clockline (time-1 time-2)
-  "Insert new clock line from TIME-1 to TIME-2.
-
-Insertion will be done at the beginning of the current line.
-TIME-1 and TIME-2 must be given in a format understandable by
-`format-time-string’, which see.  Saves mark and point.  If
-TIME-2 is nil, insert dangling clock line."
-  (save-mark-and-excursion
-   (beginning-of-line)
-   (indent-according-to-mode)
-   (insert "CLOCK: ")
-   (insert (format-time-string timeline-tools-org-inactive-timestamp-format
-                               time-1))
-   (unless (null time-2)
-    (insert "--")
-    (insert (format-time-string timeline-tools-org-inactive-timestamp-format
-                                time-2))
-    (org-clock-update-time-maybe))))
-
 (defun timeline-tools-clocklines-of-task (pom)
   "Return list of all clock lines of task under POM.
 
@@ -734,6 +710,25 @@ See `timeline-tools-swap-line-with-next' for more details."
 
 
 ;;; Manipulating Clocklines in Org Files
+
+(defun timeline-tools-insert-clockline (time-1 time-2)
+  "Insert new clock line from TIME-1 to TIME-2.
+
+Insertion will be done at the beginning of the current line.
+TIME-1 and TIME-2 must be given in a format understandable by
+`format-time-string’, which see.  Saves mark and point.  If
+TIME-2 is nil, insert dangling clock line."
+  (save-mark-and-excursion
+   (beginning-of-line)
+   (indent-according-to-mode)
+   (insert "CLOCK: ")
+   (insert (format-time-string (org-time-stamp-format :with-time :inactive)
+                               time-1))
+   (unless (null time-2)
+    (insert "--")
+    (insert (format-time-string (org-time-stamp-format :with-time :inactive)
+                                time-2))
+    (org-clock-update-time-maybe))))
 
 ;; XXX: All this needs some autoloadable frontend
 
