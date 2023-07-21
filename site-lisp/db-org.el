@@ -834,7 +834,8 @@ forces clocking in of the default task."
   ("s" (lambda ()
          (interactive)
          (org-clock-in '(4)))
-      "select")
+       "select")
+  ("c" (db/org-clock-goto-first-open-checkbox))
   ("a" counsel-org-goto-all "goto")
   ("o" org-clock-out "clock out")
   ("l" db/org-clock-in-last-task "last")
@@ -846,7 +847,7 @@ forces clocking in of the default task."
              (let ((org-inhibit-logging 'note))
                (org-todo 'done)
                (org-save-all-org-buffers)))))
-   "default"))
+       "default"))
 
 
 ;;; Babel
