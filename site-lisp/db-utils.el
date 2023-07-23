@@ -448,22 +448,6 @@ Does not replace CRLF with CRCRLF, and so on."
       (while (re-search-forward "\r\n" nil 'noerror)
         (replace-match "\n")))))
 
-(defun db/sync-magit-repos-from-projectile ()
-  "Update repositories known to magit from projectile's."
-  (interactive)
-  (eval-when-compile                    ; to silence the byte compiler
-    (require 'projectile)
-    (require 'magit))
-  (setq magit-repository-directories
-        (mapcar
-         (lambda (dir)
-           (cons (substring dir 0 -1) 0))
-         (cl-remove-if-not
-          (lambda (project)
-            (unless (file-remote-p project)
-              (file-exists-p (concat project "/.git"))))
-          projectile-known-projects))))
-
 (defun db/shr-render-file (file)
   "Display the HTML rending of the contents of FILE."
   (interactive "f")

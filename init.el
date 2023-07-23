@@ -613,7 +613,6 @@
              keyboard-quit-context+
              db/convert-lf-to-crlf-in-buffer
              db/convert-crlf-to-lf-in-buffer
-             db/sync-magit-repos-from-projectile
              db/replace-variables-in-string
              db/dired-ediff-files
              db/grep-read-files
@@ -1519,7 +1518,8 @@ point to the beginning of buffer first."
 (use-package magit
   :ensure t
   :commands (magit-status
-             magit-list-repositories)
+             magit-list-repositories
+             db/sync-magit-repos-from-projectile)
 
   :init (progn
           (setq magit-diff-refine-hunk nil
@@ -1527,13 +1527,24 @@ point to the beginning of buffer first."
 
           (when on-windows
             ;; Experimental: on Windows, do not refresh magit-status-buffers
-            ;; that are not select, to increase performance.
+            ;; that are not selected, to increase performance.
             (setq magit-refresh-status-buffer nil)))
 
   :config (progn
             (when (fboundp 'global-magit-file-mode)
               (global-magit-file-mode -1))
-            (global-git-commit-mode +1)
+            (global-git-commit-mode 1)
+
+            (defun db/sync-magit-repos-from-projectile ()
+              "Update repositories known to magit from projectile's."
+              (interactive)
+              (eval-when-compile        ; to silence the byte compiler
+                (require 'projectile))
+              (setq magit-repository-directories
+                    (->> projectile-known-projects
+                         (--filter (and (not (file-remote-p it))
+                                        (file-exists-p (concat it "/.git"))))
+                         (--map (cons it 0)))))
 
             (db/sync-magit-repos-from-projectile)))
 
