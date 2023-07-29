@@ -1404,20 +1404,21 @@ not."
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
-(defun db/org-get-location (&optional arg)
+(defun db/org-get-location (&optional use-all-org-files)
   "Interactively query for location and return mark.
 
-When ARG is nil, this functions by default searches through the
-current buffer if that one is an Org buffer and is associated
-with a file, and `db/org-default-org-file' otherwise.  If the
-current buffer is associated with a file from the variable
+When USE-ALL-ORG-FILES is nil, this functions by default searches
+through the current buffer if that one is an Org buffer and is
+associated with a file, and `db/org-default-org-file' otherwise.
+If the current buffer is associated with a file from the variable
 `org-agenda-files', though, the search is extended through all
 agenda files (the rationale being that Org agenda files are
 always considered to be one large data collection).
 
-When ARG is non-nil, search through all files in the variables
-`org-agenda-files', `org-agenda-text-search-extra-files', and the
-current file or `db/org-default-org-file' as described above.
+When USE-ALL-ORG-FILES is non-nil, search through all files in
+the variables `org-agenda-files',
+`org-agenda-text-search-extra-files', and the current file or
+`db/org-default-org-file' as described above.
 
 Search is always conducted up to level 9.  If the selected
 location does not have an associated point or mark, error out.
@@ -1445,33 +1446,33 @@ linking to any item."
                                            '((org-agenda-files :maxlevel . 9))
                                          '((nil :maxlevel . 9)))
 
-                                       ;; When ARG is non-nil, add all agenda
-                                       ;; files, but only if not already done
-                                       ;; so.
-                                       (and arg
+                                       ;; When USE-ALL-ORG-FILES is non-nil, add
+                                       ;; all agenda files, but only if not
+                                       ;; already done so.
+                                       (and use-all-org-files
                                             (not current-buffer-is-in-org-agenda-files?)
                                             '((org-agenda-files :maxlevel . 9)))
 
-                                       ;; When ARG is non-nil, add extra file
-                                       ;; files to search though.
-                                       (and arg
+                                       ;; When USE-ALL-ORG-FILES is non-nil, add
+                                       ;; extra file files to search though.
+                                       (and use-all-org-files
                                             `((,(cl-remove-if-not #'stringp
                                                                   org-agenda-text-search-extra-files)
-                                               :maxlevel . 9)))))
+                                                :maxlevel . 9)))))
 
            (target-pointer (org-refile-get-location nil default-buffer))
            (pom (nth 3 target-pointer)))
       (cond
-       ((markerp pom) pom)
-       ((integerp pom)
-        ;; Convert point to marker to ensure we are always in the correct
-        ;; buffer; the second element of `target-pointer' contains the path to
-        ;; the target file
-        (save-mark-and-excursion
-          (with-current-buffer (find-file-noselect (nth 1 target-pointer))
-            (goto-char pom)
-            (point-marker))))
-       (t (user-error "Invalid location"))))))
+        ((markerp pom) pom)
+        ((integerp pom)
+         ;; Convert point to marker to ensure we are always in the correct
+         ;; buffer; the second element of `target-pointer' contains the path to
+         ;; the target file
+         (save-mark-and-excursion
+           (with-current-buffer (find-file-noselect (nth 1 target-pointer))
+             (goto-char pom)
+             (point-marker))))
+        (t (user-error "Invalid location"))))))
 
 (defun db/org-find-links-to-current-item (arg)
   "Find links to current item.
