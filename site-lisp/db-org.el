@@ -1404,8 +1404,11 @@ not."
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
-(defun db/org-get-location (&optional use-all-org-files)
+(defun db/org-get-location (&optional use-all-org-files initial-input)
   "Interactively query for location and return mark.
+
+Use INITIAL-INPUT as initial input when filtering available
+locations.
 
 When USE-ALL-ORG-FILES is nil, this functions by default searches
 through the current buffer if that one is an Org buffer and is
@@ -1460,7 +1463,35 @@ linking to any item."
                                                                   org-agenda-text-search-extra-files)
                                                 :maxlevel . 9)))))
 
-           (target-pointer (org-refile-get-location nil default-buffer))
+           (target-pointer (let ((old-completing-read (symbol-function 'completing-read)))
+                             ;; We temporarily overwrite `completing-read' to
+                             ;; provide our initial input; this is necessary
+                             ;; because `org-refile-get-location' sets the
+                             ;; initial-input parameter of `completing-read' to
+                             ;; nil without any possibility for a custom string.
+                             (unwind-protect
+                                  (progn
+                                    (fset 'completing-read #'(lambda (_prompt
+                                                                      _table
+                                                                      &optional
+                                                                        _predicate
+                                                                        _require-match
+                                                                        _initial-input
+                                                                        _hist
+                                                                        _def
+                                                                        _inherit-input-method)
+                                                               (ignore _initial-input)
+                                                               (funcall old-completing-read
+                                                                        _prompt
+                                                                        _table
+                                                                        _predicate
+                                                                        _require-match
+                                                                        initial-input
+                                                                        _hist
+                                                                        _def
+                                                                        _inherit-input-method)))
+                                    (org-refile-get-location nil default-buffer))
+                               (fset 'completing-read old-completing-read))))
            (pom (nth 3 target-pointer)))
       (cond
         ((markerp pom) pom)
@@ -1537,16 +1568,19 @@ avoids containing a link in the description of the newly inserted
 link."
   (insert (db/org--format-link-from-pom pom)))
 
-(defun db/org-add-link-to-other-item (arg)
+(defun db/org-add-link-to-other-item (&optional use-all-org-files initial-input)
   "Interactively query for item and add link to it at point.
 
 Search through all items of the current buffer, or
 `db/org-default-org-file' if the current buffer is not associated
-with a file.  If ARG is non-nil, include all files in the
-variables `org-agenda-files' and
-`org-agenda-text-search-extra-files' in this search."
+with a file.  If USE-ALL-ORG-FILES is non-nil, include all files
+in the variables `org-agenda-files' and
+`org-agenda-text-search-extra-files' in this search.
+
+Use INITIAL-INPUT as initial string to narrow down all available
+items during interactive selection."
   (interactive "P")
-  (db/org-insert-link-to-pom (db/org-get-location arg)))
+  (db/org-insert-link-to-pom (db/org-get-location use-all-org-files initial-input)))
 
 (defun db/org-add-link-to-current-clock ()
   "Insert link to currently clocked-in item at point.
