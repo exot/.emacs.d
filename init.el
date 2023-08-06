@@ -303,9 +303,9 @@
                 server-file)
 
         (server-start)
-        (cl-ecase (server-running-p)
+        (cl-case (server-running-p)
           ((t) t)                       ; server is running
-          (nil (warn "Server not running, check logs and restart manually."))
+          ((nil) (warn "Server not running, check logs and restart manually."))
           (t (warn "`server-running-p' returned neither nil nor t.  Check and restart server manually if required."))))))
 
   ;; Load custom code
