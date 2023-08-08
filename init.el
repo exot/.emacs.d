@@ -2058,22 +2058,7 @@ The password is assumed to be stored at the PASSWORD property."
 (use-package solarized-dark-theme
   :defer t
   :config (progn
-            (setq custom--inhibit-theme-enable nil)
-
-            (custom-theme-set-faces
-             'solarized-dark
-             `(tab-bar ((t (:height 1.2
-                                    :foregreound ,(cdr (assoc 'base03 solarized-dark-color-palette-alist))
-                                    :background ,(cdr (assoc 'base02 solarized-dark-color-palette-alist))))))
-             `(tab-bar-tab ((t (:background ,(cdr (assoc 'base02 solarized-dark-color-palette-alist))
-                                            :foreground ,(cdr (assoc 'magenta solarized-dark-color-palette-alist))
-                                            :inverse-video nil
-                                            :box (:line-width 1 :style released-button)))))
-             `(tab-bar-tab-inactive ((t (:inherit tab-bar-tab
-                                                  :background ,(cdr (assoc 'base0 solarized-dark-color-palette-alist))
-                                                  :foreground ,(cdr (assoc 'base03 solarized-dark-color-palette-alist))
-                                                  :inverse-video t
-                                                  :box nil)))))))
+            (setq custom--inhibit-theme-enable nil)))
 
 (use-package smart-mode-line
   :ensure t
