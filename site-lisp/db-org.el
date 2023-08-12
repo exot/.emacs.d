@@ -1638,7 +1638,7 @@ files referenced in `org-agenda-text-search-extra-files'."
 
     ;; Search directly for “[[id:ITEM-ID]” instead of using the regular
     ;; expression for links, as the latter seems to be broken (as of
-    ;; [2022-06-09] when descriptions contain brackets
+    ;; [2022-06-09]) when descriptions contain brackets
     (org-ql-query :select '(org-id-get-create)
                   :from files
                   :where (let ((link-expression `(regexp ,(format "\\[\\[id:%s\\]" item-id))))
@@ -1721,7 +1721,7 @@ PARAMS may contain the following values:
     (setq headlines
           (->> headlines
                ;; Transform (headline-id backlink-ids) to pairs
-               ;; (headline-id . backlink-id)
+               ;; (backlink-id . headline-id)
                (-mapcat (pcase-lambda (`(,headline . ,backlinks))
                           (mapcar #'(lambda (backlink)
                                       (cons backlink headline))
@@ -1729,9 +1729,10 @@ PARAMS may contain the following values:
                ;; Group by backlinks (first entry), returns alist of
                ;; backlink-ids and list of pairs (backlink-id . headline-id)
                (-group-by #'car)
-               ;; Flatten list, to get a list of (backlink-id headline-ids...)
+               ;; Flatten list, to get a list of (backlink-id headline-ids...);
+               ;; remove dupliate headline-id entries
                (-map (pcase-lambda (`(,backlink . ,backlink-headline-conses))
-                       (cons backlink (-map #'cdr backlink-headline-conses))))))
+                         (cons backlink (-distinct (-map #'cdr backlink-headline-conses)))))))
 
     ;; Replace IDs by headlines and add priority for sorting
     (setq output-lines
