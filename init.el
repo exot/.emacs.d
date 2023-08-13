@@ -2277,7 +2277,6 @@ The password is assumed to be stored at the PASSWORD property."
               helm-kill-ring-threshold 0 ; include all yanks in the kill ring
               )
   :config (progn
-            (require 'helm-config)
             (require 'helm-mode)
             (require 'helm-buffers)
             (require 'helm-ring)
