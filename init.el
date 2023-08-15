@@ -2483,7 +2483,8 @@ eventuelly be set to nil, however)."
   :bind (:map emms-playlist-mode-map
               ("S s" . emms-shuffle))
   :init (setq emms-source-file-default-directory "~/Documents/media/audio/"
-              emms-player-list '(emms-player-mplayer emms-player-mplayer-playlist)
+              emms-player-list '(emms-player-mplayer emms-player-mplayer-playlist
+                                 emms-player-vlc emms-player-vlc-playlist)
               emms-show-format "NP: %s"
               emms-stream-default-action "play"
               emms-track-description-function 'db/emms-track-description
@@ -2500,6 +2501,7 @@ eventuelly be set to nil, however)."
             (require 'emms-source-playlist)
             (require 'emms-player-simple)
             (require 'emms-player-mplayer)
+            (require 'emms-player-vlc)
             (require 'emms-playlist-mode)
             (require 'emms-info)
             (require 'emms-info-mp3info)
