@@ -1501,8 +1501,9 @@ linking to any item."
          ;; the target file
          (save-mark-and-excursion
            (with-current-buffer (find-file-noselect (nth 1 target-pointer))
-             (goto-char pom)
-             (point-marker))))
+             (org-with-wide-buffer
+               (goto-char pom)
+               (point-marker)))))
         (t (user-error "Invalid location"))))))
 
 (defun db/org-find-links-to-current-item (arg)
