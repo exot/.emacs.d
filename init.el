@@ -773,7 +773,8 @@
              db/org-add-link-to-current-clock
              hydra-org-linking/body
              org-dblock-write:db/org-backlinks
-             db/org-clock-goto-first-open-checkbox))
+             db/org-clock-goto-first-open-checkbox
+             org-password-manager-get-password-by-id))
 
 (use-package org
   :pin "gnu"
@@ -1999,30 +2000,8 @@ point to the beginning of buffer first."
               epg-gpg-program "gpg"))
 
 (use-package org-password-manager
-  :commands (org-password-manager-get-password-by-id)
-  :config (progn
-
-            (defun org-password-manager-get-password-by-id (id)
-              "Retrieve password from Org item identified by ID.
-
-The password is assumed to be stored at the PASSWORD property."
-
-              (let ((pom (org-id-find id 'marker)))
-                (unless (markerp pom)
-                  (user-error "Cannot find item with id %s" id))
-
-                (let ((heading (org-entry-get pom "ITEM"))
-                      (pw (org-entry-get pom "PASSWORD")))
-                  (when (null pw)
-                    (user-error "PASSWORD property not set for “%s”" heading))
-
-                  (funcall interprogram-cut-function pw)
-                  (run-at-time org-password-manager-default-password-wait-time
-                               nil
-                               (lambda () (funcall interprogram-cut-function "")))
-                  (message "Password for “%s” securly copied to system clipboard; will be overwritten in %s."
-                           heading
-                           org-password-manager-default-password-wait-time))))))
+  :commands (org-password-manager-get-username
+             org-password-manager-get-password))
 
 
 ;; * Appearance
