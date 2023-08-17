@@ -1362,21 +1362,37 @@ point to the beginning of buffer first."
 (use-package ob-sql
   :config (progn
 
+            ;; XXX: maybe merge this into the advice for `org-babel-execute:sql'?
             (define-advice org-babel-sql-dbstring-oracle (:around
                                                           (orig-fun host port user password database)
                                                           ask-for-password)
               "Ask for PASSWORD if not given, and call ORIG-FUN with arguments afterwards."
               (cond
-               ((not (or (and user database host port)
-                         (and user database)))
-                (user-error "Insufficient login credentials given, aborting"))
-               (password
-                (funcall orig-fun host port user password database))
-               (t
-                (funcall orig-fun
-                         host port user
-                         (password-read (format "Password for %s@%s: " user database))
-                         database))))))
+                ((not (or (and user database host port)
+                          (and user database)))
+                 (user-error "Insufficient login credentials given, aborting"))
+                (password
+                 (funcall orig-fun host port user password database))
+                (t
+                 (funcall orig-fun
+                          host port user
+                          (password-read (format "Password for %s@%s: " user database))
+                          database))))
+
+            (define-advice org-babel-execute:sql (:around
+                                                  (orig-fun body params)
+                                                  retrieve-password-by-function)
+              "Allow to set :dbpassword by an ID of an Org items having the PASSWORD property."
+              (let* ((dbpassword-id (cdr (assq :dbpassword-by-id params)))
+                     (params params))
+                (when dbpassword-id
+                  (setq params (cons (cons :dbpassword
+                                           (let* ((pom (or (org-id-find dbpassword-id 'marker)
+                                                           (user-error "Cannot find ID %s" dbpassword-id))))
+                                             (or (org-entry-get pom "PASSWORD")
+                                                 (user-error "No PASSWORD property at ID %s" dbpassword-id))))
+                                     params)))
+                (funcall orig-fun body params)))))
 
 ;; Exporting
 
