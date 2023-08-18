@@ -1001,6 +1001,7 @@ cache if that's in use."
 
 The password is assumed to be stored at the PASSWORD property."
 
+  (require 'org-password-manager)
   (let ((pom (org-id-find id 'marker)))
     (unless (markerp pom)
       (user-error "Cannot find item with id %s" id))
