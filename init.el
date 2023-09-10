@@ -1332,7 +1332,7 @@ point to the beginning of buffer first."
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))\n\n%?")
                      :clock-in t :clock-resume t :empty-lines-after 0)
-                ("r" "respond"
+                ("r" "Respond"
                      entry
                      (file db/org-default-refile-file)
                      ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
