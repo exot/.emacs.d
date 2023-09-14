@@ -3189,6 +3189,11 @@ eventuelly be set to nil, however)."
               which-key-side-window-max-height 0.25)
   :config (which-key-setup-side-window-bottom))
 
+(use-package yaml-mode
+  :ensure t
+  :config (progn
+            (add-hook 'yaml-mode-hook #'highlight-indentation-mode)))
+
 
 ;; * Load customizations
 
