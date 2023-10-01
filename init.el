@@ -2137,10 +2137,7 @@ point to the beginning of buffer first."
                   ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
                    "vlc")
                   ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
-                  ("\\.docx?\\'" "loffice")))
-
-          (when on-windows
-            (setq directory-free-space-program nil)))
+                  ("\\.docx?\\'" "loffice"))))
   :config (progn
             (put 'dired-find-alternate-file 'disabled nil)
 
