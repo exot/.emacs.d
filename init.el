@@ -1815,20 +1815,7 @@ point to the beginning of buffer first."
 
 ;; MIME creation; signing, and encryption
 
-(use-package mml
-  :config (progn
-            ;; Move to end of message buffer before attaching a file
-            ;; http://mbork.pl/2015-11-28_Fixing_mml-attach-file_using_advice
-
-            (define-advice mml-attach-file (:around
-                                            (orig-fun &rest args)
-                                            go-to-eob)
-              "Go to the end of buffer before attaching files."
-              (save-excursion
-                (save-restriction
-                  (widen)
-                  (goto-char (point-max))
-                  (apply orig-fun args))))))
+(setq mml-attach-file-at-the-end t)
 
 (use-package mm-encode
   :init (setq mm-encrypt-option nil
