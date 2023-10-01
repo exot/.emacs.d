@@ -26,18 +26,21 @@
                    (file-chase-links load-file-name))
   "The giant turtle on which the world rests.")
 
-(defconst on-windows (memq system-type '(windows-nt cygwin))
-  "Non-nil if and only if this instance of Emacs runs on Windows.")
-
-(setq custom-file (expand-file-name "private/custom.el" emacs-d)
-      custom-theme-directory (expand-file-name "themes/" emacs-d))
-
 (add-to-list 'load-path (expand-file-name "site-lisp" emacs-d))
 
-;; Ensure that ~/.emacs.d/private exists, because we want to store data there
-(let ((private-data-dir (expand-file-name "private/" emacs-d)))
-  (unless (file-directory-p private-data-dir)
-    (make-directory private-data-dir)))
+(defvar emacs-d-userdata (expand-file-name "private/" emacs-d)
+  "Directory to store user data in.")
+
+;; Ensure that `emacs-d-userdata' exists as a directory, because we want to
+;; store data there.
+(unless (file-directory-p emacs-d-userdata)
+  (make-directory emacs-d-userdata))
+
+(setq custom-file (expand-file-name "custom.el" emacs-d-userdata)
+      custom-theme-directory (expand-file-name "themes/" emacs-d))
+
+(defconst on-windows (memq system-type '(windows-nt cygwin))
+  "Non-nil if and only if this instance of Emacs runs on Windows.")
 
 
 ;; * Packages
@@ -504,7 +507,7 @@
 
 (use-package savehist
   :commands (savehist-mode)
-  :init (setq savehist-file (expand-file-name "private/savehist" emacs-d)))
+  :init (setq savehist-file (expand-file-name "savehist" emacs-d-userdata)))
 
 (use-package server
   :commands (server-running-p server-start)
@@ -521,7 +524,7 @@
             (tab-bar-history-mode +1)))
 
 (use-package url
-  :init (setq url-configuration-directory (expand-file-name "private/url" emacs-d)))
+  :init (setq url-configuration-directory (expand-file-name "url" emacs-d-userdata)))
 
 (use-package window
   :init (setq switch-to-buffer-obey-display-actions t
@@ -644,10 +647,10 @@
               projectile-completion-system 'helm
               projectile-ignored-project-function #'file-remote-p
               projectile-create-missing-test-files t
-              projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
-                                                               emacs-d)
-              projectile-cache-file (expand-file-name "private/projectile.cache"
-                                                      emacs-d))
+              projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld"
+                                                               emacs-d-userdata)
+              projectile-cache-file (expand-file-name "projectile.cache"
+                                                      emacs-d-userdata))
   :diminish projectile-mode)
 
 
@@ -662,7 +665,7 @@
 
 (use-package abbrev
   :init (setq save-abbrevs 'silently
-              abbrev-file-name (expand-file-name "private/abbrev_defs"))
+              abbrev-file-name (expand-file-name "abbrev_defs" emacs-d-userdata))
   :diminish abbrev-mode)
 
 (use-package dictionary
@@ -1081,7 +1084,7 @@
                                                               (list "GOTO"))
                                                       "ATTN"))))
                 org-clock-persist t
-                org-clock-persist-file (expand-file-name "private/org-clock-save.el" emacs-d)
+                org-clock-persist-file (expand-file-name "org-clock-save.el" emacs-d-userdata)
                 org-clock-persist-query-resume nil
                 org-clock-ask-before-exiting nil
                 org-time-stamp-rounding-minutes '(1 1))
@@ -1611,7 +1614,7 @@ point to the beginning of buffer first."
       gnus-home-directory (expand-file-name "~/.config/gnus-news")
       gnus-directory gnus-home-directory
       gnus-kill-files-directory gnus-directory
-      gnus-startup-file (expand-file-name "private/gnus-newsrc" emacs-d)
+      gnus-startup-file (expand-file-name "gnus-newsrc" emacs-d-userdata)
       gnus-cache-directory (expand-file-name "cache/" gnus-directory)
       gnus-verbose 6
       gnus-dbus-close-on-sleep t
@@ -1987,8 +1990,7 @@ point to the beginning of buffer first."
 (use-package nsm
   :init (setq network-security-level 'high
               nsm-save-host-names t
-              nsm-settings-file (expand-file-name
-                                 "~/.emacs.d/private/network-security.data"))
+              nsm-settings-file (expand-file-name "network-security.data" emacs-d-userdata))
   :config (advice-add 'nsm-write-settings
                       :before #'db/sort-nsm-permanent-settings))
 
@@ -2312,7 +2314,7 @@ point to the beginning of buffer first."
              counsel-shell-history))
 
 (use-package smex
-  :init (setq smex-save-file (expand-file-name "private/smex-items" emacs-d)))
+  :init (setq smex-save-file (expand-file-name "smex-items" emacs-d-userdata)))
 
 (use-package swiper
   :ensure t
@@ -2322,7 +2324,7 @@ point to the beginning of buffer first."
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
   :init (setq recentf-max-saved-items 1000
-              recentf-save-file (expand-file-name "private/recentf" emacs-d))
+              recentf-save-file (expand-file-name "recentf" emacs-d-userdata))
   :config (run-with-timer 0 3600 #'recentf-save-list))
 
 (use-package company
@@ -2412,8 +2414,7 @@ eventuelly be set to nil, however)."
               bm-wrap-search t))
 
 (use-package bookmark
-  :init (setq bookmark-default-file (expand-file-name "private/bookmarks"
-                                                      emacs-d)
+  :init (setq bookmark-default-file (expand-file-name "bookmarks" emacs-d-userdata)
               bookmark-menu-confirm-deletion t))
 
 (use-package dumb-jump
@@ -2471,10 +2472,10 @@ eventuelly be set to nil, however)."
               emms-stream-default-action "play"
               emms-track-description-function 'db/emms-track-description
               emms-playlist-default-major-mode 'emms-playlist-mode
-              emms-cache-file (expand-file-name "private/emms/cache" emacs-d)
-              emms-history-file (expand-file-name "private/emms/history" emacs-d)
-              emms-score-file (expand-file-name "private/emms/scores" emacs-d)
-              emms-stream-bookmarks-file (expand-file-name "private/emms/streams" emacs-d))
+              emms-cache-file (expand-file-name "emms/cache" emacs-d-userdata)
+              emms-history-file (expand-file-name "emms/history" emacs-d-userdata)
+              emms-score-file (expand-file-name "emms/scores" emacs-d-userdata)
+              emms-stream-bookmarks-file (expand-file-name "emms/streams" emacs-d-userdata))
   :config (progn
 
             ;; Initialization copied and adapted from `emms-setup’
@@ -2675,8 +2676,8 @@ eventuelly be set to nil, however)."
               eshell-hist-ignoredups t
               eshell-save-history-on-exit t
               eshell-history-size 5000
-              eshell-history-file-name (expand-file-name "private/eshell/history" emacs-d)
-              eshell-last-dir-ring-file-name (expand-file-name "private/eshell/lastdir" emacs-d)
+              eshell-history-file-name (expand-file-name "eshell/history" emacs-d-userdata)
+              eshell-last-dir-ring-file-name (expand-file-name "eshell/lastdir" emacs-d-userdata)
               eshell-destroy-buffer-when-process-dies t
               eshell-prompt-function #'eshell/default-prompt-function
               eshell-prompt-regexp "└─[$#] "
@@ -3062,8 +3063,7 @@ eventuelly be set to nil, however)."
   :commands (er/expand-region))
 
 (use-package eww
-  :init (setq eww-bookmarks-directory
-              (expand-file-name "private/" emacs-d)))
+  :init (setq eww-bookmarks-directory emacs-d-userdata))
 
 (use-package haskell-mode
   :config (progn
