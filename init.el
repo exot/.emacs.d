@@ -502,7 +502,7 @@
 
 (use-package savehist
   :commands (savehist-mode)
-  :init (setq savehist-file (expand-file-name "savehist" emacs-d)))
+  :init (setq savehist-file (expand-file-name "private/savehist" emacs-d)))
 
 (use-package server
   :commands (server-running-p server-start)
@@ -640,7 +640,9 @@
               projectile-ignored-project-function #'file-remote-p
               projectile-create-missing-test-files t
               projectile-known-projects-file (expand-file-name "private/projectile-bookmarks.eld"
-                                                               emacs-d))
+                                                               emacs-d)
+              projectile-cache-file (expand-file-name "private/projectile.cache"
+                                                      emacs-d))
   :diminish projectile-mode)
 
 
@@ -1074,6 +1076,7 @@
                                                               (list "GOTO"))
                                                       "ATTN"))))
                 org-clock-persist t
+                org-clock-persist-file (expand-file-name "private/org-clock-save.el" emacs-d)
                 org-clock-persist-query-resume nil
                 org-clock-ask-before-exiting nil
                 org-time-stamp-rounding-minutes '(1 1))
@@ -2313,7 +2316,8 @@ point to the beginning of buffer first."
 
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
-  :init (setq recentf-max-saved-items 1000)
+  :init (setq recentf-max-saved-items 1000
+              recentf-save-file (expand-file-name "private/recentf" emacs-d))
   :config (run-with-timer 0 3600 #'recentf-save-list))
 
 (use-package company
@@ -2666,6 +2670,8 @@ eventuelly be set to nil, however)."
               eshell-hist-ignoredups t
               eshell-save-history-on-exit t
               eshell-history-size 5000
+              eshell-history-file-name (expand-file-name "private/eshell/history" emacs-d)
+              eshell-last-dir-ring-file-name (expand-file-name "private/eshell/lastdir" emacs-d)
               eshell-destroy-buffer-when-process-dies t
               eshell-prompt-function #'eshell/default-prompt-function
               eshell-prompt-regexp "└─[$#] "
