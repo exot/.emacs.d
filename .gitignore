@@ -10,7 +10,6 @@
 /elpa/*
 !/elpa/diminish-[0-9]*
 !/elpa/bind-key-[0-9]*
-!/elpa/use-package-[0-9]*
 !/elpa/dash-[0-9]*
 !/elpa/hydra-[0-9]*
 !/elpa/page-break-lines-[0-9]*

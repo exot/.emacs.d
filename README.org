@@ -3,8 +3,8 @@
 My personal Emacs Configuration, containing bits of code collected from around
 the web.  Have fun with it!
 
-This configuration is known to work with Emacs 25.2 (and later) on
-Debian GNU/Linux and Windows 10 (sigh).
+This configuration is known to work with Emacs 29.1 (and later) on
+Debian GNU/Linux and Windows 11 (sigh).
 
 * Features
 
