@@ -906,21 +906,26 @@ holding the password to unlock the key."
 
 ;; XXX: could we implement this via `auth-source' and additional backends?
 
-(defun db/load-known-ssh-keys ()
-  "Add all keys from `db/known-ssh-keys' to currently running ssh-agent."
-  (interactive)
+(defun db/load-known-ssh-keys (arg)
+  "Add all keys from `db/known-ssh-keys' to currently running ssh-agent.
+
+With non-nil ARG, readd SSH keys irregardless of whether they are
+already present in the current agent or not."
+  (interactive "P")
   (let ((loaded-ssh-key-hashes (db/ssh-loaded-key-hashes)))
     (pcase-dolist (`(,ssh-key . ,pass-entry) db/known-ssh-keys)
       (let ((ssh-key-hash (db/ssh-key-hash-from-filename ssh-key)))
         (cond
           ((null ssh-key-hash)
            (warn "SSH key file %s is not readable or does not exist, skipping" ssh-key))
-          ((cl-member ssh-key-hash loaded-ssh-key-hashes :test #'string=)
+          ((and (not arg)
+                (cl-member ssh-key-hash loaded-ssh-key-hashes :test #'string=))
            (message "SSH key file %s already loaded, skipping" ssh-key))
           (t
            (db/add-ssh-key-with-password ssh-key
                                          #'(lambda ()
-                                             (apply #'db/password-from-storage pass-entry)))))))))
+                                             (apply #'db/password-from-storage pass-entry)))))))
+    (message "Finished adding known SSH keys to current SSH agent.")))
 
 (cl-defgeneric db/password-from-storage (type entry-key)
   "Retrieve password from storage of type TYPE with lookup key ENTRY-KEY.")
