@@ -2303,6 +2303,9 @@ point to the beginning of buffer first."
              counsel-recentf
              counsel-shell-history))
 
+(use-package smex
+  :init (setq smex-save-file (expand-file-name "private/smex-items" emacs-d)))
+
 (use-package swiper
   :ensure t
   :commands (swiper
