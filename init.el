@@ -496,6 +496,9 @@
             ;; and replace it with something more straightforward.
             (advice-add 'grep-read-files :around #'db/grep-read-files)))
 
+(use-package multisession
+  :config (setq multisession-directory (expand-file-name "multisession/" emacs-d)))
+
 (use-package proced
   :custom ((proced-tree-flag t)
            (proced-auto-update-flag t)
