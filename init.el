@@ -232,7 +232,7 @@
   (bind-key "M-/" #'hippie-expand)
   (bind-key "M-:" #'pp-eval-expression)
   (bind-key "M-=" #'count-words)
-  (bind-key "M-SPC" #'cycle-spacing)
+  (bind-key "M-SPC" #'cycle-spacing)    ; default since Emacs 29.1
   (bind-key "M-Z" #'zap-to-char)
   (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
