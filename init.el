@@ -160,19 +160,6 @@
   (add-hook 'text-mode-hook 'abbrev-mode)
   (add-hook 'text-mode-hook 'hl-line-mode)
 
-  ;; Auto-Modes
-
-  (dolist (mode-spec '(("\\.clj\\'" . clojure-mode)
-                       ("\\.cl\\'" . lisp-mode)
-                       ("\\.lisp\\'" . lisp-mode)
-                       ("\\.plx\\’" . cperl-mode)
-                       ("\\.hs\\'" . haskell-mode)
-                       ("\\.lhs\\'" . haskell-mode)
-                       ("\\.md\\'" . markdown-mode)
-                       ("\\.html\\'" . nxml-mode)
-                       ("\\.xml\\'" . nxml-mode)))
-    (add-to-list 'auto-mode-alist mode-spec))
-
   ;; Top-Level Keybindings
 
   (bind-key "<XF86Back>" #'winner-undo)
@@ -483,6 +470,9 @@
                                        (holiday-fixed 11 11 "End WWI 1918"))
               diary-show-holidays-flag t
               calendar-view-holidays-initially-flag nil))
+
+(use-package files
+  :init (setq major-mode-remap-alist `((perl-mode . cperl-mode))))
 
 (use-package grep
   :commands (rgrep zrgrep)
@@ -2772,6 +2762,8 @@ eventuelly be set to nil, however)."
 ;; General Stuff first
 
 (use-package lisp-mode
+  :mode (("\\.cl\\'" . lisp-mode)
+         ("\\.lisp\\'" . lisp-mode))
   :init (setq lisp-indent-function #'common-lisp-indent-function))
 
 (use-package lispy
@@ -2817,6 +2809,7 @@ eventuelly be set to nil, however)."
             (add-hook 'cider-repl-mode-hook 'company-mode)))
 
 (use-package clojure-mode
+  :mode (("\\.clj\\'" . clojure-mode))
   :config (progn
             (define-clojure-indent
                 (forall 'defun)
@@ -3005,20 +2998,13 @@ eventuelly be set to nil, however)."
 (use-package cperl-mode
   :ensure t
   :commands (cperl-mode)
-  :init (progn
-          ;; replace perl-mode with cperl-mode
-          (mapc
-           #'(lambda (pair)
-               (if (eq (cdr pair) 'perl-mode)
-                   (setcdr pair 'cperl-mode)))
-           (append auto-mode-alist interpreter-mode-alist))
-
-          (setq cperl-hairy nil
-                cperl-invalid-face 'default
-                cperl-electric-keywords nil
-                cperl-lazy-help-time 2
-                cperl-highlight-variables-indiscriminately t
-                cperl-indent-parens-as-block t))
+  :mode ("\\.plx\\'" . cperl-mode)
+  :init (setq cperl-hairy nil
+              cperl-invalid-face 'default
+              cperl-electric-keywords nil
+              cperl-lazy-help-time 2
+              cperl-highlight-variables-indiscriminately t
+              cperl-indent-parens-as-block t)
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
