@@ -57,15 +57,15 @@
   (package-initialize))
 
 (eval-when-compile
-  (setq use-package-enable-imenu-support t
-        use-package-always-defer t
-        use-package-verbose t
-        use-package-minimum-reported-time 0.01)
-
   (dolist (package '(bind-key use-package))
     (unless (package-installed-p package)
       (package-install package))
     (require package)))
+
+(setq use-package-enable-imenu-support t
+      use-package-always-defer t
+      use-package-verbose t
+      use-package-minimum-reported-time 0.01)
 
 (add-to-list 'package-pinned-packages '(use-package . "melpa-stable"))
 (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
