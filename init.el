@@ -520,6 +520,9 @@
   :config (progn
             (tab-bar-history-mode +1)))
 
+(use-package url
+  :init (setq url-configuration-directory (expand-file-name "private/url" emacs-d)))
+
 (use-package window
   :init (setq switch-to-buffer-obey-display-actions t
               switch-to-buffer-in-dedicated-window 'pop
