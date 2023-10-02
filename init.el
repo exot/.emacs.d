@@ -76,244 +76,6 @@
 (put 'use-package 'lisp-indent-function 1)
 
 
-;; * Mode activation
-
-(defun db/run-init ()
-  "Run main initialization after everything is set up."
-
-  (message "Running main initialization ...")
-
-  ;; Activate modes (builtin)
-
-  (show-paren-mode 1)
-  (transient-mark-mode 1)
-  (global-font-lock-mode 1)
-  (column-number-mode 1)
-  (delete-selection-mode -1)
-
-  (dolist (mode '(tool-bar-mode
-                  scroll-bar-mode
-                  menu-bar-mode
-                  blink-cursor-mode
-                  tooltip-mode))
-    (when (fboundp mode)
-      (funcall mode 0)))
-
-  (when (<= 24 emacs-major-version)
-    (electric-indent-mode -1))
-
-  (appt-activate +1)
-  (savehist-mode 1)
-
-  (size-indication-mode 1)
-  (display-battery-mode -1)
-
-  (electric-pair-mode +1)
-
-  (recentf-mode t)
-  (winner-mode 1)
-  (global-auto-revert-mode -1)
-  (which-function-mode +1)
-  (global-eldoc-mode +1)
-
-  ;; Activate modes (packages)
-
-  (dolist (mode '(global-undo-tree-mode
-                  minibuffer-depth-indicate-mode
-                  ace-window-display-mode
-                  key-chord-mode
-                  ivy-mode
-                  minions-mode
-                  which-key-mode
-                  projectile-mode
-                  yas-global-mode
-                  global-git-commit-mode))
-    (with-demoted-errors "Cannot activate mode: %s"
-      (funcall mode +1)))
-
-  ;; This causes inacceptable lack when drawing buffers, so disable it for now.
-  ;; Needs to be investigated further.
-
-  ;; (with-demoted-errors "Cannot activate moody: %s"
-  ;;   (moody-replace-mode-line-buffer-identification)
-  ;;   (moody-replace-vc-mode))
-
-  (with-demoted-errors "Cannot activate `vlf': %s"
-    (require 'vlf-setup))
-
-  ;; Explicitly require helm, because autoloading is difficult with helm's
-  ;; separate `helm-command-prefix-key' mechanism.
-  (require 'helm)
-
-  (when (package-installed-p 'org-roam)
-    (org-roam-db-autosync-mode))
-
-  ;; Global Hooks
-
-  (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
-  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
-  (add-hook 'prog-mode-hook 'page-break-lines-mode)
-  (add-hook 'prog-mode-hook 'hl-line-mode)
-  (when (<= 24 emacs-major-version)
-    (add-hook 'prog-mode-hook 'electric-indent-local-mode))
-
-  (add-hook 'text-mode-hook 'page-break-lines-mode)
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
-  (add-hook 'text-mode-hook 'abbrev-mode)
-  (add-hook 'text-mode-hook 'hl-line-mode)
-
-  ;; Top-Level Keybindings
-
-  (bind-key "<XF86Back>" #'winner-undo)
-  (bind-key "<XF86Forward>" #'winner-redo)
-  (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
-  (bind-key "<f10>" #'magit-status)
-  (bind-key "<f1>" #'db/run-or-hide-eshell)
-  (bind-key "<f2>" #'hydra-feature-shortcuts/body)
-  (bind-key "<f5>" #'rgrep)
-  (bind-key "<f6>" #'hydra-zoom/body)
-  (bind-key "<f7>" #'dictcc)
-  (bind-key "<f8>" #'bm-toggle)
-  (bind-key "<f9>" #'hydra-org-linking/body)
-  (bind-key "<C-f8>" #'bm-next)
-  (bind-key "<C-S-f8>" #'bm-previous)
-  (bind-key "C-," #'mc/skip-to-previous-like-this)
-  (bind-key "C-." #'mc/skip-to-next-like-this)
-  (bind-key "C-;" #'iedit-mode)
-  (bind-key "C-<" #'mc/mark-previous-like-this)
-  (bind-key "C->" #'mc/mark-next-like-this)
-  (bind-key "C-@" #'er/expand-region)
-  (bind-key "C-M-\\" #'crux-cleanup-buffer-or-region)
-  (bind-key "C-S-c C-S-c" #'mc/edit-lines)
-  (bind-key "C-Z" #'undo-tree-redo)
-  (bind-key "C-c C-<" #'mc/mark-all-like-this)
-  (bind-key "C-c C-r" #'ivy-resume)
-  (bind-key "C-c D" #'define-word)
-  (bind-key "C-c J" #'avy-goto-word-or-subword-1)
-  (bind-key "C-c a" #'org-agenda)
-  (bind-key "C-c c" #'org-capture)
-  (bind-key "C-c d" #'define-word-at-point)
-  (bind-key "C-c e" #'crux-eval-and-replace)
-  (bind-key "C-c i" #'ispell-change-dictionary)
-  (bind-key "C-c j" #'avy-goto-char-timer)
-  (bind-key "C-c l" #'org-store-link)
-  (bind-key "C-c m" #'music-control/body)
-  (bind-key "C-c n f" #'org-roam-node-find)
-  (bind-key "C-c n i" #'org-roam-node-insert)
-  (bind-key "C-c n c" #'org-roam-capture)
-  (bind-key "C-c o" #'hydra-org-clock/body)
-  (bind-key "C-c s" #'synonyms)
-  (bind-key "C-c t" #'hydra-toggle/body)
-  (bind-key "C-h C-f" #'find-function)
-  (bind-key "C-h C-k" #'find-function-on-key)
-  (bind-key "C-h C-v" #'find-variable)
-  (bind-key "C-x 4 C-j" #'dired-jump-other-window)
-  (bind-key "C-x C-b" #'ibuffer)
-  (bind-key "C-x C-d" #'dired)
-  (bind-key "C-x C-j" #'dired-jump)
-  (bind-key "C-x C-r" #'revert-buffer)
-  (bind-key "C-x SPC" #'hydra-rectangle/body)
-  (bind-key "C-x g" #'db/helm-shortcuts)
-  (bind-key "C-x r E" #'db/bookmark-add-external)
-  (bind-key "C-x r M" #'db/bookmark-add-url)
-  (bind-key "C-x r v" #'list-registers)
-  (bind-key "C-z" #'goto-last-change)
-  (bind-key "M-/" #'hippie-expand)
-  (bind-key "M-:" #'pp-eval-expression)
-  (bind-key "M-=" #'count-words)
-  (bind-key "M-SPC" #'cycle-spacing)    ; default since Emacs 29.1
-  (bind-key "M-Z" #'zap-to-char)
-  (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
-  (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
-  (bind-key "M-z" #'zap-up-to-char)
-  (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
-  (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
-  (unbind-key "<insert>" global-map)
-  (unbind-key "<kp-insert>" global-map)
-  (unbind-key "C-x C-c" global-map)
-  (unbind-key "M-o" global-map)
-
-  ;; Overwrite certain keybindings only if packages are avilable
-
-  (when (package-installed-p 'counsel)
-    (bind-key "M-x" #'counsel-M-x)      ; gets nicer sorting with smex installed
-    (bind-key "C-x C-f" #'counsel-find-file)
-    (bind-key "C-h f" #'counsel-describe-function)
-    (bind-key "C-h v" #'counsel-describe-variable)
-    (bind-key "C-h b" #'counsel-descbinds)
-    (bind-key "C-S-s" #'counsel-grep-or-swiper))
-
-  (when (package-installed-p 'helm)
-    (bind-key "M-y" #'helm-show-kill-ring))
-
-  (when (package-installed-p 'crux)
-    (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
-    (bind-key [remap open-line] #'crux-smart-open-line-above))
-
-  (when (package-installed-p 'ace-window)
-    (bind-key "C-x o" #'ace-window))
-
-  (when (package-installed-p 'avy)
-    (bind-key "M-g M-g" #'avy-goto-line)
-    (bind-key "M-g g" #'avy-goto-line))
-
-  ;; Environment Variables
-
-  (unless on-windows
-    (with-demoted-errors "Cannot import environment variables: %s"
-      (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
-                                        "SSH_AGENT_PID"
-                                        "PATH"
-                                        "TEXMFHOME"
-                                        "PERL5LIB"
-                                        "PERL_LOCAL_LIB_ROOT"
-                                        "PERL_MB_OPT"
-                                        "PERL_MM_OPT"))))
-
-  ;; Start Server when not running already
-
-  ;; The following condition should actually always be false, since we have
-  ;; neither loaded the server package yet nor have explicitly started the
-  ;; server process.  Also the --daemon command line switches will start the
-  ;; server only later, after initialization (and they do so unconditionally,
-  ;; thus restarting the server we have started here).  However, for robustness,
-  ;; we keep the condition nevertheless, since when a server process is already
-  ;; present, we really don't have to do anything.  Furthermore, calling
-  ;; `db/run-init' again in a running Emacs will not restart the server (but
-  ;; then, why whould one want to do this?).
-  (if (and (boundp 'server-process) server-process)
-      (message "Server already running, not restarting.")
-
-    (require 'server)
-    (let ((server-file (expand-file-name server-name
-                                         (if server-use-tcp server-auth-dir server-socket-dir))))
-      (if (file-exists-p server-file)
-          (warn "Server file already exists, but no server process is running.  Check %s and restart server manually."
-                server-file)
-
-        (server-start)
-        (cl-case (server-running-p)
-          ((t) t)                       ; server is running
-          ((nil) (warn "Server not running, check logs and restart manually."))
-          (t (warn "`server-running-p' returned neither nil nor t.  Check and restart server manually if required."))))))
-
-  ;; Load custom code
-
-  (dolist (file db/after-init-load-files)
-    (message "Loading %s" file)
-    (with-demoted-errors "Error loading file: %s"
-      (load-file file)))
-
-  ;; Finish
-  
-  (message "Running main initialization ... done")
-
-  t)
-
-(add-hook 'after-init-hook #'db/run-init)
-
-
 ;; * Personal Customization Variables
 
 (use-package db-customize
@@ -3184,5 +2946,243 @@ eventuelly be set to nil, however)."
 
 (when (file-exists-p custom-file)
   (load-file custom-file))
+
+
+;; * Actual Mode Activation
+
+(defun db/run-init ()
+  "Run main initialization after everything is set up."
+
+  (message "Running main initialization ...")
+
+  ;; Activate modes (builtin)
+
+  (show-paren-mode 1)
+  (transient-mark-mode 1)
+  (global-font-lock-mode 1)
+  (column-number-mode 1)
+  (delete-selection-mode -1)
+
+  (dolist (mode '(tool-bar-mode
+                  scroll-bar-mode
+                  menu-bar-mode
+                  blink-cursor-mode
+                  tooltip-mode))
+    (when (fboundp mode)
+      (funcall mode 0)))
+
+  (when (<= 24 emacs-major-version)
+    (electric-indent-mode -1))
+
+  (appt-activate +1)
+  (savehist-mode 1)
+
+  (size-indication-mode 1)
+  (display-battery-mode -1)
+
+  (electric-pair-mode +1)
+
+  (recentf-mode t)
+  (winner-mode 1)
+  (global-auto-revert-mode -1)
+  (which-function-mode +1)
+  (global-eldoc-mode +1)
+
+  ;; Activate modes (packages)
+
+  (dolist (mode '(global-undo-tree-mode
+                  minibuffer-depth-indicate-mode
+                  ace-window-display-mode
+                  key-chord-mode
+                  ivy-mode
+                  minions-mode
+                  which-key-mode
+                  projectile-mode
+                  yas-global-mode
+                  global-git-commit-mode))
+    (with-demoted-errors "Cannot activate mode: %s"
+      (funcall mode +1)))
+
+  ;; This causes inacceptable lack when drawing buffers, so disable it for now.
+  ;; Needs to be investigated further.
+
+  ;; (with-demoted-errors "Cannot activate moody: %s"
+  ;;   (moody-replace-mode-line-buffer-identification)
+  ;;   (moody-replace-vc-mode))
+
+  (with-demoted-errors "Cannot activate `vlf': %s"
+    (require 'vlf-setup))
+
+  ;; Explicitly require helm, because autoloading is difficult with helm's
+  ;; separate `helm-command-prefix-key' mechanism.
+  (require 'helm)
+
+  (when (package-installed-p 'org-roam)
+    (org-roam-db-autosync-mode))
+
+  ;; Global Hooks
+
+  (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
+  (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
+  (add-hook 'prog-mode-hook 'page-break-lines-mode)
+  (add-hook 'prog-mode-hook 'hl-line-mode)
+  (when (<= 24 emacs-major-version)
+    (add-hook 'prog-mode-hook 'electric-indent-local-mode))
+
+  (add-hook 'text-mode-hook 'page-break-lines-mode)
+  (add-hook 'text-mode-hook 'turn-on-auto-fill)
+  (add-hook 'text-mode-hook 'abbrev-mode)
+  (add-hook 'text-mode-hook 'hl-line-mode)
+
+  ;; Top-Level Keybindings
+
+  (bind-key "<XF86Back>" #'winner-undo)
+  (bind-key "<XF86Forward>" #'winner-redo)
+  (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
+  (bind-key "<f10>" #'magit-status)
+  (bind-key "<f1>" #'db/run-or-hide-eshell)
+  (bind-key "<f2>" #'hydra-feature-shortcuts/body)
+  (bind-key "<f5>" #'rgrep)
+  (bind-key "<f6>" #'hydra-zoom/body)
+  (bind-key "<f7>" #'dictcc)
+  (bind-key "<f8>" #'bm-toggle)
+  (bind-key "<f9>" #'hydra-org-linking/body)
+  (bind-key "<C-f8>" #'bm-next)
+  (bind-key "<C-S-f8>" #'bm-previous)
+  (bind-key "C-," #'mc/skip-to-previous-like-this)
+  (bind-key "C-." #'mc/skip-to-next-like-this)
+  (bind-key "C-;" #'iedit-mode)
+  (bind-key "C-<" #'mc/mark-previous-like-this)
+  (bind-key "C->" #'mc/mark-next-like-this)
+  (bind-key "C-@" #'er/expand-region)
+  (bind-key "C-M-\\" #'crux-cleanup-buffer-or-region)
+  (bind-key "C-S-c C-S-c" #'mc/edit-lines)
+  (bind-key "C-Z" #'undo-tree-redo)
+  (bind-key "C-c C-<" #'mc/mark-all-like-this)
+  (bind-key "C-c C-r" #'ivy-resume)
+  (bind-key "C-c D" #'define-word)
+  (bind-key "C-c J" #'avy-goto-word-or-subword-1)
+  (bind-key "C-c a" #'org-agenda)
+  (bind-key "C-c c" #'org-capture)
+  (bind-key "C-c d" #'define-word-at-point)
+  (bind-key "C-c e" #'crux-eval-and-replace)
+  (bind-key "C-c i" #'ispell-change-dictionary)
+  (bind-key "C-c j" #'avy-goto-char-timer)
+  (bind-key "C-c l" #'org-store-link)
+  (bind-key "C-c m" #'music-control/body)
+  (bind-key "C-c n f" #'org-roam-node-find)
+  (bind-key "C-c n i" #'org-roam-node-insert)
+  (bind-key "C-c n c" #'org-roam-capture)
+  (bind-key "C-c o" #'hydra-org-clock/body)
+  (bind-key "C-c s" #'synonyms)
+  (bind-key "C-c t" #'hydra-toggle/body)
+  (bind-key "C-h C-f" #'find-function)
+  (bind-key "C-h C-k" #'find-function-on-key)
+  (bind-key "C-h C-v" #'find-variable)
+  (bind-key "C-x 4 C-j" #'dired-jump-other-window)
+  (bind-key "C-x C-b" #'ibuffer)
+  (bind-key "C-x C-d" #'dired)
+  (bind-key "C-x C-j" #'dired-jump)
+  (bind-key "C-x C-r" #'revert-buffer)
+  (bind-key "C-x SPC" #'hydra-rectangle/body)
+  (bind-key "C-x g" #'db/helm-shortcuts)
+  (bind-key "C-x r E" #'db/bookmark-add-external)
+  (bind-key "C-x r M" #'db/bookmark-add-url)
+  (bind-key "C-x r v" #'list-registers)
+  (bind-key "C-z" #'goto-last-change)
+  (bind-key "M-/" #'hippie-expand)
+  (bind-key "M-:" #'pp-eval-expression)
+  (bind-key "M-=" #'count-words)
+  (bind-key "M-SPC" #'cycle-spacing)    ; default since Emacs 29.1
+  (bind-key "M-Z" #'zap-to-char)
+  (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
+  (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
+  (bind-key "M-z" #'zap-up-to-char)
+  (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
+  (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
+  (unbind-key "<insert>" global-map)
+  (unbind-key "<kp-insert>" global-map)
+  (unbind-key "C-x C-c" global-map)
+  (unbind-key "M-o" global-map)
+
+  ;; Overwrite certain keybindings only if packages are avilable
+
+  (when (package-installed-p 'counsel)
+    (bind-key "M-x" #'counsel-M-x)      ; gets nicer sorting with smex installed
+    (bind-key "C-x C-f" #'counsel-find-file)
+    (bind-key "C-h f" #'counsel-describe-function)
+    (bind-key "C-h v" #'counsel-describe-variable)
+    (bind-key "C-h b" #'counsel-descbinds)
+    (bind-key "C-S-s" #'counsel-grep-or-swiper))
+
+  (when (package-installed-p 'helm)
+    (bind-key "M-y" #'helm-show-kill-ring))
+
+  (when (package-installed-p 'crux)
+    (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
+    (bind-key [remap open-line] #'crux-smart-open-line-above))
+
+  (when (package-installed-p 'ace-window)
+    (bind-key "C-x o" #'ace-window))
+
+  (when (package-installed-p 'avy)
+    (bind-key "M-g M-g" #'avy-goto-line)
+    (bind-key "M-g g" #'avy-goto-line))
+
+  ;; Environment Variables
+
+  (unless on-windows
+    (with-demoted-errors "Cannot import environment variables: %s"
+      (exec-path-from-shell-copy-envs '("SSH_AUTH_SOCK"
+                                        "SSH_AGENT_PID"
+                                        "PATH"
+                                        "TEXMFHOME"
+                                        "PERL5LIB"
+                                        "PERL_LOCAL_LIB_ROOT"
+                                        "PERL_MB_OPT"
+                                        "PERL_MM_OPT"))))
+
+  ;; Start Server when not running already
+
+  ;; The following condition should actually always be false, since we have
+  ;; neither loaded the server package yet nor have explicitly started the
+  ;; server process.  Also the --daemon command line switches will start the
+  ;; server only later, after initialization (and they do so unconditionally,
+  ;; thus restarting the server we have started here).  However, for robustness,
+  ;; we keep the condition nevertheless, since when a server process is already
+  ;; present, we really don't have to do anything.  Furthermore, calling
+  ;; `db/run-init' again in a running Emacs will not restart the server (but
+  ;; then, why whould one want to do this?).
+  (if (and (boundp 'server-process) server-process)
+      (message "Server already running, not restarting.")
+
+    (require 'server)
+    (let ((server-file (expand-file-name server-name
+                                         (if server-use-tcp server-auth-dir server-socket-dir))))
+      (if (file-exists-p server-file)
+          (warn "Server file already exists, but no server process is running.  Check %s and restart server manually."
+                server-file)
+
+        (server-start)
+        (cl-case (server-running-p)
+          ((t) t)                       ; server is running
+          ((nil) (warn "Server not running, check logs and restart manually."))
+          (t (warn "`server-running-p' returned neither nil nor t.  Check and restart server manually if required."))))))
+
+  ;; Load custom code
+
+  (dolist (file db/after-init-load-files)
+    (message "Loading %s" file)
+    (with-demoted-errors "Error loading file: %s"
+      (load-file file)))
+
+  ;; Finish
+
+  (message "Running main initialization ... done")
+
+  t)
+
+(add-hook 'after-init-hook #'db/run-init)
 
 ;;; init.el ends here
