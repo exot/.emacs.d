@@ -1361,7 +1361,7 @@ point to the beginning of buffer first."
              bbdb-save)
   :init (setq bbdb-completion-display-record nil
               bbdb-complete-mail-allow-cycling t
-              bbdb-mua-auto-update-p 'query
+              bbdb-mua-auto-action 'query
               bbdb-default-country "Germany")
   :config (progn
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
