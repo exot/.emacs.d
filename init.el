@@ -1399,7 +1399,7 @@ point to the beginning of buffer first."
       gnus-subscribe-newsgroup-method 'gnus-subscribe-killed
       gnus-group-list-inactive-groups t
       gnus-suppress-duplicates nil
-      gnus-large-newsgroup 200
+      gnus-large-newsgroup 500
       nnmail-expiry-wait 7
       nnmail-cache-accepted-message-ids t
       gnus-summary-next-group-on-exit nil
