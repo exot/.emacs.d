@@ -1334,6 +1334,11 @@ point to the beginning of buffer first."
   :commands (page-break-lines-mode)
   :diminish page-break-lines-mode)
 
+(use-package transient
+  :init (setq transient-levels-file (expand-file-name "transient/levels.el" emacs-d-userdata)
+              transient-values-file (expand-file-name "transient/values.el" emacs-d-userdata)
+              transient-history-file (expand-file-name "transient/history.el" emacs-d-userdata)))
+
 
 ;; * Mail
 

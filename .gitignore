@@ -36,7 +36,5 @@
 /semanticdb/
 /server/server
 /session.*
-/speed-type/*
 /tramp
-/transient/history.el
 
