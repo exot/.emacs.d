@@ -30,25 +30,29 @@ The buffer's name has to start with “*eshell*” to be recognized
 by this function.  Otherwise the current buffer is not treated as
 an eshell buffer.
 
-When ARG is given, also switch to `default-directory'."
+When ARG is given, change to `default-directory' after switching
+to the eshell buffer."
   (interactive "P")
-  (if (and (derived-mode-p 'eshell-mode)
-           (string-match-p "^\\*eshell\\*" (buffer-name)))
-      ;; bury buffer; reopen with current working directory if arg is given
-      (progn
-        (bury-buffer)
-        (and arg (db/run-or-hide-eshell arg)))
-    (if-let ((eshell-window (cl-find-if (lambda (window)
-                                          (with-current-buffer (window-buffer window)
-                                            (and (derived-mode-p 'eshell-mode)
-                                                 (string-match-p "^\\*eshell\\*" (buffer-name)))))
-                                        (window-list-1))))
-        (select-window eshell-window)
-      ;; No running eshell found, open new one.
-      (let* ((current-dir (expand-file-name default-directory)))
-        (--if-let (display-buffer (eshell 1))
-            (select-window it)
-          (error "Could not start eshell (`display-buffer' returned nil)"))
+  (let ((current-dir (expand-file-name default-directory)))
+    (cl-flet ((in-eshell-buffer-p ()
+                (and (derived-mode-p 'eshell-mode)
+                     (string-match-p "^\\*eshell\\*" (buffer-name)))))
+
+      (if (and (not arg)
+               (in-eshell-buffer-p))
+          (bury-buffer)
+
+        (unless (in-eshell-buffer-p)
+          (if-let ((eshell-window (cl-find-if (lambda (window)
+                                                (with-current-buffer (window-buffer window)
+                                                  (in-eshell-buffer-p)))
+                                              (window-list-1))))
+              (select-window eshell-window)
+            ;; No running eshell found, open new one.
+            (--if-let (display-buffer (eshell 1))
+                (select-window it)
+              (error "Could not start eshell (`display-buffer' returned nil)"))))
+
         (when arg
           (end-of-line)
           (eshell-kill-input)
