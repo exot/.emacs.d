@@ -74,6 +74,7 @@
 (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
 
 (put 'use-package 'lisp-indent-function 1)
+(put 'use-package 'common-lisp-indent-function 1)
 
 
 ;; * Personal Customization Variables
