@@ -561,7 +561,7 @@
                 org-log-note-clock-out nil
                 org-log-done 'note
                 org-clone-delete-id t
-                org-catch-invisible-edits 'show-and-error
+                org-fold-catch-invisible-edits 'show-and-error
                 org-M-RET-may-split-line '((default . nil))
                 org-highlight-latex-and-related '(latex)
                 org-use-sub-superscripts '{}
@@ -1849,6 +1849,8 @@ point to the beginning of buffer first."
       vc-make-backup-files            t)
 
 (use-package dired
+  :commands (dired-jump
+             dired-jump-other-window)
   :bind (:map dired-mode-map
               ("e" . db/dired-ediff-files)
               ("z" . db/dired-get-size)
@@ -1881,7 +1883,9 @@ point to the beginning of buffer first."
                 wdired-allow-to-change-permissions t
 
                 dired-isearch-filenames 'dwim
-                dired-auto-revert-buffer t)
+                dired-auto-revert-buffer t
+                dired-clean-confirm-killing-deleted-buffers t
+                dired-clean-up-buffers-too t)
 
           (setq dired-guess-shell-alist-user
                 '(("\\.pdf\\'" "evince")
@@ -1924,15 +1928,7 @@ point to the beginning of buffer first."
               (add-to-list 'dired-latex-unclean-extensions extension))))
 
 (use-package dired-x
-  :commands (dired-jump dired-jump-other-window) ; In Emacs 28.1, this has been
-                                        ; moved to dired.el, but we'll
-                                        ; keep it here to support Emacs
-                                        ; 27.2 as well.
-  :init (setq dired-clean-confirm-killing-deleted-buffers t
-              dired-x-hands-off-my-keys t
-              dired-bind-man nil
-              dired-bind-info nil
-              dired-clean-up-buffers-too t))
+  :init (setq dired-x-hands-off-my-keys t))
 
 (use-package dired-open
   :ensure t
@@ -2110,8 +2106,8 @@ is too slow (in this case, `db/important-document-path' should
 eventuelly be set to nil, however)."
   (interactive "P")
   (eval-when-compile
-    (require 'helm-bookmark)
-    (require 'helm-for-files))          ; for helm-source-recentf
+   (require 'helm-bookmark)
+   (require 'helm-for-files))           ; for helm-source-recentf
   (helm :sources (list
                   (helm-make-source "Frequently Used" 'helm-source-sync
                     :candidates (mapcar #'(lambda (entry)
@@ -2615,9 +2611,7 @@ eventuelly be set to nil, however)."
                     slime-completion-at-point-functions 'slime-fuzzy-complete-symbol
                     slime-lisp-implementations '((sbcl ("sbcl") :coding-system utf-8-unix)
                                                  (cmucl ("cmucl") :coding-system utf-8-unix)
-                                                 (ccl ("ccl") :coding-system utf-8-unix))
-                    slime-repl-history-remove-duplicates t
-                    slime-repl-history-trim-whitespaces t)
+                                                 (ccl ("ccl") :coding-system utf-8-unix)))
               (add-hook 'lisp-mode-hook #'(lambda () (slime-mode +1)) t))
   :config   (progn
               (make-directory "/tmp/slime-fasls/" t)
