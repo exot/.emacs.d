@@ -543,6 +543,7 @@
 (use-package org
   :pin "gnu"
   :bind (:map org-mode-map
+              ([remap org-return] . (lambda () (interactive) (org-return :indent)))
               ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox))
   :init (progn
           (setq org-deadline-warning-days 14
