@@ -1849,6 +1849,18 @@ point to the beginning of buffer first."
       delete-old-versions             t
       vc-make-backup-files            t)
 
+(use-package dired-aux
+  :defines (dired-create-destination-dirs
+            dired-vc-rename-file))
+
+(use-package dired-x
+  :defines (dired-omit-files)
+  :init (setq dired-x-hands-off-my-keys t))
+
+(use-package wdired
+  :defines (wdired-create-parent-directories
+            wdired-allow-to-change-permissions))
+
 (use-package dired
   :commands (dired-jump
              dired-jump-other-window)
@@ -1872,17 +1884,9 @@ point to the beginning of buffer first."
                 dired-vc-rename-file t
                 dired-kill-when-opening-new-dired-buffer nil
                 dired-maybe-use-globstar t
-
-                ;; Don’t use obsolete diredx local variables
-                dired-enable-local-variables nil
-                dired-local-variables-file nil
-
                 dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$"
-                diredp-hide-details-initially-flag t
-
                 wdired-create-parent-directories t
                 wdired-allow-to-change-permissions t
-
                 dired-isearch-filenames 'dwim
                 dired-auto-revert-buffer t
                 dired-clean-confirm-killing-deleted-buffers t
@@ -1902,16 +1906,17 @@ point to the beginning of buffer first."
             (put 'dired-find-alternate-file 'disabled nil)
 
             (require 'dired-x)
+            (require 'dired-aux)
+            (require 'wdired)
 
             (with-demoted-errors "Non-Fatal Errors (dired-open): %s"
               (require 'dired-open))
 
             (if (eq system-type 'windows-nt)
                 (with-demoted-errors "Non-Fatal Error (w32-browser): %s"
-                  (require 'w32-browser)
                   (bind-key "M-RET" #'dired-w32-browser dired-mode-map)
                   (bind-key "<C-return>" #'dired-w32explore dired-mode-map))
-              (bind-key "M-RET" #'dired-open-xdg dired-mode-map))
+                (bind-key "M-RET" #'dired-open-xdg dired-mode-map))
 
             (with-demoted-errors "Non-Fatal Errors (dired-recent): %s"
               (dired-recent-mode +1))
@@ -1928,11 +1933,11 @@ point to the beginning of buffer first."
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
               (add-to-list 'dired-latex-unclean-extensions extension))))
 
-(use-package dired-x
-  :init (setq dired-x-hands-off-my-keys t))
-
 (use-package dired-open
   :ensure t
+  :commands (dired-open-xdg
+             dired-open-guess-shell-alist
+             dired-open-call-function-by-extension)
   :init (progn
           (unless (eq system-type 'gnu/linux)
             (setq dired-open-use-nohup nil))
@@ -1988,6 +1993,10 @@ point to the beginning of buffer first."
               trashed-use-header-line t
               trashed-sort-key '("Date deleted" . t)
               trashed-date-format "%Y-%m-%d %H:%M:%S"))
+
+(use-package w32-browser
+  :commands (dired-w32-browser
+             dired-w32explore))
 
 
 ;; * Completion
