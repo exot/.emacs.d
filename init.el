@@ -2819,16 +2819,6 @@ eventuelly be set to nil, however)."
                 (ignore params)
                 (list start end)))))
 
-(use-package eproject
-  ;; This configuration is only present to inhibit eproject overriding
-  ;; keybindings in `message-mode'
-  :config (progn
-            (message "Loaded eproject … done")
-            (with-eval-after-load 'message
-              (add-hook 'message-setup-hook
-                        #'(lambda ()
-                            (eproject-mode -1))))))
-
 (use-package expand-region
   :ensure t
   :commands (er/expand-region))
