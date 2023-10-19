@@ -253,7 +253,7 @@
             (advice-add 'grep-read-files :around #'db/grep-read-files)))
 
 (use-package multisession
-  :init (setq multisession-directory (expand-file-name "multisession/" emacs-d)))
+  :init (setq multisession-directory (expand-file-name "multisession/" emacs-d-userdata)))
 
 (use-package proced
   :custom ((proced-tree-flag t)
