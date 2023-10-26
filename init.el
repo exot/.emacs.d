@@ -2127,19 +2127,17 @@ eventuelly be set to nil, however)."
                     :action '(("Open" . call-interactively))
                     :filtered-candidate-transformer #'helm-adaptive-sort)
 
-                  ;; taken from `helm-buffers-list'
+                  ;; Taken from `helm-buffers-list'
                   (helm-make-source "Buffers" 'helm-source-buffers)
 
-                  helm-source-recentf
-
-                  ;; if prefix arg is given, extract files from
+                  ;; If no prefix arg is given, extract files from
                   ;; `db/important-documents-path’ and list them as well
                   (when (and (not arg)
                              (file-directory-p db/important-documents-path))
                     (let ((search-path (expand-file-name db/important-documents-path)))
                       (helm-make-source "Important files" 'helm-source-sync
                         :candidates (mapcar #'(lambda (file)
-                                                ;; display only relative path,
+                                                ;; Display only relative path,
                                                 ;; but keep absolute path for
                                                 ;; actions
                                                 (cons (string-remove-prefix search-path file)
@@ -2148,10 +2146,7 @@ eventuelly be set to nil, however)."
                         :action '(("Open externally" . db/system-open)
                                   ("Find file" . find-file)))))
 
-                  helm-source-bookmarks
-
-                  helm-source-buffer-not-found
-                  helm-source-bookmark-set)))
+                  helm-source-bookmarks)))
 
 (use-package ace-window
   :ensure t
