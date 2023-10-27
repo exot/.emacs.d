@@ -2012,7 +2012,6 @@ point to the beginning of buffer first."
   :init (setq helm-command-prefix-key "C-c h"
               helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
-              helm-mode-fuzzy-match t
               helm-autoresize-min-height 20
               helm-ff-auto-update-initial-value t
               helm-ff-file-name-history-use-recentf t
@@ -2030,9 +2029,11 @@ point to the beginning of buffer first."
               helm-kill-ring-threshold 0 ; include all yanks in the kill ring
               )
   :config (progn
-            (require 'helm-mode)
-            (require 'helm-buffers)
-            (require 'helm-ring)
+            (eval-when-compile
+              (require 'helm-mode)
+              (require 'helm-buffers)
+              (require 'helm-ring)
+              (require 'helm-source))
 
             (if (require 'helm-global-bindings nil :no-error)
                 (progn
@@ -2102,7 +2103,7 @@ point to the beginning of buffer first."
 
 (use-package company
   :commands (company-mode global-company-mode)
-  :init (setq company-show-numbers t))
+  :init (setq company-show-quick-access t))
 
 
 ;; * Navigation
@@ -2452,87 +2453,90 @@ eventuelly be set to nil, however)."
               eshell-highlight-prompt nil
               eshell-cd-on-directory t
               eshell-expand-input-functions '(eshell-expand-history-references))
-  :config (progn (require 'em-prompt)
-                 (require 'em-term)
-                 (require 'em-cmpl)
-                 (require 'em-hist)
+  :config (progn
+            (eval-when-compile
+              (require 'em-prompt)
+              (require 'em-term)
+              (require 'em-cmpl)
+              (require 'em-hist)
+              (require 'em-glob))
 
-                 (setenv "PAGER" "cat")
+            (setenv "PAGER" "cat")
 
-                 (add-to-list 'eshell-command-completions-alist
-                              '("gunzip" "gz\\'"))
+            (add-to-list 'eshell-command-completions-alist
+                         '("gunzip" "gz\\'"))
 
-                 (add-to-list 'eshell-command-completions-alist
-                              '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
+            (add-to-list 'eshell-command-completions-alist
+                         '("tar" "\\(\\.tar|\\.tgz\\|\\.tar\\.gz\\)\\'"))
 
-                 (add-hook 'eshell-mode-hook
-                           'with-editor-export-editor)
+            (add-hook 'eshell-mode-hook
+                      'with-editor-export-editor)
 
-                 (if (<= emacs-major-version 27)
-                     (add-hook 'eshell-mode-hook
-                               #'(lambda ()
-                                   (bind-key "C-a" #'eshell-bol eshell-mode-map)
-                                   (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
-                                   (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
-                                   (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
-                   ;; In Emacs 28.1, eshell's mode maps have been refactored to
-                   ;; follow standard extensibility.  There's thus no need
-                   ;; anymore to use the special hook construction.
-                   (progn
-                     (bind-key "C-a" #'eshell-bol eshell-mode-map)
-                     (bind-key "M-r" #'eshell-insert-history eshell-hist-mode-map)
-                     (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
-                     (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
+            (if (<= emacs-major-version 27)
+                (add-hook 'eshell-mode-hook
+                          #'(lambda ()
+                              (bind-key "C-a" #'eshell-bol eshell-mode-map)
+                              (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
+                              (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+                              (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
+              ;; In Emacs 28.1, eshell's mode maps have been refactored to
+              ;; follow standard extensibility.  There's thus no need
+              ;; anymore to use the special hook construction.
+              (progn
+                (bind-key "C-a" #'eshell-bol eshell-mode-map)
+                (bind-key "M-r" #'eshell-insert-history eshell-hist-mode-map)
+                (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+                (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
 
-                 ;; Ignoring case when completing file names seems to have a
-                 ;; bug: when a ~ is encountered, it is implicitly expaned by
-                 ;; `pcomplete-insert-entry’, overwriting the prompt as a side
-                 ;; effect.  Keeping the case as it is does not seem to have
-                 ;; this issue.  This problem occurs by default only on Windows
-                 ;; systems (in all flavors), because this is the only time
-                 ;; `pcomplete-ignore-case’ is non-nil by default.
-                 (when on-windows
-                   (add-to-list 'eshell-mode-hook
-                                #'(lambda ()
-                                    (setq pcomplete-ignore-case nil))))
+            ;; Ignoring case when completing file names seems to have a
+            ;; bug: when a ~ is encountered, it is implicitly expaned by
+            ;; `pcomplete-insert-entry’, overwriting the prompt as a side
+            ;; effect.  Keeping the case as it is does not seem to have
+            ;; this issue.  This problem occurs by default only on Windows
+            ;; systems (in all flavors), because this is the only time
+            ;; `pcomplete-ignore-case’ is non-nil by default.
+            (when on-windows
+              (add-to-list 'eshell-mode-hook
+                           #'(lambda ()
+                               (setq pcomplete-ignore-case nil))))
 
-                 ;; Sometimes, when completing path names and immediately
-                 ;; hitting RET, `completion-in-region-mode' still seems to be
-                 ;; active; this often happens when calling cd.  Then,
-                 ;; `post-command-hook' still contains
-                 ;; `completion-in-region--postch', which calls some `pcomplete'
-                 ;; function to determine whether completion mode should exit.
-                 ;; However, after RET (i.e., `eshell-send-input'), we only have
-                 ;; an empty prompt, and `pcomplete' just computes all possible
-                 ;; functions for completion (doesn't show it, though).  This
-                 ;; introduces a noticeable amount of delay, which is annoying.
-                 ;; Expliticly disabling `completion-in-region-mode' before
-                 ;; sending input seems to alleviate the problem.
-                 (advice-add 'eshell-send-input
-                             :before #'(lambda (&rest _)
-                                         "Disable completion-in-region-mode before sending input."
-                                         (when completion-in-region-mode
-                                           (completion-in-region-mode -1))))
+            ;; Sometimes, when completing path names and immediately
+            ;; hitting RET, `completion-in-region-mode' still seems to be
+            ;; active; this often happens when calling cd.  Then,
+            ;; `post-command-hook' still contains
+            ;; `completion-in-region--postch', which calls some `pcomplete'
+            ;; function to determine whether completion mode should exit.
+            ;; However, after RET (i.e., `eshell-send-input'), we only have
+            ;; an empty prompt, and `pcomplete' just computes all possible
+            ;; functions for completion (doesn't show it, though).  This
+            ;; introduces a noticeable amount of delay, which is annoying.
+            ;; Expliticly disabling `completion-in-region-mode' before
+            ;; sending input seems to alleviate the problem.
+            (advice-add 'eshell-send-input
+                        :before #'(lambda (&rest _)
+                                    "Disable completion-in-region-mode before sending input."
+                                    (when completion-in-region-mode
+                                      (completion-in-region-mode -1))))
 
-                 ;; After completing partial inputs, pcomplete wants to add an
-                 ;; extra character stored in `pcomplete-termination-string',
-                 ;; which is a space by default.  When completing paths, this
-                 ;; leads to spaces being inserted after every directory within
-                 ;; the path, which is annoying.  We thus set the value of this
-                 ;; variable locally to an empty string, thus silencing this
-                 ;; bug.  A better way to handle this would be to correctly
-                 ;; determine whether the completion is not done yet, by passing
-                 ;; `exact' instead of `finished' to the handlers stored in
-                 ;; `completion-extra-properties'.
+            ;; After completing partial inputs, pcomplete wants to add an
+            ;; extra character stored in `pcomplete-termination-string',
+            ;; which is a space by default.  When completing paths, this
+            ;; leads to spaces being inserted after every directory within
+            ;; the path, which is annoying.  We thus set the value of this
+            ;; variable locally to an empty string, thus silencing this
+            ;; bug.  A better way to handle this would be to correctly
+            ;; determine whether the completion is not done yet, by passing
+            ;; `exact' instead of `finished' to the handlers stored in
+            ;; `completion-extra-properties'.
 
-                 (defun db/set-empty-pcomplete-termination-string ()
-                   "Locally set `pcomplete-termination-string' to the empty string."
-                   (setq-local pcomplete-termination-string ""))
+            (defun db/set-empty-pcomplete-termination-string ()
+              "Locally set `pcomplete-termination-string' to the empty string."
+              (setq-local pcomplete-termination-string ""))
 
-                 (add-hook 'eshell-mode-hook
-                           #'db/set-empty-pcomplete-termination-string)
+            (add-hook 'eshell-mode-hook
+                      #'db/set-empty-pcomplete-termination-string)
 
-                 (require 'db-eshell)))
+            (require 'db-eshell)))
 
 (use-package with-editor
   :commands (with-editor-export-editor))
