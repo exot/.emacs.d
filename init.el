@@ -59,14 +59,15 @@
   (load-file (expand-file-name "early-init.el" emacs-d))
   (package-initialize))
 
+(setq use-package-enable-imenu-support t)
+
 (eval-when-compile
   (dolist (package '(bind-key use-package))
     (unless (package-installed-p package)
       (package-install package))
     (require package)))
 
-(setq use-package-enable-imenu-support t
-      use-package-always-defer t
+(setq use-package-always-defer t
       use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
@@ -2665,9 +2666,10 @@ eventuelly be set to nil, however)."
                                    LaTeX-section-label))
   :config (progn
 
-            (require 'latex)
-            (require 'tex-buf)
-            (require 'reftex)
+            (eval-when-compile
+              (require 'latex)
+              (require 'reftex)
+              (require 'tex-fold))
 
             (TeX-engine-set 'default)
 
