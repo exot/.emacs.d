@@ -75,7 +75,7 @@
 (require 'thingatpt)
 (require 'dash)
 (require 'xml)
-(require 'cl)
+(require 'cl-lib)
 
 (defgroup plantuml-mode nil
   "Major mode for editing plantuml file."
@@ -678,7 +678,7 @@ be generated first."
         (user-error "Export file name %s does not exist yet and export has been denied, aborting"
                     export-file-name)))
 
-    (case system-type
+    (cl-case system-type
       ((windows-nt) (w32-shell-execute "open" export-file-name))
       ((cygwin) (start-process "" nil "cygstart" export-file-name))
       (otherwise (start-process "" nil "xdg-open" export-file-name)))))
