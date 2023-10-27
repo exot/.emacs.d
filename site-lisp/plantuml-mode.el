@@ -147,7 +147,9 @@
   :group 'plantuml)
 
 (defcustom plantuml-indent-level tab-width
-  "Indentation level of PlantUML lines")
+  "Indentation level of PlantUML lines"
+  :type 'number
+  :group 'plantuml)
 
 (defcustom plantuml-confirm-overwrite-on-export t
   "Control whether file exporting is allowed to silently overwrite files."
