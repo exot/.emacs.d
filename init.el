@@ -2117,16 +2117,14 @@ is too slow (in this case, `db/important-document-path' should
 eventuelly be set to nil, however)."
   (interactive "P")
   (eval-when-compile
-   (require 'helm-bookmark)
-   (require 'helm-for-files))           ; for helm-source-recentf
+    (require 'helm-bookmark))
   (helm :sources (list
                   (helm-make-source "Frequently Used" 'helm-source-sync
                     :candidates (mapcar #'(lambda (entry)
                                             (cons (car entry)
                                                   (caddr entry)))
                                         db/frequently-used-features)
-                    :action '(("Open" . call-interactively))
-                    :filtered-candidate-transformer #'helm-adaptive-sort)
+                    :action '(("Open" . call-interactively)))
 
                   ;; Taken from `helm-buffers-list'
                   (helm-make-source "Buffers" 'helm-source-buffers)
