@@ -2336,10 +2336,7 @@ eventuelly be set to nil, however)."
   :init (setq helm-emms-use-track-description-function t
               helm-emms-default-sources '(helm-source-emms-streams
                                           helm-source-emms-dired
-                                          helm-source-emms-files))
-  :config (progn
-            (require 'emms)
-            (require 'helm-adaptive)))
+                                          helm-source-emms-files)))
 
 (use-package image
   :init (setq image-use-external-converter t))
