@@ -2666,10 +2666,9 @@ eventuelly be set to nil, however)."
                                    LaTeX-section-label))
   :config (progn
 
-            (eval-when-compile
-              (require 'latex)
-              (require 'reftex)
-              (require 'tex-fold))
+            (require 'latex)
+            (require 'reftex)
+            (require 'tex-fold)
 
             (TeX-engine-set 'default)
 
