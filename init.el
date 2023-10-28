@@ -59,7 +59,7 @@
   (load-file (expand-file-name "early-init.el" emacs-d))
   (package-initialize))
 
-(setq use-package-enable-imenu-support t)
+(defvar use-package-enable-imenu-support t)
 
 (eval-when-compile
   (dolist (package '(bind-key use-package))
