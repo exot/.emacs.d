@@ -2475,6 +2475,7 @@ eventuelly be set to nil, however)."
               eshell-cd-on-directory t
               eshell-expand-input-functions '(eshell-expand-history-references))
   :config (progn
+
             (eval-when-compile
               (require 'em-prompt)
               (require 'em-term)
@@ -2519,7 +2520,7 @@ eventuelly be set to nil, however)."
             (when on-windows
               (add-to-list 'eshell-mode-hook
                            #'(lambda ()
-                               (setq pcomplete-ignore-case nil))))
+                               (setq completion-ignore-case nil))))
 
             ;; Sometimes, when completing path names and immediately
             ;; hitting RET, `completion-in-region-mode' still seems to be
@@ -2549,15 +2550,18 @@ eventuelly be set to nil, however)."
             ;; determine whether the completion is not done yet, by passing
             ;; `exact' instead of `finished' to the handlers stored in
             ;; `completion-extra-properties'.
-
-            (defun db/set-empty-pcomplete-termination-string ()
-              "Locally set `pcomplete-termination-string' to the empty string."
-              (setq-local pcomplete-termination-string ""))
-
             (add-hook 'eshell-mode-hook
-                      #'db/set-empty-pcomplete-termination-string)
+                      #'(lambda ()
+                          (setq-local pcomplete-termination-string "")))
 
             (require 'db-eshell)))
+
+(use-package em-prompt                  ; Why is this extra declaration necessary?
+  :commands (eshell-previous-prompt
+             eshell-next-prompt))
+
+(use-package esh-mode                   ; Why is this extra declaration necessary?
+  :commands (eshell-bol))
 
 (use-package with-editor
   :commands (with-editor-export-editor))
