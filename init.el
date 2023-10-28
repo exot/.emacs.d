@@ -132,15 +132,18 @@
 
 (setq frame-title-format "emacs")
 
-(setq select-enable-clipboard t         ; TODO select.el
-      select-enable-primary t           ; TODO select.el
+(use-package help-fns
+  :defines (help-enable-symbol-autoload))
+
+(setq select-enable-clipboard t
+      select-enable-primary t
       save-interprogram-paste-before-kill t
-      mouse-yank-at-point t             ; TODO? mouse.el
+      mouse-yank-at-point t
       scroll-conservatively 10
       scroll-preserve-screen-position 'always ; Make M-v undo C-v
       message-log-max t
       inhibit-eol-conversion nil
-      tab-always-indent 'complete       ; TODO indent.el
+      tab-always-indent 'complete
       enable-recursive-minibuffers t
       set-mark-command-repeat-pop t
       echo-keystrokes 0.1
@@ -153,8 +156,8 @@
       gc-cons-threshold (* 100 1024 1024)   ; 100mb
       read-process-output-max (* 1024 1024) ; 1mb
       next-error-message-highlight t
-      help-enable-symbol-autoload t     ; TODO? help.el
-      describe-bindings-outline t       ; TODO? help.el
+      help-enable-symbol-autoload t
+      describe-bindings-outline t
       redisplay-skip-fontification-on-input t
       undo-limit 80000000
       async-shell-command-buffer 'new-buffer
@@ -547,6 +550,9 @@
   :bind (:map org-mode-map
               ([remap org-return] . (lambda () (interactive) (org-return :indent)))
               ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox))
+  :autoload (org-get-todo-state
+             org-entry-get)
+  :commands (org-return)
   :init (progn
           (setq org-deadline-warning-days 14
                 org-read-date-popup-calendar t
@@ -780,6 +786,7 @@
 (use-package ol
   :init (setq org-link-keep-stored-after-insertion t)
   :commands (org-store-link)
+  :autoload (org-link-set-parameters)
   :config (progn
 
             (define-advice org-store-link (:around
@@ -821,6 +828,13 @@
                                                               org-stored-links--original))))
 
                 org-store-link--return-value))))
+
+(use-package ol-bbdb
+  :config (add-to-list 'org-bbdb-anniversary-format-alist
+                       (cons "day-of-death"
+                             #'(lambda (name years suffix)
+                                 (format "Day of Death: [[bbdb:%s][%s (%s%s)]]"
+                                         name name years suffix)))))
 
 (use-package org-id
   :init (setq org-id-link-to-org-use-id t))
@@ -874,7 +888,8 @@
 ;; Agenda
 
 (use-package org-agenda
-  :commands (org-agenda)
+  :commands (org-agenda
+             org-agenda-redo-all)
   :bind (:map org-agenda-mode-map
               ("i" . org-agenda-clock-in)
               ("v" . hydra-org-agenda-view/body)
@@ -1369,14 +1384,7 @@ point to the beginning of buffer first."
   :config (progn
             (add-hook 'message-setup-hook 'bbdb-mail-aliases)
             (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
-            (run-with-timer 0 3600 #'bbdb-save)
-
-            (with-eval-after-load 'ol-bbdb
-              (add-to-list 'org-bbdb-anniversary-format-alist
-                           (cons "day-of-death"
-                                 #'(lambda (name years suffix)
-                                     (format "Day of Death: [[bbdb:%s][%s (%s%s)]]"
-                                             name name years suffix)))))))
+            (run-with-timer 0 3600 #'bbdb-save)))
 
 ;; Gnus package configuration
 
@@ -2030,6 +2038,10 @@ point to the beginning of buffer first."
 (use-package helm
   :ensure t
   :diminish helm-mode
+  :autoload (helm-execute-persistent-action
+             helm-select-action
+             helm-make-source)
+  :defines (helm-source-bookmarks)      ; via helm-bookmarks.el
   :init (setq helm-command-prefix-key "C-c h"
               helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
@@ -2137,8 +2149,6 @@ With universal argument ARG, inhibit display of files in
 is too slow (in this case, `db/important-document-path' should
 eventuelly be set to nil, however)."
   (interactive "P")
-  (eval-when-compile
-    (require 'helm-bookmark))
   (helm :sources (list
                   (helm-make-source "Frequently Used" 'helm-source-sync
                     :candidates (mapcar #'(lambda (entry)
@@ -2379,7 +2389,8 @@ eventuelly be set to nil, however)."
                         :filter-return #'(lambda (env) (cons "INSIDE_EMACS" env)))))
 
 (use-package term
-  :commands (term-send-string)
+  :commands (term-send-string
+             term-send-raw)
   :init (setq explicit-shell-file-name "/bin/bash")
   :config (progn
             (add-hook 'term-exec-hook   ; oremacs.com
