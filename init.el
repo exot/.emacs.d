@@ -1263,13 +1263,7 @@ point to the beginning of buffer first."
               ediff-window-setup-function 'ediff-setup-windows-plain
               ediff-split-window-function 'split-window-horizontally
               ediff-show-clashes-only t)
-  :config (progn
-            (add-hook 'ediff-keymap-setup-hook
-                      #'(lambda ()
-                          (bind-key "j" #'ediff-next-difference ediff-mode-map)
-                          (bind-key "k" #'ediff-previous-difference ediff-mode-map)))
-
-            (add-hook 'ediff-after-quit-hook-internal 'winner-undo)))
+  :config (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 
 (use-package flycheck
   :ensure t
