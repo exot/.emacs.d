@@ -2804,10 +2804,6 @@ eventuelly be set to nil, however)."
              timeline-tools-copy-clocklines
              timeline-tools-clockline-no-org-agenda-conflicts))
 
-(use-package typing
-  :commands (typing-of-emacs)
-  :init (setq toe-highscore-file nil))
-
 (use-package vlf
   :ensure t
   :commands (vlf))
