@@ -2060,7 +2060,8 @@ point to the beginning of buffer first."
               (require 'helm-mode)
               (require 'helm-buffers)
               (require 'helm-ring)
-              (require 'helm-source))
+              (require 'helm-source)
+              (require 'helm-bookmark))
 
             (if (require 'helm-global-bindings nil :no-error)
                 (progn
