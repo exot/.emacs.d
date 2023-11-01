@@ -2036,7 +2036,7 @@ point to the beginning of buffer first."
              helm-select-action
              helm-make-source)
   :defines (helm-source-bookmarks)      ; via helm-bookmarks.el
-  :init (setq helm-command-prefix-key "C-c h"
+  :init (setq helm-command-prefix-key "C-c h" ; see `db/run-init' for explicit binding
               helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
               helm-autoresize-min-height 20
@@ -2998,7 +2998,8 @@ eventuelly be set to nil, however)."
     (bind-key "C-S-s" #'counsel-grep-or-swiper))
 
   (when (package-installed-p 'helm)
-    (bind-key "M-y" #'helm-show-kill-ring))
+    (bind-key "M-y" #'helm-show-kill-ring)
+    (bind-key helm-command-prefix-key #'helm-command-prefix))
 
   (when (package-installed-p 'crux)
     (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
