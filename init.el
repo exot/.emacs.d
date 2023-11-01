@@ -945,7 +945,7 @@
               ;; here is that projects that have an explicit SCHEDULED entry
               ;; should not be considered before this date is due.
               org-stuck-projects
-              '("+TODO=\"\"-DATE-HOLD-NOTE-TAGS={NOP\\|TOPIC\\|SOMEWHEN\\|TEMPLATE}-SCHEDULED>=\"<+0d>\""
+              '("+TODO=\"\"-DATE-HOLD-NOTE-WAIT-NOP-TOPIC-SOMEWHEN-TEMPLATE-SCHEDULED>=\"<+0d>\""
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
                 ()
                 "")
