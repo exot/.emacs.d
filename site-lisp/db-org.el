@@ -828,27 +828,18 @@ forces clocking in of the default task."
 (defhydra hydra-org-clock (:color blue)
   ;; Quote %, as otherwise they would be misinterpreted as format characters
   "\nCurrent Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-task \"\")); "
-  ("w" (db/org-clock-in-work-task) "work")
-  ("h" (db/org-clock-in-home-task) "home")
-  ("b" (db/org-clock-in-break-task) "break")
+  ("w" (db/org-clock-in-work-task) "clock in work")
+  ("h" (db/org-clock-in-home-task) "clock in home")
+  ("b" (db/org-clock-in-break-task) "clock in break")
   ("s" (lambda ()
          (interactive)
          (org-clock-in '(4)))
-       "select")
-  ("c" (db/org-clock-goto-first-open-checkbox)
-       "go to current")
+       "select clock")
+  ("j" (db/org-clock-goto-first-open-checkbox)
+       "jump to current")
   ("a" counsel-org-goto-all "go to any")
   ("o" org-clock-out "clock out")
-  ("l" db/org-clock-in-last-task "last")
-  ("d" (lambda ()
-         (interactive)
-         (when (org-clock-is-active)
-           (save-window-excursion
-             (org-clock-goto)
-             (let ((org-inhibit-logging 'note))
-               (org-todo 'done)
-               (org-save-all-org-buffers)))))
-       "default"))
+  ("l" db/org-clock-in-last-task "clock in last"))
 
 
 ;;; Babel
