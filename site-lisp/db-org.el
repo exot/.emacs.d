@@ -827,19 +827,25 @@ forces clocking in of the default task."
 
 (defhydra hydra-org-clock (:color blue)
   ;; Quote %, as otherwise they would be misinterpreted as format characters
-  "\nCurrent Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-task \"\")); "
-  ("w" (db/org-clock-in-work-task) "clock in work")
-  ("h" (db/org-clock-in-home-task) "clock in home")
-  ("b" (db/org-clock-in-break-task) "clock in break")
+  "
+Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-task \"\"));
+- Clock in to _w_ork, _h_ome, _b_reak default task
+- Cloin in to _l_ast, or _s_elect task to clock in to
+- _j_ump to current clock or to _a_ny item
+- Clock _o_ut
+"
+  ("w" (db/org-clock-in-work-task) nil)
+  ("h" (db/org-clock-in-home-task) nil)
+  ("b" (db/org-clock-in-break-task) nil)
   ("s" (lambda ()
          (interactive)
          (org-clock-in '(4)))
-       "select clock")
+       nil)
   ("j" (db/org-clock-goto-first-open-checkbox)
-       "jump to current")
-  ("a" counsel-org-goto-all "go to any")
-  ("o" org-clock-out "clock out")
-  ("l" db/org-clock-in-last-task "clock in last"))
+       nil)
+  ("a" counsel-org-goto-all nil)
+  ("o" org-clock-out nil)
+  ("l" db/org-clock-in-last-task nil))
 
 
 ;;; Babel
