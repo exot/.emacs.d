@@ -545,6 +545,12 @@
              db/org-clock-goto-first-open-checkbox
              org-password-manager-get-password-by-id))
 
+;; This is to make the byte-compiler happy about setting some variables later on
+;; that are defined in those packages.
+(use-package org-attach)
+(use-package org-id)
+(use-package org-goto)
+
 (use-package org
   :pin "gnu"
   :bind (:map org-mode-map
@@ -586,6 +592,7 @@
                 org-attach-auto-tag nil
                 org-bookmark-names-plist nil
                 org-goto-interface 'outline-path-completion
+                org-id-link-to-org-use-id t
 
                 org-blank-before-new-entry '((heading . t)
                                              (plain-list-item . t))
@@ -758,7 +765,7 @@
             ;; bound, resulting in some prior calls of `org-read-date' to ignore
             ;; the hh:mm part.  So let's bind this variable now to make things
             ;; work.
-            (setq org-time-was-given nil)))
+            (defvar org-time-was-given nil)))
 
 ;; Drag-and-Drop images into org-mode buffer
 (use-package org-download
@@ -835,9 +842,6 @@
                              #'(lambda (name years suffix)
                                  (format "Day of Death: [[bbdb:%s][%s (%s%s)]]"
                                          name name years suffix)))))
-
-(use-package org-id
-  :init (setq org-id-link-to-org-use-id t))
 
 (use-package org-clock
   :commands (org-clock-save)
