@@ -829,10 +829,10 @@ forces clocking in of the default task."
   ;; Quote %, as otherwise they would be misinterpreted as format characters
   "
 Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-task \"\"));
-- Clock in to _w_ork, _h_ome, _b_reak default task
-- Cloin in to _l_ast, or _s_elect task to clock in to
-- _j_ump to current clock or to _a_ny item
-- Clock _o_ut
+- Clock in to [_w_]ork, [_h_]ome, [_b_]reak default task
+- Cloin in to [_l_]ast, or [_s_]elect task to clock in to
+- [_j_]ump to current clock or to [_a_]ny item
+- Clock [_o_]ut
 "
   ("w" (db/org-clock-in-work-task) nil)
   ("h" (db/org-clock-in-home-task) nil)
