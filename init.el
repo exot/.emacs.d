@@ -1215,6 +1215,8 @@ point to the beginning of buffer first."
 (use-package ox-pandoc
   :init (setq org-pandoc-options-for-docx '((standalone . t))))
 
+;; Extra Org packages
+
 (use-package org-tree-slide
   :commands (org-tree-slide-mode)
   ;; Configuration from https://protesilaos.com/dotemacs/
