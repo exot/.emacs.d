@@ -830,7 +830,7 @@ forces clocking in of the default task."
   "
 Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-task \"\"));
 - Clock in to [_w_]ork, [_h_]ome, [_b_]reak default task
-- Cloin in to [_l_]ast, or [_s_]elect task to clock in to
+- Clock in to [_l_]ast, or [_s_]elect task to clock in to
 - [_j_]ump to current clock or to [_a_]ny item
 - Clock [_o_]ut
 "
