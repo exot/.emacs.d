@@ -550,7 +550,6 @@
 (use-package org-attach)
 (use-package org-id)
 (use-package org-goto)
-(use-package org-cycle)
 
 (use-package org
   :pin "gnu"
@@ -770,6 +769,9 @@
             ;; the hh:mm part.  So let's bind this variable now to make things
             ;; work.
             (defvar org-time-was-given nil)))
+
+(use-package org-cycle
+  :autoload (org-cycle-hide-drawers))
 
 ;; Drag-and-Drop images into org-mode buffer
 (use-package org-download
