@@ -1071,12 +1071,15 @@
             (add-hook 'org-agenda-finalize-hook #'db/org-agenda-insert-active-filters)
             (add-hook 'org-agenda-filter-hook #'org-agenda-redo-all)
 
-            (define-advice org-agenda-redo-all (:around (old-func &rest r) goto-top-and-execute)
-              "Avoid recentering the Org agenda buffer after redo by moving
-point to the beginning of buffer first."
-              (save-mark-and-excursion
-                (goto-char (point-min))
-                (apply old-func r)))))
+            (define-advice org-agenda-redo (:around
+                                            (actual-agenda-redo &rest r)
+                                            inhibit-recentering)
+              "Try to avoid recentering the window when redoing the Org agenda buffer."
+              (let ((old-recenter (symbol-function 'recenter)))
+                (fset 'recenter 'identity)
+                (unwind-protect
+                     (apply actual-agenda-redo r)
+                  (fset 'recenter old-recenter))))))
 
 ;; Capturing
 
