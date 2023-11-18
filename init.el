@@ -550,6 +550,7 @@
 (use-package org-attach)
 (use-package org-id)
 (use-package org-goto)
+(use-package org-cycle)
 
 (use-package org
   :pin "gnu"
@@ -704,6 +705,9 @@
             ;; Some hooks from text-mode-hook, Org mode does not seem to run those?
             (add-hook 'org-mode-hook 'page-break-lines-mode)
             (add-hook 'org-mode-hook 'turn-on-auto-fill)
+
+            ;; Hide drawers by default when cycling items
+            (add-hook 'org-cycle-hook #'org-cycle-hide-drawers)
 
             ;; Statically color links sponding to whether the file exists, but
             ;; this turns out to be slow on Windows; we can use `org-lint' for
