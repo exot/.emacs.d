@@ -769,7 +769,7 @@ number of bytes has been inserted."
   "Add NAME as bookmark to LOCATION and use HANDLER to open it.
 HANDLER is a function receiving a single argument, namely
 LOCATION.  If a bookmark named NAME is already present, replace
-it.  The bookmarks will finally be sorted by their name."
+it."
   (bookmark-store name
                   `((filename . ,location)
                     (handler . ,handler))
