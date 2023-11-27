@@ -21,6 +21,7 @@
 (require 'ert)
 (require 's)
 (require 'shr)
+(require 'recentf)
 
 (autoload 'async-start "async")
 (autoload 'lispy-mode "lispy")
@@ -769,15 +770,22 @@ number of bytes has been inserted."
 HANDLER is a function receiving a single argument, namely
 LOCATION.  If a bookmark named NAME is already present, replace
 it.  The bookmarks will finally be sorted by their name."
-  (setq bookmark-alist
-        (cl-delete-if #'(lambda (bmk) (equal (car bmk) name))
-                      bookmark-alist))
-  (push `(,name
-          (filename . ,location)
-          (handler . ,#'(lambda (arg)
-                          (funcall handler (cdr (assoc 'filename arg))))))
-        bookmark-alist)
-  (setq bookmark-alist (cl-sort bookmark-alist #'string-lessp :key #'car)))
+  (bookmark-store name
+                  `((filename . ,location)
+                    (handler . ,handler))
+                  nil))
+
+(defun db/bookmark-browse-url (bmk)
+  "Extract filename from bookmark BMK and apply `browse-url' to it."
+  (browse-url (bookmark-get-filename bmk)))
+
+(defun db/bookmark-system-open (bmk)
+  "Extract filename from bookmark BMK and apply `db/system-open' to it."
+  (db/system-open (bookmark-get-filename bmk)))
+
+(defun db/bookmark-eww (bmk)
+  "Extract filename from bookmark BMK and apply `eww' to it."
+  (eww (bookmark-get-filename bmk)))
 
 (defun db/bookmark-add-external (location name)
   "Add NAME as bookmark to LOCATION that is opened by the operating system.
@@ -788,17 +796,17 @@ as completing instead."
                                                        (dired-get-marked-files)
                                                      recentf-list))
                      (read-string "Name: ")))
-  (db/bookmark-add-with-handler name location #'db/system-open))
+  (db/bookmark-add-with-handler name location #'db/bookmark-system-open))
 
 (defun db/bookmark-add-url (url name)
   "Add NAME as bookmark to URL that is opened by `browse-url’."
   (interactive "sURL: \nsName: ")
-  (db/bookmark-add-with-handler name url #'browse-url))
+  (db/bookmark-add-with-handler name url #'db/bookmark-browse-url))
 
 (defun db/bookmark-add-eww (url name)
   "Add NAME as bookmark to URL to be opened with `eww’."
   (interactive "sURL: \nsName: ")
-  (db/bookmark-add-with-handler name url #'eww))
+  (db/bookmark-add-with-handler name url #'db/bookmark-eww))
 
 
 ;;; Switching Themes
