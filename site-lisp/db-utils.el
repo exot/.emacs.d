@@ -770,10 +770,10 @@ number of bytes has been inserted."
 HANDLER is a function receiving a single argument, namely
 LOCATION.  If a bookmark named NAME is already present, replace
 it."
-  (bookmark-store name
-                  `((filename . ,location)
-                    (handler . ,handler))
-                  nil))
+  (let ((new-record `((filename . ,location)
+                      (handler . ,handler))))
+    (bookmark-update-last-modified new-record)
+    (bookmark-store name new-record nil)))
 
 (defun db/bookmark-browse-url (bmk)
   "Extract filename from bookmark BMK and apply `browse-url' to it."
