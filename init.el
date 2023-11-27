@@ -1304,7 +1304,10 @@
                                                 "Suggested-by"
                                                 "Reported-by"
                                                 "Tested-by"
-                                                "Reviewed-by")))
+                                                "Reviewed-by"))
+  :config (add-hook 'git-commit-mode-hook
+                    #'(lambda ()
+                        (setq fill-column 72))))
 
 (use-package highlight-indentation
   :commands highlight-indentation-mode)
