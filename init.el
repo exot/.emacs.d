@@ -472,9 +472,6 @@
              mc/mark-previous-like-this
              mc/mark-all-like-this))
 
-(use-package synonyms
-  :commands (synonyms))
-
 (use-package undo-tree
   :ensure t
   :commands (global-undo-tree-mode
@@ -2973,7 +2970,6 @@ eventuelly be set to nil, however)."
   (bind-key "C-c n i" #'org-roam-node-insert)
   (bind-key "C-c n c" #'org-roam-capture)
   (bind-key "C-c o" #'hydra-org-clock/body)
-  (bind-key "C-c s" #'synonyms)
   (bind-key "C-c t" #'hydra-toggle/body)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
