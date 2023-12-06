@@ -426,17 +426,22 @@ should not be clocked."
     (let ((parent-task (db/find-parent-task)))
       (save-mark-and-excursion
         (cond
-         (parent-task
-          ;; found parent task
-          (org-with-point-at parent-task
-            (org-clock-in)))
-         ((and (markerp org-clock-default-task)
-               (marker-buffer org-clock-default-task))
-          ;; default task is set
-          (org-with-point-at org-clock-default-task
-            (org-clock-in)))
-         (t
-          (org-clock-in '(4))))))))
+          ((and (markerp org-clock-interrupted-task)
+                (marker-buffer org-clock-interrupted-task))
+           ;; interrupted task is set
+           (org-with-point-at org-clock-interrupted-task
+             (org-clock-in)))
+          (parent-task
+           ;; found parent task
+           (org-with-point-at parent-task
+             (org-clock-in)))
+          ((and (markerp org-clock-default-task)
+                (marker-buffer org-clock-default-task))
+           ;; default task is set
+           (org-with-point-at org-clock-default-task
+             (org-clock-in)))
+          (t
+           (org-clock-in '(4))))))))
 
 (defun db/save-current-org-task-to-file ()
   "Format currently clocked task and write it to`db/org-clock-current-task-file'."
