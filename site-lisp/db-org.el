@@ -420,7 +420,12 @@ should not be clocked."
         parent-task))))
 
 (defun db/ensure-running-clock ()
-  "Clocks in into the parent task, if it exists, or the default task."
+  "Try to find a clock to continue clocking and clock in there.
+
+This functions tries to clock into the interrupted task, the
+parent task, or the default task, in that order and only when
+available, respectively.  If none of these tasks is available,
+interactively query the user for the next task to clock into."
   (when (and (not org-clock-clocking-in)
              (not org-clock-resolving-clocks-due-to-idleness))
     (let ((parent-task (db/find-parent-task)))
