@@ -466,7 +466,7 @@ interactively query the user for the next task to clock into."
         (modify-frame-parameters frame `((name . ,org-clock-heading)))))))
 
 (defun db/show-current-org-task ()
-  "Show title of currently clock in task in modeline."
+  "Show title of currently clock in task in minibuffer."
   (interactive)
   (message org-clock-current-task))
 
@@ -816,10 +816,11 @@ PARAMS is a property list of the following parameters:
 
 (defun db/org-clock-in-last-task (&optional arg)
   ;; from doc.norang.ca, originally bh/clock-in-last-task
-  "Clock in the interrupted task if there is one.
+  "Clock into the last task from the clocking history.
 
-Skip the default task and get the next one.  If ARG is given,
-forces clocking in of the default task."
+Skip the default task if it's at the top of the clocking history,
+and get the next one.  If ARG is given, forces clocking in of the
+default task, though."
   (interactive "p")
   (let ((clock-in-to-task
          (cond
