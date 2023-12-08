@@ -431,7 +431,7 @@ If none of the listed tasks is available, interactively query the
 user for the next task to clock into."
   (when (and (not org-clock-clocking-in)
              (not org-clock-resolving-clocks-due-to-idleness))
-    (let ((parent-task (db/find-parent-task)))
+    (let (parent-task)
       (save-mark-and-excursion
         (cond
           ((and (markerp org-clock-interrupted-task)
@@ -439,10 +439,11 @@ user for the next task to clock into."
                 (org-with-point-at org-clock-interrupted-task
                   (not (member (nth 2 (org-heading-components))
                                org-done-keywords))))
-           ;; interrupted task is set
+           ;; interrupted task is set and not closed yet, so let's clock in
+           ;; there
            (org-with-point-at org-clock-interrupted-task
              (org-clock-in)))
-          (parent-task
+          ((setq parent-task (db/find-parent-task))
            ;; found parent task
            (org-with-point-at parent-task
              (org-clock-in)))
