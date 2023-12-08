@@ -424,15 +424,21 @@ should not be clocked."
 
 This functions tries to clock into the interrupted task, the
 parent task, or the default task, in that order and only when
-available, respectively.  If none of these tasks is available,
-interactively query the user for the next task to clock into."
+available, respectively.  Clock in to the interrupted task only
+if it is not closed yet.
+
+If none of the listed tasks is available, interactively query the
+user for the next task to clock into."
   (when (and (not org-clock-clocking-in)
              (not org-clock-resolving-clocks-due-to-idleness))
     (let ((parent-task (db/find-parent-task)))
       (save-mark-and-excursion
         (cond
           ((and (markerp org-clock-interrupted-task)
-                (marker-buffer org-clock-interrupted-task))
+                (marker-buffer org-clock-interrupted-task)
+                (org-with-point-at org-clock-interrupted-task
+                  (not (member (nth 2 (org-heading-components))
+                               org-done-keywords))))
            ;; interrupted task is set
            (org-with-point-at org-clock-interrupted-task
              (org-clock-in)))
