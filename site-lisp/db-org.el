@@ -512,7 +512,9 @@ Work task and home task are determined by the current values of
   (let ((current-id (org-id-get org-clock-marker)))
     (when (member current-id (list org-working-task-id
                                    org-home-task-id))
-      (org-clock-mark-default-task))))
+      (org-with-point-at org-clock-marker
+        (message "Setting default task to: %s" (org-link-display-format (org-entry-get (point) "ITEM")))
+        (org-clock-mark-default-task)))))
 
 
 ;;; Workload Reports
