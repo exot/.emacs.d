@@ -1097,7 +1097,7 @@
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "%a\n"
                               "%?")
-                     :empty-lines-after 1)
+                     :empty-lines 1)
                 ("g" "Record new goal with first item"
                      entry
                      (file db/org-default-refile-file)
@@ -1110,26 +1110,28 @@
                      entry
                      (file db/org-default-refile-file)
                      "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
-                     :empty-lines-after 1)
+                     :empty-lines 1)
                 ("d" "Date"
                      entry
                      (file db/org-default-refile-file)
                      "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?"
-                     :empty-lines-after 0)
+                     :empty-lines 1)
                 ("i" "Interruptions"
                      entry
                      (file db/org-default-refile-file)
                      ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))\n\n%?")
-                     :clock-in t :clock-resume t :empty-lines-after 0)
+                     :clock-in t
+                     :clock-resume t
+                     :empty-lines 1)
                 ("r" "Respond"
                      entry
                      (file db/org-default-refile-file)
                      ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\n%a\n%?")
-                     :empty-lines-after 1)))
+                     :empty-lines 1)))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
