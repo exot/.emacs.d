@@ -2905,7 +2905,7 @@ eventuelly be set to nil, however)."
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
-  ;; This causes inacceptable lack when drawing buffers, so disable it for now.
+  ;; This causes inacceptable lag when drawing buffers, so disable it for now.
   ;; Needs to be investigated further.
 
   ;; (with-demoted-errors "Cannot activate moody: %s"
