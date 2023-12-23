@@ -1263,7 +1263,8 @@
            (org-roam-completion-everywhere t))
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam-buffer-toggle)
-               ("C-c n g" . org-roam-graph))))
+               ("C-c n g" . org-roam-graph)))
+  :config (org-roam-db-autosync-mode))
 
 
 ;; * General Programming
@@ -2913,9 +2914,6 @@ eventuelly be set to nil, however)."
   ;; Explicitly require helm, because autoloading is difficult with helm's
   ;; separate `helm-command-prefix-key' mechanism.
   (require 'helm)
-
-  (when (package-installed-p 'org-roam)
-    (org-roam-db-autosync-mode))
 
   ;; Global Hooks
 
