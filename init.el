@@ -1260,7 +1260,10 @@
              org-roam-capture)
   :custom ((org-roam-directory "~/Documents/zettelkasten/")
            (org-roam-db-location "~/Documents/zettelkasten/org-roam.db")
-           (org-roam-completion-everywhere t))
+           (org-roam-completion-everywhere t)
+           (org-roam-mode-sections (list #'org-roam-backlinks-section
+                                         #'org-roam-reflinks-section
+                                         #'org-roam-unlinked-references-section)))
   :bind (:map org-roam-mode-map
               (("C-c n l" . org-roam-buffer-toggle)
                ("C-c n g" . org-roam-graph)))
