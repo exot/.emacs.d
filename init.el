@@ -1267,7 +1267,22 @@
   :bind (:map org-mode-map
               (("C-c n l" . org-roam-buffer-toggle)
                ("C-c n g" . org-roam-graph)))
-  :config (org-roam-db-autosync-mode))
+  :config (progn
+            (org-roam-db-autosync-mode)
+
+            (define-advice org-roam-buffer-render-contents
+                (:around (orig-func) show-buffer-in-selected-window)
+              "Show Org roam buffer in selected window before updating its content.
+
+See https://github.com/org-roam/org-roam/issues/1586, and in particular
+https://github.com/org-roam/org-roam/issues/1586#issuecomment-1412250226.
+Note that this workaround is incomplete, as explained in this comment."
+              (let ((org-roam-buffer-window (display-buffer (current-buffer))))
+                ;; When we cannot display the buffer, there is also no need to
+                ;; update it, no?
+                (when org-roam-buffer-window
+                  (with-selected-window org-roam-buffer-window
+                    (funcall orig-func)))))))
 
 
 ;; * General Programming
