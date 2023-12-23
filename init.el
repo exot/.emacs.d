@@ -1264,7 +1264,7 @@
            (org-roam-mode-sections (list #'org-roam-backlinks-section
                                          #'org-roam-reflinks-section
                                          #'org-roam-unlinked-references-section)))
-  :bind (:map org-roam-mode-map
+  :bind (:map org-mode-map
               (("C-c n l" . org-roam-buffer-toggle)
                ("C-c n g" . org-roam-graph)))
   :config (org-roam-db-autosync-mode))
