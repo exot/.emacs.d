@@ -1257,16 +1257,14 @@
                                                (no-delete-other-windows . t))))))
   :commands (org-roam-node-insert
              org-roam-node-find
-             org-roam-capture)
+             org-roam-capture
+             org-roam-buffer-toggle)
   :custom ((org-roam-directory "~/Documents/zettelkasten/")
            (org-roam-db-location "~/Documents/zettelkasten/org-roam.db")
            (org-roam-completion-everywhere t)
            (org-roam-mode-sections (list #'org-roam-backlinks-section
                                          #'org-roam-reflinks-section
                                          #'org-roam-unlinked-references-section)))
-  :bind (:map org-mode-map
-              (("C-c n l" . org-roam-buffer-toggle)
-               ("C-c n g" . org-roam-graph)))
   :config (progn
             (org-roam-db-autosync-mode)
 
@@ -1283,6 +1281,13 @@ Note that this workaround is incomplete, as explained in this comment."
                 (when org-roam-buffer-window
                   (with-selected-window org-roam-buffer-window
                     (funcall orig-func)))))))
+
+(with-eval-after-load 'org
+  ;; I would like to include this keybinding in the :bind definition of `org'
+  ;; above, but doing so seems to attach an autoload to `org-roam-buffer-toggle'
+  ;; on org.el; the latter inclusion of `org-roam-buffer-toggle' in the
+  ;; :commands list of `org-roam' does not seem to overwrite this.
+  (bind-key "C-c n l" #'org-roam-buffer-toggle org-mode-map))
 
 
 ;; * General Programming
