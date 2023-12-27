@@ -1339,9 +1339,22 @@ Note that this workaround is incomplete, as explained in this comment."
   :ensure t
   :commands (iedit-mode))
 
+;; See https://andreyor.st/posts/2023-09-09-migrating-from-lsp-mode-to-eglot/
+;; for where some of the configuration for `lsp-mode' is coming from.
 (use-package lsp-mode
   :ensure t
-  :init (setq lsp-keymap-prefix "C-c C-l")
+  :init (setq lsp-keymap-prefix "C-c C-l"
+              lsp-session-file (expand-file-name ".lsp-session" emacs-d-userdata)
+              lsp-use-plists t          ; not quite sure whether this is a good
+                                        ; idea, but plists are easier to read …
+              lsp-log-io t
+              lsp-keep-workspace-alive nil
+              lsp-idle-delay 0.5
+              lsp-auto-configure t
+              lsp-headerline-breadcrumb-enable nil
+              lsp-signature-doc-lines 1)
+  :hook ((lsp-mode . lsp-diagnostics-mode)
+         (lsp-mode . lsp-completion-mode))
   :commands (lsp lsp-deferred))
 
 (use-package lsp-ui
