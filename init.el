@@ -1302,6 +1302,14 @@ Note that this workaround is incomplete, as explained in this comment."
               ediff-show-clashes-only t)
   :config (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 
+;; Inspired by
+;; https://andreyor.st/posts/2023-09-09-migrating-from-lsp-mode-to-eglot.
+(use-package eglot
+  :ensure t
+  :init (setq eglot-autoshutdown t
+              eglot-extend-to-xref nil
+              eglot-stay-out-of '(yasnippet)))
+
 (use-package flycheck
   :ensure t
   :commands (global-flycheck-mode flycheck-mode)
