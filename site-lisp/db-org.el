@@ -851,7 +851,7 @@ default task, though."
 Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-task \"\"));
 - Clock in to [_w_]ork, [_h_]ome, [_b_]reak default task
 - Clock in to [_l_]ast, or [_s_]elect task to clock in to
-- [_j_]ump to current clock or to [_a_]ny item
+- [_j_]ump to current clock
 - Clock [_o_]ut
 "
   ("w" (db/org-clock-in-work-task) nil)
@@ -863,7 +863,6 @@ Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-tas
        nil)
   ("j" (db/org-clock-goto-first-open-checkbox)
        nil)
-  ("a" counsel-org-goto-all nil)
   ("o" org-clock-out nil)
   ("l" db/org-clock-in-last-task nil))
 
@@ -1036,6 +1035,20 @@ The password is assumed to be stored at the PASSWORD property."
       (message "Password for “%s” securly copied to system clipboard; will be overwritten in %s."
                heading
                org-password-manager-default-password-wait-time))))
+
+(defhydra hydra-org-jump (:color blue)
+  ;; Quote %, as otherwise they would be misinterpreted as format characters
+  "
+Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-task \"\"));
+- Jump to [_c_]urrent clock
+- Jump to [_a_]ny item
+- Jump to item [_s_]elected from clock history
+"
+  ("c" (db/org-clock-goto-first-open-checkbox nil)
+       nil)
+  ("a" counsel-org-goto-all nil)
+  ("s" (db/org-clock-goto-first-open-checkbox t)
+       nil))
 
 
 ;;; Checklist Handling

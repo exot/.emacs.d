@@ -538,6 +538,7 @@
              db/org-timestamp-difference
              db/org-capture-code-snippet
              hydra-org-clock/body
+             hydra-org-jump/body
              db/make-org-capture-frame
              db/org-onenote-open
              db/org-outlook-open
@@ -3031,7 +3032,8 @@ eventuelly be set to nil, however)."
   (bind-key "C-c n f" #'org-roam-node-find)
   (bind-key "C-c n i" #'org-roam-node-insert)
   (bind-key "C-c n c" #'org-roam-capture)
-  (bind-key "C-c o" #'hydra-org-clock/body)
+  (bind-key "C-c o c" #'hydra-org-clock/body)
+  (bind-key "C-c o j" #'hydra-org-jump/body)
   (bind-key "C-c t" #'hydra-toggle/body)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
