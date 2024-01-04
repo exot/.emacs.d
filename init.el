@@ -622,10 +622,10 @@
           ;; Keywords and Tags
 
           (setq org-todo-keywords
-                '((sequence "TODO(t)" "CONT(n!)" "REFINE(f!)" "|" "DONE(d@/!)" "CANC(c@/!)" "MRGD(m@/!)")
-                  (sequence "GOTO(g)" "ATTN(a!)" "|" "DONE(d@/!)")
-                  (sequence "READ(r)" "CONT(n!)" "|" "DONE(d@/!)")
-                  (sequence "DELG(e@/!)" "WAIT(w@/!)" "HOLD(h@/!)" "|" "CANC(c@/!)"))
+                '((sequence "TODO(t@)" "CONT(n!)" "REFINE(f!)" "|" "DONE(d@)" "CANC(c@)" "MRGD(m@)")
+                  (sequence "GOTO(g@)" "ATTN(a!)" "|" "DONE(d@)")
+                  (sequence "READ(r@)" "CONT(n!)" "|" "DONE(d@)")
+                  (sequence "DELG(e@)" "WAIT(w@)" "HOLD(h@)" "|" "CANC(c@)"))
 
                 org-todo-state-tags-triggers
                 '(("WAIT" ("HOLD") ("WAIT" . t))
