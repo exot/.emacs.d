@@ -21,17 +21,18 @@
 
 ;; zooming with single keystrokes (from oremacs)
 (defhydra hydra-zoom (:color red
-                             :body-pre (require 'face-remap))
+                      :body-pre (require 'face-remap))
   ;; the following newline is important, as otherwise the format string is not
   ;; interpreted correctly; cf. https://oremacs.com/2015/02/23/hydra-0.11.0/
   "
 Zoom (%`text-scale-mode-amount): "
   ("g" text-scale-increase "increase")
-  ("l" text-scale-decrease "decrease"))
+  ("l" text-scale-decrease "decrease")
+  ("0" (text-scale-adjust 0) "reset"))
 
 (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
-                                     :color pink
-                                     :post (deactivate-mark))
+                           :color pink
+                           :post (deactivate-mark))
   "
   ^_k_^     _d_elete    _s_tring
 _h_   _l_   _o_k        _y_ank
@@ -48,7 +49,7 @@ _h_   _l_   _o_k        _y_ank
   ("r" (if (region-active-p)
            (deactivate-mark)
          (rectangle-mark-mode 1))
-   nil)
+       nil)
   ("y" yank-rectangle nil)
   ("u" undo nil)
   ("s" string-rectangle nil)
