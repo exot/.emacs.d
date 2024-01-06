@@ -3034,6 +3034,7 @@ eventuelly be set to nil, however)."
   (bind-key "C-c n c" #'org-roam-capture)
   (bind-key "C-c o c" #'hydra-org-clock/body)
   (bind-key "C-c o j" #'hydra-org-jump/body)
+  (bind-key "C-c o l" #'hydra-org-linking/body)
   (bind-key "C-c t" #'hydra-toggle/body)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
