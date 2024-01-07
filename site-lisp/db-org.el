@@ -1050,6 +1050,22 @@ Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-tas
   ("s" (db/org-clock-goto-first-open-checkbox t)
        nil))
 
+(defhydra hydra-org-custom (:foreign-keys warn
+                            :exit t)
+  "
+Custom Org commands:
+_c_ → Clocking commands
+_j_ → Jumping commands
+_l_ → Linking commands
+_a_ → Open agenda
+_q_ → Quit this hydra"
+  ("c" hydra-org-clock/body nil)
+  ("j" hydra-org-jump/body nil)
+  ("l" hydra-org-linking/body nil)
+  ("a" db/org-agenda nil)
+  ("q" (message "Abort") nil)
+  ("C-g" (message "Abort") nil))
+
 
 ;;; Checklist Handling
 
