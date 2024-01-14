@@ -1114,12 +1114,10 @@
                               "%a\n"
                               "%?")
                      :empty-lines 1)
-                ("g" "Record new goal with first item"
+                ("g" "Record new goal"
                      entry
                      (file db/org-default-refile-file)
-                     ,(concat "* %^{Ticket Description} (%^{Ticket Number}) :GOAL:\n"
-                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\n** TODO [#B] %^{First Task}\n"
+                     ,(concat "* %^{Description} (%^{Ticket Number}) :GOAL:\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\n%?"))
                 ("n" "Note"
