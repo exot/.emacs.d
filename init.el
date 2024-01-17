@@ -2959,7 +2959,8 @@ eventuelly be set to nil, however)."
                   projectile-mode
                   yas-global-mode
                   global-git-commit-mode
-                  global-company-mode))
+                  ;; global-company-mode
+                  ))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
