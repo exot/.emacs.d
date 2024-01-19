@@ -2308,7 +2308,8 @@ eventuelly be set to nil, however)."
 (use-package isearch
   :init (setq isearch-allow-scroll t
               isearch-lazy-count t
-              search-whitespace-regexp "[ \t\r\n]+"))
+              isearch-lax-whitespace nil
+              isearch-regexp-lax-whitespace nil))
 
 (use-package goto-last-change
   :commands goto-last-change)
