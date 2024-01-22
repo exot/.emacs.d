@@ -210,6 +210,8 @@ _y_: ?y? year       _q_: quit          _L__l__c_: ?l?
 
 The remaining effort is computed as the planned effort minus the
 already clocked time.  If this result is negative, return zero.
+The clocked time is computed over the complete subtree of the Org
+item at point, and not only from the item itself.
 
 Return the remaining effort as duration string by default.  When
 optional AS-NUMBER is non-nil, return the effort as number.
@@ -478,10 +480,11 @@ user for the next task to clock into."
   (message org-clock-current-task))
 
 (defun db/org-clocked-time-for-current-item ()
-  "Return all clocked time for Org item at point.
+  "Return overall clocked time for the subtree of the Org item at point.
 
-Also includes the currently running clock when the current item
-is clocked in."
+The clocked time of the item itself is also included, as is the
+time of the currently running clock, in case item at point is
+clocked in."
 
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org mode buffer, aborting"))
