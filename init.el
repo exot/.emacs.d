@@ -1120,6 +1120,13 @@
                      ,(concat "* %^{Description} (%^{Ticket Number}) :GOAL:\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\n%?"))
+                ("h" "Headline (generic Org item)"
+                     entry
+                     (file db/org-default-refile-file)
+                     ,(concat "* [#B] %^{What}\n"
+                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                              "%a\n"
+                              "%?"))
                 ("n" "Note"
                      entry
                      (file db/org-default-refile-file)
