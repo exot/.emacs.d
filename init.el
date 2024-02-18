@@ -1111,7 +1111,7 @@
                      (file db/org-default-refile-file)
                      ,(concat "* TODO [#B] %^{What}\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "%a\n"
+                              "\nVia %a.\n\n"
                               "%?")
                      :empty-lines 1)
                 ("g" "Record new goal"
