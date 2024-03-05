@@ -2960,10 +2960,6 @@ eventuelly be set to nil, however)."
   (with-demoted-errors "Cannot activate `vlf': %s"
     (require 'vlf-setup))
 
-  ;; Explicitly require helm, because autoloading is difficult with helm's
-  ;; separate `helm-command-prefix-key' mechanism.
-  (require 'helm)
-
   ;; Global Hooks
 
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
@@ -3060,6 +3056,9 @@ eventuelly be set to nil, however)."
     (bind-key "C-S-s" #'counsel-grep-or-swiper))
 
   (when (package-installed-p 'helm)
+    ;; Explicitly require helm, because autoloading is difficult with helm's
+    ;; separate `helm-command-prefix-key' mechanism.
+    (require 'helm)
     (bind-key "M-y" #'helm-show-kill-ring)
     (bind-key helm-command-prefix-key #'helm-command-prefix))
 
