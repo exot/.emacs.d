@@ -989,10 +989,12 @@
                        ((org-agenda-overriding-header "Deadlines")
                         (org-agenda-sorting-strategy '(deadline-up priority-down))
                         (org-deadline-warning-days 30)))
-                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>=\"<today>\"-SCHEDULED<>\"\"-NOT_BEFORE>=\"<today>\""
-                                 ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled)")))
-                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE-SCHEDULED<>\"\"-NOT_BEFORE>=\"<today>\""
+                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-TIMESTAMP>=\"<today>\""
+                                 ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled)")
+                                  (org-agenda-todo-ignore-scheduled 'all)))
+                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE"
                                  ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled)")
+                                  (org-agenda-todo-ignore-scheduled 'all)
                                   (org-tags-match-list-sublevels t)))))
 
                 ("B" "Backlog"
@@ -1011,44 +1013,20 @@
                       ;; DEADLINE is not necessary, as items will appear on the
                       ;; deadline view anyway.
 
-                      ;; Check whether any NOT_BEFORE entries are not actually timestaps
-                      (org-ql-block '(and (property "NOT_BEFORE")
-                                          (not (string-match-p org-element--timestamp-regexp
-                                                               (property "NOT_BEFORE"))))
-                                    ((org-ql-block-header "Items whose NOT_BEFORE entry is not a timestamp")))
-
-                      ;; Check whether any NOT_BEFORE is behind a SCHEDULED
-                      (org-ql-block '(and (property "NOT_BEFORE")
-                                          (scheduled)
-                                          (> (org-2ft (property "NOT_BEFORE"))
-                                             (org-2ft (property "SCHEDULED"))))
-                                    ((org-ql-block-header "Items whose NOT_BEFORE value is after SCHEDULED")))
-
-                      ;; Check whether any NOT_BEFORE is beind their DEADLINE
-                      (org-ql-block '(and (property "NOT_BEFORE")
-                                          (deadline)
-                                          (> (org-2ft (property "NOT_BEFORE"))
-                                             (org-2ft (property "DEADLINE"))))
-                                    ((org-ql-block-header "Items whose NOT_BEFORE value is after their DEADLINE")))
-
                       ))
 
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
-                     ((tags "WAIT-TODO={DONE\\|CANC\\|MRGD}-HOLD-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
+                     ((tags "WAIT-TODO={DONE\\|CANC\\|MRGD}-HOLD-SOMEWHEN-SCHEDULED>=\"<today>\""
                             ((org-agenda-overriding-header "Waiting For List")))
                       (tags-todo "DATE-TIMESTAMP>=\"<today>\""
                                  ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")))
-                      (tags "REFILE"
-                            ((org-agenda-files (list db/org-default-refile-file))
-                             (org-agenda-overriding-header "Things to refile (make it empty!)")))
-                      (tags "HOLD-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
+                      (tags "HOLD-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\""
                             ((org-agenda-overriding-header "Tasks on Hold")))))
 
-
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
-                     ((tags "TAGS={SOMEWHEN}+TODO=\"\"-TAGS={NOP\\|TOPIC}-PERIODIC-DATE-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
+                     ((tags "TAGS={SOMEWHEN}+TODO=\"\"-NOP-TOPIC-PERIODIC-DATE-SCHEDULED>=\"<today>\""
                             ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no now or future SCHEDULED)")))
-                      (tags-todo "SOMEWHEN-NOT_BEFORE>=\"<today>\"-ALLTAGS={HOLD}"
+                      (tags-todo "SOMEWHEN-HOLD"
                                  ((org-agenda-overriding-header "Things To Do SOMEWHEN")
                                   (org-agenda-todo-ignore-with-date t)
                                   (org-tags-match-list-sublevels nil)))))
@@ -1056,11 +1034,11 @@
                 ("P" "Current Projects and Topics"
                      ((stuck ""
                              ((org-agenda-overriding-header "Stuck Complex Tasks")))
-                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SOMEWHEN-SCHEDULED>=\"<today>\"-NOT_BEFORE>=\"<today>\""
+                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SOMEWHEN-SCHEDULED>=\"<today>\""
                             ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP)")))
-                      (tags "TAGS={TOPIC}-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-HOLD-WAIT-NOT_BEFORE>=\"<today>\""
+                      (tags "TAGS={TOPIC}-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Topics (items directly tagged with TOPIC)")))
-                      (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC\\|MRGD}-HOLD-SCHEDULED>=\"<today>\"-HOLD-WAIT-NOT_BEFORE>=\"<today>\""
+                      (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC\\|MRGD}-HOLD-SCHEDULED>=\"<today>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")))))
 
                 ("W" "Weekly Review"
