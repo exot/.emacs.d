@@ -2168,13 +2168,8 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package counsel
   :ensure t
   :commands (counsel-org-goto-all
-             counsel-M-x
-             counsel-find-file
              counsel-info-lookup-symbol
              counsel-unicode-char
-             counsel-descbinds
-             counsel-describe-variable
-             counsel-describe-function
              counsel-recentf
              counsel-shell-history))
 
@@ -3047,14 +3042,6 @@ eventuelly be set to nil, however)."
   (unbind-key "M-o" global-map)
 
   ;; Overwrite certain keybindings only if packages are avilable
-
-  (when (package-installed-p 'counsel)
-    (bind-key "M-x" #'counsel-M-x)      ; gets nicer sorting with smex installed
-    (bind-key "C-x C-f" #'counsel-find-file)
-    (bind-key "C-h f" #'counsel-describe-function)
-    (bind-key "C-h v" #'counsel-describe-variable)
-    (bind-key "C-h b" #'counsel-descbinds)
-    (bind-key "C-S-s" #'counsel-grep-or-swiper))
 
   (when (package-installed-p 'helm)
     ;; Explicitly require helm, because autoloading is difficult with helm's
