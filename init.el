@@ -2091,7 +2091,7 @@ Note that this workaround is incomplete, as explained in this comment."
       extended-command-suggest-shorter t
       completions-detailed t
       completion-cycle-threshold 10
-      completion-styles '(basic substring initials partial-completion orderless)
+      completion-styles '(orderless basic substring initials partial-completion)
       completion-category-defaults nil)
 
 (use-package helm
