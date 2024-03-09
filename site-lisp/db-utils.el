@@ -542,6 +542,7 @@ entries, even if I want to use the input directly."
                  (delete-dups
                   (delq nil
                         (append (list default default-alias default-extension)
+                                grep-files-history
                                 (mapcar #'car grep-files-aliases))))
                  nil nil nil
                  'grep-files-history
