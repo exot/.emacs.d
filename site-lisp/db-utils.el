@@ -536,14 +536,16 @@ entries, even if I want to use the input directly."
               (car grep-files-history)
               (car (car grep-files-aliases))))
          (files (completing-read
-                 (format "Search for \"%s\" in files matching wildcard: "
-                         regexp)
+                 (format "Search for \"%s\" in files matching wildcard (default: %s): "
+                         regexp
+                         default)
                  (delete-dups
                   (delq nil
                         (append (list default default-alias default-extension)
                                 (mapcar #'car grep-files-aliases))))
                  nil nil nil
-                 'grep-files-history)))
+                 'grep-files-history
+                 default)))
     (and files
          (or (cdr (assoc files grep-files-aliases))
              files))))
