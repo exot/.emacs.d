@@ -2100,7 +2100,8 @@ Note that this workaround is incomplete, as explained in this comment."
   :autoload (helm-execute-persistent-action
              helm-select-action
              helm-make-source)
-  :defines (helm-source-bookmarks)      ; via helm-bookmarks.el
+  :commands (helm-show-kill-ring)
+  :defines (helm-source-bookmarks)            ; via helm-bookmarks.el
   :init (setq helm-command-prefix-key "C-c h" ; see `db/run-init' for explicit binding
               helm-input-idle-delay 0.0
               helm-buffers-fuzzy-matching t
@@ -2139,9 +2140,6 @@ Note that this workaround is incomplete, as explained in this comment."
             (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
             (bind-key "C-i" #'helm-execute-persistent-action helm-map)
             (bind-key "C-z" #'helm-select-action helm-map)))
-
-(use-package helm-ring
-  :commands (helm-show-kill-ring))
 
 (use-package ivy
   :commands (ivy-mode)
