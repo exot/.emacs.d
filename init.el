@@ -2090,7 +2090,9 @@ Note that this workaround is incomplete, as explained in this comment."
 (setq suggest-key-bindings t
       extended-command-suggest-shorter t
       completions-detailed t
-      completion-cycle-threshold 10)
+      completion-cycle-threshold 10
+      completion-styles '(basic substring initials partial-completion orderless)
+      completion-category-defaults nil)
 
 (use-package helm
   :ensure t
@@ -2142,9 +2144,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (helm-show-kill-ring))
 
 (use-package ivy
-  :ensure t
-  :commands (ivy-mode
-             ivy-resume)
+  :commands (ivy-mode)
   :diminish ivy-mode
   :init (setq ivy-use-virtual-buffers t
               ivy-magic-tilde nil
@@ -2169,12 +2169,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :ensure t
   :commands (counsel-org-goto-all
              counsel-info-lookup-symbol
-             counsel-unicode-char
-             counsel-recentf
-             counsel-shell-history))
-
-(use-package smex
-  :init (setq smex-save-file (expand-file-name "smex-items" emacs-d-userdata)))
+             counsel-unicode-char))
 
 (use-package swiper
   :ensure t
@@ -2190,6 +2185,17 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package company
   :commands (company-mode global-company-mode)
   :init (setq company-show-quick-access t))
+
+(use-package marginalia
+  :ensure t
+  :commands (marginalia-mode))
+
+(use-package vertico
+  :ensure t
+  :commands (vertico-mode))
+
+(use-package orderless
+  :ensure t)
 
 
 ;; * Navigation
@@ -2486,8 +2492,6 @@ eventuelly be set to nil, however)."
 
 (use-package shell
   :commands (shell)
-  :bind (:map shell-mode-map
-              ("C-r" . counsel-shell-history))
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
@@ -2935,13 +2939,15 @@ eventuelly be set to nil, however)."
                   minibuffer-depth-indicate-mode
                   ace-window-display-mode
                   key-chord-mode
-                  ivy-mode
+                  ;; ivy-mode
                   minions-mode
                   which-key-mode
                   projectile-mode
                   yas-global-mode
                   global-git-commit-mode
                   ;; global-company-mode
+                  marginalia-mode
+                  vertico-mode
                   ))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
@@ -2996,7 +3002,6 @@ eventuelly be set to nil, however)."
   (bind-key "C-S-c C-S-c" #'mc/edit-lines)
   (bind-key "C-Z" #'undo-tree-redo)
   (bind-key "C-c C-<" #'mc/mark-all-like-this)
-  (bind-key "C-c C-r" #'ivy-resume)
   (bind-key "C-c D" #'define-word)
   (bind-key "C-c J" #'avy-goto-word-or-subword-1)
   (bind-key "C-c a" #'org-agenda)
