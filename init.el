@@ -2167,9 +2167,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package counsel
   :ensure t
-  :commands (counsel-org-goto-all
-             counsel-info-lookup-symbol
-             counsel-unicode-char))
+  :commands (counsel-org-goto-all))
 
 (use-package swiper
   :ensure t

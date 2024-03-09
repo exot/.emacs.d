@@ -146,8 +146,8 @@ in the main agenda view."
     ("EShell" ?e db/run-or-hide-eshell)
     ("Refile File" ?r #'(lambda () (interactive) (find-file db/org-default-refile-file)))
     ("Goto Currnet Clock" ?c db/org-clock-goto-first-open-checkbox)
-    ("Info Lookup" ?I counsel-info-lookup-symbol)
-    ("Unicode Lookup" ?U counsel-unicode-char)
+    ("Info Lookup" ?I info-lookup-symbol)
+    ("Unicode Lookup" ?U insert-char)
     ("Timeline of Day" ?T timeline-tools-format-timeline-of-day)
     ("Copy template to point" ?C db/org-insert-checklist))
   "Mapping of frequently used features to functions implementing
