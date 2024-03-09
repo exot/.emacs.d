@@ -2184,7 +2184,8 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package marginalia
   :ensure t
-  :commands (marginalia-mode))
+  :commands (marginalia-mode)
+  :init (setq marginalia-max-relative-age 0))
 
 (use-package vertico
   :ensure t
