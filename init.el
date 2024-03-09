@@ -2188,7 +2188,11 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (vertico-mode))
 
 (use-package orderless
-  :ensure t)
+  :ensure t
+  :init (setq orderless-match-faces     ; Some of the default faces are hard to
+                                        ; read with when solarized is enabled;
+                                        ; only keep those that are readable
+              [orderless-match-face-1 orderless-match-face-2]))
 
 
 ;; * Navigation
