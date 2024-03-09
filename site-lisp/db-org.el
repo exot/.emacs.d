@@ -19,7 +19,6 @@
 (require 'ox-icalendar)
 (require 'org-ql)
 
-(autoload 'counsel-org-goto-all "counsel")
 (autoload 'which-function "which-func")
 (autoload 'org-element-property "org-element")
 
@@ -1045,7 +1044,7 @@ Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-tas
 "
   ("c" (db/org-clock-goto-first-open-checkbox nil)
        nil)
-  ("a" counsel-org-goto-all nil)
+  ("a" (org-refile '(4)) nil)
   ("s" (db/org-clock-goto-first-open-checkbox t)
        nil))
 

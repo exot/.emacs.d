@@ -2163,10 +2163,6 @@ Note that this workaround is incomplete, as explained in this comment."
             ;; functionality.
             (define-key ivy-minibuffer-map (kbd "S-SPC") nil)))
 
-(use-package counsel
-  :ensure t
-  :commands (counsel-org-goto-all))
-
 (use-package swiper
   :ensure t
   :commands (swiper
