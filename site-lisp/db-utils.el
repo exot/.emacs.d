@@ -36,8 +36,9 @@
 ;;; Application Shortcuts
 
 (defun db/run-or-hide-ansi-term ()
-  "Find `*ansi-term*' or run `ansi-term' with `explicit-shell-file-name'.
-If already in `*ansi-term*' buffer, bury it."
+  "Find *ansi-term* buffer or run `ansi-term' with `explicit-shell-file-name'.
+
+If already in *ansi-term* buffer, bury it."
   (interactive)
   (if (string= "term-mode" major-mode)
       (bury-buffer)
