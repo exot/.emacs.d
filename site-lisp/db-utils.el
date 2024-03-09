@@ -538,11 +538,11 @@ entries, even if I want to use the input directly."
          (files (completing-read
                  (format "Search for \"%s\" in files matching wildcard: "
                          regexp)
-                 nil nil nil
                  (delete-dups
                   (delq nil
                         (append (list default default-alias default-extension)
                                 (mapcar #'car grep-files-aliases))))
+                 nil nil nil
                  'grep-files-history)))
     (and files
          (or (cdr (assoc files grep-files-aliases))
