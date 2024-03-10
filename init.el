@@ -240,9 +240,6 @@
               diary-show-holidays-flag t
               calendar-view-holidays-initially-flag nil))
 
-(use-package files
-  :init (setq major-mode-remap-alist `((perl-mode . cperl-mode))))
-
 (use-package grep
   :commands (rgrep zrgrep)
   :bind (:map grep-mode-map
@@ -2734,12 +2731,15 @@ eventuelly be set to nil, however)."
   :ensure t
   :commands (cperl-mode)
   :mode ("\\.plx\\'" . cperl-mode)
-  :init (setq cperl-hairy nil
-              cperl-invalid-face 'default
-              cperl-electric-keywords nil
-              cperl-lazy-help-time 2
-              cperl-highlight-variables-indiscriminately t
-              cperl-indent-parens-as-block t)
+  :init (progn
+          (add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
+
+          (setq cperl-hairy nil
+                cperl-invalid-face 'default
+                cperl-electric-keywords nil
+                cperl-lazy-help-time 2
+                cperl-highlight-variables-indiscriminately t
+                cperl-indent-parens-as-block t))
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
@@ -2758,6 +2758,7 @@ eventuelly be set to nil, however)."
   :config (require 'gnutls))
 
 (when (package-installed-p "auctex")
+  (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode))
   (require 'db-latex))
 
 (use-package edit-list
