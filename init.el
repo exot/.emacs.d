@@ -2091,8 +2091,13 @@ Note that this workaround is incomplete, as explained in this comment."
       extended-command-suggest-shorter t
       completions-detailed t
       completion-cycle-threshold 10
-      completion-styles '(orderless basic substring initials partial-completion)
-      completion-category-defaults nil)
+      completion-styles '(orderless basic)
+      completion-category-defaults nil
+      ;; Via https://protesilaos.com/emacs/dotemacs, with additional changes
+      completion-category-overrides '((file (styles . (basic partial-completion orderless)))
+                                      (bookmark (styles . (basic substring orderless)))
+                                      (imenu (styles . (basic substring orderless)))
+                                      (kill-ring (styles . (emacs22 orderless)))))
 
 (use-package helm
   :ensure t
