@@ -153,7 +153,6 @@
       history-delete-duplicates t
       track-eol t
       garbage-collection-messages nil
-      gc-cons-threshold (* 100 1024 1024)   ; 100mb
       read-process-output-max (* 1024 1024) ; 1mb
       next-error-message-highlight t
       help-enable-symbol-autoload t
