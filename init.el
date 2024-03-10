@@ -2089,14 +2089,16 @@ Note that this workaround is incomplete, as explained in this comment."
 (setq suggest-key-bindings t
       extended-command-suggest-shorter t
       completions-detailed t
-      completion-cycle-threshold 10
+      completion-cycle-threshold nil
       completion-styles '(orderless basic)
       completion-category-defaults nil
       ;; Via https://protesilaos.com/emacs/dotemacs, with additional changes
       completion-category-overrides '((file (styles . (basic partial-completion orderless)))
                                       (bookmark (styles . (basic substring orderless)))
                                       (imenu (styles . (basic substring orderless)))
-                                      (kill-ring (styles . (emacs22 orderless)))))
+                                      (kill-ring (styles . (emacs22 orderless))))
+      ;; Use ivy for region completion until I can find an alternative.
+      completion-in-region-function #'ivy-completion-in-region)
 
 (use-package helm
   :ensure t
@@ -2147,6 +2149,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package ivy
   :commands (ivy-mode)
+  :autoload (ivy-completion-in-region)
   :diminish ivy-mode
   :init (setq ivy-use-virtual-buffers t
               ivy-magic-tilde nil
