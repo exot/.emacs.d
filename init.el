@@ -3018,6 +3018,7 @@ eventuelly be set to nil, however)."
   (bind-key "C-c n i" #'org-roam-node-insert)
   (bind-key "C-c n c" #'org-roam-capture)
   (bind-key "C-c o" #'hydra-org-custom/body)
+  (bind-key "C-c r" #'recentf)
   (bind-key "C-c t" #'hydra-toggle/body)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
