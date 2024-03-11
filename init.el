@@ -2143,7 +2143,8 @@ Note that this workaround is incomplete, as explained in this comment."
             (bind-key "C-z" #'helm-select-action helm-map)))
 
 (use-package ivy
-  :commands (ivy-mode)
+  :commands (ivy-mode
+             ivy-completion-in-region)
   :diminish ivy-mode
   :init (setq ivy-use-virtual-buffers t
               ivy-magic-tilde nil
@@ -2798,6 +2799,10 @@ eventuelly be set to nil, however)."
 
             (add-hook 'haskell-mode-hook
                       'interactive-haskell-mode)))
+
+(use-package ledger-mode
+  :config (add-hook 'ledger-mode-hook #'(lambda ()
+                                          (setq-local completion-in-region-function #'ivy-completion-in-region))))
 
 (use-package markdown-mode
   :ensure t
