@@ -2093,9 +2093,7 @@ Note that this workaround is incomplete, as explained in this comment."
       completion-category-overrides '((file (styles . (basic partial-completion orderless)))
                                       (bookmark (styles . (basic substring orderless)))
                                       (imenu (styles . (basic substring orderless)))
-                                      (kill-ring (styles . (emacs22 orderless))))
-      ;; Use ivy for region completion until I can find an alternative.
-      completion-in-region-function #'ivy-completion-in-region)
+                                      (kill-ring (styles . (emacs22 orderless)))))
 
 (use-package helm
   :ensure t
@@ -2146,7 +2144,6 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package ivy
   :commands (ivy-mode)
-  :autoload (ivy-completion-in-region)
   :diminish ivy-mode
   :init (setq ivy-use-virtual-buffers t
               ivy-magic-tilde nil
