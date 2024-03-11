@@ -2087,7 +2087,7 @@ Note that this workaround is incomplete, as explained in this comment."
       extended-command-suggest-shorter t
       completions-detailed t
       completion-cycle-threshold nil
-      completion-styles '(orderless basic)
+      completion-styles '(basic orderless)
       completion-category-defaults nil
       ;; Via https://protesilaos.com/emacs/dotemacs, with additional changes
       completion-category-overrides '((file (styles . (basic partial-completion orderless)))
