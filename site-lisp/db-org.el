@@ -1044,7 +1044,15 @@ Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-tas
 "
   ("c" (db/org-clock-goto-first-open-checkbox nil)
        nil)
-  ("a" (org-refile '(4)) nil)
+  ("a" (with-current-buffer
+           ;; Make sure we are in some Org buffer, as `org-refile-get-location'
+           ;; might try to parse the current buffer in search for some Org
+           ;; headings, possibly producing errors along the way.
+           (->> (org-agenda-files :unrestricted)
+                cl-first
+                get-file-buffer)
+         (org-refile '(4)))
+       nil)
   ("s" (db/org-clock-goto-first-open-checkbox t)
        nil))
 
