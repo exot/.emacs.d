@@ -2091,7 +2091,8 @@ Note that this workaround is incomplete, as explained in this comment."
       completion-category-defaults nil
       ;; Via https://protesilaos.com/emacs/dotemacs, with additional changes
       completion-category-overrides '((file (styles . (basic partial-completion orderless)))
-                                      (bookmark (styles . (basic substring orderless)))
+                                      (buffer (styles . (orderless)))
+                                      (bookmark (styles . (orderless)))
                                       (imenu (styles . (basic substring orderless)))
                                       (kill-ring (styles . (emacs22 orderless)))))
 
