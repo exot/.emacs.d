@@ -2144,8 +2144,6 @@ Note that this workaround is incomplete, as explained in this comment."
             (bind-key "C-z" #'helm-select-action helm-map)))
 
 (use-package ivy
-  :commands (ivy-mode
-             ivy-completion-in-region)
   :diminish ivy-mode
   :init (setq ivy-use-virtual-buffers t
               ivy-magic-tilde nil
@@ -2196,6 +2194,27 @@ Note that this workaround is incomplete, as explained in this comment."
                                         ; read with when solarized is enabled;
                                         ; only keep those that are readable
               [orderless-match-face-1 orderless-match-face-2]))
+
+(use-package consult
+  :commands (consult-completion-in-region
+             consult-goto-line
+             consult-keep-lines
+             consult-focus-lines
+             consult-buffer
+             consult-imenu
+             consult-line
+             consult-mark
+             consult-yank-pop
+             consult-outline)
+  :init (progn
+          ;; Settings taken from https://protesilaos.com/emacs/dotemacs#h:22e97b4c-d88d-4deb-9ab3-f80631f9ff1d
+          (setq consult-line-numbers-widen t
+                consult-async-min-input 3
+                consult-async-input-debounce 0.5
+                consult-async-input-throttle 0.8
+                consult-narrow-key nil
+                consult-preview-key nil))
+  :config (require 'consult-imenu))
 
 
 ;; * Navigation
@@ -2803,7 +2822,7 @@ eventuelly be set to nil, however)."
 
 (use-package ledger-mode
   :config (add-hook 'ledger-mode-hook #'(lambda ()
-                                          (setq-local completion-in-region-function #'ivy-completion-in-region))))
+                                          (setq-local completion-in-region-function #'consult-completion-in-region))))
 
 (use-package markdown-mode
   :ensure t
@@ -2947,7 +2966,6 @@ eventuelly be set to nil, however)."
                   minibuffer-depth-indicate-mode
                   ace-window-display-mode
                   key-chord-mode
-                  ;; ivy-mode
                   minions-mode
                   which-key-mode
                   projectile-mode
@@ -3074,6 +3092,10 @@ eventuelly be set to nil, however)."
   (when (package-installed-p 'avy)
     (bind-key "M-g M-g" #'avy-goto-line)
     (bind-key "M-g g" #'avy-goto-line))
+
+  (when (package-installed-p 'consult)
+    (bind-key "M-g i" #'consult-imenu)
+    (bind-key "C-x b" #'consult-buffer))
 
   ;; Environment Variables
 
