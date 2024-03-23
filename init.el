@@ -2820,10 +2820,6 @@ eventuelly be set to nil, however)."
             (add-hook 'haskell-mode-hook
                       'interactive-haskell-mode)))
 
-(use-package ledger-mode
-  :config (add-hook 'ledger-mode-hook #'(lambda ()
-                                          (setq-local completion-in-region-function #'consult-completion-in-region))))
-
 (use-package markdown-mode
   :ensure t
   :commands (markdown-mode)
@@ -3095,7 +3091,8 @@ eventuelly be set to nil, however)."
 
   (when (package-installed-p 'consult)
     (bind-key "M-g i" #'consult-imenu)
-    (bind-key "C-x b" #'consult-buffer))
+    (bind-key "C-x b" #'consult-buffer)
+    (setq completion-in-region-function #'consult-completion-in-region))
 
   ;; Environment Variables
 
