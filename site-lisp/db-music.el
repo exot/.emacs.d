@@ -116,8 +116,7 @@ _RET_: ?RET?    _s_: ?s?
   ("-" emms-volume-lower "lower volume")
   ("+" emms-volume-raise "raise volume")
   ("M" emms              "Show playlist in new EMMS buffer")
-  ("P" (db/play-auto-playlist)
-   "Play automatically generated playlist"))
+  ("P" db/play-auto-playlist "Play automatically generated playlist"))
 
 
 ;; Playlist management
