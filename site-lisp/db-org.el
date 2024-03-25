@@ -1135,8 +1135,9 @@ Relevant backlinks are Org items and are determined as follows:
   via an Org link using the id: link type (also see the
   `db/org-backlinks' dynamic block);
 
-- the backlink item must not be done and must not be tagged with
-  TEMPLATE;
+- the backlink item must not be done, must not be tagged locally
+  with TEMPLATE and must not be tagged with HOLD (neither locally
+  nor inherited);
 
 - the backlink item must not be scheduled in the future;
 
@@ -1232,6 +1233,7 @@ inserting the checklist."
                                                          :org-ql-match '(and
                                                                          (not (done))
                                                                          (not (ltags "TEMPLATE"))
+                                                                         (not (tags "HOLD"))
                                                                          (not (scheduled :from 1))
                                                                          (not (property "CHECKLIST_NO_BACKLINK" "t" :inherit nil)))
                                                          :parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
