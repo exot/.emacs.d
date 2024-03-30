@@ -296,12 +296,16 @@
               display-buffer-base-action '(display-buffer-reuse-window))
   :config (progn
             (add-to-list 'display-buffer-alist
-                         '("^\\*Async Shell Command*" display-buffer-no-window))
+                         '("^\\*Async Shell Command*"
+                           (display-buffer-in-side-window)
+                           (side . right)
+                           (slot . 0)
+                           (window-width . 0.33)))
             (add-to-list 'display-buffer-alist
                          '("^\\*Warnings\\*"
                            (display-buffer-in-side-window)
                            (side . right)
-                           (slot . 0)
+                           (slot . 1)
                            (window-width . 0.33)))
             ;; Inspired by masteringemacs
             (add-to-list 'display-buffer-alist
