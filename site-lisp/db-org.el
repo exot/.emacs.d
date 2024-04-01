@@ -1051,7 +1051,11 @@ Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-tas
            (->> (org-agenda-files :unrestricted)
                 cl-first
                 get-file-buffer)
-         (org-refile '(4)))
+         ;; Show all possible items, i.e. exclude refile verification; since the
+         ;; cache includes only verified items, also disable it locally.
+         (let ((org-refile-use-cache nil)
+               (org-refile-target-verify-function nil))
+           (org-refile '(4))))
        nil)
   ("s" (db/org-clock-goto-first-open-checkbox t)
        nil))
