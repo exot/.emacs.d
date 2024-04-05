@@ -689,7 +689,7 @@
                                      (nil . (:maxlevel . 9))
                                      (db/org-default-notes-file . (:maxlevel . 9)))
                 org-refile-use-outline-path 'buffer-name
-                org-refile-use-cache t
+                org-refile-use-cache nil
                 org-refile-allow-creating-parent-nodes 'confirm
                 org-indirect-buffer-display 'current-window
                 org-outline-path-complete-in-steps nil
