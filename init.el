@@ -1105,7 +1105,8 @@
                      ,(concat "* [#B] %^{What}\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "%a\n"
-                              "%?"))
+                              "%?")
+                     :empty-lines 1)
                 ("n" "Note"
                      entry
                      (file db/org-default-refile-file)
