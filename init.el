@@ -786,6 +786,17 @@
   :autoload (org-cycle-hide-drawers)
   :init (setq org-cycle-include-plain-lists 'integrate))
 
+(use-package org-lint
+  :autoload (org-lint-checker-name)
+  :config (progn
+            ;; Yes, this is ugly, but I would like to get rid of checking for
+            ;; obsolete percentage encoding in URLs without loosing the other
+            ;; checkers.
+            (setq org-lint--checkers (cl-remove-if #'(lambda (c)
+                                                       (eq (org-lint-checker-name c)
+                                                           'percent-encoding-link-escape))
+                                                   org-lint--checkers))))
+
 ;; Drag-and-Drop images into org-mode buffer
 (use-package org-download
   :commands (org-download-yank
