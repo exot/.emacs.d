@@ -783,7 +783,8 @@
             (defvar org-time-was-given nil)))
 
 (use-package org-cycle
-  :autoload (org-cycle-hide-drawers))
+  :autoload (org-cycle-hide-drawers)
+  :init (setq org-cycle-include-plain-lists 'integrate))
 
 ;; Drag-and-Drop images into org-mode buffer
 (use-package org-download
