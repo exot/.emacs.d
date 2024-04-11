@@ -719,9 +719,10 @@
             ;; Hide drawers by default when cycling items
             (add-hook 'org-cycle-hook #'org-cycle-hide-drawers)
 
-            ;; Statically color links sponding to whether the file exists, but
-            ;; this turns out to be slow on Windows; we can use `org-lint' for
-            ;; this when necessary)
+            ;; Statically color links indepedently of whether the file exists or
+            ;; not (we could add different faces to highlight non-existing
+            ;; files, but this turns out to be slow on Windows, and we can use
+            ;; `org-lint' to check this when necessary)
             (org-link-set-parameters "file" :face 'org-link)
 
             ;; File Apps
