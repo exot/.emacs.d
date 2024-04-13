@@ -1138,7 +1138,8 @@
                               "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))\n\n%?")
                      :clock-in t
                      :clock-resume t
-                     :empty-lines 1)
+                     :empty-lines-before 1
+                     :empty-lines-after 0)
                 ("r" "Respond"
                      entry
                      (file db/org-default-refile-file)
