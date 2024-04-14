@@ -1105,7 +1105,8 @@
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\nVia %a.\n\n"
                               "%?")
-                     :empty-lines 1)
+                     :empty-lines-before 1
+                     :empty-lines-after 0)
                 ("g" "Record new goal"
                      entry
                      (file db/org-default-refile-file)
@@ -1119,17 +1120,20 @@
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "%a\n"
                               "%?")
-                     :empty-lines 1)
+                     :empty-lines-before 1
+                     :empty-lines-after 0)
                 ("n" "Note"
                      entry
                      (file db/org-default-refile-file)
                      "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
-                     :empty-lines 1)
+                     :empty-lines-before 1
+                     :empty-lines-after 0)
                 ("d" "Date"
                      entry
                      (file db/org-default-refile-file)
                      "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?"
-                     :empty-lines 1)
+                     :empty-lines-before 1
+                     :empty-lines-after 0)
                 ("i" "Interruptions"
                      entry
                      (file db/org-default-refile-file)
@@ -1146,7 +1150,8 @@
                      ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\n%a\n%?")
-                     :empty-lines 1)))
+                     :empty-lines-before 1
+                     :empty-lines-after 0)))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
