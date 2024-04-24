@@ -1844,6 +1844,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package gnus-agent
   :init (setq gnus-agent-mark-unread-after-downloaded nil
+              gnus-agent-consider-all-articles t
               gnus-agent-synchronize-flags t
               gnus-agent-go-online t))
 
