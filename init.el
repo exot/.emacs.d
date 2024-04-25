@@ -257,7 +257,7 @@
 
 (use-package proced
   :custom ((proced-tree-flag t)
-           (proced-auto-update-flag t)
+           (proced-auto-update-flag (not on-windows))
            (proced-format 'medium)
            (proced-auto-update-interval 1)
            (proced-goal-attribute nil)
