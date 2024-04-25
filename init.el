@@ -1454,14 +1454,13 @@ Note that this workaround is incomplete, as explained in this comment."
              bbdb-initialize
              bbdb-mua-auto-update-init
              bbdb-save)
+  :hook ((message-setup . bbdb-mail-aliases)
+         (mail-setup . bbdb-mail-aliases))
   :init (setq bbdb-completion-display-record nil
               bbdb-complete-mail-allow-cycling t
               bbdb-mua-auto-action 'query
               bbdb-default-country "Germany")
-  :config (progn
-            (add-hook 'message-setup-hook 'bbdb-mail-aliases)
-            (add-hook 'mail-setup-hook 'bbdb-mail-aliases)
-            (run-with-timer 0 3600 #'bbdb-save)))
+  :config (run-with-timer 0 3600 #'bbdb-save))
 
 ;; Gnus package configuration
 
