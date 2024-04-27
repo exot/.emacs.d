@@ -659,6 +659,7 @@
 
                 org-tags-exclude-from-inheritance
                 '("NOP" "TOPIC" "GOAL")
+                org-tags-column -85
 
                 org-fast-tag-selection-single-key 'expert)
 
