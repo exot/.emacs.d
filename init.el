@@ -127,7 +127,7 @@
 
 (fset 'yes-or-no-p 'y-or-n-p)
 
-(setq-default fill-column 80)
+(setq-default fill-column 100)
 (setq-default indent-tabs-mode nil)
 
 (setq frame-title-format "emacs")
