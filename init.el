@@ -598,7 +598,7 @@
                 org-src-tab-acts-natively nil
                 org-ellipsis "↲"
                 org-fontify-done-headline nil
-                org-cycle-separator-lines 0
+                org-cycle-separator-lines 2
                 org-special-ctrl-a/e t
                 org-highlight-latex-and-related nil
                 org-attach-store-link-p 'attached
