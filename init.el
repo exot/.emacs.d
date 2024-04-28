@@ -1104,7 +1104,7 @@
                      (file db/org-default-refile-file)
                      ,(concat "* TODO [#B] %^{What}\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nVia %a.\n\n"
+                              "\nVia %a."
                               "%?")
                      :empty-lines-before 1
                      :empty-lines-after 0)
@@ -1112,21 +1112,21 @@
                      entry
                      (file db/org-default-refile-file)
                      ,(concat "* %^{Description} (%^{Ticket Number}) :GOAL:\n"
-                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\n%?"))
+                              ":PROPERTIES:\n:CREATED: %U\n:END:"
+                              "%?"))
                 ("h" "Headline (generic Org item)"
                      entry
                      (file db/org-default-refile-file)
                      ,(concat "* [#B] %^{What}\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "%a\n"
+                              "%a"
                               "%?")
                      :empty-lines-before 1
                      :empty-lines-after 0)
                 ("n" "Note"
                      entry
                      (file db/org-default-refile-file)
-                     "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n%?"
+                     "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:%?"
                      :empty-lines-before 1
                      :empty-lines-after 0)
                 ("d" "Date"
@@ -1140,7 +1140,8 @@
                      (file db/org-default-refile-file)
                      ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))\n\n%?")
+                              "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))."
+                              "%?")
                      :clock-in t
                      :clock-resume t
                      :empty-lines-before 1
@@ -1150,7 +1151,7 @@
                      (file db/org-default-refile-file)
                      ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\n%a\n%?")
+                              "\n%a%?")
                      :empty-lines-before 1
                      :empty-lines-after 0)))
   :config (progn
