@@ -865,7 +865,23 @@
                                                                   (member x org-stored-links--new))
                                                               org-stored-links--original))))
 
-                org-store-link--return-value))))
+                org-store-link--return-value))
+
+            (define-advice org-link-make-string (:around
+                                                 (orig-func link &optional description)
+                                                 db/org--remove-statistics-cookie-from-link-descriptions)
+              "Remove statistics cookies from link descriptions.
+
+Such cookies get updated with other statistics cookies and
+quickly loose their meaning."
+              (funcall orig-func
+                       link
+                       (when description
+                         ;; Taken from `org--get-outline-path-1':
+                         (org-trim
+                          (replace-regexp-in-string
+			   "\\[[0-9]+%\\]\\|\\[[0-9]+/[0-9]+\\]" ""
+			   description)))))))
 
 (use-package ol-bbdb
   :config (add-to-list 'org-bbdb-anniversary-format-alist
