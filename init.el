@@ -1049,7 +1049,7 @@ quickly loose their meaning."
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                      ((tags "WAIT-TODO={DONE\\|CANC\\|MRGD}-HOLD-SOMEWHEN-SCHEDULED<>\"\""
                             ((org-agenda-overriding-header "Waiting For List")))
-                      (tags-todo "DATE-TIMESTAMP>=\"<today>\""
+                      (tags-todo "TAGS={DATE}-TIMESTAMP>=\"<today>\""
                                  ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")))
                       (tags "HOLD-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED<>\"\""
                             ((org-agenda-overriding-header "Tasks on Hold")))))
