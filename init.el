@@ -1024,8 +1024,9 @@ quickly loose their meaning."
                                   (org-agenda-todo-ignore-scheduled 'all)
                                   (org-agenda-todo-ignore-timestamp 0)))
                       (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE"
-                                 ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled)")
+                                 ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled, no far deadline)")
                                   (org-agenda-todo-ignore-scheduled 'all)
+                                  (org-agenda-todo-ignore-deadlines 'far)
                                   (org-tags-match-list-sublevels t)))))
 
                 ("B" "Backlog"
