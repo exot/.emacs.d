@@ -827,45 +827,49 @@
   :autoload (org-link-set-parameters)
   :config (progn
 
-            (define-advice org-store-link (:around
-                                           (orig-func &rest args)
-                                           db/org--push-new-links-to-beginning)
-              "Ensure that new links in `org-store-link' are always at the beginning."
-              ;; The idea here is to store the list of already known links,
-              ;; stored in `org-stored-links', and call `org-store-link' with an
-              ;; empty value of `org-stored-links'.  This way, the link to the
-              ;; current item is store in any case, and we prepend these new
-              ;; values (can be more than one if CUSTOM_ID is set) to the old
-              ;; list of links.  We also remove the newly prepended links from
-              ;; the list of already known links.
+            (when (version< (org-version) "9.7")
+              ;; Pushing already stored links to the front of `org-stored-links' became default
+              ;; behavior in Org 9.7, the below code is thus only needed for older versions.
 
-              (let ((org-stored-links--original org-stored-links)
-                    (org-stored-links--new nil)
-                    (org-store-link--return-value nil))
+              (define-advice org-store-link (:around
+                                             (orig-func &rest args)
+                                             db/org--push-new-links-to-beginning)
+                "Ensure that new links in `org-store-link' are always at the beginning."
+                ;; The idea here is to store the list of already known links,
+                ;; stored in `org-stored-links', and call `org-store-link' with an
+                ;; empty value of `org-stored-links'.  This way, the link to the
+                ;; current item is store in any case, and we prepend these new
+                ;; values (can be more than one if CUSTOM_ID is set) to the old
+                ;; list of links.  We also remove the newly prepended links from
+                ;; the list of already known links.
 
-                (let ((org-stored-links nil))
-                  ;; This is the actual call to `org-store-link', which may (and
-                  ;; usually will) update `org-stored-links'.  Note that the new
-                  ;; value of `org-stored-links' is only available after
-                  ;; `org-store-link' as finished, which is why we make two
-                  ;; separate calls to `setq' here instead of only one.
-                  (setq org-store-link--return-value (apply orig-func args))
-                  (setq org-stored-links--new org-stored-links))
+                (let ((org-stored-links--original org-stored-links)
+                      (org-stored-links--new nil)
+                      (org-store-link--return-value nil))
 
-                ;; Note: `org-stored-links--new' might still be nil after
-                ;; calling `org-store-link', as under some circumstances (and
-                ;; only when the `interactive?' argument to `org-store-link' is
-                ;; non-nil), `org-store-link' may only return a link and not
-                ;; update `org-stored-links'; in this case, we do not have to
-                ;; touch the original value of `org-stored-links' at all.
+                  (let ((org-stored-links nil))
+                    ;; This is the actual call to `org-store-link', which may (and
+                    ;; usually will) update `org-stored-links'.  Note that the new
+                    ;; value of `org-stored-links' is only available after
+                    ;; `org-store-link' as finished, which is why we make two
+                    ;; separate calls to `setq' here instead of only one.
+                    (setq org-store-link--return-value (apply orig-func args))
+                    (setq org-stored-links--new org-stored-links))
 
-                (unless (null org-stored-links--new)
-                  (setq org-stored-links (nconc org-stored-links--new
-                                                (cl-remove-if #'(lambda (x)
-                                                                  (member x org-stored-links--new))
-                                                              org-stored-links--original))))
+                  ;; Note: `org-stored-links--new' might still be nil after
+                  ;; calling `org-store-link', as under some circumstances (and
+                  ;; only when the `interactive?' argument to `org-store-link' is
+                  ;; non-nil), `org-store-link' may only return a link and not
+                  ;; update `org-stored-links'; in this case, we do not have to
+                  ;; touch the original value of `org-stored-links' at all.
 
-                org-store-link--return-value))
+                  (unless (null org-stored-links--new)
+                    (setq org-stored-links (nconc org-stored-links--new
+                                                  (cl-remove-if #'(lambda (x)
+                                                                    (member x org-stored-links--new))
+                                                                org-stored-links--original))))
+
+                  org-store-link--return-value)))
 
             (define-advice org-link-make-string (:around
                                                  (orig-func link &optional description)
