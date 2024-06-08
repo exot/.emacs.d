@@ -1413,12 +1413,13 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package magit
   :ensure t
   :commands (magit-status
-             magit-list-repositories
-             db/sync-magit-repos-from-projectile)
+             magit-list-repositories)
 
   :init (progn
           (setq magit-diff-refine-hunk nil
-                magit-commit-show-diff nil)
+                magit-commit-show-diff nil
+                magit-repository-directories '(("~/" . 0)
+                                               ("~/Documents/" . 3)))
 
           (when on-windows
             ;; Experimental: on Windows, do not refresh magit-status-buffers
@@ -1428,20 +1429,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :config (progn
             (when (fboundp 'global-magit-file-mode)
               (global-magit-file-mode -1))
-            (global-git-commit-mode 1)
-
-            (defun db/sync-magit-repos-from-projectile ()
-              "Update repositories known to magit from projectile's."
-              (interactive)
-              (eval-when-compile        ; to silence the byte compiler
-                (require 'projectile))
-              (setq magit-repository-directories
-                    (->> projectile-known-projects
-                         (--filter (and (not (file-remote-p it))
-                                        (file-exists-p (concat it "/.git"))))
-                         (--map (cons it 0)))))
-
-            (db/sync-magit-repos-from-projectile)))
+            (global-git-commit-mode 1)))
 
 (use-package page-break-lines
   :pin "melpa-stable"
