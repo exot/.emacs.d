@@ -2861,7 +2861,9 @@ eventuelly be set to nil, however)."
   :init (progn
           (setq markdown-use-pandoc-style-yaml-metadata t
                 markdown-command "pandoc --standalone")
-          (fset 'markdown-output-standalone-p #'(lambda () t))))
+          (fset 'markdown-output-standalone-p #'(lambda () t))
+          (add-hook 'markdown-mode-hook #'turn-off-auto-fill)
+          (add-hook 'markdown-mode-hook #'turn-on-visual-line-mode)))
 
 (use-package plantuml-mode
   :load-path "site-lisp"
