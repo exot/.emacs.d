@@ -1415,6 +1415,7 @@ Note that this workaround is incomplete, as explained in this comment."
           (setq magit-diff-refine-hunk nil
                 magit-commit-show-diff nil
                 magit-repository-directories '(("~/" . 0)
+                                               ("~/.emacs.d" . 0)
                                                ("~/Documents/" . 3)))
 
           (when on-windows
