@@ -1372,15 +1372,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (global-git-commit-mode)
   :ensure t
   :init (setq git-commit-style-convention-checks '(non-empty-second-line
-                                                   overlong-summary-line)
-              git-commit-known-pseudo-headers '("Signed-off-by"
-                                                "Acked-by"
-                                                "Modified-by"
-                                                "Cc"
-                                                "Suggested-by"
-                                                "Reported-by"
-                                                "Tested-by"
-                                                "Reviewed-by"))
+                                                   overlong-summary-line))
   :config (add-hook 'git-commit-mode-hook
                     #'(lambda ()
                         (setq fill-column 72))))
