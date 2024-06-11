@@ -115,7 +115,7 @@ end date of the timeline."
 
 (define-derived-mode timeline-tools-mode
   org-mode "Timeline"
-  "Major mode to display org-mode timelines."
+  "Major mode to display `org-mode' timelines."
   (hl-line-mode)
   (buffer-enable-undo))
 
@@ -740,7 +740,7 @@ clock line."
       (with-current-buffer buffer
         ;; Make sure everything is visible, as otherwise editing may produce odd
         ;; results
-        (org-show-all)
+        (org-fold-show-all)
 
         (timeline-tools-map-clocklines
          (lambda (timestamp-1 timestamp-2)
