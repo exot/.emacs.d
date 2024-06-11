@@ -294,11 +294,10 @@ returned by `timeline-tools-clocklines-in-range’, which see.
 Entries in the resulting list are sorted by START, ascending.
 TSTART and TEND must be valid time specifiers for
 `timeline-tools-clocklines-in-range’.  If not given,
-FILES-OR-BUFFERS defaults to `org-agenda-files’ including all
-archives."
+FILES-OR-BUFFERS defaults to `org-agenda-files’ without archives."
   (let (timeline-of-files turned-around-timeline)
     (setq timeline-of-files
-          (->> (or files-or-buffers (org-agenda-files t t))
+          (->> (or files-or-buffers (org-agenda-files t nil))
                (cl-mapcan #'(lambda (file-or-buffer)
                               (let ((buffer (cond
                                              ((bufferp file-or-buffer)
@@ -407,7 +406,7 @@ Filtering is done by applying all functions from
 (defun timeline-tools-format-timeline (tstart tend &optional files)
   "Display timeline of tasks between TSTART and TEND from FILES.
 
-When not given, FILES defaults to `org-agenda-files’ including
+When not given, FILES defaults to `org-agenda-files’ without
 archives.  The timeline is transformed as given by the current
 value of `timeline-tools-filter-functions’.  When called
 interactively, START and END are queried with `org-read-date’."
@@ -431,7 +430,7 @@ interactively, START and END are queried with `org-read-date’."
 
 DATE should be a string of the form %Y-%m-%d.  When called
 interactively, this date will be queried with `org-read-date’.
-When not given, FILES defaults to `org-agenda-files’ including
+When not given, FILES defaults to `org-agenda-files’ without
 archives."
   (interactive (list (org-read-date nil nil)))
   (let ((timeline-tools-time-format "%H:%M")
