@@ -1125,7 +1125,7 @@ quickly loose their meaning."
                      (file db/org-default-refile-file)
                      ,(concat "* TODO [#B] %^{What}\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nVia %a."
+                              "\nVia %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))."
                               "%?")
                      :empty-lines-before 1
                      :empty-lines-after 0)
