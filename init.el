@@ -2266,6 +2266,8 @@ eventuelly be set to nil, however)."
                   ;; Taken from `helm-buffers-list'
                   (helm-make-source "Buffers" 'helm-source-buffers)
 
+                  helm-source-bookmarks
+
                   ;; If no prefix arg is given, extract files from
                   ;; `db/important-documents-path’ and list them as well
                   (when (and (not arg)
@@ -2280,9 +2282,7 @@ eventuelly be set to nil, however)."
                                                       file))
                                             (directory-files-recursively search-path ""))
                         :action '(("Open externally" . db/system-open)
-                                  ("Find file" . find-file)))))
-
-                  helm-source-bookmarks)))
+                                  ("Find file" . find-file))))))))
 
 (use-package ace-window
   :ensure t
