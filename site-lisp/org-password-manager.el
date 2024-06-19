@@ -169,7 +169,8 @@ the `agenda' scope searches through all agenda files."
 If ASK-FOR-INPUT? is t, will ask for input even if point is on a
 heading that contains the property."
   (let ((display-property-name (capitalize property-name))
-        (property (org-entry-get (point) property-name t))
+        (property (when (derived-mode-p 'org-mode)
+                    (org-entry-get (point) property-name t)))
         output-message heading)
     (if (and property (not ask-for-input?))
         (setq heading (org-link-display-format (org-get-heading t t)))
