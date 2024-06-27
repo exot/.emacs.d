@@ -1373,7 +1373,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :ensure t
   :init (setq git-commit-style-convention-checks '(non-empty-second-line
                                                    overlong-summary-line))
-  :config (add-hook 'git-commit-mode-hook
+  :config (add-hook 'git-commit-setup-hook
                     #'(lambda ()
                         (setq fill-column 72))))
 
