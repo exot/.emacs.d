@@ -2882,7 +2882,6 @@ eventuelly be set to nil, however)."
 
 ;; https://ddavis.io/posts/emacs-python-lsp/
 (use-package pyvenv
-  :ensure t
   :commands (pyvenv-workon
              pyvenv-activate
              pyvenv-create)
