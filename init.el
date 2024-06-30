@@ -400,6 +400,10 @@
   :pin "melpa-stable"
   :commands (exec-path-from-shell-copy-envs))
 
+(use-package helpful
+  :pin "melpa-stable"
+  :ensure t)
+
 (use-package hydra
   :pin "melpa-stable"
   :ensure t)
@@ -3070,6 +3074,10 @@ eventuelly be set to nil, however)."
   (bind-key "C-c o" #'hydra-org-custom/body)
   (bind-key "C-c r" #'recentf)
   (bind-key "C-c t" #'hydra-toggle/body)
+  (bind-key "C-h f" #'helpful-callable)
+  (bind-key "C-h v" #'helpful-variable)
+  (bind-key "C-h k" #'helpful-key)
+  (bind-key "C-h x" #'helpful-command)
   (bind-key "C-h C-f" #'find-function)
   (bind-key "C-h C-k" #'find-function-on-key)
   (bind-key "C-h C-v" #'find-variable)
