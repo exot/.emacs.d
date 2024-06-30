@@ -401,7 +401,8 @@
   :commands (exec-path-from-shell-copy-envs))
 
 (use-package hydra
-  :pin "melpa-stable")
+  :pin "melpa-stable"
+  :ensure t)
 
 ;; `lv' is a dependency of `hydra'
 (add-to-list 'package-pinned-packages '(lv . "melpa-stable"))
