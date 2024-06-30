@@ -813,11 +813,6 @@
 ;; Extended query language and dynamic blocks
 (use-package org-ql
   :pin "melpa-stable"
-  ;; XXX: Remove the following as soon as this is fixed in upstream, see
-  ;; https://github.com/alphapapa/org-ql/pull/237
-  :init (setq org-ql-regexp-part-ts-time
-              (rx " " (repeat 1 2 digit) ":" (repeat 2 digit)
-                  (optional "-" (repeat 1 2 digit) ":" (repeat 2 digit))))
   :commands (org-ql-view
              org-ql-search
              org-dblock-write:org-ql)
