@@ -1076,6 +1076,53 @@ _q_ → Quit this hydra"
   ("q" (message "Abort") nil)
   ("C-g" (message "Abort") nil))
 
+(defun db/ledger-cli-to-org-table-list (command)
+  "Run ledger COMMAND and convert the result to Org table list.
+
+COMMAND is expected to be a call to ledger-cli and its `lisp'
+subcommand, the result of which is a list of transactions.  This
+list is converted in such a way that Org can display it as table,
+where the rows are all accounts contained in the result of
+COMMAND, and where the columns are the individual transactions,
+headlined with their date."
+  ;; XXX: this implementation is certainly not ideal
+  (let* ((data (->> command
+                    shell-command-to-string
+                    read-from-string    ; XXX: this needs some error handling
+                    car
+                    ;; Format time and remove unnecessary data
+                    (-map #'(lambda (row)
+                              (list (format-time-string "%F" (nth 2 row))
+                                    (-map #'(lambda (entry)
+                                              (list (nth 1 entry)
+                                                    (nth 2 entry)))
+                                          (-drop 5 row)))))))
+         (months (-map #'-first-item data))
+         funds
+         result)
+
+    (dolist (row data)
+      (let ((month (-first-item row)))
+        (dolist (entry (-second-item row))
+          (let ((fund (-first-item entry))
+                (value (-second-item entry)))
+            (setf (alist-get month (alist-get fund funds nil nil #'string=) nil nil #'string=)
+                  value)))))
+
+    (push (cl-list* "" months) result)
+    (push (cl-list* " " (-repeat (length data) "<r>")) result)
+    (push 'hline result)
+
+    (dolist (fund (-sort #'string< (-map #'-first-item funds)))
+      (push (cl-list* fund
+                      (-map #'(lambda (month)
+                                (alist-get month (alist-get fund funds nil nil #'string=)
+                                           "0.00€" nil #'string=))
+                            months))
+            result))
+
+    (reverse result)))
+
 
 ;;; Checklist Handling
 
