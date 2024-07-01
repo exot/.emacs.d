@@ -1085,40 +1085,47 @@ list is converted in such a way that Org can display it as table,
 where the rows are all accounts contained in the result of
 COMMAND, and where the columns are the individual transactions,
 headlined with their date."
-  ;; XXX: this implementation is certainly not ideal
-  (let* ((data (->> command
-                    shell-command-to-string
-                    read-from-string    ; XXX: this needs some error handling
-                    car
-                    ;; Format time and remove unnecessary data
-                    (-map #'(lambda (row)
-                              (list (format-time-string "%F" (nth 2 row))
-                                    (-map #'(lambda (entry)
-                                              (list (nth 1 entry)
-                                                    (nth 2 entry)))
-                                          (-drop 5 row)))))))
-         (months (-map #'-first-item data))
-         funds
-         result)
 
-    (dolist (row data)
-      (let ((month (-first-item row)))
+  ;; XXX: this implementation is certainly not ideal
+  (let* (transactions dates accounts result)
+
+    ;; Call command and catch result
+    (setq transactions (condition-case err
+                   (car (read-from-string (shell-command-to-string command)))
+                 ((error debug) (error "Failed to run ledger command: %s" err))))
+
+    ;; Format time and remove unnecessary transactions
+    (setq transactions (-map #'(lambda (row)
+                         (list (format-time-string "%F" (nth 2 row))
+                               (-map #'(lambda (entry)
+                                         (list (nth 1 entry)
+                                               (nth 2 entry)))
+                                     (-drop 5 row))))
+                     transactions))
+
+    (setq dates (-map #'-first-item transactions))
+
+    ;; Transfer list output into alist for later direct access; `accounts' will map accounts to alists
+    ;; mapping dates to values
+    (dolist (row transactions)
+      (let ((date (-first-item row)))
         (dolist (entry (-second-item row))
           (let ((fund (-first-item entry))
                 (value (-second-item entry)))
-            (setf (alist-get month (alist-get fund funds nil nil #'string=) nil nil #'string=)
+            (setf (alist-get date (alist-get fund accounts nil nil #'string=) nil nil #'string=)
                   value)))))
 
-    (push (cl-list* "" months) result)
-    (push (cl-list* " " (-repeat (length data) "<r>")) result)
+    ;; Build up final result (in reverse order)
+    (push (cl-list* "" dates) result)
+    (push (cl-list* " " (-repeat (length transactions) "<r>")) result)
     (push 'hline result)
 
-    (dolist (fund (-sort #'string< (-map #'-first-item funds)))
+    (dolist (fund (-sort #'string< (-map #'-first-item accounts)))
       (push (cl-list* fund
-                      (-map #'(lambda (month)
-                                (alist-get month (alist-get fund funds nil nil #'string=)
+                      (-map #'(lambda (date)
+                                (alist-get date (alist-get fund accounts nil nil #'string=)
                                            "0.00€" nil #'string=))
-                            months))
+                            dates))
             result))
 
     (reverse result)))
