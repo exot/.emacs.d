@@ -1267,7 +1267,7 @@ inserting the checklist."
 
              ;; Checklists are inserted directly before first child, if existent, or
              ;; at end of subtree
-             (org-show-entry)
+             (org-fold-show-entry)
              (or (org-goto-first-child)
                  (org-end-of-subtree 'invisible-ok 'to-heading))
              ;; Move back from heading, unless we are at the end of the buffer
@@ -1275,27 +1275,25 @@ inserting the checklist."
                ;; Go to end of line before heading
                (forward-char -1))
 
+             ;; Insert blank line, but only if the previous line is not blank already.
+             (unless (save-mark-and-excursion
+                       (forward-line -1)
+                       (looking-at (rx bol (* space) eol)))
+               (insert "\n"))
+
              ;; Insert relevant backlinks, when available.
              (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
                                    (string-to-number it)))
                    number-of-backlinks
                    point-before-backlinks)
 
-               ;; Insert blank line, but only if the previous line is not blank
-               ;; already.
-               (unless (save-mark-and-excursion
-                         (forward-line -1)
-                         (looking-at (rx bol (* space) eol)))
-                 (insert "\n"))
+               ;; Store where we are so we can delete the checklist in case it's empty.
+               (setq point-before-backlinks (point))
 
                (insert (format "Relevant backlinks (%s):\n\n"
                                (if parent-depth
                                    (format "parent-depth %d" parent-depth)
                                  "all parents")))
-
-               ;; Store where we are (minus the two newlines) so we can delete the
-               ;; checklist in case it's empty.
-               (setq point-before-backlinks (- (point) 2))
 
                (setq number-of-backlinks
                      (org-dblock-write:db/org-backlinks (list
@@ -1309,15 +1307,14 @@ inserting the checklist."
                                                                          (string-to-number it))
                                                          :archive nil)))
 
-               ;; When no backlinks have been found, remove the empty table head and just
-               ;; print "none".
-               (when (zerop number-of-backlinks)
-                 (delete-region point-before-backlinks (point))
-                 (insert " none.")))
+               ;; When no backlinks have been found, remove everything inserted so far.
+               (if (zerop number-of-backlinks)
+                   (delete-region point-before-backlinks (point))
+                 (insert "\n\n")))
 
              ;; Insert template, when avilable.
              (let ((template-marker (db/org--find-template)))
-               (insert "\n\nTemplate:")
+               (insert "Template:")
                (setq point-before-template (point))
                (if (not template-marker)
                    (insert " none.\n")
