@@ -3070,6 +3070,7 @@ eventuelly be set to nil, however)."
   (bind-key "C-c r" #'recentf)
   (bind-key "C-c t" #'hydra-toggle/body)
   (bind-key "C-h f" #'helpful-callable)
+  (bind-key "C-h o" #'helpful-symbol)
   (bind-key "C-h v" #'helpful-variable)
   (bind-key "C-h k" #'helpful-key)
   (bind-key "C-h x" #'helpful-command)
