@@ -884,7 +884,7 @@ quickly loose their meaning."
                          ;; Taken from `org--get-outline-path-1':
                          (org-trim
                           (replace-regexp-in-string
-			   "\\[[0-9]+%\\]\\|\\[[0-9]+/[0-9]+\\]" ""
+			   "\\[[0-9]*%\\]\\|\\[[0-9]+/[0-9]+\\]\\|\\[/\\]" ""
 			   description)))))))
 
 (use-package ol-bbdb
