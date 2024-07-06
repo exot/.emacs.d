@@ -1086,27 +1086,38 @@ where the rows are all accounts contained in the result of
 COMMAND, and where the columns are the individual transactions,
 headlined with their date."
 
-  ;; XXX: this implementation is certainly not ideal
-  (let* (transactions dates accounts result)
+  (let* (ledger-output
+         ledger-output-parsed
+         transactions
+         dates
+         accounts
+         result)
 
-    ;; Call command and catch result
-    (setq transactions (condition-case err
-                   (car (read-from-string (shell-command-to-string command)))
-                 ((error debug) (error "Failed to run ledger command: %s" err))))
+    (condition-case err
+        (setq ledger-output (shell-command-to-string command))
+      ((error debug) (error "Failed to run ledger command: %s" err)))
+
+    (setq ledger-output-parsed (read-from-string ledger-output))
+
+    ;; Ensure we have parsed the complete output, i.e., `ledger-output' is a lisp form.
+    (unless (= (1- (length ledger-output))
+               (cdr ledger-output-parsed))
+      (error "Failed to parse ledger output\nRead: %s\nGot: %s" ledger-output-parsed ledger-output))
 
     ;; Format time and remove unnecessary transactions
     (setq transactions (-map #'(lambda (row)
-                         (list (format-time-string "%F" (nth 2 row))
-                               (-map #'(lambda (entry)
-                                         (list (nth 1 entry)
-                                               (nth 2 entry)))
-                                     (-drop 5 row))))
-                     transactions))
+                                 (list (format-time-string "%F" (nth 2 row))
+                                       (-map #'(lambda (entry)
+                                                 (list (nth 1 entry)
+                                                       (nth 2 entry)))
+                                             (-drop 5 row))))
+                             (car ledger-output-parsed)))
 
     (setq dates (-map #'-first-item transactions))
 
-    ;; Transfer list output into alist for later direct access; `accounts' will map accounts to alists
-    ;; mapping dates to values
+    ;; Transfer list output into alist for later direct access; `accounts' will map accounts to
+    ;; alists mapping dates to values
+    ;; FIXME: this implementation is certainly not ideal
     (dolist (row transactions)
       (let ((date (-first-item row)))
         (dolist (entry (-second-item row))
