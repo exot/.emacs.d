@@ -1193,9 +1193,12 @@ CHECKLIST_INSERTED_P with value t to item at point.  Checklists
 are not inserted if this property with this value is already
 present, to avoid double insertions of checklists.
 
-The checklist consists of a listing of relevant backlinks of the
-current item and its parents (without archives) as well as a
-template.
+The checklist consists of a listing of concurrent date entries,
+relevant backlinks of the current item and its parents (without
+archives) as well as a template.
+
+Concurrent date entries are all Org items tagged with DATE and
+posessing an active time range that encloses today.
 
 Relevant backlinks are Org items and are determined as follows:
 
@@ -1279,6 +1282,21 @@ inserting the checklist."
              (unless (save-mark-and-excursion
                        (forward-line -1)
                        (looking-at (rx bol (* space) eol)))
+               (insert "\n"))
+
+             ;; Insert links to concurrent DATEs, if any
+             (when-let ((concurrent-dates (org-ql-query :from (org-agenda-files)
+                                                        :select '(cons
+                                                                  (org-entry-get (point) "ITEM")
+                                                                  (org-id-get-create))
+                                                        :where '(and ; XXX: this is not quite right yet
+                                                                 (tags "DATE")
+                                                                 (not (done))
+                                                                 (ts-active :from today)
+                                                                 (ts-active :to today)))))
+               (insert "Concurrent DATEs:\n")
+               (dolist (date concurrent-dates)
+                 (insert "- " (org-link-make-string (cdr date) (car date)) "\n"))
                (insert "\n"))
 
              ;; Insert relevant backlinks, when available.
