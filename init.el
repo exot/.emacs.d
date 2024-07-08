@@ -613,7 +613,7 @@
                 org-id-link-to-org-use-id t
 
                 org-blank-before-new-entry '((heading . t)
-                                             (plain-list-item . t))
+                                             (plain-list-item . auto))
 
                 org-duration-format '(("y") ("w") ("d") (special . h:mm))
 
