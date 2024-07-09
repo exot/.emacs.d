@@ -1024,9 +1024,10 @@ quickly loose their meaning."
                         (org-agenda-sorting-strategy '(deadline-up priority-down))
                         (org-deadline-warning-days 30)))
                       (tags-todo "TODO={CONT\\|ATTN}-HOLD-SOMEWHEN"
-                                 ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled)")
+                                 ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled, no near deadline)")
                                   (org-agenda-todo-ignore-scheduled 'all)
-                                  (org-agenda-todo-ignore-timestamp 0)))
+                                  (org-agenda-todo-ignore-timestamp 0)
+                                  (org-agenda-todo-ignore-deadlines 'near)))
                       (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE"
                                  ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled, no near deadline)")
                                   (org-agenda-todo-ignore-scheduled 'all)
