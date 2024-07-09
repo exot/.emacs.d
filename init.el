@@ -1129,7 +1129,7 @@ quickly loose their meaning."
                               "\nVia %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))."
                               "%?")
                      :empty-lines-before 1
-                     :empty-lines-after 0)
+                     :empty-lines-after 1)
                 ("g" "Record new goal"
                      entry
                      (file db/org-default-refile-file)
@@ -1144,19 +1144,19 @@ quickly loose their meaning."
                               "%a"
                               "%?")
                      :empty-lines-before 1
-                     :empty-lines-after 0)
+                     :empty-lines-after 1)
                 ("n" "Note"
                      entry
                      (file db/org-default-refile-file)
                      "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:%?"
                      :empty-lines-before 1
-                     :empty-lines-after 0)
+                     :empty-lines-after 1)
                 ("d" "Date"
                      entry
                      (file db/org-default-refile-file)
                      "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?"
                      :empty-lines-before 1
-                     :empty-lines-after 0)
+                     :empty-lines-after 1)
                 ("i" "Interruptions"
                      entry
                      (file db/org-default-refile-file)
@@ -1167,7 +1167,7 @@ quickly loose their meaning."
                      :clock-in t
                      :clock-resume t
                      :empty-lines-before 1
-                     :empty-lines-after 0)
+                     :empty-lines-after 1)
                 ("r" "Respond"
                      entry
                      (file db/org-default-refile-file)
@@ -1175,7 +1175,7 @@ quickly loose their meaning."
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\n%a%?")
                      :empty-lines-before 1
-                     :empty-lines-after 0)))
+                     :empty-lines-after 1)))
   :config (progn
             ;; disable usage of helm for `org-capture'
             (with-eval-after-load 'helm-mode
