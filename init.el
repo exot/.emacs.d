@@ -827,6 +827,8 @@
   :autoload (org-link-set-parameters)
   :config (progn
 
+            (require 'ol-man)
+
             (when (version< (org-version) "9.7")
               ;; Pushing already stored links to the front of `org-stored-links' became default
               ;; behavior in Org 9.7, the below code is thus only needed for older versions.
