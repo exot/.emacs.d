@@ -1289,11 +1289,12 @@ inserting the checklist."
                                                         :select '(cons
                                                                   (org-entry-get (point) "ITEM")
                                                                   (org-id-get-create))
-                                                        :where '(and ; XXX: this is not quite right yet
+                                                        :where `(and ; XXX: this is not quite right yet
                                                                  (tags "DATE")
                                                                  (not (done))
-                                                                 (ts-active :from today)
-                                                                 (ts-active :to today)))))
+                                                                 ;; XXX: calling `ts-now' twice might be stupid
+                                                                 (ts-active :from ,(ts-now))
+                                                                 (ts-active :to ,(ts-now))))))
                (insert "Concurrent DATEs:\n")
                (dolist (date concurrent-dates)
                  (insert "- " (org-link-make-string (cdr date) (car date)) "\n"))
