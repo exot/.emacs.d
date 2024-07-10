@@ -826,7 +826,10 @@
   :autoload (org-link-set-parameters)
   :config (progn
 
-            (require 'ol-man)
+            ;; Allow additional link targets
+            (require 'ol-man)           ; manpages
+            (with-demoted-errors "Cannot load package: %s"
+              (require 'orgit))         ; magit buffers
 
             (when (version< (org-version) "9.7")
               ;; Pushing already stored links to the front of `org-stored-links' became default
