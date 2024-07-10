@@ -1112,7 +1112,16 @@ quickly loose their meaning."
                 (fset 'recenter 'identity)
                 (unwind-protect
                      (apply actual-agenda-redo r)
-                  (fset 'recenter old-recenter))))))
+                  (fset 'recenter old-recenter))))
+
+            (define-advice org-search-view (:around
+                                            (func &rest args)
+                                            find-in-org-roam-files)
+              "When searching through Org items, also include `org-roam' files when available."
+              (let ((org-agenda-text-search-extra-files (append org-agenda-text-search-extra-files
+                                                                (when (require 'org-roam nil :no-error)
+                                                                  (org-roam-list-files)))))
+                (apply func args)))))
 
 ;; Capturing
 
