@@ -1356,7 +1356,7 @@ inserting the checklist."
                               nil
                               'region))
 
-           (db/org-goto-first-open-checkbox-in-subtree)))))
+           (db/org-goto-first-open-checkbox-in-headline)))))
 
 (define-obsolete-function-alias 'db/org-copy-template
   'db/org-insert-checklist
@@ -1429,45 +1429,75 @@ inserted template."
               (looking-at (rx bol (* space) eol)))
       (insert "\n"))))
 
-(defun db/org-goto-first-open-checkbox-in-subtree (&optional silent)
-  "Jump to first open checkbox in the current subtree.
+(defun db/org-goto-first-open-checkbox-in-headline (&optional silent)
+  "Go to first open checkbox in the current subtree.
 
 First search for started checkboxes, i.e. [-], and if those are
-not found, go to the first open checkbox, i.e. [ ].
+not found, go to the first open checkbox, i.e. [ ].  If the item
+thus found contains a sublist of checkbox items on it's own,
+recursively repeat the search, until no more sublists exist that
+contain open checkboxes.
 
 If there's no such open checkbox, emit a message (unless SILENT
 is non-nil) and stay put.
 
-Note: when lists are nested, those are not (yet) descended into
-to find the logically first open checkbox.  This should be fixed
-somewhen, though."
+Do not search through branches, i.e., stop the search when the
+first sub-headline is found."
 
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org buffer, exiting"))
 
   (save-restriction
-    (let ((original-point (point)))
-      (widen)
-      (org-back-to-heading 'invisible-ok)
-      (org-narrow-to-subtree)
-      (unless
-          ;; Yes, those `progn's are not strictly necessary, but it feels
-          ;; cleaner this way.
-          (or (progn
-                (goto-char (point-min))
-                (re-search-forward " \\[-\\] " nil 'no-error))
-              (progn
-                (goto-char (point-min))
-                (re-search-forward " \\[ \\] " nil 'no-error)))
-        (unless silent
-          (message "No open checkbox in subtree"))
-        (goto-char original-point)))))
+   (widen)
+   (org-back-to-heading 'invisible-ok)
+   (org-narrow-to-subtree)
+   ;; XXX: this needs a description of how the below algorithm works
+   (let ((ast (org-element-parse-buffer))
+         checkbox-pos
+         checkbox-node
+         checkbox-pos-1)
+
+     (while ast
+
+       (when checkbox-pos
+         ;; `checkbox-pos' might be nil when the found checkbox item is empty; in this case, `ast'
+         ;; is not empty, and the following assignment will potentially delete the last known
+         ;; position of a proper checkbox.
+         (setq checkbox-pos-1 checkbox-pos))
+
+       (setq checkbox-pos nil
+             checkbox-node nil)
+
+       (org-element-map ast '(item headline)
+         (lambda (node)
+           (unless (eq node ast)
+             (if (eq 'headline (org-element-type node))
+                 nil                 ; Abort search to ignore headlines and everything that follows.
+               (when (and (null checkbox-pos)
+                          (not (memq (org-element-property :checkbox node)
+                                     '(nil on))))
+                 (setq checkbox-pos (org-element-contents-begin node)
+                       checkbox-node node))
+               ;; Having this `when' separately and at the end of this function results in
+               ;; `org-element-map' terminating the search as soon as a “[-]” is found.
+               (when (eq 'trans (org-element-property :checkbox node))
+                 (setq checkbox-pos (org-element-contents-begin node)
+                       checkbox-node node)))))
+         nil t)
+
+       (setq ast checkbox-node))
+
+     (cond
+      (checkbox-pos (goto-char checkbox-pos))
+      (checkbox-pos-1 (goto-char checkbox-pos-1))
+      (t (unless silent
+           (message "No open checkbox in subtree")))))))
 
 (defun db/org-clock-goto-first-open-checkbox (&optional select)
   "Go to the currently clocked-in item or most recently clocked item.
 
 Move point to first open checkbox there, if there's one.  See
-`db/org-goto-first-open-checkbox-in-subtree' for details.
+`db/org-goto-first-open-checkbox-in-headline' for details.
 
 If SELECT is non-nil, offer a choice of the most recently
 clocked-in tasks to jump to."
@@ -1494,7 +1524,7 @@ clocked-in tasks to jump to."
           (goto-char m)
           (org-fold-show-entry)
           (org-fold-hide-drawer-all)
-          (db/org-goto-first-open-checkbox-in-subtree :silent)
+          (db/org-goto-first-open-checkbox-in-headline :silent)
           (org-reveal)
           (if recent
 	      (message "No running clock, this is the most recently clocked task"))
