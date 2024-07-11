@@ -2691,7 +2691,7 @@ eventuelly be set to nil, however)."
 (use-package lisp-mode
   :mode (("\\.cl\\'" . lisp-mode)
          ("\\.lisp\\'" . lisp-mode))
-  :init (setq lisp-indent-function #'common-lisp-indent-function))
+  :init (setq lisp-indent-function #'lisp-indent-function))
 
 (use-package lispy
   :ensure t
