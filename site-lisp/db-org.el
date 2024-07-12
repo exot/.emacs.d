@@ -1430,68 +1430,70 @@ inserted template."
       (insert "\n"))))
 
 (defun db/org-goto-first-open-checkbox-in-headline (&optional silent)
-  "Go to first open checkbox in the current subtree.
+  "Move point to first started checkbox in the current headline.
 
-First search for started checkboxes, i.e. [-], and if those are
-not found, go to the first open checkbox, i.e. [ ].  If the item
-thus found contains a sublist of checkbox items on it's own,
-recursively repeat the search, until no more sublists exist that
-contain open checkboxes.
+A started checkbox item is of the form “[-]”.  The idea to move
+point there is to continue previously started work on the current
+Org headline.
 
-If there's no such open checkbox, emit a message (unless SILENT
-is non-nil) and stay put.
+If no started checkbox is found, move point to the first
+unstartetd checkbox “[ ]”.  The idea is that this is where work
+should continue if no partially completed item is present.
 
-Do not search through branches, i.e., stop the search when the
+If there's neither a started or an open checkbox, emit a
+message (unless SILENT is non-nil) and stay put.
+
+If a checkbox is found this way and the checkbox has non-empty
+contents, search for started or open checkboxes is continued in
+this contents recursively, in the same way as described above.
+
+The search for started or open checkboxes is not done in branches
+of the current headline, i.e., the search is stopped when the
 first sub-headline is found."
 
   (unless (derived-mode-p 'org-mode)
     (user-error "Not in Org buffer, exiting"))
 
   (save-restriction
-   (widen)
-   (org-back-to-heading 'invisible-ok)
-   (org-narrow-to-subtree)
-   ;; XXX: this needs a description of how the below algorithm works
-   (let ((ast (org-element-parse-buffer))
-         checkbox-pos
-         checkbox-node
-         checkbox-pos-1)
+    (widen)
+    (org-back-to-heading 'invisible-ok)
+    (org-narrow-to-subtree)
 
-     (while ast
+    (let ((ast (-> (org-element-parse-buffer)
+                   (org-element-contents)
+                   (-first-item)        ; we skip the first headline
+                   (org-element-contents)))
+          checkbox-node                 ; node found in the current run
+          checkbox-node-1               ; last node found, if any
+          )
 
-       (when checkbox-pos
-         ;; `checkbox-pos' might be nil when the found checkbox item is empty; in this case, `ast'
-         ;; is not empty, and the following assignment will potentially delete the last known
-         ;; position of a proper checkbox.
-         (setq checkbox-pos-1 checkbox-pos))
+      (while ast
 
-       (setq checkbox-pos nil
-             checkbox-node nil)
+        (org-element-map (org-element-contents ast) '(item)
+          (lambda (node)
+            (when (and (null checkbox-node)
+                       (not (memq (org-element-property :checkbox node)
+                                  '(nil on))))
+              (setq checkbox-node node))
+            ;; Having this `when' separately and at the end of this function results in
+            ;; `org-element-map' terminating the search as soon as a “[-]” is found.  If no such
+            ;; checkbox is ever found, we stick with the first open checkbox found in the previous
+            ;; `when'.
+            (when (eq 'trans (org-element-property :checkbox node))
+              (setq checkbox-node node)))
+          ;; Additional arguments to `org-element-map': stop at first non-nil result returned by
+          ;; FUN, and do not recurse into headlines.
+          nil t '(headline))
 
-       (org-element-map ast '(item headline)
-         (lambda (node)
-           (unless (eq node ast)
-             (if (eq 'headline (org-element-type node))
-                 nil                 ; Abort search to ignore headlines and everything that follows.
-               (when (and (null checkbox-pos)
-                          (not (memq (org-element-property :checkbox node)
-                                     '(nil on))))
-                 (setq checkbox-pos (org-element-contents-begin node)
-                       checkbox-node node))
-               ;; Having this `when' separately and at the end of this function results in
-               ;; `org-element-map' terminating the search as soon as a “[-]” is found.
-               (when (eq 'trans (org-element-property :checkbox node))
-                 (setq checkbox-pos (org-element-contents-begin node)
-                       checkbox-node node)))))
-         nil t)
+        (setq checkbox-node-1 (or checkbox-node checkbox-node-1)
+              ast checkbox-node
+              checkbox-node nil))
 
-       (setq ast checkbox-node))
-
-     (cond
-      (checkbox-pos (goto-char checkbox-pos))
-      (checkbox-pos-1 (goto-char checkbox-pos-1))
-      (t (unless silent
-           (message "No open checkbox in subtree")))))))
+      (if checkbox-node-1
+          (goto-char (or (org-element-contents-begin checkbox-node-1)
+                         (org-element-begin checkbox-node-1)))
+        (unless silent
+          (message "No open checkbox in subtree"))))))
 
 (defun db/org-clock-goto-first-open-checkbox (&optional select)
   "Go to the currently clocked-in item or most recently clocked item.
