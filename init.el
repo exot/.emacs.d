@@ -3114,7 +3114,6 @@ eventuelly be set to nil, however)."
     ;; Explicitly require helm, because autoloading is difficult with helm's
     ;; separate `helm-command-prefix-key' mechanism.
     (require 'helm)
-    (bind-key "M-y" #'helm-show-kill-ring)
     (bind-key helm-command-prefix-key #'helm-command-prefix))
 
   (when (package-installed-p 'crux)
