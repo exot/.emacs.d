@@ -1061,7 +1061,7 @@ quickly loose their meaning."
                             ((org-agenda-overriding-header "Waiting For List")))
                       (tags-todo "TAGS={DATE}-TIMESTAMP>=\"<today>\""
                                  ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")))
-                      (tags "HOLD-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED<>\"\""
+                      (tags "TAGS={HOLD}-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED<>\"\""
                             ((org-agenda-overriding-header "Tasks on Hold")))))
 
                 ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
