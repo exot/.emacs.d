@@ -1309,8 +1309,8 @@ quickly loose their meaning."
              org-roam-node-find
              org-roam-capture
              org-roam-buffer-toggle)
-  :custom ((org-roam-directory "~/Documents/zettelkasten/")
-           (org-roam-db-location "~/Documents/zettelkasten/org-roam.db")
+  :custom ((org-roam-directory (expand-file-name "~/Documents/zettelkasten/"))
+           (org-roam-db-location (expand-file-name "~/Documents/zettelkasten/org-roam.db"))
            (org-roam-completion-everywhere t)
            (org-roam-mode-sections (list #'org-roam-backlinks-section
                                          #'org-roam-reflinks-section
