@@ -3172,6 +3172,18 @@ eventuelly be set to nil, however)."
           ((nil) (warn "Server not running, check logs and restart manually."))
           (t (warn "`server-running-p' returned neither nil nor t.  Check and restart server manually if required."))))))
 
+  ;; Warn of Windows pecularitites
+
+  (when on-windows
+    ;; Warn if `grep-find-template' or `grep-find-command' are undefined in `grep.el', because then
+    ;; they would be set by `grep-compute-defaults', which in turn uses `find-program', which is set
+    ;; to "find", which on Windows might be CMD's FIND, which does something else (it's more akin to
+    ;; grep).
+    (when (and (require 'grep nil t)
+               (or (null grep-find-template)
+                   (null grep-find-command)))
+      (warn (concat "`grep-find-template' or `grep-find-command' are undefined, please customize these to use the right version of `find'"))))
+
   ;; Load custom code
 
   (dolist (file db/after-init-load-files)
