@@ -708,7 +708,17 @@ PARAMS is a property list of the following parameters:
 `:org-ql-match'
 
   `org-ql' expression (in sexp syntax) to filter the list of
-  tasks to consider.  Defaults to (todo)."
+  tasks to consider.  Defaults to (todo).
+
+`:skip-matches'
+
+  Regular expression to skip certain interval end dates that are
+  not of interest.  The regular expression will be matched
+  against the formatted timestamp.  For example, to skip
+  weekends, use \"Sat\\|Sun\" as regular expression.
+
+  This can also be a function taking a formatted timestamp as
+  argument and returning non-nil when the date should be skipped."
   (let* ((start-date (org-read-date t t
                                     (or (plist-get params :start-date)
                                         "00:00")))
@@ -720,6 +730,12 @@ PARAMS is a property list of the following parameters:
          (org-ql-match (or (plist-get params :org-ql-match)
                            '(todo)))
          (timestamp-format "%Y-%m-%d %a %H:%M")
+         (skipper (pcase (plist-get params :skip-matches)
+                    ((pred null) #'(lambda (_) nil))
+                    ((and (pred stringp) arg)
+                     #'(lambda (x) (string-match arg x)))
+                    ((and (pred functionp) fun) fun)
+                    (_ (user-error "Invalid argument to :skip-matches: %s" arg))))
          date-range)
 
     ;; Check input
@@ -758,9 +774,9 @@ PARAMS is a property list of the following parameters:
                               nil
                               (format-time-string timestamp-format interval-end-date)
                               org-ql-match))))
-        (insert (format "| [%s] | %s |\n"
-                        (format-time-string timestamp-format interval-end-date)
-                        total-time))))
+        (let ((interval-end-date (format-time-string timestamp-format interval-end-date)))
+          (unless (funcall skipper interval-end-date)
+            (insert (format "| [%s] | %s |\n" interval-end-date total-time))))))
     (insert "|--|")
     (org-table-align)))
 
