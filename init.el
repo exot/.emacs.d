@@ -297,9 +297,10 @@
             (add-to-list 'display-buffer-alist
                          '("^\\*Async Shell Command*"
                            (display-buffer-in-side-window)
-                           (side . right)
-                           (slot . 0)
-                           (window-width . 0.33)))
+                           (side . bottom)
+                           (slot . 1)
+                           (window-height . 0.33)
+                           (window-parameters . ((no-other-window . t)))))
             (add-to-list 'display-buffer-alist
                          '("^\\*Warnings\\*"
                            (display-buffer-in-side-window)
