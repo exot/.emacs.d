@@ -890,7 +890,23 @@ quickly loose their meaning."
                          (org-trim
                           (replace-regexp-in-string
 			   "\\[[0-9]*%\\]\\|\\[[0-9]+/[0-9]+\\]\\|\\[/\\]" ""
-			   description)))))))
+			   description)))))
+
+            (define-advice org-link-make-string (:around
+                                                 (orig-func link &optional description)
+                                                 db/org--add-final-nbsp-to-fix-table-alignment)
+              "Add final non-breaking space to DESCRIPTION when ending on a closing bracket.
+
+This is to fix the current alignment of Org tables, which counts
+a zero-width character, which is used to escape the end of an Org
+link, as one character but does not adjust the width of the table
+accordingly."
+              (funcall orig-func
+                       link
+                       (if (and description
+                                (string-match "\\]$" description))
+                           (concat description " ")
+                         description)))))
 
 (use-package ol-bbdb
   :config (add-to-list 'org-bbdb-anniversary-format-alist
