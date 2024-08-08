@@ -882,31 +882,23 @@
               "Remove statistics cookies from link descriptions.
 
 Such cookies get updated with other statistics cookies and
-quickly loose their meaning."
-              (funcall orig-func
-                       link
-                       (when description
-                         ;; Taken from `org--get-outline-path-1':
-                         (org-trim
-                          (replace-regexp-in-string
-			   "\\[[0-9]*%\\]\\|\\[[0-9]+/[0-9]+\\]\\|\\[/\\]" ""
-			   description)))))
+quickly loose their meaning.
 
-            (define-advice org-link-make-string (:around
-                                                 (orig-func link &optional description)
-                                                 db/org--add-final-nbsp-to-fix-table-alignment)
-              "Add final non-breaking space to DESCRIPTION when ending on a closing bracket.
-
+Temporary fix: when the description ends on a closing
+bracket (ignoring trailing whitespace) after the statistics
+cookie has been removed, add a non-breaking space to the end.
 This is to fix the current alignment of Org tables, which counts
 a zero-width character, which is used to escape the end of an Org
 link, as one character but does not adjust the width of the table
 accordingly."
               (funcall orig-func
                        link
-                       (if (and description
-                                (string-match "\\]$" description))
-                           (concat description " ")
-                         description)))))
+                       (when description
+                         ;; Inspired by `org--get-outline-path-1':
+                         (->> description
+                              (replace-regexp-in-string "\\[[0-9]*%\\]\\|\\[[0-9]+/[0-9]+\\]\\|\\[/\\]" "")
+                              (replace-regexp-in-string "\\]\s-*$" "] ") ; XXX temporary
+                              (org-trim)))))))
 
 (use-package ol-bbdb
   :config (add-to-list 'org-bbdb-anniversary-format-alist
