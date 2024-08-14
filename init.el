@@ -3139,7 +3139,9 @@ eventuelly be set to nil, however)."
   (when (package-installed-p 'consult)
     (bind-key "M-g i" #'consult-imenu)
     (bind-key "C-x b" #'consult-buffer)
-    (setq completion-in-region-function #'consult-completion-in-region))
+    (setq completion-in-region-function #'consult-completion-in-region)
+    (bind-key "M-r" #'consult-history eshell-hist-mode-map)
+    (bind-key "M-r" #'consult-history minibuffer-mode-map))
 
   ;; Environment Variables
 
