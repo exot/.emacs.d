@@ -742,16 +742,18 @@
             (when (eq system-type 'cygwin)
               (add-to-list 'org-file-apps '(t . "cygstart %s") t))
 
-            ;; Custom link types for Windows
+            ;; Custom link types
+            (org-link-set-parameters "rfc" :follow #'db/org-rfc-open)
+            (org-link-set-parameters "cve" :follow #'(lambda (number)
+                                                       (browse-url
+                                                        (format "https://www.cve.org/CVERecord?id=CVE-%s"
+                                                                number))))
             (when (eq system-type 'windows-nt)
               (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
               (org-link-set-parameters "outlook" :follow #'db/org-outlook-open))
 
             ;; Mark some org mode regions to be skipped by ispell
             (add-hook 'org-mode-hook #'endless/org-ispell)
-
-            ;; Link type for RFCs
-            (org-link-set-parameters "rfc" :follow #'db/org-rfc-open)
 
             ;; Some timers
 
