@@ -548,6 +548,7 @@
              db/org-cleanup-continuous-clocks
              db/find-csv-in-org
              db/org-mark-current-default-task
+             db/org-clocktable-write-with-threshold
              db/export-diary
              db/org-insert-checklist
              db/org-copy-body-from-item-to-point

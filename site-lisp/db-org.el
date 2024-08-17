@@ -518,6 +518,31 @@ Work task and home task are determined by the current values of
         (message "Setting default task to: %s" (org-link-display-format (org-entry-get (point) "ITEM")))
         (org-clock-mark-default-task)))))
 
+(defun db/org-clocktable-write-with-threshold (ipos tables params)
+  "A clocktable formatter to filter entries by minimal clock time.
+
+The arguments IPOS, TABLES, and PARAMS are as for the default
+clocktable formatter `org-clocktable-write-default'.  The only
+difference is that PARAMS may include an additional property
+called `:clocktime-treshold' with a non-negative integer value.
+If such a value is given, each table entry in TABLES whose TIME
+value is below this threshold is removed before formatting the
+clocktable (see `org-clock-get-table-data' for the meaning of
+TIME)."
+  (let ((tables tables))                ; necessary?
+    (when-let ((threshold (plist-get params :clocktime-threshold)))
+      (unless (and (integerp threshold) (>= threshold 0))
+        (user-error "Clocktime threshold must be a non-negative integer, but is %s"
+                    threshold))
+      (setq tables (-map (pcase-lambda (`(,file-name ,file-time ,entries))
+                           (list file-name
+                                 file-time
+                                 (-filter (pcase-lambda (`(_ _ _ _ ,time _))
+                                            (>= time threshold))
+                                          entries)))
+                         tables)))
+    (org-clocktable-write-default ipos tables params)))
+
 
 ;;; Workload Reports
 
