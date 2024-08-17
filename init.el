@@ -296,11 +296,7 @@
   :config (progn
             (add-to-list 'display-buffer-alist
                          '("^\\*Async Shell Command*"
-                           (display-buffer-in-side-window)
-                           (side . bottom)
-                           (slot . 1)
-                           (window-height . 0.33)
-                           (window-parameters . ((no-other-window . t)))))
+                           (display-buffer-no-window)))
             (add-to-list 'display-buffer-alist
                          '("^\\*Warnings\\*"
                            (display-buffer-in-side-window)
