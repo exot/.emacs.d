@@ -3140,7 +3140,8 @@ eventuelly be set to nil, however)."
     (bind-key "C-x b" #'consult-buffer)
     (setq completion-in-region-function #'consult-completion-in-region)
     (bind-key "M-r" #'consult-history eshell-hist-mode-map)
-    (bind-key "M-r" #'consult-history minibuffer-mode-map))
+    (bind-key "M-r" #'consult-history minibuffer-mode-map)
+    (bind-key "C-r" #'consult-history minibuffer-mode-map))
 
   ;; Environment Variables
 
