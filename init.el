@@ -2863,6 +2863,7 @@ eventuelly be set to nil, however)."
 
 (use-package markdown-mode
   :ensure t
+  :pin "melpa-stable"
   :commands (markdown-mode)
   :init (progn
           (setq markdown-use-pandoc-style-yaml-metadata t
