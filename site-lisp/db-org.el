@@ -454,7 +454,13 @@ user for the next task to clock into."
            (org-with-point-at org-clock-default-task
              (org-clock-in)))
           (t
-           (org-clock-in '(4))))))))
+           ;; We cannot determine what task to clock in next, so let the user choose a task to clock
+           ;; in to; catch errors in case of typos and try again until a valid clock is running
+           (while (not (org-clocking-p))
+             (condition-case err
+                 (org-clock-in '(4))
+               (user-error              ; only handle user errors, to allow other errors to escape
+                (message "Error: %s" (error-message-string err)) nil)))))))))
 
 (defun db/save-current-org-task-to-file ()
   "Format currently clocked task and write it to`db/org-clock-current-task-file'."
