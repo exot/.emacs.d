@@ -1344,7 +1344,7 @@ inserting the checklist."
                                                                  (ts-active :to ,(ts-now))))))
                (insert "Concurrent DATEs:\n")
                (dolist (date concurrent-dates)
-                 (insert "- " (org-link-make-string (cdr date) (car date)) "\n"))
+                 (insert "- " (org-link-make-string (format "id:%s" (cdr date)) (car date)) "\n"))
                (insert "\n"))
 
              ;; Insert relevant backlinks, when available.
