@@ -31,6 +31,10 @@
  '(gnus-summary-low-unread ((t (:foreground "dim gray"))))
  '(default ((t (:height 110 :family "DejaVu Sans Mono"))))
  '(fixed-pitch ((t (:family "DejaVu Sans Mono"))))
+ '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.3))))
+ '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.2))))
+ '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.15))))
+ '(markdown-header-face-4 ((t (:inherit markdown-header-face :height 1.1))))
  '(variable-pitch ((t (:weight normal :height 1.3 :family "Bitstream Vera Serif")))))
 
 (message "Loaded db-light theme.")
