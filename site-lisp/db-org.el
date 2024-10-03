@@ -772,8 +772,12 @@ PARAMS is a property list of the following parameters:
                          #'(lambda (x) (string-match arg x)))
                         ((and (pred functionp) fun) fun)
                         (arg (user-error "Invalid argument to :skip-matches: %s" arg))))
-         (work-hours (or (plist-get params :work-hours)
-                         "8:00"))
+         (work-hours (pcase (plist-get params :work-hours)
+                       ((pred null) #'(lambda (_) "8:00"))
+                       ((and (pred org-duration-p) arg)
+                        #'(lambda (_) arg))
+                       ((and (pred functionp) fun) fun)
+                       (arg (user-error "Invalid argument to :work-hours: %s" arg))))
          date-range)
 
     ;; Check input
@@ -781,9 +785,6 @@ PARAMS is a property list of the following parameters:
     (unless (string-match-p (rx bos "+" (+ digit) (in "dwmy") eos)
                             increment)
       (user-error "Increment must be of the form +1d, +2m, +3y, …, but it's %s" increment))
-
-    (unless (org-duration-p work-hours)
-      (user-error "Work hours must be a duration string, but it's %s" work-hours))
 
     ;; Compute range of dates to check; simple but potentially costly approach
     ;; taken from https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/;
@@ -819,7 +820,9 @@ PARAMS is a property list of the following parameters:
                                       interval-end-date
                                       org-ql-match)))
                (utilization (* (/ (org-duration-to-minutes total-time-duration)
-                                  (cl-incf total-work-hours (org-duration-to-minutes work-hours)))
+                                  (cl-incf total-work-hours
+                                           (org-duration-to-minutes
+                                            (funcall work-hours interval-end-date))))
                                100)))
           (insert (format "| [%s] | %s | %s | %s |\n"
                           interval-end-date
