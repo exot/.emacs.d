@@ -777,16 +777,18 @@ PARAMS is a property list of the following parameters:
     ;; Compute range of dates to check; simple but potentially costly approach
     ;; taken from https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/;
     ;; maybe consider `org-read-date-get-relative' as well?
-    (let ((current start-date))
+    (let ((current start-date)
+          current-formatted)
       (while (or (time-less-p current end-date)
                  (time-equal-p current end-date))
         (setq current (org-read-date t t
-                                     ;; Add an extra + to ensure we increase the
-                                     ;; amount of time relative to the given
-                                     ;; default time string.
+                                     ;; Add an extra + to ensure we increase the amount of time
+                                     ;; relative to the given default time string.
                                      (format "+%s" increment)
-                                     nil current))
-        (push current date-range)))
+                                     nil current)
+              current-formatted (format-time-string timestamp-format current))
+        (unless (funcall skipper current-formatted)
+          (push current-formatted date-range))))
     (setq date-range (nreverse (cdr date-range)))
 
     (insert (format "#+CAPTION: Workload Overview Report at [%s] with start date [%s]\n"
@@ -794,20 +796,16 @@ PARAMS is a property list of the following parameters:
                     (format-time-string timestamp-format start-date)))
     (insert "| End Time | Planned Total |\n| <r> | <r> |\n|---|\n")
     ;; Compute workload report for each date and record the total time;
-    ;; XXX: this might be slow, try to reduce the calls to
-    ;; `db/org-planned-tasks-in-range'.
+    ;; XXX: this might be slow, try to reduce the calls to `db/org-planned-tasks-in-range'.
     (dolist (interval-end-date date-range)
       (let ((total-time (car (db/org-planned-tasks-in-range
-                              ;; Set start date to nil to also include tasks
-                              ;; scheduled or deadlined before `start-date', as
-                              ;; those are also still open and need to be done
-                              ;; somewhen.
+                              ;; Set start date to nil to also include tasks scheduled or deadlined
+                              ;; before `start-date', as those are also still open and need to be
+                              ;; done somewhen.
                               nil
-                              (format-time-string timestamp-format interval-end-date)
+                              interval-end-date
                               org-ql-match))))
-        (let ((interval-end-date (format-time-string timestamp-format interval-end-date)))
-          (unless (funcall skipper interval-end-date)
-            (insert (format "| [%s] | %s |\n" interval-end-date total-time))))))
+        (insert (format "| [%s] | %s |\n" interval-end-date total-time))))
     (insert "|--|")
     (org-table-align)))
 
