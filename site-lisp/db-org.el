@@ -807,28 +807,28 @@ PARAMS is a property list of the following parameters:
                     (format-time-string timestamp-format start-date)))
     (insert "| End Time | Planned Work | Work Hours | Utilization |\n| <r> | <r> | <r> | <r> |\n|---|\n")
     ;; Compute workload report for each date and record the total time;
-    ;; XXX: this might be slow, try to reduce the calls to `db/org-planned-tasks-in-range'.
-    (let ((days 0))
+    (let ((total-work-hours 0))
       (dolist (interval-end-date date-range)
-        (let ((total-time (car (db/org-planned-tasks-in-range
-                                ;; Set start date to nil to also include tasks scheduled or deadlined
-                                ;; before `start-date', as those are also still open and need to be
-                                ;; done somewhen.
-                                nil
-                                interval-end-date
-                                org-ql-match))))
-          (let ((utilization (* (/ (org-duration-to-minutes total-time)
-                                   (* (cl-incf days)
-                                      (org-duration-to-minutes work-hours)))
-                                100)))
-            (insert (format "| [%s] | %s | %s | %s |\n"
-                            interval-end-date
-                            total-time
-                            (org-duration-from-minutes (* days (org-duration-to-minutes work-hours)))
-                            (if (<= 80 utilization)
-                                ;; When utilization is above 80%, mark entry in bold
-                                (format "*%.2f%%*" utilization)
-                              (format "%.2f%%" utilization))))))))
+        (let* ((total-time-duration (car ;; XXX: this might be slow, try to reduce the calls to
+                                         ;; `db/org-planned-tasks-in-range'.
+                                     (db/org-planned-tasks-in-range
+                                      ;; Set start date to nil to also include tasks scheduled or
+                                      ;; deadlined before `start-date', as those are also still open
+                                      ;; and need to be done somewhen.
+                                      nil
+                                      interval-end-date
+                                      org-ql-match)))
+               (utilization (* (/ (org-duration-to-minutes total-time-duration)
+                                  (cl-incf total-work-hours (org-duration-to-minutes work-hours)))
+                               100)))
+          (insert (format "| [%s] | %s | %s | %s |\n"
+                          interval-end-date
+                          total-time-duration
+                          (org-duration-from-minutes total-work-hours)
+                          (if (<= 80 utilization)
+                              ;; When utilization is above 80%, mark entry in bold
+                              (format "*%.2f%%*" utilization)
+                            (format "%.2f%%" utilization)))))))
     (insert "|--|")
     (org-table-align)))
 
