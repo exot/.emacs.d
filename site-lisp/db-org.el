@@ -749,7 +749,12 @@ PARAMS is a property list of the following parameters:
   weekends, use \"Sat\\|Sun\" as regular expression.
 
   This can also be a function taking a formatted timestamp as
-  argument and returning non-nil when the date should be skipped."
+  argument and returning non-nil when the date should be skipped.
+
+`:work-hours'
+
+  The time available per day for work, given as duration string.
+  Defauls to \"8:00\"."
   (let* ((start-date (org-read-date t t
                                     (or (plist-get params :start-date)
                                         "00:00")))
@@ -767,12 +772,18 @@ PARAMS is a property list of the following parameters:
                      #'(lambda (x) (string-match arg x)))
                     ((and (pred functionp) fun) fun)
                     (_ (user-error "Invalid argument to :skip-matches: %s" arg))))
+         (work-hours (or (plist-get params :work-hours)
+                         "8:00"))
          date-range)
 
     ;; Check input
+
     (unless (string-match-p (rx bos "+" (+ digit) (in "dwmy") eos)
                             increment)
       (user-error "Increment must be of the form +1d, +2m, +3y, …, but it's %s" increment))
+
+    (unless (org-duration-p work-hours)
+      (user-error "Work hours must be a duration string, but it's %s" work-hours))
 
     ;; Compute range of dates to check; simple but potentially costly approach
     ;; taken from https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/;
@@ -794,18 +805,23 @@ PARAMS is a property list of the following parameters:
     (insert (format "#+CAPTION: Workload Overview Report at [%s] with start date [%s]\n"
                     (format-time-string timestamp-format (current-time))
                     (format-time-string timestamp-format start-date)))
-    (insert "| End Time | Planned Total |\n| <r> | <r> |\n|---|\n")
+    (insert "| End Time | Planned Total | Utilization |\n| <r> | <r> | <r> |\n|---|\n")
     ;; Compute workload report for each date and record the total time;
     ;; XXX: this might be slow, try to reduce the calls to `db/org-planned-tasks-in-range'.
-    (dolist (interval-end-date date-range)
-      (let ((total-time (car (db/org-planned-tasks-in-range
-                              ;; Set start date to nil to also include tasks scheduled or deadlined
-                              ;; before `start-date', as those are also still open and need to be
-                              ;; done somewhen.
-                              nil
-                              interval-end-date
-                              org-ql-match))))
-        (insert (format "| [%s] | %s |\n" interval-end-date total-time))))
+    (let ((days 0))
+      (dolist (interval-end-date date-range)
+        (let ((total-time (car (db/org-planned-tasks-in-range
+                                ;; Set start date to nil to also include tasks scheduled or deadlined
+                                ;; before `start-date', as those are also still open and need to be
+                                ;; done somewhen.
+                                nil
+                                interval-end-date
+                                org-ql-match))))
+          (let ((utilization (* (/ (org-duration-to-minutes total-time)
+                                   (* (cl-incf days)
+                                      (org-duration-to-minutes work-hours)))
+                                100)))
+            (insert (format "| [%s] | %s | %.2f%% |\n" interval-end-date total-time utilization))))))
     (insert "|--|")
     (org-table-align)))
 
