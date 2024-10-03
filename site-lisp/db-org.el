@@ -805,7 +805,7 @@ PARAMS is a property list of the following parameters:
     (insert (format "#+CAPTION: Workload Overview Report at [%s] with start date [%s]\n"
                     (format-time-string timestamp-format (current-time))
                     (format-time-string timestamp-format start-date)))
-    (insert "| End Time | Planned Total | Utilization |\n| <r> | <r> | <r> |\n|---|\n")
+    (insert "| End Time | Planned Work | Work Hours | Utilization |\n| <r> | <r> | <r> | <r> |\n|---|\n")
     ;; Compute workload report for each date and record the total time;
     ;; XXX: this might be slow, try to reduce the calls to `db/org-planned-tasks-in-range'.
     (let ((days 0))
@@ -821,9 +821,10 @@ PARAMS is a property list of the following parameters:
                                    (* (cl-incf days)
                                       (org-duration-to-minutes work-hours)))
                                 100)))
-            (insert (format "| [%s] | %s | %s |\n"
+            (insert (format "| [%s] | %s | %s | %s |\n"
                             interval-end-date
                             total-time
+                            (org-duration-from-minutes (* days (org-duration-to-minutes work-hours)))
                             (if (<= 80 utilization)
                                 ;; When utilization is above 80%, mark entry in bold
                                 (format "*%.2f%%*" utilization)
