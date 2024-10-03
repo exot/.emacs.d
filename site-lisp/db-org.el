@@ -821,7 +821,13 @@ PARAMS is a property list of the following parameters:
                                    (* (cl-incf days)
                                       (org-duration-to-minutes work-hours)))
                                 100)))
-            (insert (format "| [%s] | %s | %.2f%% |\n" interval-end-date total-time utilization))))))
+            (insert (format "| [%s] | %s | %s |\n"
+                            interval-end-date
+                            total-time
+                            (if (<= 80 utilization)
+                                ;; When utilization is above 80%, mark entry in bold
+                                (format "*%.2f%%*" utilization)
+                              (format "%.2f%%" utilization))))))))
     (insert "|--|")
     (org-table-align)))
 
