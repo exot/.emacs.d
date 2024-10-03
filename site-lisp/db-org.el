@@ -771,7 +771,7 @@ PARAMS is a property list of the following parameters:
                     ((and (pred stringp) arg)
                      #'(lambda (x) (string-match arg x)))
                     ((and (pred functionp) fun) fun)
-                    (_ (user-error "Invalid argument to :skip-matches: %s" arg))))
+                    (arg (user-error "Invalid argument to :skip-matches: %s" arg))))
          (work-hours (or (plist-get params :work-hours)
                          "8:00"))
          date-range)
