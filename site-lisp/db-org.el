@@ -847,6 +847,33 @@ PARAMS is a property list of the following parameters:
 (org-dynamic-block-define "db/org-workload-overview-report"
                           #'db/org-insert-workload-overview-report)
 
+(defun db/spent-work-hours-today (&optional match)
+  "Return the time spent today on work.
+
+Relevant clock times are taken from the file in
+`org-agenda-files'.  The result returned is given as integer in
+minutes.
+
+MATCH is a Org properties match that determines what constitutes
+as work item.  When not given, defaults to all tasks except those
+given by `org-home-task-id' and `org-break-task-id'."
+  (unless match
+    (when (and (stringp org-home-task-id)
+               (not (zerop (length org-home-task-id))))
+      (setq match (concat match (format "-ID=%s" org-home-task-id))))
+    (when (and (stringp org-break-task-id)
+               (not (zerop (length org-break-task-id))))
+      (setq match (concat match (format "-ID=%s" org-break-task-id)))))
+  (->> org-agenda-files
+       (-map #'(lambda (file)           ; taken from `org-dblock-write:clocktable'
+                 (with-current-buffer (find-buffer-visiting file)
+                   (save-excursion
+                     (save-restriction
+                       (org-clock-get-table-data file (list :match match
+                                                            :block 'today)))))))
+       (-map #'cl-second)
+       -sum))
+
 
 ;;; Fixes
 
