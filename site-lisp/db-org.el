@@ -810,28 +810,34 @@ PARAMS is a property list of the following parameters:
     ;; Compute workload report for each date and record the total time;
     (let ((total-work-hours 0))
       (dolist (interval-end-date date-range)
-        (let* ((total-time-duration (car ;; XXX: this might be slow, try to reduce the calls to
-                                         ;; `db/org-planned-tasks-in-range'.
+        (let* ((total-time-duration (car
+                                     ;; XXX: repeatedly calling `db/org-planned-tasks-in-range might
+                                     ;; be slow, try to reduce the numer of calls
                                      (db/org-planned-tasks-in-range
                                       ;; Set start date to nil to also include tasks scheduled or
                                       ;; deadlined before `start-date', as those are also still open
                                       ;; and need to be done somewhen.
                                       nil
                                       interval-end-date
-                                      org-ql-match)))
-               (utilization (* (/ (org-duration-to-minutes total-time-duration)
-                                  (cl-incf total-work-hours
-                                           (org-duration-to-minutes
-                                            (funcall work-hours interval-end-date))))
-                               100)))
+                                      org-ql-match))))
+          (cl-incf total-work-hours
+                   (org-duration-to-minutes
+                    (funcall work-hours interval-end-date)))
           (insert (format "| [%s] | %s | %s | %s |\n"
                           interval-end-date
                           total-time-duration
                           (org-duration-from-minutes total-work-hours)
-                          (if (<= 80 utilization)
-                              ;; When utilization is above 80%, mark entry in bold
-                              (format "*%.2f%%*" utilization)
-                            (format "%.2f%%" utilization)))))))
+                          ;; XXX: the following code might better to into a spearate function to
+                          ;; increase comprehension
+                          (let* ((total-time-minutes (org-duration-to-minutes total-time-duration)))
+                            (cond
+                             ((zerop total-time-minutes) "0.00%")
+                             ((zerop total-work-hours) "*Inf*")
+                             (t (let ((utilization (* (/ total-time-minutes total-work-hours) 100)))
+                                  (if (<= 80 utilization)
+                                      ;; When utilization is above 80%, mark entry in bold
+                                      (format "*%.2f%%*" utilization)
+                                    (format "%.2f%%" utilization)))))))))))
     (insert "|--|")
     (org-table-align)))
 
