@@ -707,34 +707,32 @@ everything understood by `org-read-date'."
 (defun org-dblock-write:db/org-workload-overview-report (params)
   "Write an overview workload report for all tasks.
 
-Tasks are read from files in the variable `org-agenda-files'.
-
 This overview report will list the amount of work planned for
-increasing intervals of time until a given end date is reached.
-For example, if the amount to increase the intervals is two
-days (+2d) and the report is meant to start from today (.), then
-this report will list the total amount of work planned for the
-days .+2d, .+4d, .+6d, … until the end date is reached.
+increasing intervals from a fixed start time until a fixed end
+date, devided in intervals of fixed increment.  The intervals are
+determined in increments of +1d.  Tasks are read from files in
+the variable `org-agenda-files'.
+
+Next to the planned work, the accumulated available work hours
+are displayed until the end of each interval, as well as the
+utilization for each interval.  The available work hours are
+computed by the value of `:work-hours' as described below.  Hours
+already spent are subtracted from this value as computed as sum
+of the clock time of all Org items as given by
+`:work-items-match'.
 
 PARAMS is a property list of the following parameters:
 
 `:start-date':
 
   Start date for the workload report.  When not provided, will
-  default to today at 00:00.  When provided, must be in a format
+  default to yesterday at 23:59.  When provided, must be in a format
   understood by `org-read-date'.
 
 `:end-date':
 
-  End date of the workload report.  Must be provided and provided
-  in a format understood by `org-read-date'.  The end date is
-  inclusive.
-
-`:increment':
-
-  Amount of days to increase the intervals.  Defaults to \"+1d\"
-  and must be provided in a format understandable by
-  `org-read-date'.
+  End date of the workload report.  Must be provided, in a format
+  understood by `org-read-date'.  The end date is inclusive.
 
 `:org-ql-match'
 
@@ -753,16 +751,24 @@ PARAMS is a property list of the following parameters:
 
 `:work-hours'
 
-  The time available per day for work, given as duration string.
-  Defauls to \"8:00\"."
-  (let* ((start-date (org-read-date t t
-                                    (or (plist-get params :start-date)
-                                        "00:00")))
+  The time available per day for work, given as duration string,
+  defauling to \"8:00\".  This can also be a function that
+  returns the work hours for a given date.  In this case, this
+  function receives the date formatted as an Org time stamp with
+  time and without brackets.
+
+`:work-items-match'
+
+  An Org properties match that determines what constitutes when
+  an Org item should be considered “work” and for which time
+  spent today should be substracted from the available work hours."
+
+  (let* ((start-date (org-read-date t t (or (plist-get params :start-date)
+                                            "-1d 23:59")))
          (end-date (or (--if-let (plist-get params :end-date)
                            (org-read-date t t it))
                        (user-error "No valid end-date provided")))
-         (increment (or (plist-get params :increment)
-                        "+1d"))
+         (increment "+1d")
          (org-ql-match (or (plist-get params :org-ql-match)
                            '(todo)))
          (timestamp-format "%Y-%m-%d %a %H:%M")
@@ -772,23 +778,27 @@ PARAMS is a property list of the following parameters:
                          #'(lambda (x) (string-match arg x)))
                         ((and (pred functionp) fun) fun)
                         (arg (user-error "Invalid argument to :skip-matches: %s" arg))))
+         (work-items-match (plist-get params :work-items-match))
          (work-hours (pcase (plist-get params :work-hours)
-                       ((pred null) #'(lambda (_) "8:00"))
+                       ((pred null)
+                        #'(lambda (date)
+                            (db/remaining-work-hours-for-date date work-items-match "8:00")))
                        ((and (pred org-duration-p) arg)
-                        #'(lambda (_) arg))
-                       ((and (pred functionp) fun) fun)
+                        #'(lambda (date)
+                            (db/remaining-work-hours-for-date date work-items-match arg)))
+                       ((and (pred functionp) fun)
+                        #'(lambda (date)
+                            (db/remaining-work-hours-for-date
+                             date
+                             work-items-match
+                             (funcall fun (format-time-string (org-time-stamp-format t 'no-brackets)
+                                                              date)))))
                        (arg (user-error "Invalid argument to :work-hours: %s" arg))))
          date-range)
 
-    ;; Check input
-
-    (unless (string-match-p (rx bos "+" (+ digit) (in "dwmy") eos)
-                            increment)
-      (user-error "Increment must be of the form +1d, +2m, +3y, …, but it's %s" increment))
-
-    ;; Compute range of dates to check; simple but potentially costly approach
-    ;; taken from https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/;
-    ;; maybe consider `org-read-date-get-relative' as well?
+    ;; Compute range of dates to check; simple but potentially costly approach taken from
+    ;; https://sachachua.com/blog/2015/08/org-mode-date-arithmetic/; maybe consider
+    ;; `org-read-date-get-relative' as well?
     (let ((current start-date)
           current-formatted)
       (while (or (time-less-p current end-date)
@@ -800,34 +810,33 @@ PARAMS is a property list of the following parameters:
                                      nil current)
               current-formatted (format-time-string timestamp-format current))
         (unless (funcall skip-date-p current-formatted)
-          (push current-formatted date-range))))
+          (push (cons current current-formatted) date-range))))
     (setq date-range (nreverse (cdr date-range)))
 
     (insert (format "#+CAPTION: Workload Overview Report at [%s] with start date [%s]\n"
                     (format-time-string timestamp-format (current-time))
                     (format-time-string timestamp-format start-date)))
     (insert "| End Time | Planned Work | Work Hours | Utilization |\n| <r> | <r> | <r> | <r> |\n|---|\n")
-    ;; Compute workload report for each date and record the total time;
+
+    ;; Compute workload report for each date and record the total time
     (let ((total-work-hours 0))
-      (dolist (interval-end-date date-range)
+      (pcase-dolist (`(,interval-end-date . ,interval-end-date-formatted) date-range)
+        ;; XXX: repeatedly calling `db/org-planned-tasks-in-range' is a waste of resources
         (let* ((total-time-duration (car
-                                     ;; XXX: repeatedly calling `db/org-planned-tasks-in-range might
-                                     ;; be slow, try to reduce the numer of calls
-                                     (db/org-planned-tasks-in-range
-                                      ;; Set start date to nil to also include tasks scheduled or
-                                      ;; deadlined before `start-date', as those are also still open
-                                      ;; and need to be done somewhen.
-                                      nil
-                                      interval-end-date
-                                      org-ql-match))))
-          (cl-incf total-work-hours
-                   (org-duration-to-minutes
-                    (funcall work-hours interval-end-date)))
+                                     ;; Set start date to nil to also include tasks scheduled or
+                                     ;; deadlined before `start-date', as those are also still open
+                                     ;; and need to be done somewhen.
+                                     (db/org-planned-tasks-in-range nil
+                                                                    interval-end-date-formatted
+                                                                    org-ql-match))))
+
+          (cl-incf total-work-hours (org-duration-to-minutes (funcall work-hours interval-end-date)))
+
           (insert (format "| [%s] | %s | %s | %s |\n"
-                          interval-end-date
+                          interval-end-date-formatted
                           total-time-duration
                           (org-duration-from-minutes total-work-hours)
-                          ;; XXX: the following code might better to into a spearate function to
+                          ;; XXX: the following code might better go to a spearate function to
                           ;; increase comprehension
                           (let* ((total-time-minutes (org-duration-to-minutes total-time-duration)))
                             (cond
@@ -838,6 +847,7 @@ PARAMS is a property list of the following parameters:
                                       ;; When utilization is above 80%, mark entry in bold
                                       (format "*%.2f%%*" utilization)
                                     (format "%.2f%%" utilization)))))))))))
+
     (insert "|--|")
     (org-table-align)))
 
@@ -846,39 +856,60 @@ PARAMS is a property list of the following parameters:
   (interactive)
   (org-create-dblock
    (list :name "db/org-workload-overview-report"
-         :end-date (org-read-date nil nil nil "End date: ")
-         :increment (read-string "Increment (default: +1d): " nil nil "+1d")))
+         :end-date (org-read-date nil nil nil "End date: ")))
   (org-update-dblock))
 
 (org-dynamic-block-define "db/org-workload-overview-report"
                           #'db/org-insert-workload-overview-report)
 
-(defun db/spent-work-hours-today (&optional match)
-  "Return the time spent today on work.
+(defun db/spent-work-hours-on-date (date match)
+  "Return the work time spent on DATE.
 
-Relevant clock times are taken from the file in
-`org-agenda-files'.  The result returned is given as integer in
-minutes.
-
-MATCH is a Org properties match that determines what constitutes
-as work item.  When not given, defaults to all tasks except those
-given by `org-home-task-id' and `org-break-task-id'."
-  (unless match
-    (when (and (stringp org-home-task-id)
-               (not (zerop (length org-home-task-id))))
-      (setq match (concat match (format "-ID=%s" org-home-task-id))))
-    (when (and (stringp org-break-task-id)
-               (not (zerop (length org-break-task-id))))
-      (setq match (concat match (format "-ID=%s" org-break-task-id)))))
+DATE must be given in a format understood by
+`format-time-string'.  The return value is the number of minutes
+clocked in on items on DATE from the files in `org-agenda-files'
+that satisfy MATCH.  MATCH is a Org properties match expression."
+  ;; Code inspired by `org-dblock-write:clocktable'.
   (->> org-agenda-files
-       (-map #'(lambda (file)           ; taken from `org-dblock-write:clocktable'
+       (-map #'(lambda (file)
                  (with-current-buffer (find-buffer-visiting file)
-                   (save-excursion
+                   (save-mark-and-excursion
                      (save-restriction
-                       (org-clock-get-table-data file (list :match match
-                                                            :block 'today)))))))
+                       (org-clock-get-table-data file
+                                                 (list :match match
+                                                       :tstart (format-time-string "%Y-%m-%d 00:00" date)
+                                                       :tend (format-time-string "%Y-%m-%d 00:00" (+ 86400.0 (float-time date))))))))))
        (-map #'cl-second)
        -sum))
+
+(defun db/remaining-work-hours-for-date (date work-items-match default-work-hours)
+  "Return time left for work on DATE.
+
+DATE must be given in a format understood by
+`format-time-string'.  The return value is an Org duration
+string.
+
+The available work time is as given by DEFAULT-WORK-HOURS as Org
+duration string.  The time already spent on work is computed from
+the clock time on DATE (from midnight to midnight) of all items
+matched by WORK-ITEMS-MATCH.  This time already spent is
+subtracted from the available time to yield the final result.  If
+the result is negative, \"0:00\" is returned.
+
+As an optimization, if DATE is in the future at least one day
+from now, the time spent on work is assumed to be zero."
+  (let ((allotted-time (if (org-duration-p default-work-hours)
+                           default-work-hours
+                         (user-error "Invalid value for `default-work-hours' given: %s"
+                                     default-work-hours)))
+        ;; If is date is in the future, don't bother computing spent time.
+        (worked-today (if (>= (float-time date)
+                              (+ 86400.0 (float-time (current-time))))
+                          0
+                        (db/spent-work-hours-on-date date work-items-match))))
+    (org-duration-from-minutes (max (- (org-duration-to-minutes allotted-time)
+                                       worked-today)
+                                    0))))
 
 
 ;;; Fixes
