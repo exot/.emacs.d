@@ -2820,6 +2820,9 @@ eventuelly be set to nil, however)."
   (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode))
   (require 'db-latex))
 
+(use-package edit-indirect              ; to allow code editing in markdown-mode
+  :ensure t)
+
 (use-package edit-list
   :ensure t
   :commands edit-list)
@@ -2921,6 +2924,12 @@ eventuelly be set to nil, however)."
               shr-max-image-proportion 0.7
               shr-image-animate nil
               shr-width (current-fill-column)))
+
+(use-package table
+  :init (progn
+          ;; Pandoc supports colons in grid tables to denote alignments, so let's have table.el
+          ;; recognize those too.
+          (setq table-cell-horizontal-chars "-=:")))
 
 (use-package textile-mode
   :config (progn
