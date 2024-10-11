@@ -1206,7 +1206,14 @@ accordingly."
                                               (:noweb . "no")
                                               (:hlines . "no")
                                               (:tangle . "no")
-                                              (:eval . "never-export"))))
+                                              (:eval . "never-export")))
+  :config (progn
+            ;; Let's disable evaluation of some text-only modes.
+            (dolist (mode '("json" "markdown" "yaml" "textile"))
+              (let ((var-name (intern (format "org-babel-default-header-args:%s" mode))))
+                (if (boundp var-name)
+                    (add-to-list var-name '(:eval . "never"))
+                  (defvar-1 var-name '((:eval . "never"))))))))
 
 (use-package ob-sql
   :config (progn
