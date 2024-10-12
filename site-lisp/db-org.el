@@ -18,6 +18,7 @@
 (require 'db-customize)
 (require 'ox-icalendar)
 (require 'org-ql)
+(require 'holidays)
 
 (autoload 'which-function "which-func")
 (autoload 'org-element-property "org-element")
@@ -910,6 +911,23 @@ from now, the time spent on work is assumed to be zero."
     (org-duration-from-minutes (max (- (org-duration-to-minutes allotted-time)
                                        worked-today)
                                     0))))
+
+(defun db/org-home-time-for-date (date-string)
+  "Return planned time for DATE-STRING to spend at home.
+
+DATE-STRING must be a date formatted as Org time stamp.  The
+returned time is given as an Org duration string."
+  ;; This is a simplification, as `date-string' might be the start of the day or the end.
+  (pcase-let ((`(_ _ _ ,day ,month ,year ,dow _ _) (parse-time-string date-string)))
+    (cond
+     ((let ((calendar-holidays (append holiday-general-holidays
+                                       holiday-christian-holidays)))
+        (calendar-check-holidays (list month day year)))
+      "8:00")
+     ((= dow 6) "8:00")                 ; Saturday
+     ((= dow 0) "6:00")                 ; Sunday, let's do not plan too much here
+     ((= dow 4) "3:00")                 ; Wednesday
+     (t "2:00"))))
 
 
 ;;; Fixes

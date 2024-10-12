@@ -211,18 +211,20 @@
               calendar-week-start-day 1 ; Monday
               calendar-bahai-all-holidays-flag nil
               calendar-chinese-all-holidays-flag nil
-              calendar-christian-all-holidays-flag t
+              calendar-christian-all-holidays-flag nil
               calendar-islamic-all-holidays-flag nil
               calendar-hebrew-all-holidays-flag nil
+              ;; The following list should contain only holidays without work, as it is examined by
+              ;; `db/org-home-time-for-date'.
               holiday-general-holidays '((holiday-fixed 1 1 "New Year's Day")
-                                         (holiday-fixed 2 14 "Valentine's Day")
-                                         (holiday-fixed 4 1 "April Fools' Day")
                                          (holiday-fixed 5 1 "Labour Day")
                                          (holiday-fixed 10 3 "German Unity Day")
                                          (holiday-fixed 10 31 "Reformation Day")
-                                         (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22)
-                                         (holiday-float 11 4 4 "Thanksgiving"))
+                                         (holiday-float 11 3 -1 "Day of Repentance and Prayer" 22))
               holiday-other-holidays '((holiday-fixed 2 13 "Jahrestag Zerstörung Dresden 1945")
+                                       (holiday-fixed 2 14 "Valentine's Day")
+                                       (holiday-fixed 4 1 "April Fools' Day")
+
                                        (holiday-fixed 5 25 "Towel Day")
                                        (holiday-fixed 6 4 "Tiananmen Massacre 1989")
                                        (holiday-fixed 6 5 "Snowden-Veröffentlichungen 2013")
@@ -235,6 +237,7 @@
                                        (holiday-fixed 7 21 "Jahrestag der 1. Mondlandung 1969")
                                        (holiday-fixed 7 21 "Jahrestag Massaker von Vassieux-en-Vercors 1944")
                                        (holiday-fixed 7 28 "Start WWI 1914")
+                                       (holiday-float 11 4 4 "Thanksgiving")
                                        (holiday-fixed 11 11 "End WWI 1918"))
               diary-show-holidays-flag t
               calendar-view-holidays-initially-flag nil))
@@ -530,6 +533,7 @@
              db/org-remaining-effort-of-current-item
              db/org-cmp-remaining-effort
              org-dblock-write:db/org-workload-report
+             db/org-home-time-for-date
              endless/org-ispell
              db/org-agenda-list-deadlines
              db/org-agenda-insert-active-filters
