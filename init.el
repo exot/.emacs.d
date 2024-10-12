@@ -1213,7 +1213,7 @@ accordingly."
                                               (:eval . "never-export")))
   :config (progn
             ;; Let's disable evaluation of some text-only modes.
-            (dolist (mode '("json" "markdown" "yaml" "textile"))
+            (dolist (mode '("json" "markdown" "yaml" "textile" "text"))
               (let ((var-name (intern (format "org-babel-default-header-args:%s" mode))))
                 (if (boundp var-name)
                     (add-to-list var-name '(:eval . "never"))
