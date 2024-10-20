@@ -9,7 +9,7 @@
 
 
 (defgroup personal-settings nil
-  "A bunch of functions and variables for personalizing emacs."
+  "A bunch of functions and variables for personalizing Emacs."
   :prefix "db/"
   :group 'convenience
   :group 'help
@@ -31,18 +31,20 @@
   :type 'string)
 
 (defcustom db/important-documents-path "~/Documents/library/"
-  "Path to look for documents that can be listed in extended
-search commands like `db/helm-shortcuts’."
+  "Path to look for important documents.
+
+These documents can then be listed in extended search commands
+like `db/helm-shortcuts’."
   :group 'personal-settings
   :type 'string)
 
 (defcustom db/path-to-onenote "c:/Program Files (x86)/Microsoft Office/Office15/ONENOTE.EXE"
-  "Path to OneNote executable, for opening corresponding org-mode links."
+  "Path to OneNote executable, for opening corresponding Org mode links."
   :group 'personal-settings
   :type 'file)
 
 (defcustom db/path-to-outlook "c:/Program Files (x86)/Microsoft Office/Office15/OUTLOOK.EXE"
-  "Path to Outlook executable, for opening corresponding org-mode links."
+  "Path to Outlook executable, for opening corresponding Org mode links."
   :group 'personal-settings
   :type 'file)
 
@@ -63,7 +65,8 @@ are assumed to be of the form *.crt."
   :set #'db/update-cert-file-directory)
 
 (defcustom db/rfc-cache-path nil
-  "Path where RFC documents are automatically downloaded to when opening rfc: links.
+  "Path where documents are automatically downloaded to when opening rfc: links.
+
 If this path is not set, i.e., is null, no automatic download will happen."
   :group 'personal-settings
   :type '(choice (const nil) file))
