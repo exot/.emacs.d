@@ -105,6 +105,16 @@ With ARG, switch to `default-directory' of the current buffer first."
         (insert (format "cd '%s'" current-dir))
         (comint-send-input)))))
 
+(defun db/ement-connect ()
+  "Connect to my matrix account."
+  (interactive)
+  (require 'ement)
+  (let ((password (password-store-get db/matrix-password-store-entry)))
+    (unless password
+      (user-error "No pass entry for Matrix password at “%s”" db/matrix-password-store-entry))
+    (ement-connect :user-id db/matrix-user-id
+                   :password password)))
+
 
 ;;; General Utilities
 

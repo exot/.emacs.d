@@ -20,6 +20,16 @@
   :group 'personal-settings
   :type 'string)
 
+(defcustom db/matrix-user-id ""
+  "Main Matrix User ID."
+  :group 'personal-settings
+  :type 'string)
+
+(defcustom db/matrix-password-store-entry ""
+  "Password Store entry for Matrix User ID in `db/matrix-user-id'."
+  :group 'personal-settings
+  :type 'string)
+
 (defcustom db/important-documents-path "~/Documents/library/"
   "Path to look for documents that can be listed in extended
 search commands like `db/helm-shortcuts’."

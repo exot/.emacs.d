@@ -358,6 +358,7 @@
              db/scratch
              db/find-user-init-file
              db/run-or-hide-ansi-term
+             db/ement-connect
              db/hex-to-ascii
              db/text-to-hex
              turn-on-lispy-when-available
