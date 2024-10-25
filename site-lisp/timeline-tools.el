@@ -490,7 +490,9 @@ current values of the relevant buffer local variables."
                                              -sum))))))
              (total-time (float (-sum (-map #'-second-item data)))))
         (insert "| Category | Total | Amount |\n|--|\n")
-        (dolist (category-lines data)
+        (dolist (category-lines (-sort #'(lambda (entry-1 entry-2) ; sort output by booked time
+                                           (>= (-second-item entry-1) (-second-item entry-2)))
+                                       data))
           (insert (format "| %s | %s | %.2f%% |\n"
                           (-first-item category-lines)
                           (org-duration-from-minutes (-second-item category-lines))
