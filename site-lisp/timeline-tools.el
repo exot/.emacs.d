@@ -467,11 +467,39 @@ current values of the relevant buffer local variables."
           (org-refresh-category-properties)))
 
       (erase-buffer)
+
+      ;; Header
       (insert (format "Timeline from [%s] to [%s]\n\n"
                       (format-time-string timeline-tools-headline-time-format
                                           timeline-tools--current-time-start)
                       (format-time-string timeline-tools-headline-time-format
                                           timeline-tools--current-time-end)))
+
+      ;; Clocktime summary: booked categories, their total times, and their relative amount
+      (let* ((data (->> timeline
+                        (-group-by #'(lambda (entry) ; group by category
+                                       (funcall timeline-tools-category-function
+                                                entry
+                                                (timeline-tools-entry-start-time entry)
+                                                (timeline-tools-entry-end-time entry))))
+                        (-map #'(lambda (category-lines) ; sum durations by category
+                                  (list (car category-lines)
+                                        (->> category-lines
+                                             cdr
+                                             (-map #'timeline-tools-entry-duration)
+                                             -sum))))))
+             (total-time (float (-sum (-map #'-second-item data)))))
+        (insert "| Category | Total | Amount |\n|--|\n")
+        (dolist (category-lines data)
+          (insert (format "| %s | %s | %.2f%% |\n"
+                          (-first-item category-lines)
+                          (org-duration-from-minutes (-second-item category-lines))
+                          (* 100 (/ (-second-item category-lines) total-time)))))
+        (insert (format "|--|\n| | %s | |\n" (org-duration-from-minutes total-time)))
+        (org-table-align)
+        (insert "\n"))
+
+      ;; Actual timeline
       (insert "|--|\n")
       (insert "| Category | Start | End | Duration | Task |\n")
       (let ((last-category nil)
