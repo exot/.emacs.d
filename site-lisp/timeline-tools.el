@@ -59,7 +59,7 @@ Filter are applied in the order they are given in this list."
   :group 'timeline-tools
   :type 'integer)
 
-(defcustom timeline-tools-headline-time-format "%Y-%m-%d %H:%M"
+(defcustom timeline-tools-headline-time-format "%Y-%m-%d %a %H:%M"
   "Format of time used in the headline of a timeline."
   :group 'timeline-tools
   :type 'string)
@@ -433,8 +433,7 @@ interactively, this date will be queried with `org-read-date’.
 When not given, FILES defaults to `org-agenda-files’ without
 archives."
   (interactive (list (org-read-date nil nil)))
-  (let ((timeline-tools-time-format "%H:%M")
-        (timeline-tools-headline-time-format "%Y-%m-%d"))
+  (let ((timeline-tools-time-format "%H:%M"))
    (timeline-tools-format-timeline (concat date " 00:00")
                                    (org-read-date nil nil "++1d" nil
                                                   (org-time-string-to-time date))
@@ -458,9 +457,8 @@ current values of the relevant buffer local variables."
                           timeline-tools--current-files)
                        (timeline-tools--get-timeline-from-buffer)))))
 
-      ;; Update categories in all affected buffers to retrieve up-to-date
-      ;; information; find all relevant buffers by checking the markers of all
-      ;; entries.
+      ;; Update categories in all affected buffers to retrieve up-to-date information; find all
+      ;; relevant buffers by checking the markers of all entries.
       (dolist (buffer (->> timeline
                            (mapcar #'timeline-tools-entry-marker)
                            (mapcar #'marker-buffer)
@@ -469,7 +467,7 @@ current values of the relevant buffer local variables."
           (org-refresh-category-properties)))
 
       (erase-buffer)
-      (insert (format "* Timeline from [%s] to [%s]\n\n"
+      (insert (format "Timeline from [%s] to [%s]\n\n"
                       (format-time-string timeline-tools-headline-time-format
                                           timeline-tools--current-time-start)
                       (format-time-string timeline-tools-headline-time-format
