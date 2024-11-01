@@ -817,6 +817,7 @@
 ;; Extended query language and dynamic blocks
 (use-package org-ql
   :pin "melpa-stable"
+  :ensure t
   :commands (org-ql-view
              org-ql-search
              org-dblock-write:org-ql)
