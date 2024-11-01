@@ -1678,7 +1678,7 @@ clocked-in tasks to jump to."
           (select-window target-window)
           (if (or (< m (point-min)) (> m (point-max))) (widen))
           (goto-char m)
-          (org-fold-show-entry)
+          (org-fold-reveal)
           (org-fold-hide-drawer-all)
           (db/org-goto-first-open-checkbox-in-headline :silent)
           (org-reveal)
