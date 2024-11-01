@@ -1395,7 +1395,6 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package git-commit
   :commands (global-git-commit-mode)
-  :ensure t
   :init (setq git-commit-style-convention-checks '(non-empty-second-line
                                                    overlong-summary-line))
   :config (add-hook 'git-commit-setup-hook
