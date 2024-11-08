@@ -475,6 +475,32 @@ current values of the relevant buffer local variables."
                       (format-time-string timeline-tools-headline-time-format
                                           timeline-tools--current-time-end)))
 
+      ;; Actual timeline
+      (insert "|--|\n")
+      (insert "| Category | Start | End | Duration | Task |\n")
+      (let ((last-category nil)
+            (current-category nil))
+        (dolist (line timeline)
+          (setq current-category (funcall timeline-tools-category-function
+                                          line
+                                          timeline-tools--current-time-start
+                                          timeline-tools--current-time-end))
+          (when (not (equal last-category current-category))
+            (insert "|--|\n")
+            (setq last-category current-category))
+          (insert
+           (propertize (format "| %s | %s | %s | %s min | %s | \n"
+                               current-category
+                               (timeline-tools-format-entry-time line 'start)
+                               (timeline-tools-format-entry-time line 'end)
+                               (timeline-tools-entry-duration line)
+                               (timeline-tools-entry-headline line))
+                       'entry line))))
+      (insert "|--|\n")
+      (org-table-align)
+
+      (insert "\n")
+
       ;; Clocktime summary: booked categories, their total times, and their relative amount
       (let* ((data (->> timeline
                         (-group-by #'(lambda (entry) ; group by category
@@ -501,29 +527,6 @@ current values of the relevant buffer local variables."
         (org-table-align)
         (insert "\n"))
 
-      ;; Actual timeline
-      (insert "|--|\n")
-      (insert "| Category | Start | End | Duration | Task |\n")
-      (let ((last-category nil)
-            (current-category nil))
-        (dolist (line timeline)
-          (setq current-category (funcall timeline-tools-category-function
-                                          line
-                                          timeline-tools--current-time-start
-                                          timeline-tools--current-time-end))
-          (when (not (equal last-category current-category))
-            (insert "|--|\n")
-            (setq last-category current-category))
-          (insert
-           (propertize (format "| %s | %s | %s | %s min | %s | \n"
-                               current-category
-                               (timeline-tools-format-entry-time line 'start)
-                               (timeline-tools-format-entry-time line 'end)
-                               (timeline-tools-entry-duration line)
-                               (timeline-tools-entry-headline line))
-                       'entry line))))
-      (insert "|--|\n")
-      (org-table-align)
       (goto-char (point-min))
       (timeline-tools-next-line))))
 
