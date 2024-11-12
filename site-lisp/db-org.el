@@ -1681,7 +1681,6 @@ clocked-in tasks to jump to."
           (org-fold-reveal)
           (org-fold-hide-drawer-all)
           (db/org-goto-first-open-checkbox-in-headline :silent)
-          (org-reveal)
           (if recent
 	      (message "No running clock, this is the most recently clocked task"))
           (run-hooks 'org-clock-goto-hook))
