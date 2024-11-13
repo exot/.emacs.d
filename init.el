@@ -2803,7 +2803,13 @@ eventuelly be set to nil, however)."
   :commands (cperl-mode)
   :mode ("\\.plx\\'" . cperl-mode)
   :init (progn
-          (add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
+          (if (boundp 'major-mode-remap-alist)
+              (add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
+            (mapc
+             #'(lambda (pair)
+                 (if (eq (cdr pair) 'perl-mode)
+                     (setcdr pair 'cperl-mode)))
+             (append auto-mode-alist interpreter-mode-alist)))
 
           (setq cperl-hairy nil
                 cperl-invalid-face 'default
@@ -2829,7 +2835,8 @@ eventuelly be set to nil, however)."
   :config (require 'gnutls))
 
 (when (package-installed-p "auctex")
-  (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode))
+  (when (boundp 'major-mode-remap-alist)
+    (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode)))
   (require 'db-latex))
 
 (use-package edit-indirect              ; to allow code editing in markdown-mode
