@@ -624,6 +624,19 @@ duplicates when elements are considered as symbols."
     (or (lm-header "package-version")
         (lm-header "version"))))
 
+(defun db/auth-get-key (host key)
+  "Return value of KEY from auth-sources for HOST.
+
+This is a convenience function for `auth-source-search'.  Not
+quite sure whether something like this exists already?"
+  ;; Inspired by https://magnus.therning.org/2024-09-01-improving-how-i-handle-secrets-in-my-work-notes.html.
+  (let ((entry (-> (auth-source-search :host host)
+                   car
+                   (plist-get key))))
+    (if (eq key :secret)
+        (funcall entry)
+      entry)))
+
 
 ;;; Base45 Decoding
 
