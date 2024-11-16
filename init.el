@@ -1239,22 +1239,7 @@ accordingly."
                  (funcall orig-fun
                           host port user
                           (password-read (format "Password for %s@%s: " user database))
-                          database))))
-
-            (define-advice org-babel-execute:sql (:around
-                                                  (orig-fun body params)
-                                                  retrieve-password-by-function)
-              "Allow to set :dbpassword by an ID of an Org items having the PASSWORD property."
-              (let* ((dbpassword-id (cdr (assq :dbpassword-by-id params)))
-                     (params params))
-                (when dbpassword-id
-                  (setq params (cons (cons :dbpassword
-                                           (let* ((pom (or (org-id-find dbpassword-id 'marker)
-                                                           (user-error "Cannot find ID %s" dbpassword-id))))
-                                             (or (org-entry-get pom "PASSWORD")
-                                                 (user-error "No PASSWORD property at ID %s" dbpassword-id))))
-                                     params)))
-                (funcall orig-fun body params)))))
+                          database))))))
 
 ;; Exporting
 

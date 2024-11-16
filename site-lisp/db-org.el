@@ -1164,10 +1164,14 @@ cache if that's in use."
   (when (derived-mode-p 'org-agenda-mode)
     (org-agenda-redo)))
 
-(defun org-password-manager-get-password-by-id (id)
+(defun org-password-manager-get-password-by-id (id &optional return-as-value)
   "Retrieve password from Org item identified by ID.
 
-The password is assumed to be stored at the PASSWORD property."
+The password is assumed to be stored at the PASSWORD property.
+When RETURN-AS-VALUE is nil, the password is copied to the
+clipboard as with `org-password-manager-get-password', which see.
+Otherwise, the password is returned as value from this function
+and can be used for further processing."
 
   (require 'org-password-manager)
   (let ((pom (org-id-find id 'marker)))
@@ -1179,13 +1183,15 @@ The password is assumed to be stored at the PASSWORD property."
       (when (null pw)
         (user-error "PASSWORD property not set for “%s”" heading))
 
-      (funcall interprogram-cut-function pw)
-      (run-at-time org-password-manager-default-password-wait-time
-                   nil
-                   (lambda () (funcall interprogram-cut-function "")))
-      (message "Password for “%s” securly copied to system clipboard; will be overwritten in %s."
-               heading
-               org-password-manager-default-password-wait-time))))
+      (if return-as-value
+          pw
+        (funcall interprogram-cut-function pw)
+        (run-at-time org-password-manager-default-password-wait-time
+                     nil
+                     (lambda () (funcall interprogram-cut-function "")))
+        (message "Password for “%s” securly copied to system clipboard; will be overwritten in %s."
+                 heading
+                 org-password-manager-default-password-wait-time)))))
 
 (defhydra hydra-org-jump (:color blue)
   ;; Quote %, as otherwise they would be misinterpreted as format characters
