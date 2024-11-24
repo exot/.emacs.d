@@ -122,9 +122,7 @@
       initial-major-mode 'fundamental-mode
       ring-bell-function #'ignore
       load-prefer-newer nil             ; t breaks `org-reload'
-      )
-
-(fset 'yes-or-no-p 'y-or-n-p)
+      use-short-answers nil)
 
 (setq-default fill-column 100)
 (setq-default indent-tabs-mode nil)
