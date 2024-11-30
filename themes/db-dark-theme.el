@@ -35,6 +35,7 @@ Known to work well with the `solarized-dark’ theme.")
  '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.2))))
  '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.15))))
  '(markdown-header-face-4 ((t (:inherit markdown-header-face :height 1.1))))
+ '(markdown-comment-face ((t (:forgeground "#586e75" :strike-through nil :slant italic))))
  '(variable-pitch ((t (:weight normal :height 1.3 :family "Bitstream Vera Serif")))))
 
 (message "Loaded db-dark theme.")
