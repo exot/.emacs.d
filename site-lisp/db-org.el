@@ -1684,10 +1684,9 @@ clocked-in tasks to jump to."
           (select-window target-window)
           (if (or (< m (point-min)) (> m (point-max))) (widen))
           (goto-char m)
-          (org-fold-reveal)
           (org-fold-hide-drawer-all)
           (db/org-goto-first-open-checkbox-in-headline :silent)
-          (org-fold-reveal)
+          (org-fold-show-set-visibility 'ancestors)
           (if recent
 	      (message "No running clock, this is the most recently clocked task"))
           (run-hooks 'org-clock-goto-hook))
