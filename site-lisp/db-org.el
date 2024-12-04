@@ -812,7 +812,11 @@ PARAMS is a property list of the following parameters:
               current-formatted (format-time-string timestamp-format current))
         (unless (funcall skip-date-p current-formatted)
           (push (cons current current-formatted) date-range))))
-    (setq date-range (nreverse (cdr date-range)))
+
+    ;; Remove last day added when outside of range; reverse range afterwards to get correct sorting
+    (setq date-range (nreverse (if (time-less-p end-date (caar date-range))
+                                   (cdr date-range)
+                                 date-range)))
 
     (insert (format "#+CAPTION: Workload Overview Report at [%s] with start date [%s]\n"
                     (format-time-string timestamp-format (current-time))
