@@ -438,6 +438,12 @@ user for the next task to clock into."
         (cond
           ((and (markerp org-clock-interrupted-task)
                 (marker-buffer org-clock-interrupted-task)
+                ;; Ensure that interrupted task is not the default task; in this case, we prefer to
+                ;; continue with parent tasks instead.
+                (or (not (markerp org-clock-default-task))
+                    (not (marker-buffer org-clock-default-task))
+                    (not (= org-clock-interrupted-task
+                            org-clock-default-task)))
                 (org-with-point-at org-clock-interrupted-task
                   (not (member (nth 2 (org-heading-components))
                                org-done-keywords))))
