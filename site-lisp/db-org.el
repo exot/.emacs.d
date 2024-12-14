@@ -1304,6 +1304,15 @@ headlined with their date."
 
     (reverse result)))
 
+(defun db/org-execute-babel-in-buffer-and-iterate-tables ()
+  "Update all babel source blocks in current buffer and iterate tables afterwards.
+
+This is useful for updating complex reports that rely on a mix of
+Org Babel source blocks and dependent tables."
+  (interactive)
+  (org-babel-execute-buffer)
+  (org-table-iterate-buffer-tables))
+
 
 ;;; Checklist Handling
 

@@ -544,6 +544,7 @@
              hydra-org-clock/body
              hydra-org-jump/body
              hydra-org-custom/body
+             db/org-execute-babel-in-buffer-and-iterate-tables
              db/make-org-capture-frame
              db/org-onenote-open
              db/org-outlook-open
