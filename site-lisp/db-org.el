@@ -1438,54 +1438,52 @@ inserting the checklist."
 
         (t ;; Default action: insert complete checklist.
 
-         (let (point-before-template
-               point-after-template)
+         (save-mark-and-excursion
 
-           ;; Let's remember where we are, so that latter on CHECKLIST_INSERTED_P
-           ;; will be inserted at the original heading (where we are now) and not
-           ;; at possible new subtrees coming from the template.
-           (save-mark-and-excursion
+           ;; Checklists are inserted directly before first child, if existent, or
+           ;; at end of subtree
+           (org-fold-show-entry)
+           (or (org-goto-first-child)
+               (org-end-of-subtree 'invisible-ok 'to-heading))
+           ;; Move back from heading, unless we are at the end of the buffer
+           (when (org-at-heading-p)
+             ;; Go to end of line before heading
+             (forward-char -1))
 
-             ;; Checklists are inserted directly before first child, if existent, or
-             ;; at end of subtree
-             (org-fold-show-entry)
-             (or (org-goto-first-child)
-                 (org-end-of-subtree 'invisible-ok 'to-heading))
-             ;; Move back from heading, unless we are at the end of the buffer
-             (when (org-at-heading-p)
-               ;; Go to end of line before heading
-               (forward-char -1))
+           ;; Insert blank line, but only if the previous line is not blank already.
+           (unless (save-mark-and-excursion
+                     (forward-line -1)
+                     (looking-at (rx bol (* space) eol)))
+             (insert "\n"))
 
-             ;; Insert blank line, but only if the previous line is not blank already.
-             (unless (save-mark-and-excursion
-                       (forward-line -1)
-                       (looking-at (rx bol (* space) eol)))
-               (insert "\n"))
+           ;; Insert actual checklist consisting of concurrent dates, relevant backlinks, and a template
+           (let (concurrent-dates
+                 number-of-backlinks)
 
              ;; Insert links to concurrent DATEs, if any
-             (when-let ((concurrent-dates (org-ql-query :from (org-agenda-files)
-                                                        :select '(cons
-                                                                  (org-entry-get (point) "ITEM")
-                                                                  (org-id-get-create))
-                                                        :where `(and ; XXX: this is not quite right yet
-                                                                 (tags "DATE")
-                                                                 (not (done))
-                                                                 ;; XXX: calling `ts-now' twice might be stupid
-                                                                 (ts-active :from ,(ts-now))
-                                                                 (ts-active :to ,(ts-now))))))
+
+             (setq concurrent-dates (org-ql-query :from (org-agenda-files)
+                                                  :select '(cons
+                                                            (org-entry-get (point) "ITEM")
+                                                            (org-id-get-create))
+                                                  :where `(and ; XXX: this is not quite right yet
+                                                           (tags "DATE")
+                                                           (not (done))
+                                                           ;; XXX: calling `ts-now' twice might be stupid
+                                                           (ts-active :from ,(ts-now))
+                                                           (ts-active :to ,(ts-now)))))
+
+             (when concurrent-dates
                (insert "Concurrent DATEs:\n")
                (dolist (date concurrent-dates)
                  (insert "- " (org-link-make-string (format "id:%s" (cdr date)) (car date)) "\n"))
                (insert "\n"))
 
-             ;; Insert relevant backlinks, when available.
-             (let ((parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
-                                   (string-to-number it)))
-                   number-of-backlinks
-                   point-before-backlinks)
+             ;; Insert relevant backlinks
 
-               ;; Store where we are so we can delete the checklist in case it's empty.
-               (setq point-before-backlinks (point))
+             (let ((point-before-backlinks (point))
+                   (parent-depth (--when-let (org-entry-get (point) "CHECKLIST_BACKLINK_DEPTH" nil)
+                                   (string-to-number it))))
 
                (insert (format "Relevant backlinks (%s):\n\n"
                                (if parent-depth
@@ -1510,32 +1508,37 @@ inserting the checklist."
                    (delete-region point-before-backlinks (point))
                  (insert "\n\n")))
 
-             ;; Insert template, when avilable.
-             (let ((template-marker (db/org--find-template)))
-               (insert "Template:")
-               (setq point-before-template (point))
-               (if (not template-marker)
-                   (insert " none.\n")
-                 (db/org-copy-body-from-item-to-point template-marker))
-               (setq point-after-template (point))))
+             ;; And finally insert a template
 
-           (org-entry-put (point) "CHECKLIST_INSERTED_P" "t")
-           (org-update-statistics-cookies nil)
+             (when-let ((template-marker (db/org--find-template)))
+               (let (point-before-template
+                     point-after-template)
+                 (setq point-before-template (point))
+                 (unless (and (zerop number-of-backlinks)
+                              (null concurrent-dates))
+                   ;; When there are no backlinks, there is no need to print “Template” as a
+                   ;; separator
+                   (insert "Template:"))
+                 (db/org-copy-body-from-item-to-point template-marker)
+                 (setq point-after-template (point))
 
-           ;; Remove any existing ID properties, as they would be duplicates
-           ;; now.  Only do this in the part inserted with template, though, and
-           ;; leave previously existing child items and the item itself as they
-           ;; are.
-           (save-mark-and-excursion
-             (set-mark point-before-template)
-             (goto-char point-after-template)
-             (org-map-entries #'(lambda ()
-                                  (org-entry-delete (point) "ID")
-                                  (org-entry-delete (point) "CUSTOM_ID"))
-                              nil
-                              'region))
+                 ;; Remove any existing ID properties, as they would be duplicates
+                 ;; now.  Only do this in the part inserted with template, though, and
+                 ;; leave previously existing child items and the item itself as they
+                 ;; are.
+                 (save-mark-and-excursion
+                   (set-mark point-before-template)
+                   (goto-char point-after-template)
+                   (org-map-entries #'(lambda ()
+                                        (org-entry-delete (point) "ID")
+                                        (org-entry-delete (point) "CUSTOM_ID"))
+                                    nil
+                                    'region))))))
 
-           (db/org-goto-first-open-checkbox-in-headline)))))
+         (org-entry-put (point) "CHECKLIST_INSERTED_P" "t")
+         (org-update-statistics-cookies nil)
+
+         (db/org-goto-first-open-checkbox-in-headline))))
 
 (define-obsolete-function-alias 'db/org-copy-template
   'db/org-insert-checklist
