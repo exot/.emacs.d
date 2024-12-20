@@ -789,7 +789,12 @@
             ;; bound, resulting in some prior calls of `org-read-date' to ignore
             ;; the hh:mm part.  So let's bind this variable now to make things
             ;; work.
-            (defvar org-time-was-given nil)))
+            (defvar org-time-was-given nil)
+
+            ;; Completely redo agenda buffer when jumping to today; this ensures that agenda views
+            ;; from previous days get updated as expected.
+            (define-advice org-agenda-goto-today (:before () redo-all)
+              (org-agenda-redo-all))))
 
 (use-package org-cycle
   :autoload (org-cycle-hide-drawers)
