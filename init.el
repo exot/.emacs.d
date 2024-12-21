@@ -1362,10 +1362,9 @@ Note that this workaround is incomplete, as explained in this comment."
               ediff-show-clashes-only t)
   :config (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 
-;; Inspired by
-;; https://andreyor.st/posts/2023-09-09-migrating-from-lsp-mode-to-eglot.
 (use-package eglot
-  :ensure t
+  :ensure nil
+  ;; Inspired by https://andreyor.st/posts/2023-09-09-migrating-from-lsp-mode-to-eglot.
   :init (setq eglot-autoshutdown t
               eglot-extend-to-xref nil
               eglot-stay-out-of '(yasnippet)))
@@ -2898,12 +2897,9 @@ eventuelly be set to nil, however)."
 
 (use-package python
   :config (progn
-            (unless (require 'lsp-pyright nil :no-error)
-              (message "`lsp-pyright' not available, using defaults from `lsp'"))
-
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
             (add-hook 'python-mode-hook #'company-mode)
-            (add-hook 'python-mode-hook #'lsp-deferred)
+            (add-hook 'python-mode-hook #'eglot-ensure)
             (add-hook 'python-mode-hook #'subword-mode)))
 
 ;; https://ddavis.io/posts/emacs-python-lsp/
