@@ -2217,7 +2217,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :config (run-with-timer 0 3600 #'recentf-save-list))
 
 (use-package company
-  :commands (company-mode global-company-mode)
+  :commands (company-mode)
   :init (setq company-show-quick-access t))
 
 (use-package marginalia
@@ -2740,8 +2740,7 @@ eventuelly be set to nil, however)."
   :config (progn
             (add-hook 'cider-repl-mode-hook 'subword-mode)
             (add-hook 'cider-repl-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'cider-repl-mode-hook 'cider-repl-toggle-pretty-printing)
-            (add-hook 'cider-repl-mode-hook 'company-mode)))
+            (add-hook 'cider-repl-mode-hook 'cider-repl-toggle-pretty-printing)))
 
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode))
@@ -2751,8 +2750,7 @@ eventuelly be set to nil, however)."
                 (exists 'defun)
               (dopar 'defun))
             (add-hook 'clojure-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'clojure-mode-hook 'clj-refactor-mode)
-            (add-hook 'clojure-mode-hook 'company-mode)))
+            (add-hook 'clojure-mode-hook 'clj-refactor-mode)))
 
 (use-package clj-refactor
   :commands (clj-refactor-mode)
@@ -2854,12 +2852,6 @@ eventuelly be set to nil, however)."
   :config (progn
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
-            (add-hook 'haskell-mode-hook
-                      #'(lambda ()
-                          (company-mode 1)
-                          (set (make-local-variable 'company-backends)
-                               (append '((company-capf company-dabbrev-code))
-                                       company-backends))))
             (add-hook 'haskell-mode-hook 'flycheck-mode)
             (add-hook 'haskle--mode-hook 'subword-mode)
 
@@ -2898,7 +2890,6 @@ eventuelly be set to nil, however)."
 (use-package python
   :config (progn
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
-            (add-hook 'python-mode-hook #'company-mode)
             (add-hook 'python-mode-hook #'eglot-ensure)
             (add-hook 'python-mode-hook #'subword-mode)))
 
@@ -3024,7 +3015,6 @@ eventuelly be set to nil, however)."
                   projectile-mode
                   yas-global-mode
                   global-git-commit-mode
-                  ;; global-company-mode
                   marginalia-mode
                   vertico-mode
                   ))
