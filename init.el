@@ -1400,6 +1400,7 @@ Note that this workaround is incomplete, as explained in this comment."
 ;; See https://andreyor.st/posts/2023-09-09-migrating-from-lsp-mode-to-eglot/
 ;; for where some of the configuration for `lsp-mode' is coming from.
 (use-package lsp-mode
+  :commands (lsp-mode)
   :ensure nil
   :init (setq lsp-keymap-prefix "C-c C-l"
               lsp-session-file (expand-file-name ".lsp-session" emacs-d-userdata)
