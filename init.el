@@ -279,9 +279,7 @@
                                tab-bar-separator
                                ;; tab-bar-format-align-right
                                ;; current-time-string
-                               ))
-  :config (progn
-            (tab-bar-history-mode +1)))
+                               )))
 
 (use-package url
   :init (setq url-configuration-directory (expand-file-name "url" emacs-d-userdata)))
@@ -2975,6 +2973,7 @@ eventuelly be set to nil, however)."
 
   (recentf-mode +1)
   (winner-mode +1)
+  (tab-bar-history-mode +1)
   (global-auto-revert-mode -1)
   (which-function-mode +1)
   (global-eldoc-mode +1)
