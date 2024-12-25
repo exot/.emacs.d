@@ -22,6 +22,10 @@
 
 ;; * Preliminaries (constants and path settings)
 
+(when (version< emacs-version "29")
+  (error "Emacs version is too old!  We need at least Emacs 29, but this is %s"
+         emacs-version))
+
 (defconst emacs-d (file-name-directory
                    (file-chase-links load-file-name))
   "The giant turtle on which the world rests.")
@@ -50,13 +54,6 @@
         ("gnu" . "https://elpa.gnu.org/packages/")
         ("melpa-stable" . "https://stable.melpa.org/packages/")
         ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
-(when (< emacs-major-version 27)
-  ;; Before Emacs 27.1, we had to do package initialization ourselves.  In Emacs
-  ;; 27.1 and later, it's done directly after loading early-init.el.  See
-  ;; https://www.gnu.org/software/emacs/news/NEWS.27.1
-  (load-file (expand-file-name "early-init.el" emacs-d))
-  (package-initialize))
 
 (defvar use-package-enable-imenu-support t)
 
@@ -2618,21 +2615,10 @@ eventuelly be set to nil, however)."
             (add-hook 'eshell-mode-hook
                       'with-editor-export-editor)
 
-            (if (<= emacs-major-version 27)
-                (add-hook 'eshell-mode-hook
-                          #'(lambda ()
-                              (bind-key "C-a" #'eshell-bol eshell-mode-map)
-                              (bind-key "M-r" #'eshell-insert-history eshell-mode-map)
-                              (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
-                              (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
-              ;; In Emacs 28.1, eshell's mode maps have been refactored to
-              ;; follow standard extensibility.  There's thus no need
-              ;; anymore to use the special hook construction.
-              (progn
-                (bind-key "C-a" #'eshell-bol eshell-mode-map)
-                (bind-key "M-r" #'eshell-insert-history eshell-hist-mode-map)
-                (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
-                (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)))
+            (bind-key "C-a" #'eshell-bol eshell-mode-map)
+            (bind-key "M-r" #'eshell-insert-history eshell-hist-mode-map)
+            (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
+            (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)
 
             ;; Ignoring case when completing file names seems to have a
             ;; bug: when a ~ is encountered, it is implicitly expaned by
@@ -2831,15 +2817,6 @@ eventuelly be set to nil, however)."
   :ensure t
   :commands edit-list)
 
-(use-package enriched
-  :defer t
-  :config (progn
-            ;; https://www.opencve.io/cve/CVE-2017-14482 for Emacs before 25.3
-            (when (version< emacs-version "25.3")
-              (defun enriched-decode-display-prop (start end &optional params)
-                (ignore params)
-                (list start end)))))
-
 (use-package expand-region
   :ensure t
   :commands (er/expand-region))
@@ -2972,10 +2949,10 @@ eventuelly be set to nil, however)."
 
   ;; Activate modes (builtin)
 
-  (show-paren-mode 1)
-  (transient-mark-mode 1)
-  (global-font-lock-mode 1)
-  (column-number-mode 1)
+  (show-paren-mode +1)
+  (transient-mark-mode +1)
+  (global-font-lock-mode +1)
+  (column-number-mode +1)
   (delete-selection-mode -1)
 
   (dolist (mode '(tool-bar-mode
@@ -2986,19 +2963,18 @@ eventuelly be set to nil, however)."
     (when (fboundp mode)
       (funcall mode 0)))
 
-  (when (<= 24 emacs-major-version)
-    (electric-indent-mode -1))
+  (electric-indent-mode -1)
 
   (appt-activate +1)
-  (savehist-mode 1)
+  (savehist-mode +1)
 
-  (size-indication-mode 1)
+  (size-indication-mode +1)
   (display-battery-mode -1)
 
   (electric-pair-mode +1)
 
-  (recentf-mode t)
-  (winner-mode 1)
+  (recentf-mode +1)
+  (winner-mode +1)
   (global-auto-revert-mode -1)
   (which-function-mode +1)
   (global-eldoc-mode +1)
@@ -3037,8 +3013,7 @@ eventuelly be set to nil, however)."
 
   (add-hook 'prog-mode-hook 'page-break-lines-mode)
   (add-hook 'prog-mode-hook 'hl-line-mode)
-  (when (<= 24 emacs-major-version)
-    (add-hook 'prog-mode-hook 'electric-indent-local-mode))
+  (add-hook 'prog-mode-hook 'electric-indent-local-mode)
 
   (add-hook 'text-mode-hook 'page-break-lines-mode)
   (add-hook 'text-mode-hook 'turn-on-auto-fill)
