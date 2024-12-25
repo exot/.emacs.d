@@ -1403,8 +1403,6 @@ Note that this workaround is incomplete, as explained in this comment."
   :ensure nil
   :init (setq lsp-keymap-prefix "C-c C-l"
               lsp-session-file (expand-file-name ".lsp-session" emacs-d-userdata)
-              lsp-use-plists t          ; not quite sure whether this is a good
-                                        ; idea, but plists are easier to read …
               lsp-log-io t
               lsp-keep-workspace-alive nil
               lsp-idle-delay 0.5
