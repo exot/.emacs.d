@@ -1360,6 +1360,11 @@ Note that this workaround is incomplete, as explained in this comment."
               ediff-show-clashes-only t)
   :config (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
 
+(use-package eldoc
+  :commands (global-eldoc-mode
+             turn-on-eldoc-mode)
+  :diminish eldoc-mode)
+
 (use-package eglot
   :ensure nil
   ;; Inspired by https://andreyor.st/posts/2023-09-09-migrating-from-lsp-mode-to-eglot.
@@ -2675,8 +2680,6 @@ eventuelly be set to nil, however)."
 
 ;; * Lisp
 
-;; General Stuff first
-
 (use-package lisp-mode
   :mode (("\\.cl\\'" . lisp-mode)
          ("\\.lisp\\'" . lisp-mode))
@@ -2687,58 +2690,15 @@ eventuelly be set to nil, however)."
   :commands (lispy-mode)
   :diminish lispy-mode)
 
-(use-package eldoc
-  :commands (global-eldoc-mode
-             turn-on-eldoc-mode)
-  :diminish eldoc-mode)
-
-;; Lisp Dialects
-
 (use-package elisp-mode
   :config (progn
             (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available)
             (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file)
             (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)))
 
-(use-package geiser
-  :commands (geiser-mode))
-
-(use-package cider
-  :commands (cider-jack-in)
-  :init (setq nrepl-hide-special-buffers t
-              cider-auto-select-error-buffer t
-              cider-stacktrace-default-filters '(tooling dup)
-              cider-stacktrace-fill-column 80
-              cider-save-file-on-load nil
-              cider-repl-result-prefix ";; => "
-              cider-repl-use-clojure-font-lock t
-              cider-repl-wrap-history t
-              cider-repl-history-size 1000
-              ;;cider-lein-parameters "trampoline repl :headless"
-              cider-lein-parameters "repl :headless"
-              cider-repl-history-file (expand-file-name ".cider-history" emacs-d)
-              cider-repl-display-help-banner nil)
-  :config (progn
-            (add-hook 'cider-repl-mode-hook 'subword-mode)
-            (add-hook 'cider-repl-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'cider-repl-mode-hook 'cider-repl-toggle-pretty-printing)))
-
 (use-package clojure-mode
   :mode (("\\.clj\\'" . clojure-mode))
-  :config (progn
-            (define-clojure-indent
-                (forall 'defun)
-                (exists 'defun)
-              (dopar 'defun))
-            (add-hook 'clojure-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'clojure-mode-hook 'clj-refactor-mode)))
-
-(use-package clj-refactor
-  :commands (clj-refactor-mode)
-  :config (progn
-            (cljr-add-keybindings-with-prefix "C-c C-m")
-            (setq cljr-eagerly-build-asts-on-startup nil
-                  cljr-warn-on-eval nil)))
+  :config (add-hook 'clojure-mode-hook 'turn-on-lispy-when-available))
 
 (use-package slime
   :commands (slime slime-mode slime-connect)
