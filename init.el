@@ -389,6 +389,9 @@
              db/define-feature-shortcuts-hydra
              hydra-feature-shortcuts/body))
 
+(use-package diminish
+  :ensure t)
+
 (use-package exec-path-from-shell
   :pin "melpa-stable"
   :commands (exec-path-from-shell-copy-envs))
@@ -1934,11 +1937,6 @@ Note that this workaround is incomplete, as explained in this comment."
               sml/name-width 30)
   :commands (sml/setup))
 
-(use-package minions
-  :ensure t
-  :commands (minions-mode)
-  :init (setq minions-mode-line-lighter "…"))
-
 (use-package moody
   :ensure t
   :commands (moody-replace-mode-line-buffer-identification
@@ -2984,14 +2982,12 @@ eventuelly be set to nil, however)."
                   minibuffer-depth-indicate-mode
                   ace-window-display-mode
                   key-chord-mode
-                  minions-mode
                   which-key-mode
                   projectile-mode
                   yas-global-mode
                   global-git-commit-mode
                   marginalia-mode
-                  vertico-mode
-                  ))
+                  vertico-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 

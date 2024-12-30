@@ -1,7 +1,6 @@
 *.elc
 
 /elpa/*
-!/elpa/diminish-[0-9]*
 !/elpa/bind-key-[0-9]*
 !/elpa/dash-[0-9]*
 !/elpa/hydra-[0-9]*
