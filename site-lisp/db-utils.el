@@ -662,7 +662,7 @@ quite sure whether something like this exists already?"
 
   (-each-indexed (string-to-list base45-alphabet)
     (-lambda (index char)
-        (puthash char index decode-hash-table)
+      (puthash char index decode-hash-table)
       ;; Add an encode-hash-table here in case base45-encode-string will ever be
       ;; written, like so: (puthash index char encode-hash-table)
       ))
