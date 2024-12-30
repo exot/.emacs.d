@@ -637,6 +637,20 @@ quite sure whether something like this exists already?"
         (funcall entry)
       entry)))
 
+;; From https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/, where it has been
+;; based on `windower' by Pierre Neidhardt (ambrevar on GitLab); pointer by
+;; https://sachachua.com/blog/2024/12/emacs-tv/
+(let (saved-window-configuration)
+  (define-minor-mode db/window-single-toggle
+    "Toggle between multiple windows and single window."
+    :lighter " Z"
+    :global nil
+    (if (one-window-p)
+        (when saved-window-configuration
+          (set-window-configuration saved-window-configuration))
+      (setq saved-window-configuration (current-window-configuration))
+      (delete-other-windows))))
+
 
 ;;; Base45 Decoding
 
