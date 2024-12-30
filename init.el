@@ -186,6 +186,9 @@
   :init (setq auth-sources '("~/.authinfo.gpg")
               auth-source-save-behavior nil))
 
+(use-package autorevert
+  :diminish auto-revert-mode)
+
 (use-package browser-url
   :init (setq browse-url-browser-function 'browse-url-generic
               browse-url-generic-program "firefox"))
