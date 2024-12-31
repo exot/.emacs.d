@@ -263,6 +263,9 @@
            (proced-goal-attribute nil)
            (proced-enable-color-flag t)))
 
+(use-package project
+  :init (setq project-list-file (expand-file-name "projects" emacs-d-userdata)))
+
 (use-package quail
   :init (setq default-input-method "TeX")
   :config (add-hook 'input-method-activate-hook
@@ -411,9 +414,7 @@
 (add-to-list 'package-pinned-packages '(lv . "melpa-stable"))
 
 (use-package projectile
-  :ensure t
   :commands (projectile-mode)
-  :defines (projectile-known-projects)
   :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
   :init (setq projectile-switch-project-action 'projectile-dired
               projectile-completion-system 'helm
@@ -422,8 +423,7 @@
               projectile-known-projects-file (expand-file-name "projectile-bookmarks.eld"
                                                                emacs-d-userdata)
               projectile-cache-file (expand-file-name "projectile.cache"
-                                                      emacs-d-userdata))
-  :diminish projectile-mode)
+                                                      emacs-d-userdata)))
 
 
 ;; * Text editing
@@ -2524,8 +2524,7 @@ eventuelly be set to nil, however)."
                                 (if (string= event "finished\n")
                                     (kill-buffer ,buff)))))))
 
-            ;; does not work; C-c is shadowed by some minor modes like semantic,
-            ;; projectile, and winner
+            ;; Does not work; C-c is shadowed by some minor modes like semantic and winner
             (bind-key "C-c" #'term-send-raw term-raw-map)
 
             ;; unbind some keys to allow the global keymap to handle them
@@ -2946,7 +2945,6 @@ eventuelly be set to nil, however)."
                   ace-window-display-mode
                   key-chord-mode
                   which-key-mode
-                  projectile-mode
                   yas-global-mode
                   global-git-commit-mode
                   marginalia-mode
