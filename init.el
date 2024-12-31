@@ -2704,17 +2704,13 @@ eventuelly be set to nil, however)."
 
 (use-package slime
   :commands (slime slime-mode slime-connect)
-  :init     (progn
-              (setq inferior-lisp-program "sbcl --noinform --no-linedit"
-                    slime-compile-file-options '(:fasl-directory "/tmp/slime-fasls/")
-                    slime-net-coding-system 'utf-8-unix
-                    slime-completion-at-point-functions 'slime-fuzzy-complete-symbol
-                    slime-lisp-implementations '((sbcl ("sbcl") :coding-system utf-8-unix)
-                                                 (cmucl ("cmucl") :coding-system utf-8-unix)
-                                                 (ccl ("ccl") :coding-system utf-8-unix)))
-              (add-hook 'lisp-mode-hook #'(lambda () (slime-mode +1)) t))
+  :init     (setq inferior-lisp-program "sbcl --noinform --no-linedit"
+                  slime-net-coding-system 'utf-8-unix
+                  slime-completion-at-point-functions 'slime-fuzzy-complete-symbol
+                  slime-lisp-implementations '((sbcl ("sbcl") :coding-system utf-8-unix)
+                                               (cmucl ("cmucl") :coding-system utf-8-unix)
+                                               (ccl ("ccl") :coding-system utf-8-unix)))
   :config   (progn
-              (make-directory "/tmp/slime-fasls/" t)
               (slime-setup '(slime-repl slime-fancy slime-autodoc))
               (add-hook 'slime-mode-hook 'slime-redirect-inferior-output)))
 
