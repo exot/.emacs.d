@@ -2216,10 +2216,6 @@ Note that this workaround is incomplete, as explained in this comment."
               recentf-save-file (expand-file-name "recentf" emacs-d-userdata))
   :config (run-with-timer 0 3600 #'recentf-save-list))
 
-(use-package company
-  :commands (company-mode)
-  :init (setq company-show-quick-access t))
-
 (use-package marginalia
   :ensure t
   :commands (marginalia-mode)
@@ -2256,6 +2252,9 @@ Note that this workaround is incomplete, as explained in this comment."
                 consult-narrow-key nil
                 consult-preview-key nil))
   :config (require 'consult-imenu))
+
+(use-package corfu
+  :commands (global-corfu-mode corfu-mode))
 
 
 ;; * Navigation
