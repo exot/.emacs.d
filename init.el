@@ -1211,7 +1211,7 @@ accordingly."
 (use-package ob-core
   :init (setq org-export-use-babel t
               org-babel-default-header-args '((:session . "none")
-                                              (:results . "value drawer replace")
+                                              (:results . "output drawer replace")
                                               (:exports . "both")
                                               (:cache . "no")
                                               (:noweb . "no")
