@@ -2526,14 +2526,13 @@ eventuelly be set to nil, however)."
             ;; Does not work; C-c is shadowed by some minor modes like semantic and winner
             (bind-key "C-c" #'term-send-raw term-raw-map)
 
-            ;; unbind some keys to allow the global keymap to handle them
+            ;; Unbind some keys to allow the global keymap to handle them
             (unbind-key "M-:" term-raw-map)
             (unbind-key "C-h" term-raw-map)
             (unbind-key "M-x" term-raw-map)
-            (unbind-key "M-o" term-raw-map)
 
-            ;; we need to set keys starting with C-x after `ansi-term' has been
-            ;; called, as it resets the escape character to C-x.
+            ;; We need to set keys starting with C-x after `ansi-term' has been called, as it resets
+            ;; the escape character to C-x.
             (define-advice ansi-term (:after
                                       (&rest _)
                                       db/ansi-term--unbind-annoying-keys)
@@ -2560,18 +2559,7 @@ eventuelly be set to nil, however)."
             ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
 
             (setq explicit-bash-args
-                  (delete "--noediting" explicit-bash-args))
-
-            ;; When doing completion, ivy seems to add an extra space, much like
-            ;; in the case for eshell.  However, here the space seems to come
-            ;; out of nowhere.  Since the builtin completion using
-            ;; `completion--in-region' is good enough for the shell mode, let's
-            ;; stick to that.
-
-            (add-hook 'shell-mode-hook
-                      #'(lambda ()
-                          (setq-local completion-in-region-function
-                                      #'completion--in-region)))))
+                  (delete "--noediting" explicit-bash-args))))
 
 (use-package db-eshell
   :commands (db/run-or-hide-eshell
@@ -2677,6 +2665,9 @@ eventuelly be set to nil, however)."
 
 (use-package with-editor
   :commands (with-editor-export-editor))
+
+(use-package sh-script
+  :init (setq sh-basic-offset 2))
 
 
 ;; * Lisp
@@ -2838,9 +2829,6 @@ eventuelly be set to nil, however)."
 (use-package re-builder
   :commands (re-builder)
   :init (setq reb-re-syntax 'string))
-
-(use-package sh-script
-  :init (setq sh-basic-offset 2))
 
 (use-package shr
   :init (setq shr-use-fonts nil
