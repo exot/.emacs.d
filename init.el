@@ -1029,12 +1029,8 @@ accordingly."
                 ()
                 "")
 
-              ;; Shortening leaders by https://whhone.com/posts/org-agenda-repeated-tasks/
-              org-agenda-scheduled-leaders '("Sched" "S.%2dx")
-              org-agenda-deadline-leaders '("Deadl" "D%3dd" "D.%2dx")
-
               org-agenda-prefix-format
-              '((agenda . " %-6s%?-12t%-4(db/org-remaining-effort-of-current-item) ")
+              '((agenda . " %11s%?-12t%-4(db/org-remaining-effort-of-current-item) ")
                 (todo . " %-8c%-4(db/org-remaining-effort-of-current-item) ")
                 (tags . " %-8c%-4(db/org-remaining-effort-of-current-item) ")
                 (search . " %-8c%-4(db/org-remaining-effort-of-current-item) "))
