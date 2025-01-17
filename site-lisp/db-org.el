@@ -23,6 +23,7 @@
 
 (autoload 'which-function "which-func")
 (autoload 'org-element-property "org-element")
+(autoload 'db/org-agenda "db-utils")
 
 (declare-function w32-shell-execute "w32fns.c")
 
@@ -113,7 +114,7 @@ deadlines."
       (setq buffer-read-only t)
       (message ""))))
 
-(defun db/org-agenda-insert-active-filters (&optional match)
+(defun db/org-agenda-insert-active-filters (&optional _match)
   "Insert string showing the current agenda filters.
 
 The filter display is added after the structural header.
@@ -582,7 +583,7 @@ clocked in."
        (if at-current-clock-p
            ;; From `org-clock-get-clocked-time'
            (floor (org-time-convert-to-integer
-                   (org-time-since org-clock-start-time))
+                   (time-since org-clock-start-time))
                   60)
          0))))
 
@@ -1249,7 +1250,8 @@ clipboard as with `org-password-manager-get-password', which see.
 Otherwise, the password is returned as value from this function
 and can be used for further processing."
 
-  (require 'org-password-manager)
+  (eval-when-compile
+    (require 'org-password-manager))
   (let ((pom (org-id-find id 'marker)))
     (unless (markerp pom)
       (user-error "Cannot find item with id %s" id))
@@ -1914,25 +1916,24 @@ linking to any item."
                              ;; nil without any possibility for a custom string.
                              (unwind-protect
                                   (progn
-                                    (fset 'completing-read #'(lambda (_prompt
-                                                                      _table
+                                    (fset 'completing-read #'(lambda (prompt
+                                                                      table
                                                                       &optional
-                                                                        _predicate
-                                                                        _require-match
+                                                                        predicate
+                                                                        require-match
                                                                         _initial-input
-                                                                        _hist
-                                                                        _def
-                                                                        _inherit-input-method)
-                                                               (ignore _initial-input)
+                                                                        hist
+                                                                        def
+                                                                        inherit-input-method)
                                                                (funcall old-completing-read
-                                                                        _prompt
-                                                                        _table
-                                                                        _predicate
-                                                                        _require-match
+                                                                        prompt
+                                                                        table
+                                                                        predicate
+                                                                        require-match
                                                                         initial-input
-                                                                        _hist
-                                                                        _def
-                                                                        _inherit-input-method)))
+                                                                        hist
+                                                                        def
+                                                                        inherit-input-method)))
                                     (org-refile-get-location nil default-buffer))
                                (fset 'completing-read old-completing-read))))
            (pom (nth 3 target-pointer)))

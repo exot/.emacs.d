@@ -28,6 +28,7 @@
 (autoload 'ldap-search "ldap")
 (autoload 'find-libary-name "find-func")
 (autoload 'lm-header "lisp-mnt")
+(autoload 'dired-dwim-target-directory "dired-aux")
 
 (declare-function w32-shell-execute "w32fns.c")
 (declare-function org-password-manager-get-password-by-id nil)
@@ -486,6 +487,8 @@ numbers allowed)."
 
 From: https://oremacs.com/2017/03/18/dired-ediff/."
   (interactive)
+  (eval-when-compile
+    (require 'ediff))
   (let ((files (dired-get-marked-files))
         (wnd (current-window-configuration)))
     (if (<= (length files) 2)
@@ -517,6 +520,8 @@ Also add the default as initial input instead of as default
 proper.  The latter does not play well with my current completion
 framework, as it always tries to match my input with default
 entries, even if I want to use the input directly."
+  (eval-when-compile
+    (require 'grep))
   (let* ((bn (funcall grep-read-files-function))
          (fn (and bn
                   (stringp bn)
