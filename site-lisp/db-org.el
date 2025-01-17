@@ -388,6 +388,59 @@ In ~%s~:
 (advice-add 'org-capture-finalize
             :after #'db/delete-frame-if-capture)
 
+(require 'org-capture)
+
+(defun db/org-convert-item-to-headline ()
+  "Convert list item around point to headline.
+
+TODO: more information."
+  (interactive)
+
+  (let ((element (org-element-at-point))
+        last-seen-item)
+
+    ;; Get outermost list item
+    (while element
+      (when (eq (org-element-type element) 'item)
+        (setq last-seen-item element))
+      (setq element (org-element-parent element)))
+
+    (unless last-seen-item
+      (user-error "Cannot find enclosing list item at point to convert to headline"))
+
+    ;; Generate headline and store it somewhere
+    (let ((body (buffer-substring-no-properties (org-element-contents-begin last-seen-item)
+                                                (org-element-end last-seen-item))))
+
+      ;; Remove old entry first
+      (delete-region (org-element-begin last-seen-item)
+                     (org-element-end last-seen-item))
+
+      ;; Set up capture buffer
+      (org-capture-set-plist `(""
+                               ""
+                               entry
+                               (file db/org-default-refile-file)
+                               ,(format "* TODO [#B] %s
+:PROPERTIES:
+:CREATED: %%U
+:END:
+
+Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string))).
+
+%s
+
+%%?"
+                                        (seq-take-while #'(lambda (x) (not (= x ?\n))) body) ; TODO: improve
+                                        (string-trim (seq-drop-while #'(lambda (x) (not (= x ?\n))) body)))
+                               :empty-lines-before 1
+                               :empty-lines-after 1))
+      (org-capture-set-target-location)
+      (org-capture-put :template (org-capture-fill-template (org-capture-get :template)))
+      (org-capture-place-template)
+
+      (indent-region (point-min) (point-max)))))
+
 
 ;;; Refiling
 
