@@ -13,6 +13,7 @@
 (require 'cl-lib)
 (require 'org)
 (require 'org-agenda)
+(require 'org-capture)
 (require 'org-clock)
 (require 'hydra)
 (require 'db-customize)
@@ -388,12 +389,23 @@ In ~%s~:
 (advice-add 'org-capture-finalize
             :after #'db/delete-frame-if-capture)
 
-(require 'org-capture)
-
 (defun db/org-convert-item-to-headline ()
   "Convert list item around point to headline.
 
-TODO: more information."
+Search for the outermost list item enclosing point and convert it
+to a Org headline.  Use the first line of the item as actual
+headline, and move the rest to the body of the headline.  A
+property CREATED is added with an inactive timestamp capturing
+the current time.
+
+The converted headline will be shown in a capture buffer for
+further editing.  After finishing this buffer, the final headline
+will be stored in `db/org-default-refilefile'.
+
+Note that the original list item will be deleted before the
+capture buffer will open.  If the buffer is aborted, the original
+list item is _not_ restored.  This has to be done using the undo
+history of the buffer."
   (interactive)
 
   (let ((element (org-element-at-point))
@@ -409,19 +421,23 @@ TODO: more information."
       (user-error "Cannot find enclosing list item at point to convert to headline"))
 
     ;; Generate headline and store it somewhere
-    (let ((body (buffer-substring-no-properties (org-element-contents-begin last-seen-item)
-                                                (org-element-end last-seen-item))))
+    (let* ((body (buffer-substring-no-properties (org-element-contents-begin last-seen-item)
+                                                 (org-element-end last-seen-item)))
+           (first-line-of-body (seq-take-while #'(lambda (x) (not (= x ?\n))) body))
+           (rest-of-body (string-trim (seq-drop-while #'(lambda (x) (not (= x ?\n))) body))))
 
       ;; Remove old entry first
       (delete-region (org-element-begin last-seen-item)
                      (org-element-end last-seen-item))
 
       ;; Set up capture buffer
-      (org-capture-set-plist `(""
-                               ""
-                               entry
-                               (file db/org-default-refile-file)
-                               ,(format "* TODO [#B] %s
+      (org-capture-put :key "")
+      (org-capture-put :description "")
+      (org-capture-put :target '(file db/org-default-refile-file))
+      (org-capture-put :empty-lines-before 1)
+      (org-capture-put :empty-lines-after 1)
+      (org-capture-put :template (org-capture-fill-template
+                                  (format "* TODO [#B] %s
 :PROPERTIES:
 :CREATED: %%U
 :END:
@@ -431,12 +447,9 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
 %s
 
 %%?"
-                                        (seq-take-while #'(lambda (x) (not (= x ?\n))) body) ; TODO: improve
-                                        (string-trim (seq-drop-while #'(lambda (x) (not (= x ?\n))) body)))
-                               :empty-lines-before 1
-                               :empty-lines-after 1))
+                                          first-line-of-body
+                                          rest-of-body)))
       (org-capture-set-target-location)
-      (org-capture-put :template (org-capture-fill-template (org-capture-get :template)))
       (org-capture-place-template)
 
       (indent-region (point-min) (point-max)))))
