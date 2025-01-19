@@ -264,7 +264,16 @@
            (proced-enable-color-flag t)))
 
 (use-package project
-  :init (setq project-list-file (expand-file-name "projects" emacs-d-userdata)))
+  :init (setq project-list-file (expand-file-name "projects" emacs-d-userdata))
+  :config (progn
+
+            ;; Sort known projects before persisting, to reduce committer noise
+            (define-advice project--write-project-list (:before
+                                                        ()
+                                                        sort-before-writing)
+              (setq project--list (cl-sort project--list
+                                           #'string<
+                                           :key #'cl-first)))))
 
 (use-package quail
   :init (setq default-input-method "TeX")
