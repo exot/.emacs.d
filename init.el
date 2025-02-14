@@ -1103,10 +1103,10 @@ accordingly."
                 ("P" "Current Projects and Topics"
                      ((stuck ""
                              ((org-agenda-overriding-header "Stuck Complex Tasks")))
-                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SOMEWHEN-SCHEDULED>=\"<today>\""
-                            ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP)")))
                       (tags "TAGS={TOPIC}-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED>=\"<today>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Topics (items directly tagged with TOPIC)")))
+                      (tags "TAGS={NOTE}-TODO={CANC\\|DONE\\|MRGD}-HOLD-NOP-SOMEWHEN-SCHEDULED>=\"<today>\""
+                            ((org-agenda-overriding-header "Project Notes (items explicitly tagged with NOTE but not NOP)")))
                       (tags "TAGS={PERIODIC}-TODO={DONE\\|CANC\\|MRGD}-HOLD-SCHEDULED>=\"<today>\"-HOLD-WAIT"
                             ((org-agenda-overriding-header "Periodic Projects (PERIODIC, not scheduled in the future, not done, not on hold)")))))
 
