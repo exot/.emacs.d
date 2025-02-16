@@ -1450,6 +1450,19 @@ Note that this workaround is incomplete, as explained in this comment."
             ;; that are not selected, to increase performance.
             (setq magit-refresh-status-buffer nil)))
 
+  :custom ((magit-repolist-columns '(("Name" 15 magit-repolist-column-ident
+                                      ())
+                                     ("B<U" 3 magit-repolist-column-unpulled-from-upstream
+                                      ((:right-align t)
+                                       (:sort <)))
+                                     ("B>U" 3 magit-repolist-column-unpushed-to-upstream
+                                      ((:right-align t)
+                                       (:sort <)))
+                                     ("Version" 25 magit-repolist-column-version
+                                      ((:sort magit-repolist-version<)))
+                                     ("Path" 99 magit-repolist-column-path
+                                      ()))))
+
   :config (progn
             (when (fboundp 'global-magit-file-mode)
               (global-magit-file-mode -1))
