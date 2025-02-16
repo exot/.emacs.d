@@ -656,6 +656,32 @@ quite sure whether something like this exists already?"
       (setq saved-window-configuration (current-window-configuration))
       (delete-other-windows))))
 
+(defun db/list-changed-git-repositories ()
+  "List git repositories under ~ that have changed content or need pushing."
+  (interactive)
+  (with-current-buffer (get-buffer-create " *changed-git-repos*")
+    (erase-buffer)
+    (dolist (dir (directory-files-recursively (expand-file-name "~")
+                                              "\\`\\.git\\'"
+                                              :include-directories
+                                              #'(lambda (subdir)
+                                                  (not (string-match "\\(\\.git\\|\\.minetest\\|\\.local/share/Trash\\)"
+                                                                     subdir)))))
+      (let* ((default-directory (file-name-directory dir))
+             (git-status (shell-command-to-string "git status -s -b"))
+             (has-uncommited-changes (string-match-p "^[^#]" git-status))
+             (needs-pushing (string-match-p "\\[ahead " git-status)))
+        (when (or has-uncommited-changes needs-pushing)
+          (insert (format "Repository at %s: " default-directory))
+          (when has-uncommited-changes
+            (insert "has uncommited changes"))
+          (when (and has-uncommited-changes needs-pushing)
+            (insert " and "))
+          (when needs-pushing
+            (insert "needs pushing"))
+          (insert "\n"))))
+    (switch-to-buffer (current-buffer))))
+
 
 ;;; Base45 Decoding
 
