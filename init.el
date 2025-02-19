@@ -2827,7 +2827,8 @@ eventuelly be set to nil, however)."
               plantuml-indent-level 2))
 
 (use-package project
-  :init (setq project-switch-commands 'project-dired))
+  :init (setq project-switch-commands 'project-dired
+              project-vc-merge-submodules nil))
 
 (use-package python
   :config (progn
