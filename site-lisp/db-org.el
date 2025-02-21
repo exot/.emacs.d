@@ -20,6 +20,8 @@
 (require 'ox-icalendar)
 (require 'org-ql)
 (require 'holidays)
+(require 'dired)
+(require 'bookmark)
 
 (autoload 'which-function "which-func")
 (autoload 'org-element-property "org-element")
@@ -2219,6 +2221,51 @@ PARAMS may contain the following values:
   (org-update-dblock))
 
 (org-dynamic-block-define "db/org-backlinks" #'db/org-insert-backlink-block)
+
+
+;;; Adding links to bookmarks
+
+;; The code in this section is based version 1.0 of `ol-bookmark.el' by Tokuya Kameshima;
+;; see https://github.com/emacsmirror/org-contrib/blob/bd39cca48b1c4a8a1cdfb1cdd6be2ce700acdd97/lisp/ol-bookmark.el.
+
+(org-link-set-parameters "bookmark"
+			 :follow #'org-bookmark-open
+			 :store #'org-bookmark-store-link)
+
+(defun org-bookmark-open (bookmark _)
+  "Visit the bookmark BOOKMARK."
+  (bookmark-jump bookmark))
+
+(defun org-bookmark-store-link ()
+  "Store a link to the bookmark at point.
+
+When in Dired, try to find bookmark that points to the file at
+point.  When in a buffer associated with a file, try to find a
+bookmark that points to this file."
+  (let (file bookmark bmks)
+    (cond ((eq major-mode 'dired-mode)
+	   (setq file (abbreviate-file-name (dired-get-filename))))
+	  ((buffer-file-name (buffer-base-buffer))
+	   (setq file (abbreviate-file-name
+		       (buffer-file-name (buffer-base-buffer))))))
+    (if (not file)
+	(when (eq major-mode 'bookmark-bmenu-mode)
+	  (setq bookmark (bookmark-bmenu-bookmark)))
+      (when (setq bmks
+		  (->> (bookmark-all-names)
+                       (-map (lambda (name)
+                               (if (file-equal-p file
+                                                 (abbreviate-file-name
+                                                  (bookmark-location name)))
+                                   name)))
+                       (delete nil)))
+	(setq bookmark
+	      (if (eq 1 (length bmks))
+		  (car bmks)
+		(completing-read "Bookmark: " bmks nil t nil nil (car bmks))))))
+    (if bookmark
+	(org-link-store-props :link (concat "bookmark:" bookmark)
+			      :description bookmark))))
 
 
 ;;; End
