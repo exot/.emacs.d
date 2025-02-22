@@ -2228,15 +2228,11 @@ PARAMS may contain the following values:
 ;; The code in this section is based version 1.0 of `ol-bookmark.el' by Tokuya Kameshima;
 ;; see https://github.com/emacsmirror/org-contrib/blob/bd39cca48b1c4a8a1cdfb1cdd6be2ce700acdd97/lisp/ol-bookmark.el.
 
-(org-link-set-parameters "bookmark"
-			 :follow #'org-bookmark-open
-			 :store #'org-bookmark-store-link)
-
-(defun org-bookmark-open (bookmark _)
+(defun db/org-bookmark-open (bookmark _)
   "Visit the bookmark BOOKMARK."
   (bookmark-jump bookmark))
 
-(defun org-bookmark-store-link ()
+(defun db/org-bookmark-store-link ()
   "Store a link to the bookmark at point.
 
 When in Dired, try to find bookmark that points to the file at

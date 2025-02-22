@@ -572,7 +572,9 @@
              hydra-org-linking/body
              org-dblock-write:db/org-backlinks
              db/org-clock-goto-first-open-checkbox
-             org-password-manager-get-password-by-id))
+             org-password-manager-get-password-by-id
+             db/org-bookmark-open
+             db/org-bookmark-store-link))
 
 ;; This is to make the byte-compiler happy about setting some variables later on
 ;; that are defined in those packages.
@@ -759,6 +761,9 @@
                                                        (browse-url
                                                         (format "https://www.cve.org/CVERecord?id=CVE-%s"
                                                                 number))))
+            (org-link-set-parameters "bookmark"
+			             :follow #'db/org-bookmark-open
+			             :store #'db/org-bookmark-store-link)
             (when (eq system-type 'windows-nt)
               (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
               (org-link-set-parameters "outlook" :follow #'db/org-outlook-open))
