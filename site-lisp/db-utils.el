@@ -854,6 +854,9 @@ it."
   "Extract filename from bookmark BMK and apply `browse-url' to it."
   (browse-url (bookmark-get-filename bmk)))
 
+;; https://takeonrules.com/2024/12/17/extending-built-in-emacs-bookmark-package/
+(put 'db/bookmark-browse-url 'bookmark-handler-type "URL")
+
 (defun db/bookmark-system-open (bmk)
   "Extract filename from bookmark BMK and apply `db/system-open' to it."
   (db/system-open (bookmark-get-filename bmk)))
