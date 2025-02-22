@@ -2241,7 +2241,11 @@ PARAMS may contain the following values:
 
 When in Dired, try to find bookmark that points to the file at
 point.  When in a buffer associated with a file, try to find a
-bookmark that points to this file."
+bookmark that points to this file.  Note that in this case, for
+performance reasons, equality checks between file names is not
+done with `file-equal-p', which seems to be too slow on Windows;
+a simple `string=' is used instead, which may not be completely
+accurate in certain cases."
   (let (file bookmark bmks)
     (cond ((eq major-mode 'dired-mode)
 	   (setq file (abbreviate-file-name (dired-get-filename))))
@@ -2254,9 +2258,9 @@ bookmark that points to this file."
       (when (setq bmks
 		  (->> (bookmark-all-names)
                        (-map (lambda (name)
-                               (if (file-equal-p file
-                                                 (abbreviate-file-name
-                                                  (bookmark-location name)))
+                               (if (string= file
+                                            (abbreviate-file-name
+                                             (bookmark-location name)))
                                    name)))
                        (delete nil)))
 	(setq bookmark
