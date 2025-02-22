@@ -847,8 +847,7 @@ it."
   (let ((new-record `((filename . ,location)
                       (handler . ,handler))))
     (bookmark-update-last-modified new-record)
-    (bookmark-store name new-record nil)
-    (bookmark-save)))
+    (bookmark-store name new-record nil)))
 
 (defun db/bookmark-browse-url (bmk)
   "Extract filename from bookmark BMK and apply `browse-url' to it."

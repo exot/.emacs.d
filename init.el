@@ -2353,7 +2353,8 @@ eventuelly be set to nil, however)."
 
 (use-package bookmark
   :init (setq bookmark-default-file (expand-file-name "bookmarks" emacs-d-userdata)
-              bookmark-menu-confirm-deletion t))
+              bookmark-menu-confirm-deletion t
+              bookmark-save-flag 1))
 
 (use-package dumb-jump
   :commands (dumb-jump-xref-activate)
