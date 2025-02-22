@@ -682,6 +682,8 @@ quite sure whether something like this exists already?"
           (insert "\n"))))
     (switch-to-buffer (current-buffer))))
 
+(defalias 'check-git-repos #'db/list-changed-git-repositories) ; old name of former shell script
+
 
 ;;; Base45 Decoding
 
