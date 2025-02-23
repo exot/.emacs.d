@@ -665,8 +665,9 @@ quite sure whether something like this exists already?"
                                               "\\`\\.git\\'"
                                               :include-directories
                                               #'(lambda (subdir)
-                                                  (not (string-match "\\(\\.git\\|\\.minetest\\|\\.local/share/Trash\\)"
-                                                                     subdir)))))
+                                                  (and (file-accessible-directory-p subdir)
+                                                       (not (string-match "\\(\\.git\\|\\.minetest\\|\\.local/share/Trash\\)"
+                                                                          subdir))))))
       (let* ((default-directory (file-name-directory dir))
              (git-status (shell-command-to-string "git status -s -b"))
              (has-uncommited-changes (string-match-p "^[^#]" git-status))
