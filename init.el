@@ -2811,6 +2811,9 @@ eventuelly be set to nil, however)."
             (add-hook 'haskell-mode-hook
                       'interactive-haskell-mode)))
 
+(use-package ledger-mode
+  :init (setq ledger-clear-whole-transactions t))
+
 (use-package markdown-mode
   :ensure t
   :pin "melpa-stable"
