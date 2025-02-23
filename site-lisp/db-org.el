@@ -2230,6 +2230,8 @@ PARAMS may contain the following values:
 
 (defun db/org-bookmark-open (bookmark _)
   "Visit the bookmark BOOKMARK."
+  (bookmark-maybe-historicize-string bookmark)
+  (bookmark-maybe-load-default-file)
   (bookmark-jump bookmark))
 
 (defun db/org-bookmark-store-link ()
