@@ -865,6 +865,8 @@ it."
   "Extract filename from bookmark BMK and apply `eww' to it."
   (eww (bookmark-get-filename bmk)))
 
+(put 'db/bookmark-eww 'bookmark-handler-type "EWW")
+
 (defun db/bookmark-add-external (location name)
   "Add NAME as bookmark to LOCATION that is opened by the operating system.
 Offers simple completing from the list of recently opened files.
