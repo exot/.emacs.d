@@ -2242,6 +2242,32 @@ PARAMS may contain the following values:
       (org-link-store-props :link (concat "bookmark:" bookmark)
 			    :description bookmark))))
 
+(defun db/org-lint-invalid-bookmark-link (ast)
+  "Org lint checker to verify bookmark links in AST point to known bookmarks."
+  (bookmark-maybe-load-default-file)
+  (org-element-map ast 'link
+    (lambda (link)
+      (let ((bmk (org-element-property :path link)))
+	(and (equal (org-element-property :type link) "bookmark")
+             (not (assoc-string bmk bookmark-alist))
+	     (list (org-element-begin link)
+		   (format "Unknown bookmark link \"%s\"" bmk)))))))
+
+(defun db/org-lint-possible-bookmark-link (ast)
+  "Org lint checker to point out links in AST that could be replaced by bookmarks."
+  (bookmark-maybe-load-default-file)
+  (org-element-map ast 'link
+    (lambda (link)
+      (when-let* ((link-path (org-element-property :raw-link link))
+                  (known-bookmark (-find #'(lambda (bmk)
+                                             (string= (bookmark-get-filename bmk)
+                                                      link-path))
+                                         bookmark-alist)))
+        (list (org-element-begin link)
+	      (format "Link to \"%s\" can be replaced by bookmark \"%s\""
+                      link-path
+                      (car known-bookmark)))))))
+
 
 ;;; End
 

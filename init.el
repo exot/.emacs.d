@@ -574,7 +574,9 @@
              db/org-clock-goto-first-open-checkbox
              org-password-manager-get-password-by-id
              db/org-bookmark-open
-             db/org-bookmark-store-link))
+             db/org-bookmark-store-link
+             db/org-lint-invalid-bookmark-link
+             db/org-lint-possible-bookmark-link))
 
 ;; This is to make the byte-compiler happy about setting some variables later on
 ;; that are defined in those packages.
@@ -816,15 +818,29 @@
   :init (setq org-cycle-include-plain-lists 'integrate))
 
 (use-package org-lint
-  :autoload (org-lint-checker-name)
+  :autoload (org-lint-checker-name
+             org-lint-add-checker)
   :config (progn
+
             ;; Yes, this is ugly, but I would like to get rid of checking for
             ;; obsolete percentage encoding in URLs without loosing the other
             ;; checkers.
             (setq org-lint--checkers (cl-remove-if #'(lambda (c)
                                                        (eq (org-lint-checker-name c)
                                                            'percent-encoding-link-escape))
-                                                   org-lint--checkers))))
+                                                   org-lint--checkers))
+
+            (org-lint-add-checker 'link-to-bookmark
+              "Report links to non-existing bookmarks"
+              #'db/org-lint-invalid-bookmark-link
+              :categories '(link)
+              :trust 'low)
+
+            (org-lint-add-checker 'link-replacable-by-bookmark
+              "Report links that can be replaced by bookmarks"
+              #'db/org-lint-possible-bookmark-link
+              :categories '(link)
+              :trust 'low)))
 
 ;; Drag-and-Drop images into org-mode buffer
 (use-package org-download
