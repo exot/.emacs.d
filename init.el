@@ -1471,7 +1471,7 @@ Note that this workaround is incomplete, as explained in this comment."
             ;; that are not selected, to increase performance.
             (setq magit-refresh-status-buffer nil)))
 
-  :custom ((magit-repolist-columns '(("Name" 15 magit-repolist-column-ident
+  :custom ((magit-repolist-columns '(("Name" 20 magit-repolist-column-ident
                                       ())
                                      ("S" 1 magit-repolist-column-flag
                                       ())
@@ -1481,7 +1481,7 @@ Note that this workaround is incomplete, as explained in this comment."
                                      ("B>U" 3 magit-repolist-column-unpushed-to-upstream
                                       ((:right-align t)
                                        (:sort <)))
-                                     ("Version" 25 magit-repolist-column-version
+                                     ("Version" 35 magit-repolist-column-version
                                       ((:sort magit-repolist-version<)))
                                      ("Path" 99 magit-repolist-column-path
                                       ()))))
