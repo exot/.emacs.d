@@ -1473,6 +1473,8 @@ Note that this workaround is incomplete, as explained in this comment."
 
   :custom ((magit-repolist-columns '(("Name" 15 magit-repolist-column-ident
                                       ())
+                                     ("S" 1 magit-repolist-column-flag
+                                      ())
                                      ("B<U" 3 magit-repolist-column-unpulled-from-upstream
                                       ((:right-align t)
                                        (:sort <)))
