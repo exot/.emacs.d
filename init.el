@@ -2606,21 +2606,24 @@ eventuelly be set to nil, however)."
 
 (use-package eshell
   :commands (eshell)
-  :init (setq eshell-cmpl-cycle-completions nil
-              eshell-scroll-to-bottom-on-input t
-              eshell-prefer-lisp-functions nil
-              eshell-error-if-no-glob nil
-              eshell-hist-ignoredups t
-              eshell-save-history-on-exit t
-              eshell-history-size 5000
-              eshell-history-file-name (expand-file-name "eshell/history" emacs-d-userdata)
-              eshell-last-dir-ring-file-name (expand-file-name "eshell/lastdir" emacs-d-userdata)
-              eshell-destroy-buffer-when-process-dies t
-              eshell-prompt-function #'eshell/default-prompt-function
-              eshell-prompt-regexp "└─[$#] "
-              eshell-highlight-prompt nil
-              eshell-cd-on-directory t
-              eshell-expand-input-functions '(eshell-expand-history-references))
+  :init (progn
+          (setq eshell-cmpl-cycle-completions nil
+                eshell-scroll-to-bottom-on-input t
+                eshell-prefer-lisp-functions nil
+                eshell-error-if-no-glob nil
+                eshell-hist-ignoredups t
+                eshell-save-history-on-exit t
+                eshell-history-size 5000
+                eshell-history-file-name (expand-file-name "eshell/history" emacs-d-userdata)
+                eshell-last-dir-ring-file-name (expand-file-name "eshell/lastdir" emacs-d-userdata)
+                eshell-destroy-buffer-when-process-dies t
+                eshell-prompt-function #'eshell/default-prompt-function
+                eshell-highlight-prompt nil
+                eshell-cd-on-directory t
+                eshell-expand-input-functions '(eshell-expand-history-references))
+
+          (when (version< emacs-version "30")
+            (setq eshell-prompt-regexp "└─[$#] ")))
   :config (progn
 
             (eval-when-compile
@@ -2641,7 +2644,11 @@ eventuelly be set to nil, however)."
             (add-hook 'eshell-mode-hook
                       'with-editor-export-editor)
 
-            (bind-key "C-a" #'eshell-bol eshell-mode-map)
+            (if (version< emacs-version "30")
+                (progn
+                  (autoload 'eshell-bol "esh-mode.el")
+                  (bind-key "C-a" #'eshell-bol eshell-mode-map))
+              (bind-key "C-a" #'beginning-of-line eshell-mode-map))
             (bind-key "M-r" #'eshell-insert-history eshell-hist-mode-map)
             (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
             (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)
@@ -2692,12 +2699,9 @@ eventuelly be set to nil, however)."
 
             (require 'db-eshell)))
 
-(use-package em-prompt                  ; Why is this extra declaration necessary?
+(use-package em-prompt
   :commands (eshell-previous-prompt
              eshell-next-prompt))
-
-(use-package esh-mode                   ; Why is this extra declaration necessary?
-  :commands (eshell-bol))
 
 (use-package with-editor
   :commands (with-editor-export-editor))
@@ -2763,7 +2767,6 @@ eventuelly be set to nil, however)."
              (append auto-mode-alist interpreter-mode-alist)))
 
           (setq cperl-hairy nil
-                cperl-invalid-face 'default
                 cperl-electric-keywords nil
                 cperl-lazy-help-time 2
                 cperl-highlight-variables-indiscriminately t
