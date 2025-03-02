@@ -380,6 +380,8 @@
              db/pretty-print-xml
              db/bookmark-add-external
              db/bookmark-add-url
+             db/bookmark-relocate
+             db/bookmark-bmenu-relocate
              db/lookup-smime-key
              db/dired-from-shell-command
              db/system-open
@@ -2363,7 +2365,9 @@ eventuelly be set to nil, however)."
 (use-package bookmark
   :init (setq bookmark-default-file (expand-file-name "bookmarks" emacs-d-userdata)
               bookmark-menu-confirm-deletion t
-              bookmark-save-flag 1))
+              bookmark-save-flag 1)
+  :bind (:map bookmark-bmenu-mode-map
+              ("R" . db/bookmark-bmenu-relocate)))
 
 (use-package dumb-jump
   :commands (dumb-jump-xref-activate)

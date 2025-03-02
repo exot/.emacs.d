@@ -888,6 +888,41 @@ as completing instead."
   (interactive "sURL: \nsName: ")
   (db/bookmark-add-with-handler name url #'db/bookmark-eww))
 
+(defun db/bookmark-relocate (bookmark-name)
+  "Relocate BOOKMARK-NAME to another location.
+
+Bookmarks with type “URL” or “EWW” can be set to arbitrary locations,
+all other bookmarks are handled via the default `bookmark-relocate'
+mechanism."
+  (interactive (list (bookmark-completing-read "Bookmark to relocate")))
+  (bookmark-maybe-load-default-file)
+  (let ((bmk-type (bookmark-type-from-full-record (bookmark-get-bookmark bookmark-name))))
+    ;; TODO: it might be nice to use `cl-defmethod' instead for easier extensibility instead of
+    ;; explicitly listing all currently available link types.
+    (cond
+     ((member bmk-type '("URL" "EWW"))
+      (let ((newloc (read-string (format "Relocate %s to: " bookmark-name)
+                                 (bookmark-location bookmark-name))))
+        (when (bookmark-get-filename bookmark-name)
+          (bookmark-set-filename bookmark-name nil))
+        (bookmark-prop-set bookmark-name 'location newloc)
+        (bookmark-update-last-modified bookmark-name)
+        (setq bookmark-alist-modification-count
+              (1+ bookmark-alist-modification-count))
+        (when (bookmark-time-to-save-p)
+          (bookmark-save))
+        (bookmark-bmenu-surreptitiously-rebuild-list)))
+     (t (bookmark-relocate bookmark-name)))))
+
+(defun db/bookmark-bmenu-relocate ()
+  "Change location of bookmark at point in `bookmark-bmenu-mode'.
+Uses `db/bookmark-relocate'."
+  ;; Adapted from `bookmark-bmenu-relocate'.
+  (interactive nil bookmark-bmenu-mode)
+  (let ((thispoint (point)))
+    (db/bookmark-relocate (bookmark-bmenu-bookmark))
+    (goto-char thispoint)))
+
 
 ;;; Switching Themes
 
