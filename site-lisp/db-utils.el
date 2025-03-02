@@ -845,14 +845,14 @@ number of bytes has been inserted."
 HANDLER is a function receiving a single argument, namely
 LOCATION.  If a bookmark named NAME is already present, replace
 it."
-  (let ((new-record `((filename . ,location)
+  (let ((new-record `((location . ,location)
                       (handler . ,handler))))
     (bookmark-update-last-modified new-record)
     (bookmark-store name new-record nil)))
 
 (defun db/bookmark-browse-url (bmk)
   "Extract filename from bookmark BMK and apply `browse-url' to it."
-  (browse-url (bookmark-get-filename bmk)))
+  (browse-url (bookmark-location bmk)))
 
 ;; https://takeonrules.com/2024/12/17/extending-built-in-emacs-bookmark-package/
 (put 'db/bookmark-browse-url 'bookmark-handler-type "URL")
@@ -863,7 +863,7 @@ it."
 
 (defun db/bookmark-eww (bmk)
   "Extract filename from bookmark BMK and apply `eww' to it."
-  (eww (bookmark-get-filename bmk)))
+  (eww (bookmark-location bmk)))
 
 (put 'db/bookmark-eww 'bookmark-handler-type "EWW")
 
