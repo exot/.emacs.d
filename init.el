@@ -1540,12 +1540,15 @@ Note that this workaround is incomplete, as explained in this comment."
               (bbdb-initialize 'gnus 'message)
               (bbdb-mua-auto-update-init 'message))
 
-            ;; Ensure that whenever we compose new mail, it will use the correct
-            ;; posting style.  This is ensured by setting ARG of
-            ;; `gnus-group-mail’ to 1 to let it query the user for a group.
-            (defadvice gnus-group-mail (before inhibit-no-argument activate)
-              (unless (ad-get-arg 0)
-                (ad-set-arg 0 1)))
+            ;; Ensure that whenever we compose new mail, it will use the correct posting style.
+            ;; This is ensured by setting ARG of `gnus-group-mail’ to 1 in case it is not set, to
+            ;; let it query the user for a group.
+            (define-advice gnus-group-mail (:around
+                                            (orig-fun &optional arg)
+                                            inhibit-no-argument)
+              (if arg
+                  (funcall orig-fun arg)
+                (funcall orig-fun 1)))
 
             (remove-hook 'gnus-mark-article-hook
                          'gnus-summary-mark-read-and-unread-as-read)
@@ -1562,23 +1565,6 @@ Note that this workaround is incomplete, as explained in this comment."
 
             ;; Show topics in group buffer
             (add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-
-            ;; We need to do some magic as otherwise the agent does not delete
-            ;; articles from its .overview when we move them around.  Thus we
-            ;; mark articles as expireable when they have been moved to another
-            ;; group.
-            (defadvice gnus-summary-move-article (around
-                                                  no-cancel-mark
-                                                  (&optional n to-newsgroup
-                                                             select-method action)
-                                                  activate)
-              (let ((articles (gnus-summary-work-articles n))
-                    (return   ad-do-it))
-                (when (or (null action)
-                          (eq action 'move))
-                  (dolist (article articles)
-                    (gnus-summary-mark-article article gnus-expirable-mark)))
-                return))
 
             ;; Increase score of group after reading it
             (add-hook 'gnus-summary-exit-hook
