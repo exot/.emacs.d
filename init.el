@@ -1688,7 +1688,7 @@ Note that this workaround is incomplete, as explained in this comment."
               gnus-fetch-old-headers nil
               gnus-auto-select-first nil
               gnus-auto-select-next nil
-              gnus-summary-line-format "%U%O%R%6k %(%&user-date;  %-13,13f  %B%s%)\n"
+              gnus-summary-line-format "%U%ub%R%O%6k  %(%&user-date;  %-18,18f  %B%s%)\n"
               gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date)
               gnus-subthread-sort-functions '(gnus-thread-sort-by-date)
               gnus-thread-hide-subtree t
