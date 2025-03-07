@@ -26,17 +26,17 @@
 
 Otherwise moves the cursor to the window where we have been before.
 
-The buffer's name has to start with “*eshell*” to be recognized
-by this function.  Otherwise the current buffer is not treated as
-an eshell buffer.
+The buffer's name has to start with “*eshell-side*” to be recognized by
+this function.  Otherwise the current buffer is not treated as an eshell
+buffer.
 
-When ARG is given, change to `default-directory' after switching
-to the eshell buffer."
+When ARG is given, change to `default-directory' after switching to the
+eshell buffer."
   (interactive "P")
   (let ((current-dir (expand-file-name default-directory)))
     (cl-flet ((in-eshell-buffer-p ()
                 (and (derived-mode-p 'eshell-mode)
-                     (string-match-p "^\\*eshell\\*" (buffer-name)))))
+                     (string-match-p "^\\*eshell-side\\*" (buffer-name)))))
 
       (if (and (not arg)
                (in-eshell-buffer-p))
@@ -49,7 +49,7 @@ to the eshell buffer."
                                               (window-list-1))))
               (select-window eshell-window)
             ;; No running eshell found, open new one.
-            (--if-let (display-buffer (eshell 1))
+            (--if-let (display-buffer (let ((eshell-buffer-name "*eshell-side*")) (eshell)))
                 (select-window it)
               (error "Could not start eshell (`display-buffer' returned nil)"))))
 

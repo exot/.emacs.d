@@ -75,9 +75,9 @@ If already in *ansi-term* buffer, bury it."
 
 Otherwise, closes the current shell window.
 
-The buffer's name has to start with “*shell*” to be recognized
-by this function.  Otherwise the current buffer is not treated as
-a shell buffer.
+The buffer's name has to start with “*shell-side*” to be recognized by
+this function.  Otherwise the current buffer is not treated as a shell
+buffer.
 
 With ARG, switch to `default-directory' of the current buffer first."
   (interactive "P")
@@ -85,16 +85,16 @@ With ARG, switch to `default-directory' of the current buffer first."
               (if-let ((shell-window (cl-find-if (lambda (window)
                                                    (with-current-buffer (window-buffer window)
                                                      (and (derived-mode-p 'shell-mode)
-                                                          (string-match-p "^\\*shell\\*" (buffer-name)))))
+                                                          (string-match-p "^\\*shell-side\\*" (buffer-name)))))
                                                  (window-list-1))))
                   (select-window shell-window)
-                (--if-let (display-buffer (shell))
+                (--if-let (display-buffer (shell (get-buffer-create "*shell-side*")))
                     (select-window it)
                   (error "Could not start shell (`display-buffer' returned nil)")))))
     (if (not arg)
         ;; toggle shell window
         (if (and (derived-mode-p 'shell-mode)
-                 (string-match-p "^\\*shell\\*" (buffer-name)))
+                 (string-match-p "^\\*shell-side\\*" (buffer-name)))
             (bury-buffer)
           (change-to-shell))
 

@@ -322,14 +322,14 @@
             ;; Inspired by masteringemacs and
             ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Frame-Layouts-with-Side-Windows.html
             (add-to-list 'display-buffer-alist
-                         '("^\\*eshell\\*"
+                         '("^\\*eshell-side\\*"
                            display-buffer-in-side-window
                            (side . bottom)
                            (slot . -1)
                            (window-height . 0.33)
                            (window-parameters . ((no-other-window . t)))))
             (add-to-list 'display-buffer-alist
-                         '("^\\*shell\\*"
+                         '("^\\*shell-side\\*"
                            display-buffer-in-side-window
                            (side . bottom)
                            (slot . 1)
