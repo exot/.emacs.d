@@ -1791,7 +1791,7 @@ Note that this workaround is incomplete, as explained in this comment."
                                              ("^nnir" t)
                                              ("^nnmaildir" t)
                                              ("INBOX$" t))
-              gnus-registry-max-entries 5000
+              gnus-registry-max-entries 10000
               gnus-registry-track-extra '(sender subject recipient)
               gnus-registry-cache-file (expand-file-name "gnus.registry.eioioi"
                                                          emacs-d)))
