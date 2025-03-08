@@ -1427,10 +1427,7 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package git-commit
   :commands (global-git-commit-mode)
   :init (setq git-commit-style-convention-checks '(non-empty-second-line
-                                                   overlong-summary-line))
-  :config (add-hook 'git-commit-setup-hook
-                    #'(lambda ()
-                        (setq fill-column 72))))
+                                                   overlong-summary-line)))
 
 (use-package highlight-indentation
   :commands highlight-indentation-mode)
