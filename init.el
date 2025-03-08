@@ -526,41 +526,22 @@
 ;; * Org
 
 (use-package db-org
-  :commands (db/check-special-org-files-in-agenda
-             db/verify-refile-target
-             db/find-parent-task
-             db/ensure-running-clock
-             db/save-current-org-task-to-file
-             db/org-update-frame-title-with-current-clock
+  :commands (db/org-update-frame-title-with-current-clock
              db/org-clock-out
              db/org-clock-in-break-task
              db/org-clock-in-home-task
              db/org-clock-in-work-task
              db/show-current-org-task
-             db/org-remaining-effort-of-current-item
-             db/org-cmp-remaining-effort
-             org-dblock-write:db/org-workload-report
-             db/org-home-time-for-date
-             endless/org-ispell
              db/org-agenda-list-deadlines
-             db/org-agenda-insert-active-filters
              hydra-org-agenda-view/body
-             db/org-agenda-insert-efforts
              db/org-eval-subtree-no-confirm
-             db/org-timestamp-difference
-             db/org-capture-code-snippet
              hydra-org-clock/body
              hydra-org-jump/body
              hydra-org-custom/body
              db/org-execute-babel-in-buffer-and-iterate-tables
              db/make-org-capture-frame
-             db/org-onenote-open
-             db/org-outlook-open
-             db/org-rfc-open
              db/org-cleanup-continuous-clocks
              db/find-csv-in-org
-             db/org-mark-current-default-task
-             db/org-clocktable-write-with-threshold
              db/export-diary
              db/org-insert-checklist
              db/org-copy-body-from-item-to-point
@@ -568,8 +549,27 @@
              db/org-add-link-to-other-item
              db/org-add-link-to-current-clock
              hydra-org-linking/body
+             db/org-clock-goto-first-open-checkbox)
+  :autoload (db/check-special-org-files-in-agenda
+             db/verify-refile-target
+             db/find-parent-task
+             db/ensure-running-clock
+             db/save-current-org-task-to-file
+             db/org-remaining-effort-of-current-item
+             db/org-cmp-remaining-effort
+             org-dblock-write:db/org-workload-report
+             db/org-home-time-for-date
+             endless/org-ispell
+             db/org-agenda-insert-active-filters
+             db/org-agenda-insert-efforts
+             db/org-timestamp-difference
+             db/org-capture-code-snippet
+             db/org-onenote-open
+             db/org-outlook-open
+             db/org-rfc-open
+             db/org-mark-current-default-task
+             db/org-clocktable-write-with-threshold
              org-dblock-write:db/org-backlinks
-             db/org-clock-goto-first-open-checkbox
              org-password-manager-get-password-by-id
              db/org-bookmark-open
              db/org-bookmark-store-link
