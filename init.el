@@ -256,12 +256,12 @@
   :init (setq multisession-directory (expand-file-name "multisession/" emacs-d-userdata)))
 
 (use-package proced
-  :custom ((proced-tree-flag t)
-           (proced-auto-update-flag (not on-windows))
-           (proced-format 'medium)
-           (proced-auto-update-interval 1)
-           (proced-goal-attribute nil)
-           (proced-enable-color-flag t)))
+  :init (setq proced-tree-flag t
+              proced-auto-update-flag (not on-windows)
+              proced-format 'medium
+              proced-auto-update-interval 1
+              proced-goal-attribute nil
+              proced-enable-color-flag t))
 
 (use-package project
   :init (setq project-list-file (expand-file-name "projects" emacs-d-userdata))
@@ -1347,17 +1347,24 @@ accordingly."
                          (slot . 0)
                          (window-width . 0.33)
                          (window-parameters . ((no-other-window . t)
-                                               (no-delete-other-windows . t))))))
+                                               (no-delete-other-windows . t)))))
+
+          (setq org-roam-directory (expand-file-name "~/Documents/zettelkasten/")
+                org-roam-db-location (expand-file-name "~/Documents/zettelkasten/org-roam.db")
+                org-roam-completion-everywhere t
+                org-roam-mode-sections (list #'org-roam-backlinks-section
+                                             #'org-roam-reflinks-section
+                                             #'org-roam-unlinked-references-section)))
+
   :commands (org-roam-node-insert
              org-roam-node-find
              org-roam-capture
              org-roam-buffer-toggle)
-  :custom ((org-roam-directory (expand-file-name "~/Documents/zettelkasten/"))
-           (org-roam-db-location (expand-file-name "~/Documents/zettelkasten/org-roam.db"))
-           (org-roam-completion-everywhere t)
-           (org-roam-mode-sections (list #'org-roam-backlinks-section
-                                         #'org-roam-reflinks-section
-                                         #'org-roam-unlinked-references-section)))
+
+  :autoload (org-roam-backlinks-section
+             org-roam-reflinks-section
+             org-roam-unlinked-references-section)
+
   :config (progn
             (org-roam-db-autosync-mode)
 
@@ -1466,27 +1473,26 @@ Note that this workaround is incomplete, as explained in this comment."
                 magit-commit-show-diff nil
                 magit-repository-directories '(("~/" . 0)
                                                ("~/.emacs.d" . 0)
-                                               ("~/Documents/" . 3)))
+                                               ("~/Documents/" . 3))
+                magit-repolist-columns '(("Name" 20 magit-repolist-column-ident
+                                          ())
+                                         ("S" 1 magit-repolist-column-flag
+                                          ())
+                                         ("B<U" 3 magit-repolist-column-unpulled-from-upstream
+                                          ((:right-align t)
+                                           (:sort <)))
+                                         ("B>U" 3 magit-repolist-column-unpushed-to-upstream
+                                          ((:right-align t)
+                                           (:sort <)))
+                                         ("Version" 35 magit-repolist-column-version
+                                          ((:sort magit-repolist-version<)))
+                                         ("Path" 99 magit-repolist-column-path
+                                          ())))
 
           (when on-windows
             ;; Experimental: on Windows, do not refresh magit-status-buffers
             ;; that are not selected, to increase performance.
             (setq magit-refresh-status-buffer nil)))
-
-  :custom ((magit-repolist-columns '(("Name" 20 magit-repolist-column-ident
-                                      ())
-                                     ("S" 1 magit-repolist-column-flag
-                                      ())
-                                     ("B<U" 3 magit-repolist-column-unpulled-from-upstream
-                                      ((:right-align t)
-                                       (:sort <)))
-                                     ("B>U" 3 magit-repolist-column-unpushed-to-upstream
-                                      ((:right-align t)
-                                       (:sort <)))
-                                     ("Version" 35 magit-repolist-column-version
-                                      ((:sort magit-repolist-version<)))
-                                     ("Path" 99 magit-repolist-column-path
-                                      ()))))
 
   :config (progn
             (when (fboundp 'global-magit-file-mode)
