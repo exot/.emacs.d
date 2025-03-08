@@ -1546,7 +1546,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
             (with-demoted-errors "Setting up BBDB failed: %s"
               (bbdb-initialize 'gnus 'message)
-              (bbdb-mua-auto-update-init 'message))
+              (bbdb-mua-auto-update-init 'gnus 'message))
 
             ;; Ensure that whenever we compose new mail, it will use the correct posting style.
             ;; This is ensured by setting ARG of `gnus-group-mail’ to 1 in case it is not set, to
@@ -1694,6 +1694,7 @@ Note that this workaround is incomplete, as explained in this comment."
               gnus-fetch-old-headers nil
               gnus-auto-select-first nil
               gnus-auto-select-next nil
+              gnus-summary-stop-at-end-of-message t
               gnus-summary-line-format "%U%ub%R%O%6k  %(%&user-date;  %-18,18f  %B%s%)\n"
               gnus-thread-sort-functions '(gnus-thread-sort-by-most-recent-date)
               gnus-subthread-sort-functions '(gnus-thread-sort-by-date)
@@ -1707,6 +1708,7 @@ Note that this workaround is incomplete, as explained in this comment."
               gnus-sum-thread-tree-leaf-with-other "├► "
               gnus-sum-thread-tree-vertical "│"
               gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+              gnus-summary-mark-below nil
 
               ;; New mark symbols (seen here:
               ;; `https://github.com/cofi/dotfiles/blob/master/gnus.el')
@@ -1769,7 +1771,6 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package gnus-score
   :init (setq gnus-use-scoring t
               gnus-use-adaptive-scoring '(word line)
-              gnus-summary-mark-below nil
               gnus-adaptive-word-length-limit 5
               gnus-adaptive-word-no-group-words t
               gnus-default-adaptive-score-alist
@@ -1783,8 +1784,7 @@ Note that this workaround is incomplete, as explained in this comment."
                 (gnus-kill-file-mark)
                 (gnus-ancient-mark)
                 (gnus-low-score-mark)
-                (gnus-catchup-mark (from -1) (subject -1)))
-              gnus-summary-mark-below nil))
+                (gnus-catchup-mark (from -1) (subject -1)))))
 
 ;; Gnus Registry
 
