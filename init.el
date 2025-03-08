@@ -357,7 +357,6 @@
 
 (use-package db-utils
   :commands (endless/fill-or-unfill
-             db/delete-trailing-whitespace-maybe
              db/run-or-hide-shell
              db/gnus
              db/org-agenda
@@ -368,33 +367,33 @@
              db/hex-to-ascii
              db/text-to-hex
              turn-on-lispy-when-available
-             turn-on-flycheck-when-file
-             db/sort-nsm-permanent-settings
-             endless/colorize-compilation
-             db/turn-off-local-electric-pair-mode
              db/two-monitors-xrandr
              db/one-monitor-xrandr
              db/pretty-print-xml
              db/bookmark-add-external
              db/bookmark-add-url
+             db/bookmark-add-eww
              db/bookmark-relocate
              db/bookmark-bmenu-relocate
              db/lookup-smime-key
              db/dired-from-shell-command
-             db/system-open
              db/switch-to-dark-theme
              db/switch-to-light-theme
              keyboard-quit-context+
+             db/dired-ediff-files
+             db/dired-back-to-top
+             db/dired-jump-to-bottom
+             db/dired-get-size)
+  :autoload (turn-on-flycheck-when-file
+             db/sort-nsm-permanent-settings
+             endless/colorize-compilation
+             db/system-open
              db/convert-lf-to-crlf-in-buffer
              db/convert-crlf-to-lf-in-buffer
              db/replace-variables-in-string
-             db/dired-ediff-files
              db/grep-read-files
              db/make-selector-from-table-header
-             db/get-library-version
-             db/dired-back-to-top
-             db/dired-jump-to-bottom
-             db/dired-get-size))
+             db/get-library-version))
 
 (use-package db-hydras
   :commands (hydra-toggle/body

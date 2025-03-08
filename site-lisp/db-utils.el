@@ -173,11 +173,6 @@ With a prefix argument P, isearch for the symbol at point."
            fill-column)))
     (call-interactively #'fill-paragraph)))
 
-(defun db/delete-trailing-whitespace-maybe ()
-  "Call `delete-trailing-whitespace', but not in `message-mode'."
-  (unless (derived-mode-p 'message-mode)
-    (delete-trailing-whitespace)))
-
 (defun db/find-window-by-buffer-mode (mode)
   "Return first window in current frame displaying a buffer with major mode MODE."
   (cl-find-if (lambda (window)
@@ -290,11 +285,6 @@ Will print a warning in case of failure."
   ;; http://endlessparentheses.com/ansi-colors-in-the-compilation-buffer-output.html
   (let ((inhibit-read-only t))
     (ansi-color-apply-on-region compilation-filter-start (point))))
-
-(defun db/turn-off-local-electric-pair-mode ()
-  "Locally turn off electric pair mode."
-  (interactive)
-  (electric-pair-local-mode -1))
 
 (defun db/pretty-print-xml ()
   "Stupid function to pretty print XML content in current buffer."
@@ -794,11 +784,13 @@ number of bytes has been inserted."
 
 (defun db/two-monitors-xrandr ()
   "Activate second monitor using xrandr."
+  (interactive)
   (call-process "xrandr" nil nil nil
                 "--output" "HDMI-3" "--primary" "--right-of" "LVDS-1" "--auto"))
 
 (defun db/one-monitor-xrandr ()
   "Deactivate all additional monitors."
+  (interactive)
   (call-process "xrandr" nil nil nil
                 "--output" "HDMI-3" "--off"))
 
