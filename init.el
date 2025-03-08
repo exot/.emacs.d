@@ -276,9 +276,7 @@
                                            :key #'cl-first)))))
 
 (use-package quail
-  :init (setq default-input-method "TeX")
-  :config (add-hook 'input-method-activate-hook
-                    #'db/add-symbols-to-TeX-input-method))
+  :init (setq default-input-method "TeX"))
 
 (use-package savehist
   :commands (savehist-mode)
@@ -374,7 +372,6 @@
              db/sort-nsm-permanent-settings
              endless/colorize-compilation
              db/turn-off-local-electric-pair-mode
-             db/add-symbols-to-TeX-input-method
              db/two-monitors-xrandr
              db/one-monitor-xrandr
              db/pretty-print-xml
