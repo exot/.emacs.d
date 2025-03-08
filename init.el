@@ -2926,6 +2926,12 @@ eventuelly be set to nil, however)."
 
 ;; * Load customizations
 
+;; We do this late in init.el to really make sure that whatever happened previously can be
+;; overwritten by user customizations.  This might not be strictly necessary, as
+;; `custom-set-variables' and friends should only install user customizations, without evaluating
+;; them … but let's better be safe than sorry).  One could even think about adding this to
+;; `db/run-init', but this might be too late.
+
 (when (file-exists-p custom-file)
   (load-file custom-file))
 
