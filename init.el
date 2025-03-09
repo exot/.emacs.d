@@ -462,7 +462,6 @@
               (add-to-list 'electric-pair-text-pairs '(?„ . ?“))))
 
 (use-package flyspell
-  :commands (flyspell-mode turn-on-flyspell)
   :config (progn
             (unbind-key "C-M-i" flyspell-mode-map)
             (unbind-key "C-c $" flyspell-mode-map)))
@@ -2172,9 +2171,11 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package helm
   :ensure t
   :diminish helm-mode
-  :autoload (helm-execute-persistent-action
-             helm-select-action
-             helm-make-source)
+  :bind (:map helm-map
+         ("<tab>" . helm-execute-persistent-action)
+         ("C-i"   . helm-execute-persistent-action)
+         ("C-z"   . helm-select-action))
+  :autoload (helm-make-source)
   :commands (helm-show-kill-ring)
   :defines (helm-source-bookmarks)            ; via helm-bookmarks.el
   :init (setq helm-command-prefix-key "C-c h" ; see `db/run-init' for explicit binding
@@ -2210,11 +2211,7 @@ Note that this workaround is incomplete, as explained in this comment."
                   (bind-key "P" #'helm-pages helm-command-map))
               (warn (concat
                      "Cannot load `helm-global-bindings', please check your helm installation for completeness. "
-                     "(Have you installed it from melpa?)")))
-
-            (bind-key "<tab>" #'helm-execute-persistent-action helm-map)
-            (bind-key "C-i" #'helm-execute-persistent-action helm-map)
-            (bind-key "C-z" #'helm-select-action helm-map)))
+                     "(Have you installed it from melpa?)")))))
 
 (use-package ivy
   :diminish ivy-mode
@@ -2558,9 +2555,6 @@ eventuelly be set to nil, however)."
                                 (if (string= event "finished\n")
                                     (kill-buffer ,buff)))))))
 
-            ;; Does not work; C-c is shadowed by some minor modes like semantic and winner
-            (bind-key "C-c" #'term-send-raw term-raw-map)
-
             ;; Unbind some keys to allow the global keymap to handle them
             (unbind-key "M-:" term-raw-map)
             (unbind-key "C-h" term-raw-map)
@@ -2604,7 +2598,6 @@ eventuelly be set to nil, however)."
              pcomplete/git))
 
 (use-package eshell
-  :commands (eshell)
   :init (progn
           (setq eshell-cmpl-cycle-completions nil
                 eshell-scroll-to-bottom-on-input t
@@ -2623,6 +2616,13 @@ eventuelly be set to nil, however)."
 
           (when (version< emacs-version "30")
             (setq eshell-prompt-regexp "└─[$#] ")))
+
+  :bind (:map eshell-mode-map
+         ("M-P" . eshell-previous-prompt)
+         ("M-N" . eshell-next-prompt)
+         :map eshell-hist-mode-map
+         ("M-r" . eshell-insert-history))
+
   :config (progn
 
             (eval-when-compile
@@ -2643,14 +2643,9 @@ eventuelly be set to nil, however)."
             (add-hook 'eshell-mode-hook
                       'with-editor-export-editor)
 
-            (if (version< emacs-version "30")
-                (progn
-                  (autoload 'eshell-bol "esh-mode.el")
-                  (bind-key "C-a" #'eshell-bol eshell-mode-map))
-              (bind-key "C-a" #'beginning-of-line eshell-mode-map))
-            (bind-key "M-r" #'eshell-insert-history eshell-hist-mode-map)
-            (bind-key "M-P" #'eshell-previous-prompt eshell-mode-map)
-            (bind-key "M-N" #'eshell-next-prompt eshell-mode-map)
+            (when (version< emacs-version "30")
+              (autoload 'eshell-bol "esh-mode.el")
+              (bind-key "C-a" #'eshell-bol eshell-mode-map))
 
             ;; Ignoring case when completing file names seems to have a
             ;; bug: when a ~ is encountered, it is implicitly expaned by
