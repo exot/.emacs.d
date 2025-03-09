@@ -2879,6 +2879,9 @@ eventuelly be set to nil, however)."
               shr-image-animate nil
               shr-width (current-fill-column)))
 
+(use-package remember
+  :init (setq remember-data-file db/org-default-refile-file))
+
 (use-package table
   :init (progn
           ;; Pandoc supports colons in grid tables to denote alignments, so let's have table.el
