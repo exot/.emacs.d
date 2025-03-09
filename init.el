@@ -1539,7 +1539,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
             (with-demoted-errors "Setting up BBDB failed: %s"
               (bbdb-initialize 'gnus 'message)
-              (bbdb-mua-auto-update-init 'gnus 'message))
+              (bbdb-mua-auto-update-init 'message))
 
             ;; Ensure that whenever we compose new mail, it will use the correct posting style.
             ;; This is ensured by setting ARG of `gnus-group-mail’ to 1 in case it is not set, to
