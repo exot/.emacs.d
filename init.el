@@ -2041,7 +2041,8 @@ Note that this workaround is incomplete, as explained in this comment."
                 dired-isearch-filenames 'dwim
                 dired-auto-revert-buffer t
                 dired-clean-confirm-killing-deleted-buffers t
-                dired-clean-up-buffers-too t)
+                dired-clean-up-buffers-too t
+                dired-movement-style 'bounded)
 
           (setq dired-guess-shell-alist-user
                 '(("\\.pdf\\'" "evince")
