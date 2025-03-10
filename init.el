@@ -57,11 +57,8 @@
 
 (defvar use-package-enable-imenu-support t)
 
-(eval-when-compile
-  (dolist (package '(bind-key use-package))
-    (unless (package-installed-p package)
-      (package-install package))
-    (require package)))
+(require 'use-package)
+(require 'bind-key)
 
 (setq use-package-always-defer t
       use-package-verbose t
