@@ -64,6 +64,11 @@
       use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
+(when init-file-debug
+  (setq use-package-expand-minimally nil
+        use-package-compute-statistics t
+        debug-on-error t))
+
 (add-to-list 'package-pinned-packages '(use-package . "melpa-stable"))
 (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
 
