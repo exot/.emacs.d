@@ -1928,6 +1928,10 @@ Note that this workaround is incomplete, as explained in this comment."
               gnutls-min-prime-bits 1024
               gnutls-verify-error t))
 
+(use-package epa
+  :init (when (version<= "30" emacs-version)
+          (setq epa-keys-select-method 'minibuffer)))
+
 (use-package epg
   :init (setq epg-debug t
               epg-gpg-program "gpg"))
