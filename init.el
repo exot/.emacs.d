@@ -2050,8 +2050,11 @@ Note that this workaround is incomplete, as explained in this comment."
                 dired-isearch-filenames 'dwim
                 dired-auto-revert-buffer t
                 dired-clean-confirm-killing-deleted-buffers t
-                dired-clean-up-buffers-too t
-                dired-movement-style 'bounded)
+                dired-clean-up-buffers-too t)
+
+          (when (version<= "30" emacs-version)
+            (setq dired-movement-style 'bounded
+                  dired-filename-display-length nil))
 
           (setq dired-guess-shell-alist-user
                 '(("\\.pdf\\'" "evince")
