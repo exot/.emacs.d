@@ -2543,12 +2543,7 @@ eventuelly be set to nil, however)."
               comint-scroll-show-maximum-output t
               comint-completion-addsuffix t
               comint-buffer-maximum-size 100000
-              comint-input-ring-size 5000)
-  :config (progn
-            ;; Never let bash know that we are inside Emacs;
-            ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
-            (advice-add 'comint-term-environment
-                        :filter-return #'(lambda (env) (cons "INSIDE_EMACS" env)))))
+              comint-input-ring-size 5000))
 
 (use-package term
   :commands (term-send-string
@@ -2591,14 +2586,7 @@ eventuelly be set to nil, however)."
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
             (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
-            (add-hook 'shell-mode-hook 'with-editor-export-editor)
-
-            ;; We may want to use readline support in bash, don't inhibit this
-            ;; with explicit command line arguments;
-            ;; cf. https://coredumped.dev/2020/01/04/native-shell-completion-in-emacs/
-
-            (setq explicit-bash-args
-                  (delete "--noediting" explicit-bash-args))))
+            (add-hook 'shell-mode-hook 'with-editor-export-editor)))
 
 (use-package db-eshell
   :commands (db/run-or-hide-eshell
