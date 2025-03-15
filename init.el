@@ -2543,7 +2543,8 @@ eventuelly be set to nil, however)."
               comint-scroll-show-maximum-output t
               comint-completion-addsuffix t
               comint-buffer-maximum-size 100000
-              comint-input-ring-size 5000))
+              comint-input-ring-size 5000)
+  :config (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m))
 
 (use-package term
   :commands (term-send-string
@@ -2585,7 +2586,6 @@ eventuelly be set to nil, however)."
   :commands (shell)
   :config (progn
             (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-            (add-hook 'comint-output-filter-functions 'comint-strip-ctrl-m)
             (add-hook 'shell-mode-hook 'with-editor-export-editor)))
 
 (use-package db-eshell
