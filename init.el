@@ -2150,7 +2150,7 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package tramp
   :init (setq tramp-default-method (if on-windows "pscp" "scp")
               tramp-completion-use-auth-sources nil
-              tramp-histfile-override (expand-file-name "tramp-history" emacs-d-userdata)))
+              tramp-histfile-override "~/.tramp_history"))
 
 (use-package trashed
   ;; A simple dired-like interface to the system trash bin
