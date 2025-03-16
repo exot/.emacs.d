@@ -1467,7 +1467,8 @@ Note that this workaround is incomplete, as explained in this comment."
                 magit-commit-show-diff nil
                 magit-repository-directories '(("~/" . 0)
                                                ("~/.emacs.d" . 0)
-                                               ("~/Documents/" . 3))
+                                               ("~/Documents/" . 3)
+                                               ("~/.local/share/dotfiles" . 0))
                 magit-repolist-columns '(("Name" 20 magit-repolist-column-ident
                                           ())
                                          ("S" 1 magit-repolist-column-flag
