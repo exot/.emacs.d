@@ -2246,11 +2246,6 @@ Note that this workaround is incomplete, as explained in this comment."
             ;; functionality.
             (define-key ivy-minibuffer-map (kbd "S-SPC") nil)))
 
-(use-package swiper
-  :ensure t
-  :commands (swiper
-             swiper-from-isearch))
-
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
   :init (setq recentf-max-saved-items 1000
@@ -2349,7 +2344,8 @@ eventuelly be set to nil, however)."
   :ensure t
   :commands (avy-goto-char-timer
              avy-goto-word-or-subword-1
-             avy-goto-line))
+             avy-goto-line
+             avy-isearch))
 
 (use-package bm
   ;; Taken from https://protesilaos.com/dotemacs/ and adapted slightly
@@ -2399,7 +2395,10 @@ eventuelly be set to nil, however)."
   :init (setq isearch-allow-scroll t
               isearch-lazy-count t
               isearch-lax-whitespace nil
-              isearch-regexp-lax-whitespace nil))
+              isearch-regexp-lax-whitespace nil)
+  :bind (:map isearch-mode-map
+              ("M-i" . consult-line)
+              ("C-j" . avy-isearch)))
 
 (use-package goto-last-change
   :commands goto-last-change)
@@ -3067,7 +3066,6 @@ eventuelly be set to nil, however)."
   (bind-key "M-=" #'count-words)
   (bind-key "M-SPC" #'cycle-spacing)    ; default since Emacs 29.1
   (bind-key "M-Z" #'zap-to-char)
-  (bind-key "M-i" #'swiper-from-isearch isearch-mode-map)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
   (bind-key "M-z" #'zap-up-to-char)
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
