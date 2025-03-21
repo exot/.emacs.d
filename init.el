@@ -2395,7 +2395,8 @@ eventuelly be set to nil, however)."
   :init (setq isearch-allow-scroll t
               isearch-lazy-count t
               isearch-lax-whitespace nil
-              isearch-regexp-lax-whitespace nil)
+              isearch-regexp-lax-whitespace nil
+              isearch-allow-motion t)
   :bind (:map isearch-mode-map
               ("M-i" . consult-line)
               ("C-j" . avy-isearch)))
