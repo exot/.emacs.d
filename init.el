@@ -116,7 +116,6 @@
 ;; Startup configuration
 (setq inhibit-startup-message t
       inhibit-default-init t
-      frame-inhibit-implied-resize t
       initial-scratch-message nil
       initial-major-mode 'fundamental-mode
       ring-bell-function #'ignore

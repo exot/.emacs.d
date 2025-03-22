@@ -13,3 +13,6 @@
           (lambda ()
             (setq gc-cons-threshold (* 100 1024 1024)   ; 100mb
                   gc-cons-percentage 0.1)))
+
+(setq frame-resize-pixelwise t
+      frame-inhibit-implied-resize t)
