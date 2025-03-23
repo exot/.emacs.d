@@ -253,6 +253,40 @@
             ;; and replace it with something more straightforward.
             (advice-add 'grep-read-files :around #'db/grep-read-files)))
 
+(use-package ibuffer
+  :config (add-hook 'ibuffer-mode-hook
+                    #'(lambda ()
+                        (ibuffer-switch-to-saved-filter-groups "default"))))
+
+(use-package ibuf-ext
+  :commands (ibuffer-switch-to-saved-filter-groups)
+  :init (setq ibuffer-show-empty-filter-groups nil
+              ibuffer-saved-filter-groups '(("default"
+                                             ("Org" (or (mode . org-mode)
+                                                        (name . "^\\*Org Src")
+                                                        (name . "^\\*Org Agenda\\*$")))
+                                             ("Emacs" (or (name . "^\\*scratch\\*$")
+                                                          (name . "^\\*Messages\\*$")
+                                                          (name . "^\\*Warnings\\*$")
+                                                          (name . "^\\*Shell Command Output\\*$")
+                                                          (name . "^\\*Async-native-compile-log\\*$")
+                                                          (mode . Custom-mode)
+                                                          (mode . package-menu-mode)))
+                                             ("Dired" (mode . dired-mode))
+                                             ("Magit" (or (mode . magit-status-mode)
+                                                          (mode . magit-process-mode)
+                                                          (mode . magit-repolist-mode)))
+                                             ("Gnus" (or (mode . gnus-group-mode)
+                                                         (mode . gnus-summary-mode)
+                                                         (mode . gnus-article-mode)))
+                                             ("Shells" (or (mode . term-mode)
+                                                           (mode . shell-mode)
+                                                           (mode . eshell-mode)))
+                                             ("Help" (or (name . "^\\*Help\\*$")
+                                                         (name . "^\\*info\\*$")
+                                                         (name . "^\\*helpful")))
+                                             ("Tramp" (name . "^\\*tramp.*"))))))
+
 (use-package multisession
   :init (setq multisession-directory (expand-file-name "multisession/" emacs-d-userdata)))
 
