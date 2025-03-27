@@ -263,6 +263,7 @@
   :init (setq ibuffer-show-empty-filter-groups nil
               ibuffer-saved-filter-groups '(("default"
                                              ("Org" (or (mode . org-mode)
+                                                        (mode . org-lint--report-mode)
                                                         (name . "^\\*Org Src")
                                                         (name . "^\\*Org Agenda\\*$")))
                                              ("Dired" (mode . dired-mode))
@@ -284,7 +285,9 @@
                                                           (name . "^\\*xref\\*$")
                                                           (mode . Custom-mode)
                                                           (mode . package-menu-mode)
-                                                          (mode . calendar-mode)))
+                                                          (mode . calendar-mode)
+                                                          (mode . calc-mode)
+                                                          (mode . calc-trail-mode)))
                                              ("Help" (or (name . "^\\*Help\\*$")
                                                          (name . "^\\*info\\*$")
                                                          (name . "^\\*helpful")))
