@@ -2261,27 +2261,6 @@ Note that this workaround is incomplete, as explained in this comment."
                      "Cannot load `helm-global-bindings', please check your helm installation for completeness. "
                      "(Have you installed it from melpa?)")))))
 
-(use-package ivy
-  :diminish ivy-mode
-  :init (setq ivy-use-virtual-buffers t
-              ivy-magic-tilde nil
-              ivy-count-format "(%d/%d) "
-              ivy-initial-inputs-alist '((counsel-describe-function . "^")
-                                         (counsel-describe-variable . "^")
-                                         (man . "^")
-                                         (woman . "^"))
-              ivy-use-selectable-prompt t
-              ivy-do-completion-in-region t
-              ivy-re-builders-alist '((t . ivy--regex-ignore-order)))
-  :config (progn
-            ;; Since we are using `ivy--regex-ignore-order' for completion
-            ;; anyway, providing an individual restriction in the ivy buffer is
-            ;; not necessary anymore.  Since I often mistype S-SPC for SPC,
-            ;; loosing the current candidate and annoying myself, removing this
-            ;; shortcut is both helpful and not removing necessary
-            ;; functionality.
-            (define-key ivy-minibuffer-map (kbd "S-SPC") nil)))
-
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
   :init (setq recentf-max-saved-items 1000
