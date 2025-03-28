@@ -2971,14 +2971,6 @@ eventuelly be set to nil, however)."
   (column-number-mode +1)
   (delete-selection-mode -1)
 
-  (dolist (mode '(tool-bar-mode
-                  scroll-bar-mode
-                  menu-bar-mode
-                  blink-cursor-mode
-                  tooltip-mode))
-    (when (fboundp mode)
-      (funcall mode 0)))
-
   (electric-indent-mode -1)
 
   (appt-activate +1)
