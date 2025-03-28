@@ -3,7 +3,7 @@
 My personal Emacs Configuration, containing bits of code collected from around
 the web.  Have fun with it!
 
-This configuration is known to work with Emacs 29.1 (and later) on
+This configuration is known to work with Emacs 30.1 (and later) on
 Debian GNU/Linux and Windows 11 (sigh).
 
 * Features

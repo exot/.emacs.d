@@ -22,7 +22,7 @@
 
 ;; * Preliminaries (constants and path settings)
 
-(when (version< emacs-version "29")
+(when (version< emacs-version "30")
   (error "Emacs version is too old!  We need at least Emacs 29, but this is %s"
          emacs-version))
 
@@ -1970,8 +1970,7 @@ Note that this workaround is incomplete, as explained in this comment."
               gnutls-verify-error t))
 
 (use-package epa
-  :init (when (version<= "30" emacs-version)
-          (setq epa-keys-select-method 'minibuffer)))
+  :init (setq epa-keys-select-method 'minibuffer))
 
 (use-package epg
   :init (setq epg-debug t
@@ -2091,11 +2090,9 @@ Note that this workaround is incomplete, as explained in this comment."
                 dired-isearch-filenames 'dwim
                 dired-auto-revert-buffer t
                 dired-clean-confirm-killing-deleted-buffers t
-                dired-clean-up-buffers-too t)
-
-          (when (version<= "30" emacs-version)
-            (setq dired-movement-style 'bounded
-                  dired-filename-display-length nil))
+                dired-clean-up-buffers-too t
+                dired-movement-style 'bounded
+                dired-filename-display-length nil)
 
           (setq dired-guess-shell-alist-user
                 '(("\\.pdf\\'" "evince")
@@ -2652,10 +2649,7 @@ eventuelly be set to nil, however)."
                 eshell-prompt-function #'eshell/default-prompt-function
                 eshell-highlight-prompt nil
                 eshell-cd-on-directory t
-                eshell-expand-input-functions '(eshell-expand-history-references))
-
-          (when (version< emacs-version "30")
-            (setq eshell-prompt-regexp "└─[$#] ")))
+                eshell-expand-input-functions '(eshell-expand-history-references)))
 
   :bind (:map eshell-mode-map
          ("M-P" . eshell-previous-prompt)
@@ -2682,10 +2676,6 @@ eventuelly be set to nil, however)."
 
             (add-hook 'eshell-mode-hook
                       'with-editor-export-editor)
-
-            (when (version< emacs-version "30")
-              (autoload 'eshell-bol "esh-mode.el")
-              (bind-key "C-a" #'eshell-bol eshell-mode-map))
 
             ;; Ignoring case when completing file names seems to have a
             ;; bug: when a ~ is encountered, it is implicitly expaned by
