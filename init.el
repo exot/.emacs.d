@@ -2822,10 +2822,6 @@ eventuelly be set to nil, however)."
   :ensure t
   :commands edit-list)
 
-(use-package expand-region
-  :ensure t
-  :commands (er/expand-region))
-
 (use-package eww
   :init (setq eww-bookmarks-directory emacs-d-userdata))
 
@@ -3023,7 +3019,6 @@ eventuelly be set to nil, however)."
   (bind-key "C-;" #'iedit-mode)
   (bind-key "C-<" #'mc/mark-previous-like-this)
   (bind-key "C->" #'mc/mark-next-like-this)
-  (bind-key "C-@" #'er/expand-region)
   (bind-key "C-M-\\" #'crux-cleanup-buffer-or-region)
   (bind-key "C-S-c C-S-c" #'mc/edit-lines)
   (bind-key "C-Z" #'undo-tree-redo)
