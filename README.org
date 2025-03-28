@@ -1,97 +1,91 @@
 #+title: Daniel’s Emacs Configuration
 
-My personal Emacs Configuration, containing bits of code collected from around
-the web.  Have fun with it!
+My personal Emacs Configuration, containing bits of code collected from around the web.  Have fun
+with it!
 
-This configuration is known to work with Emacs 30.1 (and later) on
-Debian GNU/Linux and Windows 11 (sigh).
+This configuration is known to work with Emacs 30.1 (and later) on Debian GNU/Linux and Windows 11
+(sigh).
 
 * Features
 
-- Tight integration of Org Mode, via customizable variables for different types
-  of Org Mode files, predefined capture templates, hydras, continuous clocking,
-  and more.
-- Gnus integration, including a general setup to easily add SMTP configuration
-  for multiple email accounts.
-- Extended completion support via [[https://github.com/emacs-helm/helm][helm]], [[https://github.com/abo-abo/swiper][ivy]], and [[https://company-mode.github.io/][company]].
-- [[https://magit.vc/][Magit]] and [[https://github.com/bbatsov/projectile][Projectile]].
-- A custom “start menu” based on helm (via ~C-x g~), allowing to access
-  bookmarks, default applications, and files; see the documentation of
-  ~db/helm-shortcuts~ for more details.
-- More or less usable integration into Windows (necessary for work, sorry for
-  that).
+- Tight integration of Org Mode, via customizable variables for different types of Org Mode files,
+  predefined capture templates, hydras, continuous clocking, and more.
+
+- Gnus integration, including a general setup to easily add SMTP configuration for multiple email
+  accounts.
+
+- Extended completion based on [[https://github.com/oantolin/orderless][orderless]] and [[https://github.com/minad/consult][consult]].
+
+- [[https://magit.vc/][Magit]].
+
+- A custom “start menu” based on helm (via ~C-x g~), allowing to access bookmarks, default
+  applications, and files; see the documentation of ~db/helm-shortcuts~ for more details.
+
+- More or less usable integration into Windows (necessary for work, sorry for that).
+
 - A usable [[https://www.gnu.org/software/emacs/manual/html_mono/eshell.html][Eshell]] configuration.
-- Support for various programming languages (Emacs Lisp, Clojure, Python, LaTeX,
-  Perl, Haskell, …)
+
+- Support for various programming languages (Emacs Lisp, Clojure, Python, LaTeX, Perl, Haskell, …)
 
 * Initial Setup
 
-To use this configuration, either clone or download a copy of this repository
-and place it in your =~/.emacs.d= directory (beware that under Windows, your
-home directory may be anywhere, check the variable ~%HOME%~ for this).
+To use this configuration, either clone or download a copy of this repository and place it in your
+=~/.emacs.d= directory (beware that under Windows, your home directory may be anywhere, check the
+variable ~%HOME%~ for this).
 
-If you use a proxy to access the Wild Internet™, make sure that the environment
-variables ~http_proxy~ and ~https_proxy~ are set with the correct values.  Upon
-first start, Emacs will download all some packages it deems essential, so please
-be patient.  All subsequent starts should be much faster.
+If you use a proxy to access the Wild Internet™, make sure that the environment variables
+~http_proxy~ and ~https_proxy~ are set with the correct values.  Upon first start, Emacs will
+download all some packages it deems essential, so please be patient.  All subsequent starts should
+be much faster.
 
-To make most of this configuration (and Emacs in general), a standard GNU
-(POSIX?) user space is required.  Under GNU/Linux system, this is standard, but
-for Windows this may be a problem.  The easiest way to get a minimal GNU user
-space is to install [[https://git-scm.com/download/win][Git for Windows]] and augment your ~%PATH%~ to include
-~C:\Program Files\Git\usr\bin\~ (or some-such).  This way, executables like
-~bash~, ~find~, ~grep~, and ~gpg~ are available to Emacs, but please be aware
-that the naming convention for directories is different for these tools from the
-Windows standard, i.e., ~/c/Windows/System32/~ instead of
-~C:\Windows\System32\~.  In general, this should not be a problem, though.
+To make most of this configuration (and Emacs in general), a standard GNU (POSIX?) user space is
+required.  Under GNU/Linux system, this is standard, but for Windows this may be a problem.  The
+easiest way to get a minimal GNU user space is to install [[https://git-scm.com/download/win][Git for Windows]] and augment your ~%PATH%~
+to include ~C:\Program Files\Git\usr\bin\~ (or some-such).  This way, executables like ~bash~,
+~find~, ~grep~, and ~gpg~ are available to Emacs, but please be aware that the naming convention for
+directories is different for these tools from the Windows standard, i.e., ~/c/Windows/System32/~
+instead of ~C:\Windows\System32\~.  In general, this should not be a problem, though.
 
 * Customization
 
-This configuration allows to make some customization without touching the code
-to adapt it to the need of the respective user.  This is done using the
-Customize interface of Emacs.  Some of the variables are set to some default
-values different from the default default values.  However, those settings are
-done before loading user customization, and thus can be overwritten by the
-latter.
+This configuration allows to make some customization without touching the code to adapt it to the
+need of the respective user.  This is done using the Customize interface of Emacs.  Some of the
+variables are set to some default values different from the default default values.  However, those
+settings are done before loading user customization, and thus can be overwritten by the latter.
 
-Additionally, some variables are provided that allow for additional
-configuration.  Those are located in the ~personal-settings~ Customization
-group, which see, and come with some (and hopefully sufficient) documentation.
+Additionally, some variables are provided that allow for additional configuration.  Those are
+located in the ~personal-settings~ Customization group, which see, and come with some (and hopefully
+sufficient) documentation.
 
 * Adding custom code
 
-If customizing variables is not enough, you can of course always add you custom
-code directly in the configuration.  However, this may make future merges
-difficult (in case you want to stay up-to-date with this configuration, that
-is).  To this end, a special variables called ~db/after-init-load-files~ can be
-customized to contain a list of files that will be loaded as the last step
-during startup of Emacs.  This way, custom code stays outside of the main
-configuration and future merges should pass without conflicts.
+If customizing variables is not enough, you can of course always add you custom code directly in the
+configuration.  However, this may make future merges difficult (in case you want to stay up-to-date
+with this configuration, that is).  To this end, a special variables called
+~db/after-init-load-files~ can be customized to contain a list of files that will be loaded as the
+last step during startup of Emacs.  This way, custom code stays outside of the main configuration
+and future merges should pass without conflicts.
 
 * Structure
 
-The main configuration is available in the usual [[init.el]] file, with additional
-functionality distributed over files in the [[site-lisp]] directory.  Some private
-data (like customization) is outsourced into a separate directory named
-=private=, and is not included in this repository.  The configuration should
-work nevertheless, even without these private files.
+The main configuration is available in the usual [[init.el]] file, with additional functionality
+distributed over files in the [[site-lisp]] directory.  Some private data (like customization) is
+outsourced into a separate directory named =private=, and is not included in this repository.  The
+configuration should work nevertheless, even without these private files.
 
-The main =init.el= file consists mostly of variable assignments, =use-package=
-declarations, initializing the =package= subsystem, and loading customizations.
-The main lifting is done by the =db/run-init= function, which is attached to
-=after-init-hook= in =init.el=.  This way, all necessary local hooks and
-autoloads are set up by =init.el=, and the =db/run-init= functions only
-activates modes needed for every session, sets default keybindings, hydras, and
-global hooks.  It also imports some environment variables and starts the server.
-Any additional packages are only loaded when required.  Additionally, after all
-this, ~db/run-init~ loads all files contained in ~db/after-init-load-files~, in
-the order given in that list.
+The main =init.el= file consists mostly of variable assignments, =use-package= declarations,
+initializing the =package= subsystem, and loading customizations.  The main lifting is done by the
+=db/run-init= function, which is attached to =after-init-hook= in =init.el=.  This way, all
+necessary local hooks and autoloads are set up by =init.el=, and the =db/run-init= functions only
+activates modes needed for every session, sets default keybindings, hydras, and global hooks.  It
+also imports some environment variables and starts the server.  Any additional packages are only
+loaded when required.  Additionally, after all this, ~db/run-init~ loads all files contained in
+~db/after-init-load-files~, in the order given in that list.
 
 * Known Limitations
 
-Under Windows, using Tramp with ~ssh~ from git does not seem to work because no
-~ssh-askpass~ is included.  Use ~plink~ instead, TRAMP has builtin support for
-it.
+Under Windows, using Tramp with ~ssh~ from git does not seem to work because no ~ssh-askpass~ is
+included.  Use ~plink~ instead, TRAMP has builtin support for it.
 
 * License
 
