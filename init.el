@@ -306,7 +306,9 @@
               proced-enable-color-flag t))
 
 (use-package project
-  :init (setq project-list-file (expand-file-name "projects" emacs-d-userdata))
+  :init (setq project-list-file (expand-file-name "projects" emacs-d-userdata)
+              project-switch-commands 'project-dired
+              project-vc-merge-submodules nil)
   :config (progn
 
             ;; Sort known projects before persisting, to reduce committer noise
@@ -375,6 +377,14 @@
                            (slot . 1)
                            (window-height . 0.33)
                            (window-parameters . ((no-other-window . t)))))))
+
+(use-package which-key
+  :ensure t
+  :commands (which-key-mode)
+  :diminish which-key-mode
+  :init (setq which-key-side-window-max-width 0.33
+              which-key-side-window-max-height 0.25)
+  :config (which-key-setup-side-window-bottom))
 
 (use-package winner
   :commands (winner-mode winner-undo winner-redo))
@@ -2029,6 +2039,13 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package smiley
   :init (setq smiley-style 'emoji))
 
+(use-package shr
+  :init (setq shr-use-fonts nil
+              shr-use-colors nil
+              shr-max-image-proportion 0.7
+              shr-image-animate nil
+              shr-width (current-fill-column)))
+
 
 ;; * File Handling
 
@@ -2365,7 +2382,10 @@ eventuelly be set to nil, however)."
 (use-package bm
   ;; Taken from https://protesilaos.com/dotemacs/ and adapted slightly
   :ensure t
-  :commands (bm-toggle bm-next bm-previous bm-toggle-buffer-persistence)
+  :commands (bm-toggle
+             bm-next
+             bm-previous
+             bm-toggle-buffer-persistence)
   :init (setq bm-restore-repository-on-load t
               bm-annotate-on-create nil
               bm-buffer-persistence t
@@ -2848,10 +2868,6 @@ eventuelly be set to nil, however)."
               plantuml-jar-path "/usr/share/plantuml/plantuml.jar"
               plantuml-indent-level 2))
 
-(use-package project
-  :init (setq project-switch-commands 'project-dired
-              project-vc-merge-submodules nil))
-
 (use-package python
   :config (progn
             (add-hook 'python-mode-hook #'highlight-indentation-mode)
@@ -2874,13 +2890,6 @@ eventuelly be set to nil, however)."
 (use-package re-builder
   :commands (re-builder)
   :init (setq reb-re-syntax 'string))
-
-(use-package shr
-  :init (setq shr-use-fonts nil
-              shr-use-colors nil
-              shr-max-image-proportion 0.7
-              shr-image-animate nil
-              shr-width (current-fill-column)))
 
 (use-package remember
   :init (setq remember-data-file db/org-default-refile-file))
@@ -2908,14 +2917,6 @@ eventuelly be set to nil, however)."
 (use-package vlf
   :ensure t
   :commands (vlf))
-
-(use-package which-key
-  :ensure t
-  :commands (which-key-mode)
-  :diminish which-key-mode
-  :init (setq which-key-side-window-max-width 0.33
-              which-key-side-window-max-height 0.25)
-  :config (which-key-setup-side-window-bottom))
 
 (use-package yaml-mode
   :ensure t
