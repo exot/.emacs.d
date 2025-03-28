@@ -2375,7 +2375,7 @@ eventuelly be set to nil, however)."
               bm-marker 'bm-marker-right
               bm-in-lifo-order nil
               bm-recenter t
-              bm-repository-file "~/.emacs.d/bm-bookmarks"
+              bm-repository-file (expand-file-name "bm-bookmarks" emacs-d-userdata)
               bm-repository-size 100
               bm-show-annotations t
               bm-wrap-immediately t
