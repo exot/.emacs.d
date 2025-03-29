@@ -2825,13 +2825,8 @@ eventuelly be set to nil, however)."
   :commands (cperl-mode)
   :mode ("\\.plx\\'" . cperl-mode)
   :init (progn
-          (if (boundp 'major-mode-remap-alist)
-              (add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
-            (mapc
-             #'(lambda (pair)
-                 (if (eq (cdr pair) 'perl-mode)
-                     (setcdr pair 'cperl-mode)))
-             (append auto-mode-alist interpreter-mode-alist)))
+
+          (add-to-list 'major-mode-remap-alist '(perl-mode . cperl-mode))
 
           (setq cperl-hairy nil
                 cperl-electric-keywords nil
