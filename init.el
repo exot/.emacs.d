@@ -473,7 +473,8 @@
 
 (use-package helpful
   :pin "melpa-stable"
-  :ensure t)
+  :ensure t
+  :config (require 'ol))                ; To avoid errors about `org-link-types' not being defined.
 
 (use-package hydra
   :pin "melpa-stable"
