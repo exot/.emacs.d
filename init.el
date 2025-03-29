@@ -1488,7 +1488,8 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'prog-mode-hook 'electric-indent-local-mode)
             (add-hook 'prog-mode-hook 'hl-line-mode)
             (add-hook 'prog-mode-hook 'page-break-lines-mode)
-            (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)))
+            (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
+            (add-hook 'prog-mode-hook 'flyspell-prog-mode)))
 
 (use-package ediff
   :init (setq ediff-diff-options "-w"
