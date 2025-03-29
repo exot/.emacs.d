@@ -579,6 +579,10 @@
           ;; recognize those too.
           (setq table-cell-horizontal-chars "-=:")))
 
+(use-package tex
+  :init (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode))
+  :config (require 'db-latex))
+
 (use-package textile-mode
   :config (progn
             ;; Do not wrap lines automatically in textile mode, as text produced
@@ -2815,11 +2819,6 @@ eventuelly be set to nil, however)."
 
 
 ;; * Other Programming Modes
-
-(when (package-installed-p "auctex")
-  (when (boundp 'major-mode-remap-alist)
-    (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode)))
-  (require 'db-latex))
 
 (use-package cperl-mode
   :ensure t
