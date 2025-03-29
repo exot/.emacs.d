@@ -483,8 +483,9 @@
   :pin "melpa-stable"
   :ensure t)
 
-;; `lv' is a dependency of `hydra'
-(add-to-list 'package-pinned-packages '(lv . "melpa-stable"))
+(use-package lv
+  ;; `lv' is a dependency of `hydra'
+  :pin "melpa-stable")
 
 (use-package projectile
   :commands (projectile-mode)
