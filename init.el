@@ -1487,9 +1487,9 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package prog-mode
   :config (progn
-            (add-hook 'prog-mode-hook 'page-break-lines-mode)
+            (add-hook 'prog-mode-hook 'electric-indent-local-mode)
             (add-hook 'prog-mode-hook 'hl-line-mode)
-            (add-hook 'prog-mode-hook 'electric-indent-local-mode)))
+            (add-hook 'prog-mode-hook 'page-break-lines-mode)))
 
 (use-package ediff
   :init (setq ediff-diff-options "-w"
@@ -1522,6 +1522,9 @@ Note that this workaround is incomplete, as explained in this comment."
                                     "--batch"
                                     "--eval" ,(message "(setq byte-compile-warnings (quote %s))"
                                                        byte-compile-warnings))))
+
+(use-package flymake
+  :init (setq flymake-show-diagnostics-at-end-of-line 'short))
 
 (use-package git-commit
   :commands (global-git-commit-mode)
@@ -2787,7 +2790,8 @@ eventuelly be set to nil, however)."
   :commands (with-editor-export-editor))
 
 (use-package sh-script
-  :init (setq sh-basic-offset 2))
+  :init (setq sh-basic-offset 2)
+  :config (add-hook 'sh-mode-hook #'eglot-ensure))
 
 
 ;; * Lisp
@@ -2848,6 +2852,7 @@ eventuelly be set to nil, however)."
                 cperl-indent-parens-as-block t))
   :config (progn
             (add-hook 'cperl-mode-hook 'flycheck-mode)
+            (add-hook 'cperl-mode-hook 'eglot-ensure)
             (add-hook 'cperl-mode-hook 'prettify-symbols-mode)
 
             ;; enable display of help messages after a short period of time, as
@@ -2859,7 +2864,8 @@ eventuelly be set to nil, however)."
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
             (add-hook 'haskell-mode-hook 'turn-on-haskell-indent)
             (add-hook 'haskell-mode-hook 'flycheck-mode)
-            (add-hook 'haskle--mode-hook 'subword-mode)
+            (add-hook 'haskell-mode-hook 'subword-mode)
+            (add-hook 'haskell-mode-hook 'eglot-ensure)
 
             (with-demoted-errors "Non-Fatal Error: %s"
               (require 'haskell-indentation)
@@ -2880,9 +2886,9 @@ eventuelly be set to nil, however)."
 
 (use-package python
   :config (progn
-            (add-hook 'python-mode-hook #'highlight-indentation-mode)
-            (add-hook 'python-mode-hook #'eglot-ensure)
-            (add-hook 'python-mode-hook #'subword-mode)))
+            (add-hook 'python-mode-hook 'subword-mode)
+            (add-hook 'python-mode-hook 'eglot-ensure)
+            (add-hook 'python-mode-hook 'highlight-indentation-mode)))
 
 ;; https://ddavis.io/posts/emacs-python-lsp/
 (use-package pyvenv
