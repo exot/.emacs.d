@@ -152,7 +152,8 @@
       redisplay-skip-fontification-on-input t
       undo-limit 80000000
       async-shell-command-buffer 'new-buffer
-      byte-compile-warnings '(not docstrings))
+      byte-compile-warnings '(not docstrings)
+      indicate-buffer-boundaries 'left)
 
 (put 'set-goal-column 'disabled nil)
 
@@ -1486,7 +1487,8 @@ Note that this workaround is incomplete, as explained in this comment."
   :config (progn
             (add-hook 'prog-mode-hook 'electric-indent-local-mode)
             (add-hook 'prog-mode-hook 'hl-line-mode)
-            (add-hook 'prog-mode-hook 'page-break-lines-mode)))
+            (add-hook 'prog-mode-hook 'page-break-lines-mode)
+            (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)))
 
 (use-package ediff
   :init (setq ediff-diff-options "-w"
