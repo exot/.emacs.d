@@ -49,12 +49,6 @@
 
 ;; * Packages
 
-(setq package-archives
-      '(("melpa" . "https://melpa.org/packages/")
-        ("gnu" . "https://elpa.gnu.org/packages/")
-        ("melpa-stable" . "https://stable.melpa.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
 (defvar use-package-enable-imenu-support t)
 
 (require 'use-package)
@@ -69,8 +63,15 @@
         use-package-compute-statistics t
         debug-on-error t))
 
-(add-to-list 'package-pinned-packages '(use-package . "melpa-stable"))
-(add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))
+(use-package package
+  :init (setq package-archives
+              '(("melpa" . "https://melpa.org/packages/")
+                ("gnu" . "https://elpa.gnu.org/packages/")
+                ("melpa-stable" . "https://stable.melpa.org/packages/")
+                ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+  :config (progn
+            (add-to-list 'package-pinned-packages '(use-package . "melpa-stable"))
+            (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))))
 
 
 ;; * Personal Customization Variables
