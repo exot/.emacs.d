@@ -338,6 +338,17 @@
                                ;; current-time-string
                                )))
 
+(use-package undo-tree
+  :ensure t
+  :commands (global-undo-tree-mode
+             undo
+             undo-tree-redo)
+  :init (setq undo-tree-visualizer-timestamps t
+              undo-tree-visualizer-diff t
+              undo-tree-auto-save-history nil
+              undo-tree-history-directory-alist `(("." . ,(expand-file-name "ebackup/" emacs-d))))
+  :diminish undo-tree-mode)
+
 (use-package url
   :init (setq url-configuration-directory (expand-file-name "url" emacs-d-userdata)))
 
@@ -501,6 +512,9 @@
 (use-package dictionary
   :init (setq dictionary-server "dict.org"))
 
+(use-package edit-indirect              ; to allow code editing in markdown-mode
+  :ensure t)
+
 (use-package electric
   :commands (electric-quote-mode))
 
@@ -525,6 +539,18 @@
             (key-chord-define-global "''" "”")
             (key-chord-define-global ",," "„")))
 
+(use-package markdown-mode
+  :ensure t
+  :pin "melpa-stable"
+  :commands (markdown-mode)
+  :init (progn
+          (setq markdown-use-pandoc-style-yaml-metadata t
+                markdown-command "pandoc --standalone --toc"
+                markdown-fontify-code-blocks-natively t)
+          (fset 'markdown-output-standalone-p #'(lambda () t))
+          (add-hook 'markdown-mode-hook #'turn-off-auto-fill)
+          (add-hook 'markdown-mode-hook #'turn-on-visual-line-mode)))
+
 (use-package multiple-cursors
   :pin "melpa-stable"
   :ensure t
@@ -547,21 +573,28 @@
                (olivetti-mode -1)))
   :init (setq-default olivetti-body-width 0.618034))
 
-(use-package undo-tree
-  :ensure t
-  :commands (global-undo-tree-mode
-             undo
-             undo-tree-redo)
-  :init (setq undo-tree-visualizer-timestamps t
-              undo-tree-visualizer-diff t
-              undo-tree-auto-save-history nil
-              undo-tree-history-directory-alist `(("." . ,(expand-file-name "ebackup/" emacs-d))))
-  :diminish undo-tree-mode)
+(use-package table
+  :init (progn
+          ;; Pandoc supports colons in grid tables to denote alignments, so let's have table.el
+          ;; recognize those too.
+          (setq table-cell-horizontal-chars "-=:")))
+
+(use-package textile-mode
+  :config (progn
+            ;; Do not wrap lines automatically in textile mode, as text produced
+            ;; in this mode is usually copied to Redmine Wiki pages later on.
+            (add-hook 'textile-mode-hook #'turn-off-auto-fill)
+            (add-hook 'textile-mode-hook #'turn-on-visual-line-mode)))
 
 (use-package wgrep
   :ensure t
   :commands (wgrep-finish-edit
              wgrep-change-to-wgrep-mode))
+
+(use-package yaml-mode
+  :ensure t
+  :config (progn
+            (add-hook 'yaml-mode-hook #'highlight-indentation-mode)))
 
 (use-package yasnippet
   :commands (yas-minor-mode-on
@@ -2213,6 +2246,10 @@ Note that this workaround is incomplete, as explained in this comment."
               trashed-sort-key '("Date deleted" . t)
               trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
+(use-package vlf
+  :ensure t
+  :commands (vlf))
+
 (use-package w32-browser
   :commands (dired-w32-browser
              dired-w32explore))
@@ -2439,6 +2476,10 @@ eventuelly be set to nil, however)."
 (use-package goto-last-change
   :commands goto-last-change)
 
+(use-package re-builder
+  :commands (re-builder)
+  :init (setq reb-re-syntax 'string))
+
 
 ;; * Media
 
@@ -2572,7 +2613,7 @@ eventuelly be set to nil, however)."
   :init (setq image-use-external-converter t))
 
 
-;; * Shells and such
+;; * Shells and Shell Scripting
 
 (use-package comint
   :init (setq comint-scroll-to-bottom-on-input t
@@ -2773,7 +2814,12 @@ eventuelly be set to nil, however)."
             (add-hook 'hy-mode-hook 'inferior-lisp)))
 
 
-;; * Other Mode Configurations
+;; * Other Programming Modes
+
+(when (package-installed-p "auctex")
+  (when (boundp 'major-mode-remap-alist)
+    (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode)))
+  (require 'db-latex))
 
 (use-package cperl-mode
   :ensure t
@@ -2801,30 +2847,6 @@ eventuelly be set to nil, however)."
             ;; controlled by the value of `cperl-lazy-help-time'
             (add-hook 'cperl-mode-hook 'cperl-lazy-install)))
 
-(use-package define-word
-  :ensure t
-  :commands (define-word-at-point define-word))
-
-(use-package dictcc
-  :ensure t
-  :commands (dictcc)
-  :config (require 'gnutls))
-
-(when (package-installed-p "auctex")
-  (when (boundp 'major-mode-remap-alist)
-    (add-to-list 'major-mode-remap-alist '(latex-mode . LaTeX-mode)))
-  (require 'db-latex))
-
-(use-package edit-indirect              ; to allow code editing in markdown-mode
-  :ensure t)
-
-(use-package edit-list
-  :ensure t
-  :commands edit-list)
-
-(use-package eww
-  :init (setq eww-bookmarks-directory emacs-d-userdata))
-
 (use-package haskell-mode
   :config (progn
             (add-hook 'haskell-mode-hook 'haskell-doc-mode)
@@ -2839,21 +2861,6 @@ eventuelly be set to nil, however)."
 
             (add-hook 'haskell-mode-hook
                       'interactive-haskell-mode)))
-
-(use-package ledger-mode
-  :init (setq ledger-clear-whole-transactions t))
-
-(use-package markdown-mode
-  :ensure t
-  :pin "melpa-stable"
-  :commands (markdown-mode)
-  :init (progn
-          (setq markdown-use-pandoc-style-yaml-metadata t
-                markdown-command "pandoc --standalone --toc"
-                markdown-fontify-code-blocks-natively t)
-          (fset 'markdown-output-standalone-p #'(lambda () t))
-          (add-hook 'markdown-mode-hook #'turn-off-auto-fill)
-          (add-hook 'markdown-mode-hook #'turn-on-visual-line-mode)))
 
 (use-package plantuml-mode
   :load-path "site-lisp"
@@ -2883,25 +2890,30 @@ eventuelly be set to nil, however)."
             ;; `pyvenv-deactivate', though.
             (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
 
-(use-package re-builder
-  :commands (re-builder)
-  :init (setq reb-re-syntax 'string))
+
+;; * Other Mode Configurations
+
+(use-package define-word
+  :ensure t
+  :commands (define-word-at-point define-word))
+
+(use-package dictcc
+  :ensure t
+  :commands (dictcc)
+  :config (require 'gnutls))
+
+(use-package edit-list
+  :ensure t
+  :commands edit-list)
+
+(use-package eww
+  :init (setq eww-bookmarks-directory emacs-d-userdata))
+
+(use-package ledger-mode
+  :init (setq ledger-clear-whole-transactions t))
 
 (use-package remember
   :init (setq remember-data-file db/org-default-refile-file))
-
-(use-package table
-  :init (progn
-          ;; Pandoc supports colons in grid tables to denote alignments, so let's have table.el
-          ;; recognize those too.
-          (setq table-cell-horizontal-chars "-=:")))
-
-(use-package textile-mode
-  :config (progn
-            ;; Do not wrap lines automatically in textile mode, as text produced
-            ;; in this mode is usually copied to Redmine Wiki pages later on.
-            (add-hook 'textile-mode-hook #'turn-off-auto-fill)
-            (add-hook 'textile-mode-hook #'turn-on-visual-line-mode)))
 
 (use-package timeline-tools
   :load-path "site-lisp"
@@ -2909,15 +2921,6 @@ eventuelly be set to nil, however)."
              timeline-tools-format-timeline-of-day
              timeline-tools-copy-clocklines
              timeline-tools-clockline-no-org-agenda-conflicts))
-
-(use-package vlf
-  :ensure t
-  :commands (vlf))
-
-(use-package yaml-mode
-  :ensure t
-  :config (progn
-            (add-hook 'yaml-mode-hook #'highlight-indentation-mode)))
 
 
 ;; * Load customizations
