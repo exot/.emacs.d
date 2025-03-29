@@ -504,6 +504,13 @@
 (put 'narrow-to-region 'disabled nil)
 (put 'scroll-left 'disabled nil)
 
+(use-package text-mode
+  :config (progn
+            (add-hook 'text-mode-hook 'page-break-lines-mode)
+            (add-hook 'text-mode-hook 'turn-on-auto-fill)
+            (add-hook 'text-mode-hook 'abbrev-mode)
+            (add-hook 'text-mode-hook 'hl-line-mode)))
+
 (use-package abbrev
   :init (setq save-abbrevs 'silently
               abbrev-file-name (expand-file-name "abbrev_defs" emacs-d-userdata))
@@ -1477,6 +1484,12 @@ Note that this workaround is incomplete, as explained in this comment."
 
 ;; Configuration that pertains to programming in general, without referring to
 ;; any programming language in particular.
+
+(use-package prog-mode
+  :config (progn
+            (add-hook 'prog-mode-hook 'page-break-lines-mode)
+            (add-hook 'prog-mode-hook 'hl-line-mode)
+            (add-hook 'prog-mode-hook 'electric-indent-local-mode)))
 
 (use-package ediff
   :init (setq ediff-diff-options "-w"
@@ -2989,15 +3002,6 @@ eventuelly be set to nil, however)."
 
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
-
-  (add-hook 'prog-mode-hook 'page-break-lines-mode)
-  (add-hook 'prog-mode-hook 'hl-line-mode)
-  (add-hook 'prog-mode-hook 'electric-indent-local-mode)
-
-  (add-hook 'text-mode-hook 'page-break-lines-mode)
-  (add-hook 'text-mode-hook 'turn-on-auto-fill)
-  (add-hook 'text-mode-hook 'abbrev-mode)
-  (add-hook 'text-mode-hook 'hl-line-mode)
 
   ;; Top-Level Keybindings
 
