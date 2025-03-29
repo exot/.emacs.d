@@ -3062,7 +3062,6 @@ eventuelly be set to nil, however)."
   (bind-key "M-/" #'hippie-expand)
   (bind-key "M-:" #'pp-eval-expression)
   (bind-key "M-=" #'count-words)
-  (bind-key "M-SPC" #'cycle-spacing)    ; default since Emacs 29.1
   (bind-key "M-Z" #'zap-to-char)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
   (bind-key "M-z" #'zap-up-to-char)
