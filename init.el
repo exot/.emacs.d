@@ -1976,7 +1976,7 @@ Note that this workaround is incomplete, as explained in this comment."
             ;; tested with Outlook proper.
 
             (define-advice mml-smime-epg-sign (:after (cont) add-crlf-when-pkcs7)
-              "If CONT signifies encryption with smime, replace all \n with \r\n."
+              "If CONT signifies encryption with smime, replace all \\n with \\r\\n."
               (when (and (eq (car cont) 'part)
                          (string= "smime" (or (cdr (assq 'encrypt cont)) "")))
                 (db/convert-lf-to-crlf-in-buffer)))))
