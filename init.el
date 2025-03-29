@@ -474,7 +474,10 @@
 (use-package helpful
   :pin "melpa-stable"
   :ensure t
-  :config (require 'ol))                ; To avoid errors about `org-link-types' not being defined.
+  :config (progn
+            ;; To avoid errors about `org-link-types' not being defined, we explicitly ensure that
+            ;; `ol.el' is loaded after `helpful.el' is.
+            (require 'ol)))
 
 (use-package hydra
   :pin "melpa-stable"
