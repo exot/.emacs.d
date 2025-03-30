@@ -3021,7 +3021,7 @@ eventuelly be set to nil, however)."
   (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
   (bind-key "<f2>" #'hydra-feature-shortcuts/body)
-  (bind-key "<f5>" #'rgrep)
+  (bind-key "<f5>" #'project-find-regexp)
   (bind-key "<f6>" #'hydra-zoom/body)
   (bind-key "<f7>" #'dictcc)
   (bind-key "<f9>" #'hydra-org-linking/body)
