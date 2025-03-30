@@ -734,7 +734,13 @@
                 '(("Effort_ALL" . "0:00 0:05 0:10 0:15 0:30 0:45 1:00 2:00 3:00 4:00 6:00 8:00"))
 
                 org-columns-default-format
-                "%80ITEM(Task) %10Effort(Effort) %10CLOCKSUM")
+                "%80ITEM(Task) %10Effort(Effort) %10CLOCKSUM"
+
+                ;; We activate speed keys primarily to avoid invalidating headlines by accidentally
+                ;; typing non-star characters when at the start of a headline.
+                org-use-speed-commands #'(lambda ()
+                                           (and (looking-at org-outline-regexp)
+                                                (looking-back "^\\**" nil))))
 
           ;; Keywords and Tags
 
