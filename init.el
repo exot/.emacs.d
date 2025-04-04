@@ -2939,6 +2939,22 @@ eventuelly be set to nil, however)."
 (use-package remember
   :init (setq remember-data-file db/org-default-refile-file))
 
+(use-package smiley
+  :init (setq smiley-emoji-regexp-alist '(("\\(;-)\\)\\W" 1 "😉")
+                                          ("[^;]\\(;)\\)\\W" 1 "😉")
+                                          ("\\(:-]\\)\\W" 1 "😊")
+                                          ("\\(8-)\\)\\W" 1 "🥴")
+                                          ("\\(:-|\\)\\W" 1 "😐")
+                                          ("\\(:-[/\\]\\)\\W" 1 "☹️")
+                                          ("\\(:-(\\)\\W" 1 "😕")
+                                          ("\\(X-)\\)\\W" 1 "😵")
+                                          ("\\(:-{\\)\\W" 1 "😦")
+                                          ("\\(>:-)\\)\\W" 1 "😈")
+                                          ("\\(;-(\\)\\W" 1 "😢")
+                                          ("\\(:-D\\)\\W" 1 "😀")
+                                          ("\\(O:-)\\)\\W" 1 "😇")
+                                          ("\\(\\^?:-?)\\)\\W" 1 "🙂"))))
+
 (use-package timeline-tools
   :load-path "site-lisp"
   :commands (timeline-tools-format-timeline
