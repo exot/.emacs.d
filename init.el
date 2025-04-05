@@ -2386,7 +2386,7 @@ Note that this workaround is incomplete, as explained in this comment."
                 consult-async-input-debounce 0.5
                 consult-async-input-throttle 0.8
                 consult-narrow-key nil
-                consult-preview-key nil))
+                consult-preview-key 'any))
   :config (require 'consult-imenu))
 
 (use-package corfu
