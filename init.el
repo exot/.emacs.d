@@ -2359,7 +2359,10 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package vertico
   :ensure t
-  :commands (vertico-mode))
+  :commands (vertico-mode)
+  :autoload (vertico-sort-history-alpha
+             vertico-sort-alpha)
+  :init (setq vertico-sort-function #'vertico-sort-history-alpha))
 
 (use-package orderless
   :ensure t
