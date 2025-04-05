@@ -2369,6 +2369,7 @@ Note that this workaround is incomplete, as explained in this comment."
               [orderless-match-face-1 orderless-match-face-2]))
 
 (use-package consult
+  :ensure t
   :commands (consult-completion-in-region
              consult-goto-line
              consult-keep-lines
