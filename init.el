@@ -54,17 +54,17 @@
 (require 'use-package)
 (require 'bind-key)
 
-(setq use-package-always-defer t
+(setopt use-package-always-defer t
       use-package-verbose t
       use-package-minimum-reported-time 0.01)
 
 (when init-file-debug
-  (setq use-package-expand-minimally nil
+  (setopt use-package-expand-minimally nil
         use-package-compute-statistics t
         debug-on-error t))
 
 (use-package package
-  :init (setq package-archives
+  :init (setopt package-archives
               '(("melpa" . "https://melpa.org/packages/")
                 ("gnu" . "https://elpa.gnu.org/packages/")
                 ("melpa-stable" . "https://stable.melpa.org/packages/")
@@ -109,10 +109,10 @@
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 (setq buffer-file-coding-system 'utf-8)
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+(setopt x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 ;; Startup configuration
-(setq inhibit-startup-message t
+(setopt inhibit-startup-message t
       inhibit-default-init t
       initial-scratch-message nil
       initial-major-mode 'fundamental-mode
