@@ -55,20 +55,20 @@
 (require 'bind-key)
 
 (setopt use-package-always-defer t
-      use-package-verbose t
-      use-package-minimum-reported-time 0.01)
+        use-package-verbose t
+        use-package-minimum-reported-time 0.01)
 
 (when init-file-debug
   (setopt use-package-expand-minimally nil
-        use-package-compute-statistics t
-        debug-on-error t))
+          use-package-compute-statistics t
+          debug-on-error t))
 
 (use-package package
   :init (setopt package-archives
-              '(("melpa" . "https://melpa.org/packages/")
-                ("gnu" . "https://elpa.gnu.org/packages/")
-                ("melpa-stable" . "https://stable.melpa.org/packages/")
-                ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+                '(("melpa" . "https://melpa.org/packages/")
+                  ("gnu" . "https://elpa.gnu.org/packages/")
+                  ("melpa-stable" . "https://stable.melpa.org/packages/")
+                  ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
   :config (progn
             (add-to-list 'package-pinned-packages '(use-package . "melpa-stable"))
             (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))))
@@ -113,12 +113,12 @@
 
 ;; Startup configuration
 (setopt inhibit-startup-message t
-      inhibit-default-init t
-      initial-scratch-message nil
-      initial-major-mode 'fundamental-mode
-      ring-bell-function #'ignore
-      load-prefer-newer nil             ; t breaks `org-reload'
-      use-short-answers nil)
+        inhibit-default-init t
+        initial-scratch-message nil
+        initial-major-mode 'fundamental-mode
+        ring-bell-function #'ignore
+        load-prefer-newer nil           ; t breaks `org-reload'
+        use-short-answers nil)
 
 (setq-default fill-column 100)
 (setq-default indent-tabs-mode nil)
