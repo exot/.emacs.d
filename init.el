@@ -2380,6 +2380,7 @@ Note that this workaround is incomplete, as explained in this comment."
              consult-buffer
              consult-imenu
              consult-line
+             consult-line-thing-at-point
              consult-mark
              consult-yank-pop
              consult-outline)
@@ -2391,7 +2392,15 @@ Note that this workaround is incomplete, as explained in this comment."
                 consult-async-input-throttle 0.8
                 consult-narrow-key nil
                 consult-preview-key 'any))
-  :config (require 'consult-imenu))
+  :config (progn
+            (require 'consult-imenu)
+
+            (consult-customize
+             consult-line :add-history (seq-some #'thing-at-point '(region symbol)))
+
+            (defalias 'consult-line-thing-at-point 'consult-line)
+            (consult-customize
+             consult-line-thing-at-point :initial (thing-at-point 'symbol))))
 
 (use-package corfu
   :commands (global-corfu-mode corfu-mode))
