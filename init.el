@@ -584,6 +584,9 @@
                (olivetti-mode -1)))
   :init (setq-default olivetti-body-width 0.618034))
 
+(use-package outline-indent
+  :init (setopt outline-indent-ellipsis " ▼ "))
+
 (use-package table
   :init (progn
           ;; Pandoc supports colons in grid tables to denote alignments, so let's have table.el
@@ -609,7 +612,11 @@
 (use-package yaml-mode
   :ensure t
   :config (progn
-            (add-hook 'yaml-mode-hook #'highlight-indentation-mode)))
+            (add-hook 'yaml-mode-hook #'highlight-indentation-mode)
+
+            (add-hook 'yaml-mode-hook #'(lambda ()
+                                          (with-demoted-errors "Cannot activate folding: %s"
+                                            (outline-indent-minor-mode))))))
 
 (use-package yasnippet
   :commands (yas-minor-mode-on
