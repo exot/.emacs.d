@@ -2939,6 +2939,11 @@ eventuelly be set to nil, however)."
   :commands (dictcc)
   :config (require 'gnutls))
 
+(use-package docker
+  :pin "melpa-stable"
+  :init (setopt docker-command "podman"
+                docker-compose-command "podman-compose"))
+
 (use-package edit-list
   :ensure t
   :commands edit-list)
