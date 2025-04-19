@@ -646,6 +646,7 @@
              db/org-execute-babel-in-buffer-and-iterate-tables
              db/make-org-capture-frame
              db/org-cleanup-continuous-clocks
+             db/org-update-headline-log-note
              db/find-csv-in-org
              db/export-diary
              db/org-insert-checklist
@@ -675,6 +676,7 @@
              db/org-mark-current-default-task
              db/org-clocktable-write-with-threshold
              org-dblock-write:db/org-backlinks
+             db/org-ignore-insert-on-headline-start
              org-password-manager-get-password-by-id
              db/org-bookmark-open
              db/org-bookmark-store-link
@@ -744,10 +746,9 @@
                 "%80ITEM(Task) %10Effort(Effort) %10CLOCKSUM"
 
                 ;; We activate speed keys primarily to avoid invalidating headlines by accidentally
-                ;; typing non-star characters when at the start of a headline.
-                org-use-speed-commands #'(lambda ()
-                                           (and (looking-at org-outline-regexp)
-                                                (looking-back "^\\**" nil))))
+                ;; typing non-star characters when at the start of a headline.  See
+                ;; `db/org-ignore-insert-on-headline-start'.
+                org-use-speed-commands t)
 
           ;; Keywords and Tags
 
@@ -920,7 +921,10 @@
             ;; Completely redo agenda buffer when jumping to today; this ensures that agenda views
             ;; from previous days get updated as expected.
             (define-advice org-agenda-goto-today (:before () redo-all)
-              (org-agenda-redo-all))))
+              (org-agenda-redo-all))
+
+            ;; Inhibit direct input when point is at the beginning of a headline.
+            (add-to-list 'org-speed-command-hook 'db/org-ignore-insert-on-headline-start)))
 
 (use-package org-cycle
   :autoload (org-cycle-hide-drawers)

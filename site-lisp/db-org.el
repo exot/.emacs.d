@@ -1243,6 +1243,24 @@ cache if that's in use."
   (when (derived-mode-p 'org-agenda-mode)
     (org-agenda-redo)))
 
+(defun db/org-ignore-insert-on-headline-start (keys)
+  "Return an error function when point is at the start of a headline.
+
+Point is at the start of a headline when it is at or before the first
+space that separates the stars from the title of the headline.
+
+This function is meant to be added to `org-speed-command-hook'.  KEYS is
+ignored.
+
+The implementat has been adapted from `org-speed-command-activate' to
+ignore all keys pressed at the beginning of a headline."
+  (ignore keys)
+  (when (and (or (looking-at "\\*")
+                 (looking-at " "))
+             (looking-back "^\\** ?" nil))
+    #'(lambda ()
+        (user-error "No direct input allowed in headline"))))
+
 (defun org-password-manager-get-password-by-id (id &optional return-as-value)
   "Retrieve password from Org item identified by ID.
 
