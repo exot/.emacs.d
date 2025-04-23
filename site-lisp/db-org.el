@@ -1257,7 +1257,7 @@ ignore all keys pressed at the beginning of a headline."
   (ignore keys)
   (when (and (or (looking-at "\\*")
                  (looking-at " "))
-             (looking-back "^\\** ?" nil))
+             (looking-back "^\\*+ ?" nil))
     #'(lambda ()
         (user-error "No direct input allowed in headline"))))
 
