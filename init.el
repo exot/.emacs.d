@@ -1516,7 +1516,8 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package diff-hl
   :ensure t
   :commands (global-diff-hl-mode
-             diff-hl-dired-mode))
+             diff-hl-dired-mode)
+  :autoload (diff-hl-magit-post-refresh))
 
 (use-package ediff
   :init (setq ediff-diff-options "-w"
@@ -1621,7 +1622,10 @@ Note that this workaround is incomplete, as explained in this comment."
   :config (progn
             (when (fboundp 'global-magit-file-mode)
               (global-magit-file-mode -1))
-            (global-git-commit-mode 1)))
+            (global-git-commit-mode 1)
+
+            ;; Update diff-hl fringe marks after committing
+            (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)))
 
 (use-package page-break-lines
   :pin "melpa-stable"
