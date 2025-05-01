@@ -1637,6 +1637,9 @@ Note that this workaround is incomplete, as explained in this comment."
               transient-values-file (expand-file-name "transient/values.el" emacs-d-userdata)
               transient-history-file (expand-file-name "transient/history.el" emacs-d-userdata)))
 
+(use-package vc
+  :init (setopt vc-git-diff-switches '("--histogram")))
+
 
 ;; * Mail
 
