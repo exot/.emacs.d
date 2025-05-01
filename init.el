@@ -1513,6 +1513,11 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'prog-mode-hook 'page-break-lines-mode)
             (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)))
 
+(use-package diff-hl
+  :ensure t
+  :commands (global-diff-hl-mode
+             diff-hl-dired-mode))
+
 (use-package ediff
   :init (setq ediff-diff-options "-w"
               ediff-window-setup-function 'ediff-setup-windows-plain
@@ -2209,7 +2214,7 @@ Note that this workaround is incomplete, as explained in this comment."
                 (with-demoted-errors "Non-Fatal Error (w32-browser): %s"
                   (bind-key "M-RET" #'dired-w32-browser dired-mode-map)
                   (bind-key "<C-return>" #'dired-w32explore dired-mode-map))
-                (bind-key "M-RET" #'dired-open-xdg dired-mode-map))
+              (bind-key "M-RET" #'dired-open-xdg dired-mode-map))
 
             (with-demoted-errors "Non-Fatal Errors (dired-recent): %s"
               (dired-recent-mode +1))
@@ -2224,7 +2229,10 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'dired-mode-hook 'dired-omit-mode)
             (add-hook 'dired-mode-hook 'dired-hide-details-mode)
             (dolist (extension '(".out" ".synctex.gz" ".thm"))
-              (add-to-list 'dired-latex-unclean-extensions extension))))
+              (add-to-list 'dired-latex-unclean-extensions extension))
+
+            ;; Show VC status information in dired buffers
+            (add-hook 'dired-mode-hook 'diff-hl-dired-mode)))
 
 (use-package dired-open
   :ensure t
@@ -3046,7 +3054,8 @@ eventuelly be set to nil, however)."
                   yas-global-mode
                   global-git-commit-mode
                   marginalia-mode
-                  vertico-mode))
+                  vertico-mode
+                  global-diff-hl-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
