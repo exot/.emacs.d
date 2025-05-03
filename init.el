@@ -2476,7 +2476,7 @@ eventuelly be set to nil, however)."
   :commands (ace-window
              ace-window-display-mode)
   :init (setopt aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-                aw-background nil
+                aw-background t
                 aw-scope 'frame))
 
 (use-package avy
