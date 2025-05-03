@@ -2473,11 +2473,11 @@ eventuelly be set to nil, however)."
 
 (use-package ace-window
   :ensure t
-  :commands (ace-window ace-window-display-mode)
-  :init (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-              aw-background t
-              aw-leading-char-style 'char
-              aw-scope 'frame))
+  :commands (ace-window
+             ace-window-display-mode)
+  :init (setopt aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+                aw-background nil
+                aw-scope 'frame))
 
 (use-package avy
   :ensure t
