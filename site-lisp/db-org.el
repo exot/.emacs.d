@@ -1255,9 +1255,10 @@ ignored.
 The implementat has been adapted from `org-speed-command-activate' to
 ignore all keys pressed at the beginning of a headline."
   (ignore keys)
-  (when (and (or (looking-at "\\*")
-                 (looking-at " "))
-             (looking-back "^\\*+ ?" nil))
+  (when (or (looking-at "^\\*")         ; bol with * as first entry
+            (and (or (looking-at "\\*") ; at the start of a headline, but not at bol
+                     (looking-at " "))
+                 (looking-back "^\\*+ ?" nil)))
     #'(lambda ()
         (user-error "No direct input allowed in headline"))))
 
