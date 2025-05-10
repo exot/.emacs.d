@@ -840,7 +840,12 @@
                   ("ddg" . "https://duckduckgo.com/?q=%s")
                   ("omap" . "https://nominatim.openstreetmap.org/search?q=%s&polygon=1")
                   ("github" . "https://github.com/")
-                  ("gitlab" . "https://gitlab.com/"))))
+                  ("gitlab" . "https://gitlab.com/")))
+
+          ;; Show more context when revealing locations, to avoid incompletly revealed items.
+
+          (setopt org-fold-show-context-detail '((default . lineage))))
+
   :config (progn
 
             ;; Some hooks from text-mode-hook, Org mode does not seem to run those?
