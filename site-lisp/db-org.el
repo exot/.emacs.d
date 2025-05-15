@@ -1302,18 +1302,7 @@ Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-tas
 "
   ("c" (db/org-clock-goto-first-open-checkbox nil)
        nil)
-  ("a" (with-current-buffer
-           ;; Make sure we are in some Org buffer, as `org-refile-get-location'
-           ;; might try to parse the current buffer in search for some Org
-           ;; headings, possibly producing errors along the way.
-           (->> (org-agenda-files :unrestricted)
-                cl-first
-                get-file-buffer)
-         ;; Show all possible items, i.e. exclude refile verification; since the
-         ;; cache includes only verified items, also disable it locally.
-         (let ((org-refile-use-cache nil)
-               (org-refile-target-verify-function nil))
-           (org-refile '(4))))
+  ("a" consult-org-agenda
        nil)
   ("s" (db/org-clock-goto-first-open-checkbox t)
        nil))
