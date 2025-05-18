@@ -11,8 +11,9 @@
 
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (setq gc-cons-threshold (* 100 1024 1024)   ; 100mb
-                  gc-cons-percentage 0.1)))
+            (setq gc-cons-threshold (* 100 1024 1024) ; 100mb
+                  gc-cons-percentage 0.1)
+            (run-with-idle-timer 1.2 t #'garbage-collect)))
 
 (setq frame-resize-pixelwise t
       frame-inhibit-implied-resize t)
