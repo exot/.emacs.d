@@ -366,11 +366,13 @@
                            (side . right)
                            (slot . 1)
                            (window-width . 0.33)))
+
             ;; Inspired by masteringemacs
             (add-to-list 'display-buffer-alist
                          '("^\\*Help\\*"
                            (display-buffer-reuse-window
                             display-buffer-pop-up-window)))
+
             ;; Inspired by masteringemacs and
             ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Frame-Layouts-with-Side-Windows.html
             (add-to-list 'display-buffer-alist
@@ -386,7 +388,11 @@
                            (side . bottom)
                            (slot . 1)
                            (window-height . 0.33)
-                           (window-parameters . ((no-other-window . t)))))))
+                           (window-parameters . ((no-other-window . t)))))
+
+            (add-to-list 'display-buffer-alist
+                         '("shell\\*"
+                           (display-buffer-pop-up-window)))))
 
 (use-package which-key
   :ensure t
