@@ -2234,9 +2234,6 @@ Note that this workaround is incomplete, as explained in this comment."
                   (bind-key "<C-return>" #'dired-w32explore dired-mode-map))
               (bind-key "M-RET" #'dired-open-xdg dired-mode-map))
 
-            (with-demoted-errors "Non-Fatal Errors (dired-recent): %s"
-              (dired-recent-mode +1))
-
             ;; Gnus support in dired
             (add-hook 'dired-mode-hook 'turn-on-gnus-dired-mode)
 
@@ -2266,12 +2263,6 @@ Note that this workaround is incomplete, as explained in this comment."
                          #'dired-open-guess-shell-alist)
             (add-to-list 'dired-open-functions
                          #'dired-open-call-function-by-extension)))
-
-(use-package dired-recent
-  :ensure t
-  :init (setq dired-recent-max-directories nil)
-  :commands (dired-recent-mode
-             dired-recent-open))
 
 (use-package dired-subtree
   :commands (dired-subtree-toggle))
