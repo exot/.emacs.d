@@ -1414,7 +1414,7 @@ Org Babel source blocks and dependent tables."
 (defun db/org--find-template ()
   "Return marker to template item associated with item at point.
 
-Return NIL if no template is associated with item at point.
+Return nil if no template is associated with item at point.
 
 See `db/org-insert-checklist' for how this template item is
 determined."
@@ -1422,7 +1422,7 @@ determined."
   (let (template-marker)
 
     ;; Check for TEMPLATE_ID property
-    (when-let ((template-id (org-entry-get (point) "TEMPLATE_ID")))
+    (when-let ((template-id (org-entry-get (point) "TEMPLATE_ID" :inherit)))
       (setq template-marker (org-id-find template-id :get-marker))
       (unless template-marker
         (warn "TEMPLATE_ID is set, but could not be resolved: %s"
@@ -1452,62 +1452,60 @@ determined."
 (defun db/org-insert-checklist (arg)
   "Insert checklist for Org Mode item at point.
 
-Checklists are inserted before the first child, if existent, or
-at the end of the subtree.
+Checklists are inserted before the first child, if existent, or at the
+end of the subtree.
 
-After inserting a checklist, add the property
-CHECKLIST_INSERTED_P with value t to item at point.  Checklists
-are not inserted if this property with this value is already
-present, to avoid double insertions of checklists.
+After inserting a checklist, add the property CHECKLIST_INSERTED_P with
+value t to item at point.  Checklists are not inserted if this property
+with this value is already present, to avoid double insertions of
+checklists.
 
-The checklist consists of a listing of concurrent date entries,
-relevant backlinks of the current item and its parents (without
-archives) as well as a template.
+The checklist consists of a listing of concurrent date entries, relevant
+backlinks of the current item and its parents (without archives) as well
+as a template.
 
-Concurrent date entries are all Org items tagged with DATE and
-posessing an active time range that encloses today.
+Concurrent date entries are all Org items tagged with DATE and posessing
+an active time range that encloses today.
 
 Relevant backlinks are Org items and are determined as follows:
 
-- for an Org item to be considered as backlink item, it must
-  reference the item at point directly, or one of its parents,
-  via an Org link using the id: link type (also see the
-  `db/org-backlinks' dynamic block);
+- for an Org item to be considered as backlink item, it must reference
+  the item at point directly, or one of its parents, via an Org link
+  using the id: link type (also see the `db/org-backlinks' dynamic
+  block);
 
-- the backlink item must not be done, must not be tagged locally
-  with TEMPLATE and must not be tagged with HOLD nor
-  SOMEWHEN (neither locally nor inherited);
+- the backlink item must not be done, must not be tagged locally with
+  TEMPLATE and must not be tagged with HOLD nor SOMEWHEN (neither
+  locally nor inherited);
 
 - the backlink item must not be scheduled in the future;
 
 - the backlink item must be contained in a file in the variables
-  `org-agenda-files' or `org-agenda-text-search-extra-files', but
-  not in an archive file (i.e., archives are excluded from the
-  search);
+  `org-agenda-files' or `org-agenda-text-search-extra-files', but not in
+  an archive file (i.e., archives are excluded from the search);
 
-- the backlink item must not have the CHECKLIST_NO_BACKLINK
-  property set to nil (with inheritance not being considered,
-  i.e., the property must be set directly at the item to exclude
-  it as backlink).
+- the backlink item must not have the CHECKLIST_NO_BACKLINK property set
+  to nil (with inheritance not being considered, i.e., the property must
+  be set directly at the item to exclude it as backlink).
 
-The depth to which backlinks to parents are considered can be
-configured via the CHECKLIST_BACKLINK_DEPTH property at the item
-at point.  This property is looked up only at the current item,
-i.e., again no inheritance is considered.  If this property is
-not set, the depth to which backlinks to parents is considered is
-unlimited by default (i.e., nil).
+The depth to which backlinks to parents are considered can be configured
+via the CHECKLIST_BACKLINK_DEPTH property at the item at point.  This
+property is looked up only at the current item, i.e., again no
+inheritance is considered.  If this property is not set, the depth to
+which backlinks to parents is considered is unlimited by default (i.e.,
+nil).
 
-After the table of backlinks, a template is inserted.  This
-templates is usually a checklist copied from another Org item
-tagged with :TEMPLATE:.  The item to copy the template from is
-determined by the TEMPLATE_ID property, which must be an ID
-referencing the proper template item.  If that property is not
-set, search for the topmost sibling of the current item is
-conducted to see whether its headline is matching
-\"^Template.*\"; if so, its body is used as template.
+After the table of backlinks, a template is inserted.  This templates is
+usually a checklist copied from another Org item tagged with :TEMPLATE:.
+The item to copy the template from is determined by the TEMPLATE_ID
+property, which must be an ID referencing the proper template item.  If
+that property is not set (either directly or via inheritance), search
+for the topmost sibling of the current item is conducted to see whether
+its headline is matching \"^Template.*\"; if so, its body is used as
+template.
 
-When ARG is given, jump to the current template instead of
-inserting the checklist."
+When ARG is given, jump to the current template instead of inserting the
+checklist."
   (interactive "P")
 
   (when (derived-mode-p 'org-agenda-mode)
