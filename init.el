@@ -374,6 +374,10 @@
                          '("^\\*Help\\*"
                            (display-buffer-reuse-window
                             display-buffer-pop-up-window)))
+            (add-to-list 'display-buffer-alist
+                         '("^\\*helpful"
+                           (display-buffer-reuse-window
+                            display-buffer-pop-up-window)))
 
             ;; Inspired by masteringemacs and
             ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Frame-Layouts-with-Side-Windows.html
