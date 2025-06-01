@@ -399,7 +399,21 @@
             (add-to-list 'display-buffer-alist
                          '("shell\\*"
                            (display-buffer-reuse-window
-                            display-buffer-pop-up-window)))))
+                            display-buffer-pop-up-window)))
+
+
+            (define-advice split-window-sensibly (:around
+                                                  (orig-fun &optional window)
+                                                  split-horizontally-first)
+              "We try to split horizontally first, and if this does not work, let
+`split-window-sensibly' do the rest.  This will result in trying to
+split horizontally again, but this extra work should not matter much."
+              (let ((window (or window (selected-window))))
+                (or (and (window-splittable-p window t)
+	                 ;; Split window horizontally.
+	                 (with-selected-window window
+	                   (split-window-right)))
+                    (funcall orig-fun window))))))
 
 (use-package which-key
   :ensure t
