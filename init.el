@@ -355,7 +355,9 @@
   :init (setq switch-to-buffer-obey-display-actions t
               switch-to-buffer-in-dedicated-window 'pop
               recenter-positions '(top middle bottom)
-              display-buffer-base-action '(display-buffer-reuse-window))
+              display-buffer-base-action '(display-buffer-reuse-window)
+              split-height-threshold 50
+              split-width-threshold 140)
   :config (progn
             (add-to-list 'display-buffer-alist
                          '("^\\*Async Shell Command*"
@@ -392,7 +394,8 @@
 
             (add-to-list 'display-buffer-alist
                          '("shell\\*"
-                           (display-buffer-pop-up-window)))))
+                           (display-buffer-reuse-window
+                            display-buffer-pop-up-window)))))
 
 (use-package which-key
   :ensure t
