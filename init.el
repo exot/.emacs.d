@@ -2473,10 +2473,9 @@ eventuelly be set to nil, however)."
                                         db/frequently-used-features)
                     :action '(("Open" . call-interactively)))
 
-                  ;; Taken from `helm-buffers-list'
-                  (helm-make-source "Buffers" 'helm-source-buffers)
-
                   helm-source-bookmarks
+
+                  (helm-make-source "Buffers" 'helm-source-buffers)
 
                   ;; If no prefix arg is given, extract files from
                   ;; `db/important-documents-path’ and list them as well
