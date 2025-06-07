@@ -305,9 +305,10 @@
               proced-enable-color-flag t))
 
 (use-package project
-  :init (setq project-list-file (expand-file-name "projects" emacs-d-userdata)
-              project-switch-commands 'project-dired
-              project-vc-merge-submodules nil)
+  :init (setopt project-list-file (expand-file-name "projects" emacs-d-userdata)
+                project-switch-commands 'project-dired
+                project-vc-merge-submodules nil
+                project-mode-line t)
   :config (progn
 
             ;; Sort known projects before persisting, to reduce committer noise
