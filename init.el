@@ -2137,7 +2137,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :init (setopt solarized-use-less-bold t
                 solarized-emphasize-indicators t
                 solarized-use-variable-pitch nil
-                solarized-high-contrast-mode-line t))
+                solarized-high-contrast-mode-line nil))
 
 (use-package smart-mode-line
   :ensure t
