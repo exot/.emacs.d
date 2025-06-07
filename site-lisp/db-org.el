@@ -546,15 +546,6 @@ user for the next task to clock into."
           (insert "No running clock")
         (insert org-clock-heading)))))
 
-(defun db/org-update-frame-title-with-current-clock ()
-  "Set title of all active frames to the headline of the current task."
-  (interactive)
-  (let ((clock-buffer (marker-buffer org-clock-marker)))
-    (when clock-buffer
-      (setq frame-title-format org-clock-heading)
-      (dolist (frame (frame-list))
-        (modify-frame-parameters frame `((name . ,org-clock-heading)))))))
-
 (defun db/show-current-org-task ()
   "Show title of currently clock in task in minibuffer."
   (interactive)

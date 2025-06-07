@@ -658,8 +658,7 @@ split horizontally again, but this extra work should not matter much."
 ;; * Org
 
 (use-package db-org
-  :commands (db/org-update-frame-title-with-current-clock
-             db/org-clock-out
+  :commands (db/org-clock-out
              db/org-clock-in-break-task
              db/org-clock-in-home-task
              db/org-clock-in-work-task
@@ -1103,6 +1102,7 @@ accordingly."
                 org-clock-out-when-done '("DONE" "CANC" "MRGD" "WAIT" "HOLD")
                 org-clock-auto-clock-resolution 'when-no-clock-is-running
                 org-clock-mode-line-total 'auto
+                org-clock-clocked-in-display 'both
                 org-clock-report-include-clocking-task t
                 org-clock-in-switch-to-state #'(lambda (_)
                                                  (when (not
@@ -1130,7 +1130,6 @@ accordingly."
             (org-clock-persistence-insinuate)
 
             (add-hook 'org-clock-in-hook #'db/org-mark-current-default-task)
-            (add-hook 'org-clock-in-hook #'db/org-update-frame-title-with-current-clock)
 
             ;; Clock in default task if no other task is given
             (add-hook 'org-clock-out-hook #'db/ensure-running-clock 'append)
