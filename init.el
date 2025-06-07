@@ -23,7 +23,7 @@
 ;; * Preliminaries (constants and path settings)
 
 (when (version< emacs-version "30")
-  (error "Emacs version is too old!  We need at least Emacs 29, but this is %s"
+  (error "Emacs version is too old!  We need at least Emacs 30, but this is %s"
          emacs-version))
 
 (defconst emacs-d (file-name-directory
