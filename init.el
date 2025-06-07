@@ -2135,9 +2135,10 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package solarized-theme
   :ensure t
-  :init (setq solarized-use-less-bold t
-              solarized-emphasize-indicators t
-              solarized-use-variable-pitch nil))
+  :init (setopt solarized-use-less-bold t
+                solarized-emphasize-indicators t
+                solarized-use-variable-pitch nil
+                solarized-high-contrast-mode-line t))
 
 (use-package solarized-dark-theme
   :defer t
