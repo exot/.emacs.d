@@ -80,6 +80,15 @@ end date of the timeline."
   :group 'timeline-tools
   :type 'function)
 
+(defcustom timeline-tools-extra-properties nil
+  "Extra properties to display with the headline.
+
+This must be a list of Org properties (given as strings) that are
+extracted from the each heading to be displayed after the headline.
+Properties are extracted with inheritance enabled."
+  :group 'timeline-tools
+  :type '(repeat string))
+
 
 ;; Mode definition
 
@@ -132,7 +141,12 @@ end date of the timeline."
 
 (defun timeline-tools-entry-marker (entry)
   "Marker to org task of ENTRY."
-  (caddr entry))
+  (let ((mrk (caddr entry)))
+    (unless (markerp mrk)
+      (error "Not an entry marker for a timeline: %s" mrk))
+    (unless (marker-buffer mrk)
+      (error "Buffer of marker does not exist anymore: %s" mrk))
+    mrk))
 
 (gv-define-setter timeline-tools-entry-start-time
     (time entry) `(setcar ,entry ,time))
@@ -161,7 +175,14 @@ Return whatever is found first."
 
 (defun timeline-tools-entry-headline (entry)
   "Return the headline associated with ENTRY."
-  (org-entry-get (timeline-tools-entry-marker entry) "ITEM"))
+  (let ((mrk (timeline-tools-entry-marker entry)))
+    (concat (org-entry-get mrk "ITEM")
+            (--when-let (->> (-map #'(lambda (property)
+                                       (--when-let (org-entry-get mrk property :inherit)
+                                         (format "%s: %s" property it)))
+                                   timeline-tools-extra-properties)
+                             (-remove #'null))
+              (format " (%s)" (apply #'concat (-interpose ", " it)))))))
 
 
 ;; Utilities
