@@ -2129,7 +2129,7 @@ Note that this workaround is incomplete, as explained in this comment."
                            (:eval (if (mode-line-window-selected-p)
                                       mode-line-buffer-identification
                                     (list (propertize (car mode-line-buffer-identification)
-                                                      'face 'default))))
+                                                      'face nil))))
                            " "
                            mode-line-position
                            (project-mode-line project-mode-line-format)
