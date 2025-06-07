@@ -2115,23 +2115,26 @@ Note that this workaround is incomplete, as explained in this comment."
               cursor-in-non-selected-windows nil
               font-lock-maximum-decoration '((t . t)))
 
-(setq mode-line-format '((ace-window-display-mode
-                          (:eval
-                           (window-parameter
-                            (selected-window)
-                            'ace-window-path)))
-                         "%e"
-                         mode-line-front-space
-                         mode-line-position
-                         mode-line-mule-info
-                         mode-line-client
-                         mode-line-modified
-                         mode-line-remote
-                         mode-line-buffer-identification
-                         mode-line-modes
-                         (vc-mode vc-mode)
-                         mode-line-misc-info
-                         mode-line-end-spaces))
+(setopt mode-line-format '((ace-window-display-mode
+                            (:eval (window-parameter (selected-window) 'ace-window-path)))
+                           "%e"
+                           mode-line-front-space
+                           (""
+                            mode-line-mule-info
+                            mode-line-client
+                            mode-line-modified
+                            mode-line-remote
+                            mode-line-window-dedicated)
+                           mode-line-frame-identification
+                           mode-line-buffer-identification
+                           " "
+                           mode-line-position
+                           (project-mode-line project-mode-line-format)
+                           (vc-mode vc-mode)
+                           " "
+                           mode-line-modes
+                           mode-line-misc-info
+                           mode-line-end-spaces))
 
 (use-package solarized-theme
   :ensure t
