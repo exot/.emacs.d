@@ -18,7 +18,7 @@
  '(org-column ((t (:strike-through nil :underline nil :slant normal :weight normal :height 110 :family "DejaVu Sans Mono"))))
  '(org-headline-done ((t (:foreground "#859900"))))
  '(org-link ((t (:inherit link :weight normal))))
- '(org-mode-line-clock ((t (:inherit default))))
+ '(org-mode-line-clock ((t (:inherit nil))))
  '(outline-4 ((t (:inherit org-level-4))))
  '(flyspell-duplicate ((t (:underline (:color "orange red" :style wave)))))
  '(flyspell-incorrect ((t (:underline (:color "orange red" :style wave)))))
