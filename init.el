@@ -2140,12 +2140,6 @@ Note that this workaround is incomplete, as explained in this comment."
                 solarized-use-variable-pitch nil
                 solarized-high-contrast-mode-line nil))
 
-(use-package smart-mode-line
-  :ensure t
-  :init (setq sml/mode-width 'full
-              sml/name-width 30)
-  :commands (sml/setup))
-
 (use-package moody
   :ensure t
   :commands (moody-replace-mode-line-buffer-identification
