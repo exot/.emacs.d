@@ -2140,11 +2140,6 @@ Note that this workaround is incomplete, as explained in this comment."
                 solarized-use-variable-pitch nil
                 solarized-high-contrast-mode-line t))
 
-(use-package solarized-dark-theme
-  :defer t
-  :config (progn
-            (setq custom--inhibit-theme-enable nil)))
-
 (use-package smart-mode-line
   :ensure t
   :init (setq sml/mode-width 'full
