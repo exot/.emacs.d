@@ -2100,6 +2100,9 @@ Note that this workaround is incomplete, as explained in this comment."
 (use-package epa
   :init (setq epa-keys-select-method 'minibuffer))
 
+(add-to-list 'file-name-handler-alist
+             '("\\.asc\\'" . epa-file-handler))
+
 (use-package epg
   :init (setq epg-debug t
               epg-gpg-program "gpg"))
