@@ -612,6 +612,9 @@ split horizontally again, but this extra work should not matter much."
                (olivetti-mode -1)))
   :init (setq-default olivetti-body-width 0.618034))
 
+(use-package outline
+  :init (setopt outline-minor-mode-use-buttons 'in-margins))
+
 (use-package outline-indent
   :init (setopt outline-indent-ellipsis " ▼ "))
 
