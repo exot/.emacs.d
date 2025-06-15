@@ -128,33 +128,35 @@
 (use-package help-fns
   :defines (help-enable-symbol-autoload))
 
-(setq select-enable-clipboard t
-      select-enable-primary t
-      save-interprogram-paste-before-kill t
-      mouse-yank-at-point t
-      scroll-conservatively 10
-      scroll-preserve-screen-position 'always ; Make M-v undo C-v
-      message-log-max t
-      inhibit-eol-conversion nil
-      tab-always-indent 'complete
-      enable-recursive-minibuffers t
-      set-mark-command-repeat-pop t
-      echo-keystrokes 0.1
-      delete-trailing-lines nil
-      x-underline-at-descent-line t
-      visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
-      history-delete-duplicates t
-      track-eol t
-      garbage-collection-messages nil
-      read-process-output-max (* 1024 1024) ; 1mb
-      next-error-message-highlight t
-      help-enable-symbol-autoload t
-      describe-bindings-outline t
-      redisplay-skip-fontification-on-input t
-      undo-limit 80000000
-      async-shell-command-buffer 'new-buffer
-      byte-compile-warnings '(not docstrings)
-      indicate-buffer-boundaries 'left)
+(setopt select-enable-clipboard t
+        select-enable-primary t
+        save-interprogram-paste-before-kill t
+        mouse-yank-at-point t
+        scroll-conservatively 10
+        scroll-preserve-screen-position 'always ; Make M-v undo C-v
+        message-log-max t
+        inhibit-eol-conversion nil
+        tab-always-indent 'complete
+        enable-recursive-minibuffers t
+        set-mark-command-repeat-pop t
+        echo-keystrokes 0.1
+        delete-trailing-lines nil
+        x-underline-at-descent-line t
+        visual-line-fringe-indicators '(left-curly-arrow right-curly-arrow)
+        history-delete-duplicates t
+        track-eol t
+        garbage-collection-messages nil
+        read-process-output-max (* 1024 1024) ; 1mb
+        next-error-message-highlight t
+        help-enable-symbol-autoload t
+        describe-bindings-outline t
+        redisplay-skip-fontification-on-input t
+        undo-limit 80000000
+        async-shell-command-buffer 'new-buffer
+        indicate-buffer-boundaries 'left
+        show-trailing-whitespace t)
+
+(setq byte-compile-warnings '(not docstrings)) ; yields warning when used with setopt
 
 (put 'set-goal-column 'disabled nil)
 
