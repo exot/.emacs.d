@@ -153,8 +153,7 @@
         redisplay-skip-fontification-on-input t
         undo-limit 80000000
         async-shell-command-buffer 'new-buffer
-        indicate-buffer-boundaries 'left
-        show-trailing-whitespace t)
+        indicate-buffer-boundaries 'left)
 
 (setq byte-compile-warnings '(not docstrings)) ; yields warning when used with setopt
 
@@ -543,7 +542,8 @@ split horizontally again, but this extra work should not matter much."
             (add-hook 'text-mode-hook 'page-break-lines-mode)
             (add-hook 'text-mode-hook 'turn-on-auto-fill)
             (add-hook 'text-mode-hook 'abbrev-mode)
-            (add-hook 'text-mode-hook 'hl-line-mode)))
+            (add-hook 'text-mode-hook 'hl-line-mode)
+            (add-hook 'text-mode-hook #'(lambda () (setq show-trailing-whitespace t)))))
 
 (use-package abbrev
   :init (setq save-abbrevs 'silently
@@ -1548,7 +1548,8 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'prog-mode-hook 'electric-indent-local-mode)
             (add-hook 'prog-mode-hook 'hl-line-mode)
             (add-hook 'prog-mode-hook 'page-break-lines-mode)
-            (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)))
+            (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
+            (add-hook 'prog-mode-hook #'(lambda () (setq show-trailing-whitespace t)))))
 
 (use-package diff-hl
   :ensure t
