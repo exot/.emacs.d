@@ -714,29 +714,6 @@ _h_   _l_   _o_k        _y_ank
   ("e" rectangle-exchange-point-and-mark nil)
   ("o" nil nil))
 
-;; The hydra for our frequently used features should be defined here, but should
-;; also be redefined every time `db/frequently-used-features' is redefined via
-;; customize.  To this end, we provide a special function here that defines this
-;; hydra, that can also be called in the setter of
-;; `db/frequently-used-features'.
-
-(defun db/define-feature-shortcuts-hydra ()
-  "Globally define `hydra-feature-shortcuts' for feature shortcuts.
-If instead of a shortcut character nil is provided, no entry in
-the hydra will be generated.  See documentation of
-`db/frequently-used-features' for details."
-  (eval
-   `(defhydra hydra-feature-shortcuts (:color blue)
-      ""
-      ,@(mapcar (lambda (entry)
-                  (pcase-let ((`(,description ,shortcut ,function) entry))
-                    (list (string shortcut) function description)))
-                (cl-remove-if #'(lambda (entry)
-                                  (null (cl-second entry)))
-                              db/frequently-used-features)))))
-
-(db/define-feature-shortcuts-hydra)
-
 
 ;;; Base45 Decoding
 

@@ -476,8 +476,7 @@ split horizontally again, but this extra work should not matter much."
              db/dired-jump-to-bottom
              db/dired-get-size
              hydra-toggle/body
-             hydra-rectangle/body
-             hydra-feature-shortcuts/body)
+             hydra-rectangle/body)
   :autoload (turn-on-flycheck-when-file
              db/sort-nsm-permanent-settings
              endless/colorize-compilation
@@ -487,8 +486,7 @@ split horizontally again, but this extra work should not matter much."
              db/replace-variables-in-string
              db/grep-read-files
              db/make-selector-from-table-header
-             db/get-library-version
-             db/define-feature-shortcuts-hydra))
+             db/get-library-version))
 
 (use-package diminish
   :ensure t)
@@ -3111,7 +3109,7 @@ eventuelly be set to nil, however)."
   (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
-  (bind-key "<f2>" #'hydra-feature-shortcuts/body)
+  (bind-key "<f2>" db/frequently-used-features-map)
   (bind-key "<f5>" #'project-find-regexp)
   (bind-key "<f6>" #'text-scale-adjust)
   (bind-key "<f7>" #'dictcc)
