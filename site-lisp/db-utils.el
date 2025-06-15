@@ -687,16 +687,6 @@ quite sure whether something like this exists already?"
   ("q" toggle-debug-on-quit "debug-on-quit")
   ("r" read-only-mode "read-only"))
 
-(defhydra hydra-zoom (:color red
-                             :body-pre (require 'face-remap))
-  ;; the following newline is important, as otherwise the format string is not
-  ;; interpreted correctly; cf. https://oremacs.com/2015/02/23/hydra-0.11.0/
-  "
-Zoom (%`text-scale-mode-amount): "
-  ("g" text-scale-increase "increase")
-  ("l" text-scale-decrease "decrease")
-  ("0" (text-scale-adjust 0) "reset"))
-
 (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
                                      :color pink
                                      :post (deactivate-mark))
