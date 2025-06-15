@@ -474,7 +474,11 @@ split horizontally again, but this extra work should not matter much."
              db/dired-ediff-files
              db/dired-back-to-top
              db/dired-jump-to-bottom
-             db/dired-get-size)
+             db/dired-get-size
+             hydra-toggle/body
+             hydra-zoom/body
+             hydra-rectangle/body
+             hydra-feature-shortcuts/body)
   :autoload (turn-on-flycheck-when-file
              db/sort-nsm-permanent-settings
              endless/colorize-compilation
@@ -484,14 +488,8 @@ split horizontally again, but this extra work should not matter much."
              db/replace-variables-in-string
              db/grep-read-files
              db/make-selector-from-table-header
-             db/get-library-version))
-
-(use-package db-hydras
-  :commands (hydra-toggle/body
-             hydra-zoom/body
-             hydra-rectangle/body
-             db/define-feature-shortcuts-hydra
-             hydra-feature-shortcuts/body))
+             db/get-library-version
+             db/define-feature-shortcuts-hydra))
 
 (use-package diminish
   :ensure t)
