@@ -148,9 +148,6 @@ in the main agenda view."
   :group 'personal-settings
   :type '(choice (const nil) file))
 
-(defvar db/frequently-used-features-map (make-sparse-keymap)
-  "Functions from `db/frequently-used-features' bound to shortcuts.")
-
 (defcustom db/frequently-used-features
   '(("Mail" ?m db/gnus)
     ("Agenda" ?a db/org-agenda)
@@ -177,11 +174,11 @@ character, nil can be chosen, in which case no entry in the
   :type  '(repeat (list string (choice character (const nil)) function))
   :set #'(lambda (symbol value)
            (set-default symbol value)
-           (setq db/frequently-used-features-map (make-sparse-keymap))
-           (mapc #'(lambda (entry)
-                     (pcase-let ((`(_ ,shortcut ,function) entry))
-                       (keymap-set db/frequently-used-features-map (string shortcut) function)))
-                 db/frequently-used-features)))
+           (let ((map (make-sparse-keymap)))
+             (mapc (pcase-lambda (`(_ ,shortcut ,function))
+                     (keymap-set map (string shortcut) function))
+                   value)
+             (fset 'db/frequently-used-features-prefix map))))
 
 
 

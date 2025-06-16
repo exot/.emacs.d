@@ -92,7 +92,8 @@
             db/org-default-home-file
             db/org-default-notes-file
             db/org-default-refile-file
-            db/after-init-load-files))
+            db/after-init-load-files
+            db/frequently-used-features-prefix))
 
 
 ;; * Core Configuration
@@ -3111,7 +3112,7 @@ eventuelly be set to nil, however)."
   (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
   (bind-key "<f1>" #'db/run-or-hide-eshell)
-  (bind-key "<f2>" db/frequently-used-features-map) ; TODO: this does not update when the keymap is changed
+  (bind-key "<f2>" #'db/frequently-used-features-prefix)
   (bind-key "<f5>" #'project-find-regexp)
   (bind-key "<f6>" #'text-scale-adjust)
   (bind-key "<f7>" #'dictcc)
