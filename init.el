@@ -121,8 +121,10 @@
         load-prefer-newer nil           ; t breaks `org-reload'
         use-short-answers nil)
 
-(setq-default fill-column 100)
-(setq-default indent-tabs-mode nil)
+(setq-default fill-column 100
+              undo-limit 80000000
+              indent-tabs-mode nil
+              indicate-buffer-boundaries 'left)
 
 (setq frame-title-format "emacs")
 
@@ -152,9 +154,7 @@
         help-enable-symbol-autoload t
         describe-bindings-outline t
         redisplay-skip-fontification-on-input t
-        undo-limit 80000000
-        async-shell-command-buffer 'new-buffer
-        indicate-buffer-boundaries 'left)
+        async-shell-command-buffer 'new-buffer)
 
 (setq byte-compile-warnings '(not docstrings)) ; yields warning when used with setopt
 
