@@ -144,7 +144,7 @@ in the main agenda view."
   :type '(choice (const nil) file))
 
 (defcustom db/org-default-pensieve-file nil
-  "Path to default org-mode file for private notes."
+  "Path to default Org mode file for private notes."
   :group 'personal-settings
   :type '(choice (const nil) file))
 
