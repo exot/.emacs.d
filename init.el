@@ -453,6 +453,8 @@ split horizontally again, but this extra work should not matter much."
              db/org-agenda
              db/scratch
              db/find-user-init-file
+             db/find-default-org-file
+             db/find-default-refile-file
              db/run-or-hide-ansi-term
              db/ement-connect
              db/hex-to-ascii

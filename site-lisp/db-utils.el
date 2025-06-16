@@ -68,9 +68,27 @@ If already in *ansi-term* buffer, bury it."
   (switch-to-buffer "*scratch*"))
 
 (defun db/find-user-init-file ()
-  "Edit `user-init-file'."
+  "Open buffer for `user-init-file'."
   (interactive)
   (find-file user-init-file))
+
+(defun db/find-default-org-file ()
+  "Open buffer for `db/org-default-org-file', when set."
+  (interactive)
+  (unless (boundp 'db/org-default-org-file)
+    (user-error "Cannot open default Org file: variable `db/org-default-org-file' not set"))
+  (unless (file-exists-p db/org-default-org-file)
+    (user-error "Cannot open default Org file: file «%s» does not exist" db/org-default-org-file))
+  (find-file db/org-default-org-file))
+
+(defun db/find-default-refile-file ()
+  "Open buffer for `db/org-default-refile-file', when set."
+  (interactive)
+  (unless (boundp 'db/org-default-refile-file)
+    (user-error "Cannot open default refile file: not set"))
+  (unless (file-exists-p db/org-default-refile-file)
+    (user-error "Cannot open default refile file: file «%s» does not exist" db/org-default-refile-file))
+  (find-file db/org-default-refile-file))
 
 (defun db/run-or-hide-shell (arg)
   "Opens a shell buffer in new window if not already in one.
