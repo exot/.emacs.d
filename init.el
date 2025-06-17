@@ -93,7 +93,7 @@
             db/org-default-notes-file
             db/org-default-refile-file
             db/after-init-load-files)
-  :autoloads (db/frequently-used-features-prefix))
+  :autoload (db/frequently-used-features-prefix))
 
 
 ;; * Core Configuration
