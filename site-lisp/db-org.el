@@ -455,7 +455,14 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
       (org-capture-set-target-location)
       (org-capture-place-template)
 
-      (indent-region (point-min) (point-max)))))
+      (indent-region (point-min) (point-max))
+
+      ;; Ensure that two line breaks are placed at the end of the heading
+
+      (goto-char (point-max))
+      (while (looking-back "\n" 1)
+        (delete-char -1))
+      (insert "\n\n"))))
 
 
 ;;; Refiling
