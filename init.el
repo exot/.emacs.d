@@ -601,15 +601,6 @@ split horizontally again, but this extra work should not matter much."
 (use-package olivetti
   :ensure t
   :commands (olivetti-mode)
-  :preface (progn
-             (defun turn-on-olivetti-mode ()
-               "Turn on `olivetti-mode'."
-               (interactive)
-               (olivetti-mode 1))
-             (defun turn-off-olivetti-mode ()
-               "Turn off `olivetti-mode'."
-               (interactive)
-               (olivetti-mode -1)))
   :init (setq-default olivetti-body-width 0.618034))
 
 (use-package outline
@@ -1480,9 +1471,7 @@ accordingly."
   :bind (:map org-tree-slide-mode-map
               ("<C-down>" . org-tree-slide-display-header-toggle)
               ("<C-right>" . org-tree-slide-move-next-tree)
-              ("<C-left>" . org-tree-slide-move-previous-tree))
-  :hook ((org-tree-slide-play . turn-on-olivetti-mode)
-         (org-tree-slide-stop . turn-off-olivetti-mode)))
+              ("<C-left>" . org-tree-slide-move-previous-tree)))
 
 (use-package org-roam
   :init (progn
