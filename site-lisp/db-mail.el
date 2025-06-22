@@ -318,7 +318,7 @@ METHOD specifies the encrypt method used.  Can be either
     (delete-trailing-whitespace)))
 
 (defun db/gnus-summary-open-Link ()
-  "Open link named \"Link\" in current article."
+  "Open last link named \"Link\" in current article."
   (interactive)
   (save-window-excursion
    (save-mark-and-excursion
@@ -327,10 +327,10 @@ METHOD specifies the encrypt method used.  Can be either
      (let ((url nil))
        (unless (eq major-mode 'gnus-article-mode)
          (gnus-summary-select-article-buffer))
-       (goto-char (point-min))
+       (goto-char (point-max))
        (while (and (not url)
-                   (search-forward "Link"))
-         (backward-char)
+                   (search-backward "Link"))
+         (forward-char)
          (setq url (get-text-property (point) 'shr-url)))
        (when url
          (browse-url url)))))))
