@@ -89,11 +89,13 @@ ACCOUNT must be a valid element of `db/mail-accounts’."
   (nth 6 account))
 
 (defun db/-set-gnus-secondary-select-methods (other-gnus-accounts remote-mail-accounts)
-  "Set `gnus-secondary-select-methods’ from OTHER-GNUS-ACCOUNTS and REMOTE-MAIL-ACCOUNTS.
-The values of the latter two variables are usually those of
-`db/other-gnus-accounts’ and `db/mail-accounts’.  If multiple
-accounts exist with the same (cl-equalp) account name, only the
-first will be added to `gnus-secondary-select-methods'."
+  "Set `gnus-secondary-select-methods’ from specified accounts.
+
+Accounts are given by OTHER-GNUS-ACCOUNTS and REMOTE-MAIL-ACCOUNTS.  The
+values of those two variables are usually those of
+`db/other-gnus-accounts’ and `db/mail-accounts’.  If multiple accounts
+exist with the same (`cl-equalp') account name, only the first will be
+added to `gnus-secondary-select-methods'."
   (let ((select-methods (append other-gnus-accounts
                                 ;; Only add those remote accounts whose IMAP address is neither
                                 ;; `nil’ nor the empty string
