@@ -177,11 +177,11 @@ will also be recognized when sending mail."
 
 (defun db/smtpmail-send-it ()
   "Send prepared message in current buffer.
+
 This function uses `message-smtpmail-send-it’, but sets
-`smtpmail-smtp-server’, `smtpmail-stream-type’,
-`smtpmail-smtp-service’, and `smtpmail-smtp-user’ based on the
-entry of the \"From: \" header and the value of
-`db/mail-accounts’."
+`smtpmail-smtp-server’, `smtpmail-stream-type’, `smtpmail-smtp-service’,
+and `smtpmail-smtp-user’ based on the entry of the \"From: \" header and
+the value of `db/mail-accounts’."
   (let* ((from    (or (save-restriction
                         (message-narrow-to-headers)
                         (mail-fetch-field "From"))
@@ -204,9 +204,9 @@ entry of the \"From: \" header and the value of
                            t
                            "Settings %s for sending mail are not complete for account %s."
                            address)
-                (message-smtpmail-send-it)))
+                (smtpmail-send-it)))
           (if (yes-or-no-p "Sending with default account settings?")
-              (message-smtpmail-send-it)
+              (smtpmail-send-it)
             (message "Sending aborted as requested by user.")))
       ;; in case of error, display the SMTP trace buffer if available
       (error (when-let ((smtp-trace-buffer (get-buffer (format "*trace of SMTP session to %s*"
@@ -219,7 +219,7 @@ entry of the \"From: \" header and the value of
 ;; Setting other Gnus accounts
 
 (defun db/other-gnus-accounts--set-value (symbol value)
-  "Set SYMBOL to VALUE as needed by `db/other-gnus-accounts’"
+  "Set SYMBOL to VALUE as needed by `db/other-gnus-accounts’."
   (cl-assert (eq symbol 'db/other-gnus-accounts)
              nil
              "Only use `db/other-gnus-accounts--set-value’ for setting `db/other-gnus-accounts’.")
@@ -361,4 +361,5 @@ METHOD specifies the encrypt method used.  Can be either
 
 
 (provide 'db-mail)
-;;; db-mail ends here
+
+;;; db-mail.el ends here
