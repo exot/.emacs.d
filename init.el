@@ -588,7 +588,8 @@ split horizontally again, but this extra work should not matter much."
                 markdown-fontify-code-blocks-natively t)
           (fset 'markdown-output-standalone-p #'(lambda () t))
           (add-hook 'markdown-mode-hook #'turn-off-auto-fill)
-          (add-hook 'markdown-mode-hook #'turn-on-visual-line-mode)))
+          (add-hook 'markdown-mode-hook #'turn-on-visual-line-mode)
+          (add-hook 'markdown-mode-hook #'turn-on-visual-fill-column-mode)))
 
 (use-package multiple-cursors
   :pin "melpa-stable"
@@ -624,7 +625,16 @@ split horizontally again, but this extra work should not matter much."
             ;; Do not wrap lines automatically in textile mode, as text produced
             ;; in this mode is usually copied to Redmine Wiki pages later on.
             (add-hook 'textile-mode-hook #'turn-off-auto-fill)
-            (add-hook 'textile-mode-hook #'turn-on-visual-line-mode)))
+            (add-hook 'textile-mode-hook #'turn-on-visual-line-mode)
+            (add-hook 'textile-mode-hook #'turn-on-visual-fill-column-mode)))
+
+(use-package visual-fill-column
+  :ensure t
+  :autoload (turn-on-visual-fill-column-mode
+             visual-fill-column-adjust)
+  :config (progn
+            (setopt visual-fill-column-enable-sensible-window-split t)
+            (advice-add 'text-scale-adjust :after #'visual-fill-column-adjust)))
 
 (use-package wgrep
   :ensure t
@@ -3065,6 +3075,7 @@ eventuelly be set to nil, however)."
   (global-auto-revert-mode -1)
   (which-function-mode +1)
   (global-eldoc-mode +1)
+  (global-visual-wrap-prefix-mode +1)
 
   ;; Activate modes (packages)
 
