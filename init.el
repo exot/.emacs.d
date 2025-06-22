@@ -1455,19 +1455,20 @@ accordingly."
 (use-package org-tree-slide
   :commands (org-tree-slide-mode)
   ;; Configuration from https://protesilaos.com/dotemacs/
-  :init (setq org-tree-slide-breadcrumbs " → "
-              org-tree-slide-header t
-              org-tree-slide-slide-in-effect nil
-              org-tree-slide-heading-emphasis nil
-              org-tree-slide-cursor-init t
-              org-tree-slide-modeline-display nil
-              org-tree-slide-skip-done nil
-              org-tree-slide-skip-comments t
-              org-tree-slide-fold-subtrees-skipped t
-              org-tree-slide-skip-outline-level 8
-              org-tree-slide-never-touch-face t
-              org-tree-slide-activate-message (propertize "Presentation mode ON" 'face 'success)
-              org-tree-slide-deactivate-message (propertize "Presentation mode OFF" 'face 'error))
+  :init (setopt org-tree-slide-breadcrumbs " → "
+                org-tree-slide-header t
+                org-tree-slide-slide-in-effect nil
+                org-tree-slide-heading-emphasis nil
+                org-tree-slide-cursor-init t
+                org-tree-slide-modeline-display nil
+                org-tree-slide-content-margin-top 2
+                org-tree-slide-skip-done nil
+                org-tree-slide-skip-comments t
+                org-tree-slide-fold-subtrees-skipped t
+                org-tree-slide-skip-outline-level 8
+                org-tree-slide-never-touch-face t
+                org-tree-slide-activate-message (propertize "Presentation mode ON" 'face 'success)
+                org-tree-slide-deactivate-message (propertize "Presentation mode OFF" 'face 'error))
   :bind (:map org-tree-slide-mode-map
               ("<C-down>" . org-tree-slide-display-header-toggle)
               ("<C-right>" . org-tree-slide-move-next-tree)
