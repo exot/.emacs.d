@@ -1011,7 +1011,8 @@ split horizontally again, but this extra work should not matter much."
   :config (require 'org-ql-search))
 
 (use-package ol
-  :init (setq org-link-keep-stored-after-insertion t)
+  :init (setopt org-link-keep-stored-after-insertion t
+                org-link-search-must-match-exact-headline nil)
   :commands (org-store-link)
   :autoload (org-link-set-parameters)
   :config (progn
