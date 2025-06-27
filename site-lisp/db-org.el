@@ -472,7 +472,10 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
   (and
    ;; Exclude DONE state tasks from refile targets (from bh)
    (not (member (nth 2 (org-heading-components))
-                org-done-keywords))))
+                org-done-keywords))
+   ;; Exclude HOLD items to prevent accidental refiling to such headings (they will not appear on
+   ;; any agenda when a super-item is tagged with :HOLD:.
+   (not (member "HOLD" (org-get-tags (point))))))
 
 
 ;;; Helper Functions for Clocking
