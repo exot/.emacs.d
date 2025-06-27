@@ -308,7 +308,7 @@
 
 (use-package project
   :init (setopt project-list-file (expand-file-name "projects" emacs-d-userdata)
-                project-switch-commands 'project-dired
+                project-switch-commands 'project-eshell
                 project-vc-merge-submodules nil
                 project-mode-line t)
   :config (progn
