@@ -1625,7 +1625,12 @@ Note that this workaround is incomplete, as explained in this comment."
   :ensure t
   :commands (magit-status
              magit-list-repositories)
-
+  :autoload (magit-repolist-column-ident
+             magit-repolist-column-flag
+             magit-repolist-column-unpulled-from-upstream
+             magit-repolist-column-unpushed-to-upstream
+             magit-repolist-column-version
+             magit-repolist-column-path)
   :init (progn
           (setopt magit-diff-refine-hunk nil
                   magit-commit-show-diff nil
@@ -1635,19 +1640,19 @@ Note that this workaround is incomplete, as explained in this comment."
                                                  ("~/Documents/" . 3)
                                                  ("~/.local/share/dotfiles" . 0))
 
-                  magit-repolist-columns '(("Name" 20 magit-repolist-column-ident
+                  magit-repolist-columns `(("Name" 20 ,#'magit-repolist-column-ident
                                             ())
-                                           ("S" 1 magit-repolist-column-flag
+                                           ("S" 1 ,#'magit-repolist-column-flag
                                             ())
-                                           ("B<U" 3 magit-repolist-column-unpulled-from-upstream
+                                           ("B<U" 3 ,#'magit-repolist-column-unpulled-from-upstream
                                             ((:right-align t)
                                              (:sort <)))
-                                           ("B>U" 3 magit-repolist-column-unpushed-to-upstream
+                                           ("B>U" 3 ,#'magit-repolist-column-unpushed-to-upstream
                                             ((:right-align t)
                                              (:sort <)))
-                                           ("Version" 35 magit-repolist-column-version
+                                           ("Version" 35 ,#'magit-repolist-column-version
                                             ((:sort magit-repolist-version<)))
-                                           ("Path" 99 magit-repolist-column-path
+                                           ("Path" 99 ,#'magit-repolist-column-path
                                             ()))
 
                   magit-branch-direct-configure nil)
