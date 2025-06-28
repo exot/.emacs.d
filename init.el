@@ -3121,7 +3121,7 @@ eventuelly be set to nil, however)."
   (with-demoted-errors "Cannot activate `vlf': %s"
     (require 'vlf-setup))
 
-  ;; Global Hooks
+  ;; Global Hooks (XXX: should be moved outside of this init function)
 
   (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
