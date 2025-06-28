@@ -2318,9 +2318,27 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (turn-on-gnus-dired-mode))
 
 (use-package tramp
-  :init (setq tramp-default-method (if on-windows "pscp" "scp")
-              tramp-completion-use-auth-sources nil
-              tramp-histfile-override "~/.tramp_history"))
+  :init (setopt tramp-default-method (if on-windows "pscp" "scp")
+                tramp-completion-use-auth-sources nil
+                tramp-histfile-override "~/.tramp_history"
+                tramp-use-scp-direct-remote-copying t
+                tramp-verbose 2)
+  :config (progn
+
+            ;; Use direct async processes for creating processes; see
+            ;; https://coredumped.dev/2025/06/18/making-tramp-go-brrrr./#use-direct-async.
+
+            (connection-local-set-profile-variables
+             'remote-direct-async-process
+             '((tramp-direct-async-process . t)))
+
+            (connection-local-set-profiles
+             '(:application tramp :protocol "scp")
+             'remote-direct-async-process)
+
+            (connection-local-set-profiles
+             '(:application tramp :protocol "pscp")
+             'remote-direct-async-process)))
 
 (use-package trashed
   ;; A simple dired-like interface to the system trash bin
