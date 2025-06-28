@@ -333,12 +333,35 @@
   :init (setq server-log t))
 
 (use-package tab-bar
-  :init (setq tab-bar-show t
-              tab-bar-format '(tab-bar-format-tabs
-                               tab-bar-separator
-                               ;; tab-bar-format-align-right
-                               ;; current-time-string
-                               )))
+  :init (setopt tab-bar-show t
+                tab-bar-tab-hints t
+                tab-bar-close-button-show nil
+                tab-bar-new-button-show nil
+                tab-bar-auto-width nil
+                tab-bar-separator " | "
+                tab-bar-format '(tab-bar-format-tabs-groups
+                                 tab-bar-separator))
+  :config (progn
+
+            ;; Two display overrides inspired by
+            ;; https://www.rahuljuliato.com/posts/emacs-tab-bar-groups.
+
+            (define-advice tab-bar-tab-name-format-hints (:around
+                                                          (orig-fun name tab idx)
+                                                          only-show-tab-number)
+              (ignore orig-fun tab)
+              (if tab-bar-tab-hints
+                  (format "[%d]" idx)
+                name))
+
+            (define-advice tab-bar-tab-group-format-default (:around
+                                                             (orig-fun tab idx &optional currentp)
+                                                             only-show-group-name)
+              (ignore orig-fun idx)
+              (propertize (funcall tab-bar-tab-group-function tab)
+                          'face (if currentp
+                                    'tab-bar-tab-group-current
+                                  'tab-bar-tab-group-inactive)))))
 
 (use-package undo-tree
   :ensure t
