@@ -197,13 +197,13 @@
 
 (use-package calc
   ;; https://florian.adamsky.it/2016/03/31/emacs-calc-for-programmers-and-cs.html
-  :defines (math-additional-units
-            math-units-table)
-  :init (setq math-additional-units
-              '((bit nil "Bit")
-                (byte "8 * bit" "Byte")
-                (bps "bit / s" "Bit per second"))
-              math-units-table nil))
+  :defines (math-additional-units       ; from calc-units.el
+            math-units-table)           ; from calc-units.el
+  :init (setopt math-additional-units '((bit nil "Bit")
+                                        (byte "8 * bit" "Byte")
+                                        (bps "bit / s" "Bit per second"))
+                math-units-table nil
+                calc-kill-line-numbering nil))
 
 (use-package calender
   :init (setq calendar-date-style 'iso
