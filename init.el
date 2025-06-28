@@ -863,16 +863,6 @@ split horizontally again, but this extra work should not matter much."
                                            (emacs-lisp . t)
                                            (sql . t)))
 
-          ;; Link shortcuts (some taken from the documentation)
-
-          (setq org-link-abbrev-alist
-                '(("wpen" . "https://en.wikipedia.org/wiki/")
-                  ("wpde" . "https://de.wikipedia.org/wiki/")
-                  ("ddg" . "https://duckduckgo.com/?q=%s")
-                  ("omap" . "https://nominatim.openstreetmap.org/search?q=%s&polygon=1")
-                  ("github" . "https://github.com/")
-                  ("gitlab" . "https://gitlab.com/")))
-
           ;; Show more context when revealing locations, to avoid incompletly revealed items.
 
           (setopt org-fold-show-context-detail '((default . lineage))))
@@ -886,12 +876,6 @@ split horizontally again, but this extra work should not matter much."
             ;; Hide drawers by default when cycling items
             (add-hook 'org-cycle-hook #'org-cycle-hide-drawers)
 
-            ;; Statically color links indepedently of whether the file exists or
-            ;; not (we could add different faces to highlight non-existing
-            ;; files, but this turns out to be slow on Windows, and we can use
-            ;; `org-lint' to check this when necessary)
-            (org-link-set-parameters "file" :face 'org-link)
-
             ;; File Apps
 
             (add-to-list 'org-file-apps '(directory . emacs))
@@ -902,19 +886,6 @@ split horizontally again, but this extra work should not matter much."
 
             (when (eq system-type 'cygwin)
               (add-to-list 'org-file-apps '(t . "cygstart %s") t))
-
-            ;; Custom link types
-            (org-link-set-parameters "rfc" :follow #'db/org-rfc-open)
-            (org-link-set-parameters "cve" :follow #'(lambda (number)
-                                                       (browse-url
-                                                        (format "https://www.cve.org/CVERecord?id=CVE-%s"
-                                                                number))))
-            (org-link-set-parameters "bookmark"
-			             :follow #'db/org-bookmark-open
-			             :store #'db/org-bookmark-store-link)
-            (when (eq system-type 'windows-nt)
-              (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
-              (org-link-set-parameters "outlook" :follow #'db/org-outlook-open))
 
             ;; Mark some org mode regions to be skipped by ispell
             (add-hook 'org-mode-hook #'endless/org-ispell)
@@ -1012,10 +983,36 @@ split horizontally again, but this extra work should not matter much."
 
 (use-package ol
   :init (setopt org-link-keep-stored-after-insertion t
-                org-link-search-must-match-exact-headline nil)
+                org-link-search-must-match-exact-headline nil
+
+                ;; Link shortcuts (some taken from the documentation)
+                org-link-abbrev-alist '(("wpen" . "https://en.wikipedia.org/wiki/")
+                                        ("wpde" . "https://de.wikipedia.org/wiki/")
+                                        ("ddg" . "https://duckduckgo.com/?q=%s")
+                                        ("omap" . "https://nominatim.openstreetmap.org/search?q=%s&polygon=1")
+                                        ("github" . "https://github.com/")
+                                        ("gitlab" . "https://gitlab.com/")))
   :commands (org-store-link)
   :autoload (org-link-set-parameters)
   :config (progn
+
+            ;; Statically color links indepedently of whether the file exists or not (we could add
+            ;; different faces to highlight non-existing files, but this turns out to be slow on
+            ;; Windows, and we can use `org-lint' to check this when necessary)
+            (org-link-set-parameters "file" :face 'org-link)
+
+            ;; Custom link types
+            (org-link-set-parameters "rfc" :follow #'db/org-rfc-open)
+            (org-link-set-parameters "cve" :follow #'(lambda (number)
+                                                       (browse-url
+                                                        (format "https://www.cve.org/CVERecord?id=CVE-%s"
+                                                                number))))
+            (org-link-set-parameters "bookmark"
+			             :follow #'db/org-bookmark-open
+			             :store #'db/org-bookmark-store-link)
+            (when (eq system-type 'windows-nt)
+              (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
+              (org-link-set-parameters "outlook" :follow #'db/org-outlook-open))
 
             ;; Allow additional link targets
             (require 'ol-man)           ; manpages
