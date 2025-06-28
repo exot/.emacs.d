@@ -1634,6 +1634,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :init (progn
           (setopt magit-diff-refine-hunk nil
                   magit-commit-show-diff nil
+                  magit-branch-direct-configure nil
 
                   magit-repository-directories '(("~/" . 0)
                                                  ("~/.emacs.d" . 0)
@@ -1653,9 +1654,7 @@ Note that this workaround is incomplete, as explained in this comment."
                                            ("Version" 35 ,#'magit-repolist-column-version
                                             ((:sort magit-repolist-version<)))
                                            ("Path" 99 ,#'magit-repolist-column-path
-                                            ()))
-
-                  magit-branch-direct-configure nil)
+                                            ())))
 
           (when on-windows
             ;; Increase performance by not automatically refreshing status buffers
