@@ -295,6 +295,9 @@
                                              ("Tramp" (name . "^\\*tramp.*"))
                                              ("Files" (filename . ".*"))))))
 
+(use-package man
+  :init (setopt Man-switches "-a"))
+
 (use-package multisession
   :init (setq multisession-directory (expand-file-name "multisession/" emacs-d-userdata)))
 
