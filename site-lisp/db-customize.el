@@ -156,6 +156,7 @@ in the main agenda view."
     ("EMMS" ?M emms)
     ("Shell" ?s project-shell)
     ("EShell" ?e project-eshell)
+    ("Project" ?p project-switch-project)
     ("Refile File" ?r db/find-default-refile-file)
     ("Goto Currnet Clock" ?c db/org-clock-goto-first-open-checkbox)
     ("Info Lookup" ?I info-lookup-symbol)
