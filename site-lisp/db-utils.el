@@ -29,7 +29,6 @@
 (autoload 'ldap-search "ldap")
 (autoload 'find-libary-name "find-func")
 (autoload 'lm-header "lisp-mnt")
-(autoload 'dired-dwim-target-directory "dired-aux")
 (autoload 'rectangle-exchange-point-and-mark "rect")
 
 (declare-function w32-shell-execute "w32fns.c")
@@ -316,41 +315,6 @@ If found, imports the certificate via gpgsm."
                 (message "Successfully imported certificate for <%s>" mail)
               (error "Could not import certificate for <%s>" mail))))))))
 
-;; https://emacs.stackexchange.com/questions/3089/how-can-i-create-a-dired-buffer-listing-all-open-files
-;; https://emacs.stackexchange.com/questions/2567/programmatically-insert-files-into-dired-buffer
-(defun db/dired-from-shell-command (command &optional directory)
-  "Run COMMAND in DIRECTORY and display resulting list of files via `dired’.
-
-COMMAND must be a shell command that produces a list of files as
-output, separated by \\n, when called with
-`shell-command-to-string’.  DIRECTORY defaults to
-`default-directory’."
-  (interactive "sCommand: ")
-  (when (and directory (not (directory-name-p directory)))
-    (user-error "Value for DIRECTORY is not a directory name: %s"
-                directory))
-  (let* ((default-directory (or directory default-directory))
-         (list-of-files (cl-remove-if-not
-                         (lambda (entry)
-                           (and (not (string-empty-p entry))
-                                (or (file-exists-p entry)
-                                    (file-symlink-p entry))))
-                         (split-string (shell-command-to-string command)
-                                       "\n"))))
-    (if (null list-of-files)
-        (message "No files return by command “%s”" command)
-      (dired (cons "Command output" list-of-files)))))
-
-(defun db/dired-from-git-annex (matching-options)
-  "Display files found by git annex with MATCHING-OPTIONS.
-This runs “git annex find” with MATCHING-OPTIONS (a string) in
-`default-directory' and displays the resulting set of files using
-`dired'."
-  (interactive (list (read-string (format "Matching Options (in %s): "
-                                          default-directory))))
-  (db/dired-from-shell-command (format "git annex find . %s" matching-options)
-                               default-directory))
-
 (defun db/system-open (path)
   "Open PATH with default program as defined by the underlying system."
   (cond
@@ -444,31 +408,6 @@ numbers allowed)."
                                                         nil ; not relevant REMOVE parameter
                                                         #'string=)))
                             string))
-
-(defun db/dired-ediff-files ()
-  "Compare marked files in Dired with ediff.
-
-From: https://oremacs.com/2017/03/18/dired-ediff/."
-  (interactive)
-  (eval-when-compile
-    (require 'ediff))
-  (let ((files (dired-get-marked-files))
-        (wnd (current-window-configuration)))
-    (if (<= (length files) 2)
-        (let ((file1 (car files))
-              (file2 (if (cdr files)
-                         (cadr files)
-                       (read-file-name
-                        "file: "
-                        (dired-dwim-target-directory)))))
-          (if (file-newer-than-file-p file1 file2)
-              (ediff-files file2 file1)
-            (ediff-files file1 file2))
-          (add-hook 'ediff-after-quit-hook-internal
-                    #'(lambda ()
-                        (setq ediff-after-quit-hook-internal nil)
-                        (set-window-configuration wnd))))
-      (error "No more than 2 files should be marked"))))
 
 (defun db/grep-read-files (_ regexp)
   "As for file pattern similar to `grep-read-files' but more direct.
@@ -605,49 +544,6 @@ quite sure whether something like this exists already?"
         (funcall entry)
       entry)))
 
-;; From https://protesilaos.com/codelog/2020-08-03-emacs-custom-functions-galore/, where it has been
-;; based on `windower' by Pierre Neidhardt (ambrevar on GitLab); pointer by
-;; https://sachachua.com/blog/2024/12/emacs-tv/
-(let (saved-window-configuration)
-  (define-minor-mode db/window-single-toggle
-    "Toggle between multiple windows and single window."
-    :lighter " Z"
-    :global nil
-    (if (one-window-p)
-        (when saved-window-configuration
-          (set-window-configuration saved-window-configuration))
-      (setq saved-window-configuration (current-window-configuration))
-      (delete-other-windows))))
-
-(defun db/list-changed-git-repositories ()
-  "List git repositories under ~ that have changed content or need pushing."
-  (interactive)
-  (with-current-buffer (get-buffer-create " *changed-git-repos*")
-    (erase-buffer)
-    (dolist (dir (directory-files-recursively (expand-file-name "~")
-                                              "\\`\\.git\\'"
-                                              :include-directories
-                                              #'(lambda (subdir)
-                                                  (and (file-accessible-directory-p subdir)
-                                                       (not (string-match "\\(\\.git\\|\\.minetest\\|\\.local/share/Trash\\)"
-                                                                          subdir))))))
-      (let* ((default-directory (file-name-directory dir))
-             (git-status (shell-command-to-string "git status -s -b"))
-             (has-uncommited-changes (string-match-p "^[^#]" git-status))
-             (needs-pushing (string-match-p "\\[ahead " git-status)))
-        (when (or has-uncommited-changes needs-pushing)
-          (insert (format "Repository at %s: " default-directory))
-          (when has-uncommited-changes
-            (insert "has uncommited changes"))
-          (when (and has-uncommited-changes needs-pushing)
-            (insert " and "))
-          (when needs-pushing
-            (insert "needs pushing"))
-          (insert "\n"))))
-    (switch-to-buffer (current-buffer))))
-
-(defalias 'check-git-repos #'db/list-changed-git-repositories) ; old name of former shell script
-
 (defhydra hydra-toggle (:color blue)
   "toggle"
   ("c" column-number-mode "column")
@@ -742,6 +638,19 @@ _h_   _l_   _o_k        _y_ank
 
       (apply #'string list-of-bytes))))
 
+(defun db/base45-decode-region (beg end)
+  "Base45-decode region between BEG and END.
+
+Replaces the region by the result of the decoding."
+  (interactive "r")
+  (let ((replace-string (db/base45-decode-string (buffer-substring-no-properties beg end))))
+    (kill-region beg end)
+    ;; Using `insert' and `insert-char' directly uses character conversion and
+    ;; may scramble bytes with the eight bit set; let's try `insert-byte'
+    ;; instead.
+    (dolist (char (string-to-list replace-string))
+      (insert-byte char 1))))
+
 (ert-deftest db/base45-decode-string--basic-tests ()
   "Test basic decoding examples."
   ;; dash is funny :)
@@ -759,19 +668,6 @@ _h_   _l_   _o_k        _y_ank
            ("VV4:97Y+AHA7MY831" "%69 VD92EX0"))
     (-lambda ((in out))
         (should (equal out (db/base45-decode-string in))))))
-
-(defun db/base45-decode-region (beg end)
-  "Base45-decode region between BEG and END.
-
-Replaces the region by the result of the decoding."
-  (interactive "r")
-  (let ((replace-string (db/base45-decode-string (buffer-substring-no-properties beg end))))
-    (kill-region beg end)
-    ;; Using `insert' and `insert-char' directly uses character conversion and
-    ;; may scramble bytes with the eight bit set; let's try `insert-byte'
-    ;; instead.
-    (dolist (char (string-to-list replace-string))
-      (insert-byte char 1))))
 
 (ert-deftest db/base45-decode-region--insert-correct-bytes ()
   "Test whether bytes are always inserted.
@@ -1031,7 +927,68 @@ already present in the current agent or not."
 
 ;;; Dired
 
+(autoload 'dired-dwim-target-directory "dired-aux")
 (declare-function dired-next-line "dired.el")
+
+;; https://emacs.stackexchange.com/questions/3089/how-can-i-create-a-dired-buffer-listing-all-open-files
+;; https://emacs.stackexchange.com/questions/2567/programmatically-insert-files-into-dired-buffer
+(defun db/dired-from-shell-command (command &optional directory)
+  "Run COMMAND in DIRECTORY and display resulting list of files via `dired’.
+
+COMMAND must be a shell command that produces a list of files as
+output, separated by \\n, when called with
+`shell-command-to-string’.  DIRECTORY defaults to
+`default-directory’."
+  (interactive "sCommand: ")
+  (when (and directory (not (directory-name-p directory)))
+    (user-error "Value for DIRECTORY is not a directory name: %s"
+                directory))
+  (let* ((default-directory (or directory default-directory))
+         (list-of-files (cl-remove-if-not
+                         (lambda (entry)
+                           (and (not (string-empty-p entry))
+                                (or (file-exists-p entry)
+                                    (file-symlink-p entry))))
+                         (split-string (shell-command-to-string command)
+                                       "\n"))))
+    (if (null list-of-files)
+        (message "No files return by command “%s”" command)
+      (dired (cons "Command output" list-of-files)))))
+
+(defun db/dired-from-git-annex (matching-options)
+  "Display files found by git annex with MATCHING-OPTIONS.
+This runs “git annex find” with MATCHING-OPTIONS (a string) in
+`default-directory' and displays the resulting set of files using
+`dired'."
+  (interactive (list (read-string (format "Matching Options (in %s): "
+                                          default-directory))))
+  (db/dired-from-shell-command (format "git annex find . %s" matching-options)
+                               default-directory))
+
+(defun db/dired-ediff-files ()
+  "Compare marked files in Dired with ediff.
+
+From: https://oremacs.com/2017/03/18/dired-ediff/."
+  (interactive)
+  (eval-when-compile
+    (require 'ediff))
+  (let ((files (dired-get-marked-files))
+        (wnd (current-window-configuration)))
+    (if (<= (length files) 2)
+        (let ((file1 (car files))
+              (file2 (if (cdr files)
+                         (cadr files)
+                       (read-file-name
+                        "file: "
+                        (dired-dwim-target-directory)))))
+          (if (file-newer-than-file-p file1 file2)
+              (ediff-files file2 file1)
+            (ediff-files file1 file2))
+          (add-hook 'ediff-after-quit-hook-internal
+                    #'(lambda ()
+                        (setq ediff-after-quit-hook-internal nil)
+                        (set-window-configuration wnd))))
+      (error "No more than 2 files should be marked"))))
 
 (defun db/dired-back-to-top ()
   "Jump to first non-trivial line in Dired."
