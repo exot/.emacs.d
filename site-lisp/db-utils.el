@@ -38,17 +38,6 @@
 
 ;;; Application Shortcuts
 
-(defun db/run-or-hide-ansi-term ()
-  "Find *ansi-term* buffer or run `ansi-term' with `explicit-shell-file-name'.
-
-If already in *ansi-term* buffer, bury it."
-  (interactive)
-  (if (string= "term-mode" major-mode)
-      (bury-buffer)
-    (if (get-buffer "*ansi-term*")
-        (switch-to-buffer "*ansi-term*")
-      (ansi-term explicit-shell-file-name))))
-
 (defun db/gnus ()
   "Switch to the `*Group*' buffer, starting `gnus' if not existent."
   (interactive)
@@ -89,42 +78,6 @@ If already in *ansi-term* buffer, bury it."
   (unless (file-exists-p db/org-default-refile-file)
     (user-error "Cannot open default refile file: file «%s» does not exist" db/org-default-refile-file))
   (find-file db/org-default-refile-file))
-
-(defun db/run-or-hide-shell (arg)
-  "Opens a shell buffer in new window if not already in one.
-
-Otherwise, closes the current shell window.
-
-The buffer's name has to start with “*shell-side*” to be recognized by
-this function.  Otherwise the current buffer is not treated as a shell
-buffer.
-
-With ARG, switch to `default-directory' of the current buffer first."
-  (interactive "P")
-  (cl-flet ((change-to-shell ()
-              (if-let ((shell-window (cl-find-if (lambda (window)
-                                                   (with-current-buffer (window-buffer window)
-                                                     (and (derived-mode-p 'shell-mode)
-                                                          (string-match-p "^\\*shell-side\\*" (buffer-name)))))
-                                                 (window-list-1))))
-                  (select-window shell-window)
-                (--if-let (display-buffer (shell (get-buffer-create "*shell-side*")))
-                    (select-window it)
-                  (error "Could not start shell (`display-buffer' returned nil)")))))
-    (if (not arg)
-        ;; toggle shell window
-        (if (and (derived-mode-p 'shell-mode)
-                 (string-match-p "^\\*shell-side\\*" (buffer-name)))
-            (bury-buffer)
-          (change-to-shell))
-
-      ;; unconditionally go to shell, and also change to cwd
-      (let ((current-dir (expand-file-name default-directory)))
-        (change-to-shell)
-        (end-of-line)
-        (comint-kill-input)
-        (insert (format "cd '%s'" current-dir))
-        (comint-send-input)))))
 
 (defun db/ement-connect ()
   "Connect to my matrix account."

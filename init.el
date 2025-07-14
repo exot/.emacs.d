@@ -458,14 +458,12 @@ split horizontally again, but this extra work should not matter much."
 
 (use-package db-utils
   :commands (endless/fill-or-unfill
-             db/run-or-hide-shell
              db/gnus
              db/org-agenda
              db/scratch
              db/find-user-init-file
              db/find-default-org-file
              db/find-default-refile-file
-             db/run-or-hide-ansi-term
              db/ement-connect
              db/hex-to-ascii
              db/text-to-hex
