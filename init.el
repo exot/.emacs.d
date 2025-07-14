@@ -2904,22 +2904,21 @@ eventuelly be set to nil, however)."
 (use-package lisp-mode
   :mode (("\\.cl\\'" . lisp-mode)
          ("\\.lisp\\'" . lisp-mode))
-  :init (setq lisp-indent-function #'lisp-indent-function))
+  :init (setq lisp-indent-function #'lisp-indent-function)
+  :config (add-hook 'lisp-data-mode-hook 'turn-on-lispy-when-available))
 
 (use-package lispy
   :ensure t
   :commands (lispy-mode)
-  :diminish lispy-mode)
+  :diminish lispy-mode
+  :config (with-eval-after-load 'lispy-tags
+            (require 'semantic)))
 
 (use-package elisp-mode
-  :config (progn
-            (add-hook 'emacs-lisp-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file)
-            (add-hook 'lisp-mode-hook 'turn-on-lispy-when-available)))
+  :config (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file))
 
 (use-package clojure-mode
-  :mode (("\\.clj\\'" . clojure-mode))
-  :config (add-hook 'clojure-mode-hook 'turn-on-lispy-when-available))
+  :mode (("\\.clj\\'" . clojure-mode)))
 
 (use-package slime
   :commands (slime slime-mode slime-connect)
@@ -2932,12 +2931,6 @@ eventuelly be set to nil, however)."
   :config   (progn
               (slime-setup '(slime-repl slime-fancy slime-autodoc))
               (add-hook 'slime-mode-hook 'slime-redirect-inferior-output)))
-
-(use-package hy-mode
-  :commands (hy-mode)
-  :config (progn
-            (add-hook 'hy-mode-hook 'turn-on-lispy-when-available)
-            (add-hook 'hy-mode-hook 'inferior-lisp)))
 
 
 ;; * Other Programming Modes
