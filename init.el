@@ -2917,9 +2917,6 @@ eventuelly be set to nil, however)."
 (use-package elisp-mode
   :config (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file))
 
-(use-package clojure-mode
-  :mode (("\\.clj\\'" . clojure-mode)))
-
 (use-package slime
   :commands (slime slime-mode slime-connect)
   :init     (setq inferior-lisp-program "sbcl --noinform --no-linedit"
