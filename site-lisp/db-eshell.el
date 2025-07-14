@@ -36,11 +36,13 @@ eshell buffer."
   (let ((current-dir (expand-file-name default-directory)))
     (cl-flet ((in-eshell-buffer-p ()
                 (and (derived-mode-p 'eshell-mode)
-                     (string-match-p "^\\*eshell-side\\*" (buffer-name)))))
+                     (string-match-p "^\\*eshell\\*" (buffer-name)))))
 
       (if (and (not arg)
                (in-eshell-buffer-p))
-          (bury-buffer)
+          (progn
+            (bury-buffer)
+            (delete-window))
 
         (unless (in-eshell-buffer-p)
           (if-let ((eshell-window (cl-find-if (lambda (window)
@@ -49,7 +51,7 @@ eshell buffer."
                                               (window-list-1))))
               (select-window eshell-window)
             ;; No running eshell found, open new one.
-            (--if-let (display-buffer (let ((eshell-buffer-name "*eshell-side*")) (eshell)))
+            (--if-let (display-buffer (let ((eshell-buffer-name "*eshell*")) (eshell)))
                 (select-window it)
               (error "Could not start eshell (`display-buffer' returned nil)"))))
 
