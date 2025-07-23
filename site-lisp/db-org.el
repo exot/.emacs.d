@@ -482,7 +482,7 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
 
 (defun db/find-parent-task ()
   ;; http://doc.norang.ca/org-mode.html#Clocking
-  "Return point of the nearest parent task, and NIL if no such task exists.
+  "Return point of the nearest parent task, and nil if no such task exists.
 
 Ignores headlines tagged with NOP or PERIODIC, as those items
 should not be clocked."
