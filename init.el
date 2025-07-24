@@ -718,6 +718,7 @@ split horizontally again, but this extra work should not matter much."
              org-password-manager-get-password-by-id
              db/org-bookmark-open
              db/org-bookmark-store-link
+             db/org-bookmark-export
              db/org-lint-invalid-bookmark-link
              db/org-lint-possible-bookmark-link))
 
@@ -1016,7 +1017,8 @@ split horizontally again, but this extra work should not matter much."
                                                                 number))))
             (org-link-set-parameters "bookmark"
 			             :follow #'db/org-bookmark-open
-			             :store #'db/org-bookmark-store-link)
+			             :store #'db/org-bookmark-store-link
+                                     :export #'db/org-bookmark-export)
             (when (eq system-type 'windows-nt)
               (org-link-set-parameters "onenote" :follow #'db/org-onenote-open)
               (org-link-set-parameters "outlook" :follow #'db/org-outlook-open))

@@ -2262,6 +2262,23 @@ PARAMS may contain the following values:
       (org-link-store-props :link (concat "bookmark:" bookmark)
 			    :description bookmark))))
 
+(defun db/org-bookmark-export (path description backend)
+  "Export Org bookmark links by resolving them to their target path.
+
+PATH denotes the bookmark name, while DESCRIPTION is the (optional)
+description of that link.  BACKEND denotes the target format for export."
+  (condition-case err
+      (let* ((bmk-target (or (bookmark-prop-get path 'location)
+                             (bookmark-prop-get path 'filename)
+                             (user-error "Cannot resolve bookmark for export: %s"
+                                         path))))
+        ;; TODO: the following might be quite heavy, as it invokes the Org parser again.  Maybe
+        ;; exporting links can be done more easily?
+        (org-export-string-as (org-link-make-string bmk-target description)
+                              backend))
+    (error (error "Error of type “%s” while exporting bookmark “%s”: “%s”"
+                  (car err) path (cadr err)))))
+
 (defun db/org-lint-invalid-bookmark-link (ast)
   "Org lint checker to verify bookmark links in AST point to known bookmarks."
   (bookmark-maybe-load-default-file)
