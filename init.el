@@ -737,100 +737,103 @@ split horizontally again, but this extra work should not matter much."
              org-entry-get)
   :commands (org-return)
   :init (progn
-          (setq org-deadline-warning-days 14
-                org-read-date-popup-calendar t
-                org-insert-heading-respect-content t
-                org-adapt-indentation nil
-                org-edit-timestamp-down-means-later t
-                org-archive-location "%s_archive.gpg::"
-                org-image-actual-width nil
-                org-imenu-depth 10
-                org-footnote-section nil
-                org-log-into-drawer "LOGBOOK"
-                org-log-reschedule 'note
-                org-log-redeadline 'note
-                org-log-refile 'note
-                org-log-note-clock-out nil
-                org-log-done 'note
-                org-clone-delete-id t
-                org-fold-catch-invisible-edits 'show-and-error
-                org-M-RET-may-split-line '((default . nil))
-                org-highlight-latex-and-related '(latex)
-                org-use-sub-superscripts '{}
-                org-src-fontify-natively t
-                org-src-preserve-indentation t
-                org-src-tab-acts-natively nil
-                org-ellipsis "↲"
-                org-fontify-done-headline nil
-                org-cycle-separator-lines 2
-                org-special-ctrl-a/e t
-                org-highlight-latex-and-related nil
-                org-attach-store-link-p 'attached
-                org-attach-auto-tag nil
-                org-bookmark-names-plist nil
-                org-goto-interface 'outline-path-completion
-                org-id-link-to-org-use-id t
+          (setopt org-deadline-warning-days 14
+                  org-read-date-popup-calendar t
+                  org-insert-heading-respect-content t
+                  org-adapt-indentation nil
+                  org-edit-timestamp-down-means-later t
+                  org-archive-location "%s_archive.gpg::"
+                  org-image-actual-width nil
+                  org-imenu-depth 10
+                  org-footnote-section nil
+                  org-log-into-drawer "LOGBOOK"
+                  org-log-reschedule 'note
+                  org-log-redeadline 'note
+                  org-log-refile 'note
+                  org-log-note-clock-out nil
+                  org-log-done 'note
+                  org-clone-delete-id t
+                  org-fold-catch-invisible-edits 'show-and-error
+                  org-fold-show-context-detail '((default . lineage)) ; reveal more context by
+                                                                      ; default, to avoid
+                                                                      ; incompletly revealed items
+                  org-M-RET-may-split-line '((default . nil))
+                  org-highlight-latex-and-related '(latex)
+                  org-use-sub-superscripts '{}
+                  org-src-fontify-natively t
+                  org-src-preserve-indentation t
+                  org-src-tab-acts-natively nil
+                  org-ellipsis "↲"
+                  org-fontify-done-headline nil
+                  org-cycle-separator-lines 2
+                  org-special-ctrl-a/e t
+                  org-highlight-latex-and-related nil
+                  org-attach-store-link-p 'attached
+                  org-attach-auto-tag nil
+                  org-bookmark-names-plist nil
+                  org-goto-interface 'outline-path-completion
+                  org-id-link-to-org-use-id t
 
-                org-blank-before-new-entry '((heading . t)
-                                             (plain-list-item . auto))
+                  org-blank-before-new-entry '((heading . t)
+                                               (plain-list-item . auto))
 
-                org-duration-format '(("y") ("w") ("d") (special . h:mm))
+                  org-duration-format '(("y") ("w") ("d") (special . h:mm))
 
-                org-treat-S-cursor-todo-selection-as-state-change nil
+                  org-treat-S-cursor-todo-selection-as-state-change nil
 
-                org-global-properties
-                '(("Effort_ALL" . "0:00 0:05 0:10 0:15 0:30 0:45 1:00 2:00 3:00 4:00 6:00 8:00"))
+                  org-global-properties
+                  '(("Effort_ALL" . "0:00 0:05 0:10 0:15 0:30 0:45 1:00 2:00 3:00 4:00 6:00 8:00"))
 
-                org-columns-default-format
-                "%80ITEM(Task) %10Effort(Effort) %10CLOCKSUM"
+                  org-columns-default-format
+                  "%80ITEM(Task) %10Effort(Effort) %10CLOCKSUM"
 
-                ;; We activate speed keys primarily to avoid invalidating headlines by accidentally
-                ;; typing non-star characters when at the start of a headline.  See
-                ;; `db/org-ignore-insert-on-headline-start'.
-                org-use-speed-commands t)
+                  ;; We activate speed keys primarily to avoid invalidating headlines by accidentally
+                  ;; typing non-star characters when at the start of a headline.  See
+                  ;; `db/org-ignore-insert-on-headline-start'.
+                  org-use-speed-commands t)
 
           ;; Keywords and Tags
 
-          (setq org-todo-keywords
-                '((sequence "TODO(t@)" "CONT(n!)" "REFINE(f!)" "|" "DONE(d@)" "CANC(c@)" "MRGD(m@)")
-                  (sequence "GOTO(g@)" "ATTN(a!)" "|" "DONE(d@)")
-                  (sequence "READ(r@)" "CONT(n!)" "|" "DONE(d@)")
-                  (sequence "DELG(e@)" "WAIT(w@)" "HOLD(h@)" "|" "CANC(c@)"))
+          (setopt org-todo-keywords
+                  '((sequence "TODO(t@)" "CONT(n!)" "REFINE(f!)" "|" "DONE(d@)" "CANC(c@)" "MRGD(m@)")
+                    (sequence "GOTO(g@)" "ATTN(a!)" "|" "DONE(d@)")
+                    (sequence "READ(r@)" "CONT(n!)" "|" "DONE(d@)")
+                    (sequence "DELG(e@)" "WAIT(w@)" "HOLD(h@)" "|" "CANC(c@)"))
 
-                org-todo-state-tags-triggers
-                '(("WAIT" ("HOLD") ("WAIT" . t))
-                  ("DELG" ("HOLD") ("WAIT" . t))
-                  ("HOLD" ("HOLD" . t) ("WAIT"))
-                  (done ("HOLD") ("WAIT"))
-                  ("TODO" ("HOLD") ("WAIT") ("DATE") ("READ"))
-                  ("READ" ("READ" . t) ("DATE") ("HOLD") ("WAIT"))
-                  ("GOTO" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
-                  ("CONT" ("DATE") ("HOLD") ("WAIT") ("READ"))
-                  ("REFINE" ("DATE") ("HOLD") ("WAIT") ("READ"))
-                  ("ATTN" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
-                  ("" ("HOLD") ("WAIT") ("DATE") ("READ")))
+                  org-todo-state-tags-triggers
+                  '(("WAIT" ("HOLD") ("WAIT" . t))
+                    ("DELG" ("HOLD") ("WAIT" . t))
+                    ("HOLD" ("HOLD" . t) ("WAIT"))
+                    (done ("HOLD") ("WAIT"))
+                    ("TODO" ("HOLD") ("WAIT") ("DATE") ("READ"))
+                    ("READ" ("READ" . t) ("DATE") ("HOLD") ("WAIT"))
+                    ("GOTO" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
+                    ("CONT" ("DATE") ("HOLD") ("WAIT") ("READ"))
+                    ("REFINE" ("DATE") ("HOLD") ("WAIT") ("READ"))
+                    ("ATTN" ("DATE" . t) ("READ") ("HOLD") ("WAIT"))
+                    ("" ("HOLD") ("WAIT") ("DATE") ("READ")))
 
-                org-tag-alist
-                '((:startgroup)
-                  ("WORK" . ?w)
-                  ("HOME" . ?h)
-                  ("FUN" . ?f)
-                  ("UNTAGGED" . ?u)
-                  (:endgroup)
-                  ("NOTE" . ?n)
-                  (:startgroup)
-                  ("PERIODIC" . ?p)
-                  ("NOP" . ?o)
-                  ("TOPIC" . ?t)
-                  ("TEMPLATE" . ?l)
-                  ("GOAL" . ?g)
-                  (:endgroup))
+                  org-tag-alist
+                  '((:startgroup)
+                    ("WORK" . ?w)
+                    ("HOME" . ?h)
+                    ("FUN" . ?f)
+                    ("UNTAGGED" . ?u)
+                    (:endgroup)
+                    ("NOTE" . ?n)
+                    (:startgroup)
+                    ("PERIODIC" . ?p)
+                    ("NOP" . ?o)
+                    ("TOPIC" . ?t)
+                    ("TEMPLATE" . ?l)
+                    ("GOAL" . ?g)
+                    (:endgroup))
 
-                org-tags-exclude-from-inheritance
-                '("NOP" "TOPIC" "GOAL")
-                org-tags-column -85
+                  org-tags-exclude-from-inheritance
+                  '("NOP" "TOPIC" "GOAL")
+                  org-tags-column -85
 
-                org-fast-tag-selection-single-key 'expert)
+                  org-fast-tag-selection-single-key 'expert)
 
           ;; Faces
 
@@ -855,25 +858,21 @@ split horizontally again, but this extra work should not matter much."
 
           ;; Refiling
 
-          (setq org-refile-targets '((org-agenda-files . (:maxlevel . 9))
-                                     (nil . (:maxlevel . 9))
-                                     (db/org-default-notes-file . (:maxlevel . 9)))
-                org-refile-use-outline-path 'buffer-name
-                org-refile-use-cache nil
-                org-refile-allow-creating-parent-nodes 'confirm
-                org-indirect-buffer-display 'current-window
-                org-outline-path-complete-in-steps nil
-                org-refile-target-verify-function 'db/verify-refile-target)
+          (setopt org-refile-targets '((org-agenda-files . (:maxlevel . 9))
+                                       (nil . (:maxlevel . 9))
+                                       (db/org-default-notes-file . (:maxlevel . 9)))
+                  org-refile-use-outline-path 'buffer-name
+                  org-refile-use-cache nil
+                  org-refile-allow-creating-parent-nodes 'confirm
+                  org-indirect-buffer-display 'current-window
+                  org-outline-path-complete-in-steps nil
+                  org-refile-target-verify-function 'db/verify-refile-target)
 
           ;; Babel
 
-          (setq org-babel-load-languages '((shell . t)
-                                           (emacs-lisp . t)
-                                           (sql . t)))
-
-          ;; Show more context when revealing locations, to avoid incompletly revealed items.
-
-          (setopt org-fold-show-context-detail '((default . lineage))))
+          (setopt org-babel-load-languages '((shell . t)
+                                             (emacs-lisp . t)
+                                             (sql . t))))
 
   :config (progn
 
