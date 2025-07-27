@@ -773,6 +773,8 @@ split horizontally again, but this extra work should not matter much."
                   org-bookmark-names-plist nil
                   org-goto-interface 'outline-path-completion
                   org-id-link-to-org-use-id t
+                  org-return-follows-link t
+                  org-hide-emphasis-markers t
 
                   org-blank-before-new-entry '((heading . t)
                                                (plain-list-item . auto))
