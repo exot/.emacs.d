@@ -2390,10 +2390,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package helm
   :ensure t
-  :bind (:map helm-command-map
-              ("#" . helm-emms))
-  :init (setopt helm-command-prefix-key "C-c h" ; see `db/run-init' for explicit binding
-                ))
+  :init (setopt helm-command-prefix-key nil))
 
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
@@ -3074,6 +3071,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C-c c" #'org-capture)
   (bind-key "C-c d" #'define-word-at-point)
   (bind-key "C-c e" #'crux-eval-and-replace)
+  (bind-key "C-c h #" #'helm-emms)
   (bind-key "C-c i" #'ispell-change-dictionary)
   (bind-key "C-c j" #'avy-goto-char-timer)
   (bind-key "C-c l" #'org-store-link)
