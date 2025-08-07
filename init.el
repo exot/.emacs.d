@@ -1556,7 +1556,8 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'prog-mode-hook 'hl-line-mode)
             (add-hook 'prog-mode-hook 'page-break-lines-mode)
             (add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
-            (add-hook 'prog-mode-hook #'(lambda () (setq show-trailing-whitespace t)))))
+            (add-hook 'prog-mode-hook #'(lambda () (setq show-trailing-whitespace t)))
+            (add-hook 'prog-mode-hook 'outline-minor-mode)))
 
 (use-package diff-hl
   :ensure t
