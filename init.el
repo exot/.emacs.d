@@ -2463,6 +2463,7 @@ Note that this workaround is incomplete, as explained in this comment."
              consult-mark
              consult-yank-pop
              consult-outline)
+  :autoload (consult--multi)
   :init (progn
           ;; Settings taken from https://protesilaos.com/emacs/dotemacs#h:22e97b4c-d88d-4deb-9ab3-f80631f9ff1d
           (setq consult-line-numbers-widen t
@@ -2487,39 +2488,37 @@ Note that this workaround is incomplete, as explained in this comment."
 
 ;; * Navigation
 
-(defun db/helm-shortcuts (arg)
-  "Open helm completion on common locations.
-
-With universal argument ARG, inhibit display of files in
-`db/important-document-path’.  This might be helpful when loading
-is too slow (in this case, `db/important-document-path' should
-eventuelly be set to nil, however)."
-  (interactive "P")
-  (helm :sources (list
-                  (helm-make-source "Frequently Used" 'helm-source-sync
-                    :candidates (mapcar #'(lambda (entry)
-                                            (cons (car entry)
-                                                  (caddr entry)))
-                                        db/frequently-used-features)
-                    :action '(("Open" . call-interactively)))
-
-                  helm-source-bookmarks
-
-                  ;; If no prefix arg is given, extract files from
-                  ;; `db/important-documents-path’ and list them as well
-                  (when (and (not arg)
-                             (file-directory-p db/important-documents-path))
-                    (let ((search-path (expand-file-name db/important-documents-path)))
-                      (helm-make-source "Important files" 'helm-source-sync
-                        :candidates (mapcar #'(lambda (file)
-                                                ;; Display only relative path,
-                                                ;; but keep absolute path for
-                                                ;; actions
-                                                (cons (string-remove-prefix search-path file)
-                                                      file))
-                                            (directory-files-recursively search-path ""))
-                        :action '(("Open externally" . db/system-open)
-                                  ("Find file" . find-file))))))))
+(defun db/shortcuts ()
+  "Open helm completion on common locations."
+  (interactive)
+  (let (sources)
+    (push (list :name "Frequently Used"
+                :items (mapcar #'(lambda (entry)
+                                   (cons (car entry)
+                                         (caddr entry)))
+                               db/frequently-used-features)
+                :annotate #'(lambda (_) "")
+                :action #'call-interactively)
+          sources)
+    (push 'consult--source-bookmark
+          sources)
+    (when (file-directory-p db/important-documents-path)
+      (let ((search-path (expand-file-name db/important-documents-path)))
+        (push (list :name "Important Files"
+                    :narrow ?f
+                    :items (mapcar #'(lambda (file)
+                                       ;; Display only relative path,
+                                       ;; but keep absolute path for
+                                       ;; actions
+                                       (cons (string-remove-prefix search-path file)
+                                             file))
+                                   (directory-files-recursively search-path ""))
+                    :annotate #'(lambda (_) "")
+                    :action #'db/system-open)
+              sources)))
+    (consult--multi (nreverse sources)
+                    :require-match t
+                    :sort nil)))
 
 (use-package ace-window
   :ensure t
@@ -3174,7 +3173,7 @@ eventuelly be set to nil, however)."
   (bind-key "C-x C-j" #'dired-jump)
   (bind-key "C-x C-r" #'revert-buffer)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
-  (bind-key "C-x g" #'db/helm-shortcuts)
+  (bind-key "C-x g" #'db/shortcuts)
   (bind-key "C-x r E" #'db/bookmark-add-external)
   (bind-key "C-x r M" #'db/bookmark-add-url)
   (bind-key "C-x r v" #'list-registers)
