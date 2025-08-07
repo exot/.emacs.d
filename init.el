@@ -3033,13 +3033,6 @@ Note that this workaround is incomplete, as explained in this comment."
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
-  ;; This causes inacceptable lag when drawing buffers, so disable it for now.
-  ;; Needs to be investigated further.
-
-  ;; (with-demoted-errors "Cannot activate moody: %s"
-  ;;   (moody-replace-mode-line-buffer-identification)
-  ;;   (moody-replace-vc-mode))
-
   (with-demoted-errors "Cannot activate `vlf': %s"
     (require 'vlf-setup))
 
@@ -3135,7 +3128,6 @@ Note that this workaround is incomplete, as explained in this comment."
     ;; separate `helm-command-prefix-key' mechanism.
     (require 'helm)
     (bind-key helm-command-prefix-key #'helm-command-prefix))
-
 
   ;; Environment Variables
 
