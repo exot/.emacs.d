@@ -30,6 +30,7 @@
 (autoload 'find-libary-name "find-func")
 (autoload 'lm-header "lisp-mnt")
 (autoload 'rectangle-exchange-point-and-mark "rect")
+(autoload 'consult--multi "consult")
 
 (declare-function w32-shell-execute "w32fns.c")
 (declare-function org-password-manager-get-password-by-id nil)
@@ -87,6 +88,38 @@
       (user-error "No pass entry for Matrix password at “%s”" db/matrix-password-store-entry))
     (ement-connect :user-id db/matrix-user-id
                    :password password)))
+
+(defun db/shortcuts ()
+  "Open helm completion on common locations."
+  (interactive)
+  (let (sources)
+    (push (list :name "Frequently Used"
+                :items (mapcar #'(lambda (entry)
+                                   (cons (car entry)
+                                         (caddr entry)))
+                               db/frequently-used-features)
+                :annotate #'(lambda (_) "")
+                :action #'call-interactively)
+          sources)
+    (push 'consult--source-bookmark
+          sources)
+    (when (file-directory-p db/important-documents-path)
+      (let ((search-path (expand-file-name db/important-documents-path)))
+        (push (list :name "Important Files"
+                    :narrow ?f
+                    :items (mapcar #'(lambda (file)
+                                       ;; Display only relative path,
+                                       ;; but keep absolute path for
+                                       ;; actions
+                                       (cons (string-remove-prefix search-path file)
+                                             file))
+                                   (directory-files-recursively search-path ""))
+                    :annotate #'(lambda (_) "")
+                    :action #'db/system-open)
+              sources)))
+    (consult--multi (nreverse sources)
+                    :require-match t
+                    :sort nil)))
 
 
 ;;; General Utilities

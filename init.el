@@ -465,6 +465,7 @@ split horizontally again, but this extra work should not matter much."
              db/find-default-org-file
              db/find-default-refile-file
              db/ement-connect
+             db/shortcuts
              db/hex-to-ascii
              db/text-to-hex
              turn-on-lispy-when-available
@@ -2487,38 +2488,6 @@ Note that this workaround is incomplete, as explained in this comment."
 
 
 ;; * Navigation
-
-(defun db/shortcuts ()
-  "Open helm completion on common locations."
-  (interactive)
-  (let (sources)
-    (push (list :name "Frequently Used"
-                :items (mapcar #'(lambda (entry)
-                                   (cons (car entry)
-                                         (caddr entry)))
-                               db/frequently-used-features)
-                :annotate #'(lambda (_) "")
-                :action #'call-interactively)
-          sources)
-    (push 'consult--source-bookmark
-          sources)
-    (when (file-directory-p db/important-documents-path)
-      (let ((search-path (expand-file-name db/important-documents-path)))
-        (push (list :name "Important Files"
-                    :narrow ?f
-                    :items (mapcar #'(lambda (file)
-                                       ;; Display only relative path,
-                                       ;; but keep absolute path for
-                                       ;; actions
-                                       (cons (string-remove-prefix search-path file)
-                                             file))
-                                   (directory-files-recursively search-path ""))
-                    :annotate #'(lambda (_) "")
-                    :action #'db/system-open)
-              sources)))
-    (consult--multi (nreverse sources)
-                    :require-match t
-                    :sort nil)))
 
 (use-package ace-window
   :ensure t
