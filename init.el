@@ -2420,8 +2420,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
             (if (require 'helm-global-bindings nil :no-error)
                 (progn
-                  (bind-key "#" #'helm-emms helm-command-map)
-                  (bind-key "P" #'helm-pages helm-command-map))
+                  (bind-key "#" #'helm-emms helm-command-map))
               (warn (concat
                      "Cannot load `helm-global-bindings', please check your helm installation for completeness. "
                      "(Have you installed it from melpa?)")))))
@@ -2538,10 +2537,6 @@ Note that this workaround is incomplete, as explained in this comment."
   :init (progn
           (setq dumb-jump-selector 'helm)
           (add-hook 'xref-backend-functions #'dumb-jump-xref-activate)))
-
-(use-package helm-pages
-  :ensure t
-  :commands (helm-pages))
 
 (use-package imenu
   :init (setq imenu-use-markers t
