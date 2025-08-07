@@ -2511,8 +2511,6 @@ eventuelly be set to nil, however)."
 
                   helm-source-bookmarks
 
-                  (helm-make-source "Buffers" 'helm-source-buffers)
-
                   ;; If no prefix arg is given, extract files from
                   ;; `db/important-documents-path’ and list them as well
                   (when (and (not arg)
