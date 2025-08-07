@@ -298,6 +298,12 @@
 (use-package man
   :init (setopt Man-switches "-a"))
 
+(use-package minibuffer
+  :bind (:map minibuffer-mode-map
+              ("M-r" . consult-history)
+              ("C-r" . consult-history))
+  :hook (minibuffer-setup . cursor-intangible-mode))
+
 (use-package multisession
   :init (setq multisession-directory (expand-file-name "multisession/" emacs-d-userdata)))
 
@@ -3038,7 +3044,6 @@ Note that this workaround is incomplete, as explained in this comment."
 
   ;; Global Hooks (XXX: should be moved outside of this init function)
 
-  (add-hook 'minibuffer-setup-hook 'cursor-intangible-mode)
   (add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
 
   ;; Top-Level Keybindings
@@ -3109,9 +3114,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "M-g i" #'consult-imenu)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
   (bind-key "M-z" #'zap-up-to-char)
-
-  (bind-key "M-r" #'consult-history minibuffer-mode-map)
-  (bind-key "C-r" #'consult-history minibuffer-mode-map)
 
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
   (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
