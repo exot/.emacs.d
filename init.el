@@ -20,7 +20,7 @@
 ;;; Code:
 
 
-;; * Preliminaries (constants and path settings)
+;;* Preliminaries (constants and path settings)
 
 (when (version< emacs-version "30")
   (error "Emacs version is too old!  We need at least Emacs 30, but this is %s"
@@ -47,7 +47,7 @@
   "Non-nil if and only if this instance of Emacs runs on Windows.")
 
 
-;; * Packages
+;;* Packages
 
 (defvar use-package-enable-imenu-support t)
 
@@ -74,7 +74,7 @@
             (add-to-list 'package-pinned-packages '(bind-key . "melpa-stable"))))
 
 
-;; * Personal Customization Variables
+;;* Personal Customization Variables
 
 (use-package db-customize
   :demand t
@@ -96,7 +96,7 @@
   :autoload (db/frequently-used-features-prefix))
 
 
-;; * Core Configuration
+;;* Core Configuration
 
 (use-package cl-lib
   :demand t)
@@ -439,7 +439,7 @@ split horizontally again, but this extra work should not matter much."
   :commands (winner-mode winner-undo winner-redo))
 
 
-;; * Basic External Packages
+;;* Basic External Packages
 
 (use-package crux
   :ensure t
@@ -534,7 +534,7 @@ split horizontally again, but this extra work should not matter much."
                                                       emacs-d-userdata)))
 
 
-;; * Text editing
+;;* Text editing
 
 (setq sentence-end-double-space t)
 
@@ -668,7 +668,7 @@ split horizontally again, but this extra work should not matter much."
   :config (yas-reload-all))
 
 
-;; * Org
+;;* Org
 
 (use-package db-org
   :commands (db/org-clock-out
@@ -1539,7 +1539,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C-c n l" #'org-roam-buffer-toggle org-mode-map))
 
 
-;; * General Programming
+;;* General Programming
 
 ;; Configuration that pertains to programming in general, without referring to
 ;; any programming language in particular.
@@ -1687,7 +1687,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :init (setopt vc-git-diff-switches '("--histogram")))
 
 
-;; * Mail
+;;* Mail
 
 (use-package db-mail
   :commands (db/smtpmail-send-it
@@ -2097,7 +2097,7 @@ Note that this workaround is incomplete, as explained in this comment."
               smtpmail-debug-info t))
 
 
-;; * Crypto
+;;* Crypto
 
 (use-package nsm
   :init (setq network-security-level 'high
@@ -2126,7 +2126,7 @@ Note that this workaround is incomplete, as explained in this comment."
              org-password-manager-get-password))
 
 
-;; * Appearance
+;;* Appearance
 
 (setq-default cursor-type 'bar
               cursor-in-non-selected-windows nil
@@ -2179,7 +2179,7 @@ Note that this workaround is incomplete, as explained in this comment."
               shr-width (current-fill-column)))
 
 
-;; * File Handling
+;;* File Handling
 
 (setq large-file-warning-threshold 10000000
       delete-by-moving-to-trash t)
@@ -2366,7 +2366,7 @@ Note that this workaround is incomplete, as explained in this comment."
              dired-w32explore))
 
 
-;; * Completion
+;;* Completion
 
 (setopt suggest-key-bindings t
         extended-command-suggest-shorter t
@@ -2450,7 +2450,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (global-corfu-mode corfu-mode))
 
 
-;; * Navigation
+;;* Navigation
 
 (use-package ace-window
   :ensure t
@@ -2528,7 +2528,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :init (setq reb-re-syntax 'string))
 
 
-;; * Media
+;;* Media
 
 (use-package db-music
   :init (setq db/auto-playlist-file-function
@@ -2660,7 +2660,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :init (setq image-use-external-converter t))
 
 
-;; * Shells and Shell Scripting
+;;* Shells and Shell Scripting
 
 (use-package comint
   :init (setq comint-scroll-to-bottom-on-input t
@@ -2820,7 +2820,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :config (add-hook 'sh-mode-hook #'eglot-ensure))
 
 
-;; * Lisp
+;;* Lisp
 
 (use-package lisp-mode
   :mode (("\\.cl\\'" . lisp-mode)
@@ -2851,7 +2851,7 @@ Note that this workaround is incomplete, as explained in this comment."
               (add-hook 'slime-mode-hook 'slime-redirect-inferior-output)))
 
 
-;; * Other Programming Modes
+;;* Other Programming Modes
 
 (use-package cperl-mode
   :ensure t
@@ -2920,7 +2920,7 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'pyvenv-post-activate-hooks #'pyvenv-restart-python)))
 
 
-;; * Other Mode Configurations
+;;* Other Mode Configurations
 
 (use-package define-word
   :ensure t
@@ -2973,7 +2973,7 @@ Note that this workaround is incomplete, as explained in this comment."
              timeline-tools-clockline-no-org-agenda-conflicts))
 
 
-;; * Load customizations
+;;* Load customizations
 
 ;; We do this late in init.el to really make sure that whatever happened previously can be
 ;; overwritten by user customizations.  This might not be strictly necessary, as
@@ -2985,7 +2985,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (load-file custom-file))
 
 
-;; * Actual Mode Activation
+;;* Actual Mode Activation
 
 (defun db/run-init ()
   "Run main initialization after everything is set up."
