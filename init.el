@@ -1385,13 +1385,7 @@ accordingly."
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
                               "\n%a%?")
                      :empty-lines-before 1
-                     :empty-lines-after 1)))
-  :config (progn
-            ;; disable usage of helm for `org-capture'
-            (with-eval-after-load 'helm-mode
-              (defvar helm-completing-read-handlers-alist) ; for the byte compiler
-              (add-to-list 'helm-completing-read-handlers-alist
-                           '(org-capture . nil)))))
+                     :empty-lines-after 1))))
 
 ;; Babel
 
