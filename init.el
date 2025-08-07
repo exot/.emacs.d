@@ -2383,47 +2383,10 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package helm
   :ensure t
-  :diminish helm-mode
-  :bind (:map helm-map
-         ("<tab>" . helm-execute-persistent-action)
-         ("C-i"   . helm-execute-persistent-action)
-         ("C-z"   . helm-select-action))
-  :autoload (helm-make-source)
-  :commands (helm-show-kill-ring)
-  :defines (helm-source-bookmarks)            ; via helm-bookmarks.el
-  :init (setq helm-command-prefix-key "C-c h" ; see `db/run-init' for explicit binding
-              helm-input-idle-delay 0.0
-              helm-buffers-fuzzy-matching t
-              helm-autoresize-min-height 20
-              helm-ff-auto-update-initial-value t
-              helm-ff-file-name-history-use-recentf t
-              helm-ff-search-library-in-sexp t
-              helm-ff-skip-boring-files nil
-              helm-split-window-inside-p t
-              helm-move-to-line-cycle-in-source nil
-              helm-scroll-amount nil
-              helm-locate-command nil
-              helm-candidate-number-limit 100
-              helm-follow-mode-persistent t
-              helm-buffer-details-flag t
-              helm-buffer-skip-remote-checking t
-              helm-mode-no-completion-in-region-in-modes '(eshell-mode)
-              helm-kill-ring-threshold 0 ; include all yanks in the kill ring
-              )
-  :config (progn
-            (eval-when-compile
-              (require 'helm-mode)
-              (require 'helm-buffers)
-              (require 'helm-ring)
-              (require 'helm-source)
-              (require 'helm-bookmark))
-
-            (if (require 'helm-global-bindings nil :no-error)
-                (progn
-                  (bind-key "#" #'helm-emms helm-command-map))
-              (warn (concat
-                     "Cannot load `helm-global-bindings', please check your helm installation for completeness. "
-                     "(Have you installed it from melpa?)")))))
+  :bind (:map helm-command-map
+              ("#" . helm-emms))
+  :init (setopt helm-command-prefix-key "C-c h" ; see `db/run-init' for explicit binding
+                ))
 
 (use-package recentf
   :commands (recentf-mode recentf-save-list)
