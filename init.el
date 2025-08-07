@@ -2389,7 +2389,6 @@ Note that this workaround is incomplete, as explained in this comment."
         completion-in-region-function #'consult-completion-in-region)
 
 (use-package helm
-  :ensure t
   :init (setopt helm-command-prefix-key nil))
 
 (use-package recentf
