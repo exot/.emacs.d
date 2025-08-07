@@ -170,13 +170,6 @@ formatting."
             (if (zerop (user-uid)) "#" "$")
             (propertize " " 'face '(:weight bold)))))
 
-(defun eshell-insert-history ()
-  "Displays the eshell history to select and insert back into your eshell."
-  ;; directly taken from Howard Abrams
-  (interactive)
-  (insert (completing-read "Eshell history: "
-                           (seq-uniq (ring-elements eshell-history-ring)))))
-
 
 ;; Git Completion
 ;; https://tsdh.wordpress.com/2013/05/31/eshell-completion-for-git-bzr-and-hg/

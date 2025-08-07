@@ -2368,18 +2368,19 @@ Note that this workaround is incomplete, as explained in this comment."
 
 ;; * Completion
 
-(setq suggest-key-bindings t
-      extended-command-suggest-shorter t
-      completions-detailed t
-      completion-cycle-threshold nil
-      completion-styles '(basic orderless)
-      completion-category-defaults nil
-      ;; Via https://protesilaos.com/emacs/dotemacs, with additional changes
-      completion-category-overrides '((file (styles . (basic partial-completion orderless)))
-                                      (buffer (styles . (orderless)))
-                                      (bookmark (styles . (orderless)))
-                                      (imenu (styles . (basic substring orderless)))
-                                      (kill-ring (styles . (emacs22 orderless)))))
+(setopt suggest-key-bindings t
+        extended-command-suggest-shorter t
+        completions-detailed t
+        completion-cycle-threshold nil
+        completion-styles '(basic orderless)
+        completion-category-defaults nil
+        ;; Via https://protesilaos.com/emacs/dotemacs, with additional changes
+        completion-category-overrides '((file (styles . (basic partial-completion orderless)))
+                                        (buffer (styles . (orderless)))
+                                        (bookmark (styles . (orderless)))
+                                        (imenu (styles . (basic substring orderless)))
+                                        (kill-ring (styles . (emacs22 orderless))))
+        completion-in-region-function #'consult-completion-in-region)
 
 (use-package helm
   :ensure t
@@ -2716,7 +2717,6 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (db/run-or-hide-eshell
              eshell-clear-buffer
              eshell/default-prompt-function
-             eshell-insert-history
              pcomplete/git))
 
 (use-package eshell
@@ -2740,7 +2740,7 @@ Note that this workaround is incomplete, as explained in this comment."
          ("M-P" . eshell-previous-prompt)
          ("M-N" . eshell-next-prompt)
          :map eshell-hist-mode-map
-         ("M-r" . eshell-insert-history))
+         ("M-r" . consult-history))
 
   :config (progn
 
@@ -3095,12 +3095,14 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C-h C-k" #'find-function-on-key)
   (bind-key "C-h C-v" #'find-variable)
   (bind-key "C-x 4 C-j" #'dired-jump-other-window)
+  (bind-key "C-x b" #'consult-buffer)
   (bind-key "C-x C-b" #'ibuffer)
   (bind-key "C-x C-d" #'dired)
   (bind-key "C-x C-j" #'dired-jump)
   (bind-key "C-x C-r" #'revert-buffer)
   (bind-key "C-x SPC" #'hydra-rectangle/body)
   (bind-key "C-x g" #'db/shortcuts)
+  (bind-key "C-x o" #'ace-window)
   (bind-key "C-x r E" #'db/bookmark-add-external)
   (bind-key "C-x r M" #'db/bookmark-add-url)
   (bind-key "C-x r v" #'list-registers)
@@ -3111,14 +3113,22 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "M-Z" #'zap-to-char)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
   (bind-key "M-z" #'zap-up-to-char)
+  (bind-key "M-g i" #'consult-imenu)
+  (bind-key "M-g g" #'avy-goto-line)
+  (bind-key "M-g M-g" #'avy-goto-line)
+
+  (bind-key "M-r" #'consult-history minibuffer-mode-map)
+  (bind-key "C-r" #'consult-history minibuffer-mode-map)
+
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
   (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
+  (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
+  (bind-key [remap open-line] #'crux-smart-open-line-above)
+
   (unbind-key "<insert>" global-map)
   (unbind-key "<kp-insert>" global-map)
-  (unbind-key "C-x C-c" global-map)
+  (unbind-key "C-x C-c" global-map)     ; Quit emacs by calling `save-buffers-kill-emacs' directly
   (unbind-key "M-o" global-map)
-
-  ;; Overwrite certain keybindings only if packages are avilable
 
   (when (package-installed-p 'helm)
     ;; Explicitly require helm, because autoloading is difficult with helm's
@@ -3126,24 +3136,6 @@ Note that this workaround is incomplete, as explained in this comment."
     (require 'helm)
     (bind-key helm-command-prefix-key #'helm-command-prefix))
 
-  (when (package-installed-p 'crux)
-    (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
-    (bind-key [remap open-line] #'crux-smart-open-line-above))
-
-  (when (package-installed-p 'ace-window)
-    (bind-key "C-x o" #'ace-window))
-
-  (when (package-installed-p 'avy)
-    (bind-key "M-g M-g" #'avy-goto-line)
-    (bind-key "M-g g" #'avy-goto-line))
-
-  (when (package-installed-p 'consult)
-    (bind-key "M-g i" #'consult-imenu)
-    (bind-key "C-x b" #'consult-buffer)
-    (setq completion-in-region-function #'consult-completion-in-region)
-    (bind-key "M-r" #'consult-history eshell-hist-mode-map)
-    (bind-key "M-r" #'consult-history minibuffer-mode-map)
-    (bind-key "C-r" #'consult-history minibuffer-mode-map))
 
   ;; Environment Variables
 
