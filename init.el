@@ -3123,12 +3123,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (unbind-key "C-x C-c" global-map)     ; Quit emacs by calling `save-buffers-kill-emacs' directly
   (unbind-key "M-o" global-map)
 
-  (when (package-installed-p 'helm)
-    ;; Explicitly require helm, because autoloading is difficult with helm's
-    ;; separate `helm-command-prefix-key' mechanism.
-    (require 'helm)
-    (bind-key helm-command-prefix-key #'helm-command-prefix))
-
   ;; Environment Variables
 
   (unless on-windows
