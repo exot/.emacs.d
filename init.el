@@ -2424,6 +2424,7 @@ Note that this workaround is incomplete, as explained in this comment."
              consult-keep-lines
              consult-focus-lines
              consult-buffer
+             consult-outline
              consult-imenu
              consult-line
              consult-line-thing-at-point
@@ -3072,6 +3073,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C-c d" #'define-word-at-point)
   (bind-key "C-c e" #'crux-eval-and-replace)
   (bind-key "C-c h #" #'helm-emms)
+  (bind-key "C-c h P" #'consult-outline)
   (bind-key "C-c i" #'ispell-change-dictionary)
   (bind-key "C-c j" #'avy-goto-char-timer)
   (bind-key "C-c l" #'org-store-link)
