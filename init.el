@@ -319,7 +319,7 @@
   :init (setopt project-list-file (expand-file-name "projects" emacs-d-userdata)
                 project-switch-commands 'project-eshell
                 project-vc-merge-submodules nil
-                project-mode-line t)
+                project-mode-line nil)
   :config (progn
 
             ;; Sort known projects before persisting, to reduce committer noise
