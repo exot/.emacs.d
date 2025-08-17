@@ -741,7 +741,8 @@ split horizontally again, but this extra work should not matter much."
   :pin "gnu"
   :bind (:map org-mode-map
               ([remap org-return] . (lambda () (interactive) (org-return :indent)))
-              ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox))
+              ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox)
+              ([remap org-goto] . consult-org-heading))
   :autoload (org-get-todo-state
              org-entry-get)
   :commands (org-return)
