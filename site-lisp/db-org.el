@@ -498,7 +498,8 @@ Also note that the usual variables governing the behavior of
                (db/org-get-location t nil (concat prompt " "))))) ; TODO: incorporate verify function
     (list (buffer-name (marker-buffer pom))
           (buffer-file-name (marker-buffer pom))
-          ""                            ; some regexp matching the headline?
+          ;; The third entry is some regexp matching the headline, apparently?
+          (format org-complex-heading-regexp-format (org-entry-get pom "ITEM"))
           (marker-position pom))))
 
 
