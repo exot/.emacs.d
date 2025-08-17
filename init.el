@@ -3073,6 +3073,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C-c d" #'define-word-at-point)
   (bind-key "C-c e" #'crux-eval-and-replace)
   (bind-key "C-c h #" #'helm-emms)
+  (bind-key "C-c h m" #'man)
   (bind-key "C-c h p" #'list-processes)
   (bind-key "C-c h P" #'consult-outline)
   (bind-key "C-c i" #'ispell-change-dictionary)
