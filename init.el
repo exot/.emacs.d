@@ -947,14 +947,7 @@ split horizontally again, but this extra work should not matter much."
               (org-agenda-redo-all))
 
             ;; Inhibit direct input when point is at the beginning of a headline.
-            (add-to-list 'org-speed-command-hook 'db/org-ignore-insert-on-headline-start)
-
-            ;; Use consult for querying refile targets
-            (define-advice org-refile-get-location (:around
-                                                    (orig-func &optional prompt default-buffer new-nodes)
-                                                    use-consult-instead)
-              (ignore orig-func)
-              (db/org-refile-get-location prompt default-buffer new-nodes))))
+            (add-to-list 'org-speed-command-hook 'db/org-ignore-insert-on-headline-start)))
 
 (use-package org-cycle
   :autoload (org-cycle-hide-drawers)
