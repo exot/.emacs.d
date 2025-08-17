@@ -495,7 +495,10 @@ Also note that the usual variables governing the behavior of
   (when new-nodes
     (warn "Cannot create new nodes (yet) with consult interface for `org-refile'"))
   (let ((pom (with-current-buffer (or default-buffer (current-buffer))
-               (db/org-get-location t nil (concat prompt " "))))) ; TODO: incorporate verify function
+               (db/org-get-location t nil (concat prompt " "))))) ; TODO: incorporate verify
+                                                                  ; function, use direct call to
+                                                                  ; consult--read for this and
+                                                                  ; replace the :predicate key?
     (list (buffer-name (marker-buffer pom))
           (buffer-file-name (marker-buffer pom))
           ;; The third entry is some regexp matching the headline, apparently?
