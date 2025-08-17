@@ -480,7 +480,7 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
    ;; any agenda when a super-item is tagged with :HOLD:.
    (not (member "HOLD" (org-get-tags (point))))))
 
-(defun db/org-refile-get-location (prompt default-buffer new-nodes)
+(defun db/org-refile-get-location (&optional prompt default-buffer new-nodes)
   "Replacement function for `org-refile-get-location' using `consult'.
 
 This function can be used instead of `org-refile-get-location',

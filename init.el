@@ -953,7 +953,7 @@ split horizontally again, but this extra work should not matter much."
 
             ;; Use consult for querying refile targets
             (define-advice org-refile-get-location (:around
-                                                    (orig-func prompt default-buffer new-nodes)
+                                                    (orig-func &optional prompt default-buffer new-nodes)
                                                     use-consult-instead)
               (ignore orig-func)
               (db/org-refile-get-location prompt default-buffer new-nodes))))
