@@ -1911,7 +1911,7 @@ linking to any item."
                   (consult--read (consult--slow-operation "Collecting headings..."
                                    (or (consult-org--headings t nil scope)
                                        (user-error "No headings")))
-                                 :prompt "Go to heading: "
+                                 :prompt "Choose heading: "
                                  :category 'org-heading
                                  :sort nil
                                  :initial initial-input
