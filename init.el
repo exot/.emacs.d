@@ -727,7 +727,8 @@ split horizontally again, but this extra work should not matter much."
              db/org-bookmark-store-link
              db/org-bookmark-export
              db/org-lint-invalid-bookmark-link
-             db/org-lint-possible-bookmark-link))
+             db/org-lint-possible-bookmark-link
+             db/org-get-location))
 
 ;; This is to make the byte-compiler happy about setting some variables later on
 ;; that are defined in those packages.
