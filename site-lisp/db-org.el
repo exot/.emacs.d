@@ -1907,20 +1907,21 @@ linking to any item."
                         (t
                          (list (buffer-file-name default-buffer)))))
 
-           (pom (consult--read (consult--slow-operation "Collecting headings..."
-                                 (or (consult-org--headings nil nil scope)
-                                     (user-error "No headings")))
-                               :prompt "Go to heading: "
-                               :category 'org-heading
-                               :sort nil
-                               :initial initial-input
-                               :require-match t
-                               :history '(:input consult-org--history)
-                               :narrow (consult-org--narrow)
-                               :annotate #'consult-org--annotate
-                               :group #'consult-org--group
-                               :lookup (apply-partially #'consult--lookup-prop 'org-marker)
-                               :preview-key nil)))
+           (pom (with-current-buffer default-buffer
+                  (consult--read (consult--slow-operation "Collecting headings..."
+                                   (or (consult-org--headings nil nil scope)
+                                       (user-error "No headings")))
+                                 :prompt "Go to heading: "
+                                 :category 'org-heading
+                                 :sort nil
+                                 :initial initial-input
+                                 :require-match t
+                                 :history '(:input consult-org--history)
+                                 :narrow (consult-org--narrow)
+                                 :annotate #'consult-org--annotate
+                                 :group #'consult-org--group
+                                 :lookup (apply-partially #'consult--lookup-prop 'org-marker)
+                                 :preview-key nil))))
       (if (markerp pom)
           pom
         (user-error "Invalid location")))))
