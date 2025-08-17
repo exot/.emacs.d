@@ -480,6 +480,27 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
    ;; any agenda when a super-item is tagged with :HOLD:.
    (not (member "HOLD" (org-get-tags (point))))))
 
+(defun db/org-refile-get-location (prompt default-buffer new-nodes)
+  "Replacement function for `org-refile-get-location' using `consult'.
+
+This function can be used instead of `org-refile-get-location',
+e.g. using `define-advice'.  The parameters PROMPT, DEFAULT-BUFFER, and
+NEW-NODES have the same meaning.  However, setting NEW-NODES to a
+non-nil value will result in a warning, as creating new headlings is not
+supported with this function.
+
+Also note that the usual variables governing the behavior of
+`org-refile' do not have any effect here.  In particular,
+`org-refile-verify-target-function' is not (yet) considered."
+  (when new-nodes
+    (warn "Cannot create new nodes (yet) with consult interface for `org-refile'"))
+  (let ((pom (with-current-buffer (or default-buffer (current-buffer))
+               (db/org-get-location t nil (concat prompt " "))))) ; TODO: incorporate verify function
+    (list (buffer-name (marker-buffer pom))
+          (buffer-file-name (marker-buffer pom))
+          ""                            ; some regexp matching the headline?
+          (marker-position pom))))
+
 
 ;;; Helper Functions for Clocking
 

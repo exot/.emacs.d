@@ -703,6 +703,7 @@ split horizontally again, but this extra work should not matter much."
              db/org-clock-goto-first-open-checkbox)
   :autoload (db/check-special-org-files-in-agenda
              db/verify-refile-target
+             db/org-refile-get-location
              db/find-parent-task
              db/ensure-running-clock
              db/save-current-org-task-to-file
@@ -948,7 +949,14 @@ split horizontally again, but this extra work should not matter much."
               (org-agenda-redo-all))
 
             ;; Inhibit direct input when point is at the beginning of a headline.
-            (add-to-list 'org-speed-command-hook 'db/org-ignore-insert-on-headline-start)))
+            (add-to-list 'org-speed-command-hook 'db/org-ignore-insert-on-headline-start)
+
+            ;; Use consult for querying refile targets
+            (define-advice org-refile-get-location (:around
+                                                    (orig-func prompt default-buffer new-nodes)
+                                                    use-consult-instead)
+              (ignore orig-func)
+              (db/org-refile-get-location prompt default-buffer new-nodes))))
 
 (use-package org-cycle
   :autoload (org-cycle-hide-drawers)
