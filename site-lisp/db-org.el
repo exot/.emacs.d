@@ -1909,7 +1909,7 @@ linking to any item."
 
            (pom (with-current-buffer default-buffer
                   (consult--read (consult--slow-operation "Collecting headings..."
-                                   (or (consult-org--headings nil nil scope)
+                                   (or (consult-org--headings t nil scope)
                                        (user-error "No headings")))
                                  :prompt "Go to heading: "
                                  :category 'org-heading
