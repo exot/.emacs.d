@@ -735,7 +735,6 @@ split horizontally again, but this extra work should not matter much."
 ;; that are defined in those packages.
 (use-package org-attach)
 (use-package org-id)
-(use-package org-goto)
 
 (use-package org
   :pin "gnu"
@@ -781,7 +780,6 @@ split horizontally again, but this extra work should not matter much."
                   org-attach-store-link-p 'attached
                   org-attach-auto-tag nil
                   org-bookmark-names-plist nil
-                  org-goto-interface 'outline-path-completion
                   org-id-link-to-org-use-id t
                   org-return-follows-link t
                   org-hide-emphasis-markers t
