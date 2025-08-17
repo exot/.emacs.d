@@ -1898,7 +1898,8 @@ linking to any item."
                                                            org-agenda-files)))
 
            (scope (cond (use-all-org-files
-                         (append (list (buffer-file-name default-buffer))
+                         (append (unless current-buffer-is-in-org-agenda-files? ; avoid duplicate entries
+                                   (list (buffer-file-name default-buffer)))
                                  (org-agenda-files)
                                  (cl-remove-if-not #'stringp
                                                    org-agenda-text-search-extra-files)))
