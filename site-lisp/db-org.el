@@ -1902,12 +1902,7 @@ always considered to be one large data collection).
 When USE-ALL-ORG-FILES is non-nil, search through all files in
 the variables `org-agenda-files',
 `org-agenda-text-search-extra-files', and the current file or
-`db/org-default-org-file' as described above.
-
-Search is always conducted up to level 9.  If the selected
-location does not have an associated point or mark, error out.
-Disable refile cache and any active refile filter hooks to allow
-linking to any item."
+`db/org-default-org-file' as described above."
   (let ((default-buffer (if (and (buffer-file-name) (derived-mode-p 'org-mode))
                             (current-buffer)
                           (find-file-noselect db/org-default-org-file))))
