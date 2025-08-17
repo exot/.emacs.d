@@ -875,7 +875,7 @@ split horizontally again, but this extra work should not matter much."
                                        (db/org-default-notes-file . (:maxlevel . 9)))
                   org-refile-use-outline-path 'buffer-name
                   org-refile-use-cache nil
-                  org-refile-allow-creating-parent-nodes 'nil
+                  org-refile-allow-creating-parent-nodes nil
                   org-indirect-buffer-display 'current-window
                   org-outline-path-complete-in-steps nil
                   org-refile-target-verify-function 'db/verify-refile-target)
