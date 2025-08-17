@@ -450,8 +450,10 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
 %s
 
 %%?"
-                                          first-line-of-body
-                                          rest-of-body)))
+                                          ;; Quote % to prevent unintented expansion by
+                                          ;; `org-capture-fill-template'.
+                                          (replace-regexp-in-string "%" "\\\\%" first-line-of-body)
+                                          (replace-regexp-in-string "%" "\\\\%" rest-of-body))))
       (org-capture-set-target-location)
       (org-capture-place-template)
 
