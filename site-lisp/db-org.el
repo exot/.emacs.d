@@ -1863,11 +1863,11 @@ not."
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
-(defun db/org-get-location (&optional use-all-org-files initial-input)
+(defun db/org-get-location (&optional use-all-org-files initial-input prompt)
   "Interactively query for location and return mark.
 
 Use INITIAL-INPUT as initial input when filtering available
-locations.
+locations.  Use PROMPT as prompt when given.
 
 When USE-ALL-ORG-FILES is nil, this functions by default searches
 through the current buffer if that one is an Org buffer and is
@@ -1912,7 +1912,7 @@ linking to any item."
                   (consult--read (consult--slow-operation "Collecting headings..."
                                    (or (consult-org--headings t nil scope)
                                        (user-error "No headings")))
-                                 :prompt "Choose heading: "
+                                 :prompt (or prompt "Choose heading: ")
                                  :category 'org-heading
                                  :sort nil
                                  :initial initial-input
