@@ -703,6 +703,7 @@ split horizontally again, but this extra work should not matter much."
              db/org-clock-goto-first-open-checkbox)
   :autoload (db/check-special-org-files-in-agenda
              db/verify-refile-target
+             db/org-refile-get-location
              db/find-parent-task
              db/ensure-running-clock
              db/save-current-org-task-to-file
@@ -733,13 +734,13 @@ split horizontally again, but this extra work should not matter much."
 ;; that are defined in those packages.
 (use-package org-attach)
 (use-package org-id)
-(use-package org-goto)
 
 (use-package org
   :pin "gnu"
   :bind (:map org-mode-map
               ([remap org-return] . (lambda () (interactive) (org-return :indent)))
-              ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox))
+              ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox)
+              ([remap org-goto] . consult-org-heading))
   :autoload (org-get-todo-state
              org-entry-get)
   :commands (org-return)
@@ -778,7 +779,6 @@ split horizontally again, but this extra work should not matter much."
                   org-attach-store-link-p 'attached
                   org-attach-auto-tag nil
                   org-bookmark-names-plist nil
-                  org-goto-interface 'outline-path-completion
                   org-id-link-to-org-use-id t
                   org-return-follows-link t
                   org-hide-emphasis-markers t
@@ -872,7 +872,7 @@ split horizontally again, but this extra work should not matter much."
                                        (db/org-default-notes-file . (:maxlevel . 9)))
                   org-refile-use-outline-path 'buffer-name
                   org-refile-use-cache nil
-                  org-refile-allow-creating-parent-nodes 'confirm
+                  org-refile-allow-creating-parent-nodes nil
                   org-indirect-buffer-display 'current-window
                   org-outline-path-complete-in-steps nil
                   org-refile-target-verify-function 'db/verify-refile-target)

@@ -22,6 +22,7 @@
 (require 'holidays)
 (require 'dired)
 (require 'bookmark)
+(require 'consult-org)
 
 (autoload 'which-function "which-func")
 (autoload 'org-element-property "org-element")
@@ -478,6 +479,31 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
    ;; Exclude HOLD items to prevent accidental refiling to such headings (they will not appear on
    ;; any agenda when a super-item is tagged with :HOLD:.
    (not (member "HOLD" (org-get-tags (point))))))
+
+(defun db/org-refile-get-location (&optional prompt default-buffer new-nodes)
+  "Replacement function for `org-refile-get-location' using `consult'.
+
+This function can be used instead of `org-refile-get-location',
+e.g. using `define-advice'.  The parameters PROMPT, DEFAULT-BUFFER, and
+NEW-NODES have the same meaning.  However, setting NEW-NODES to a
+non-nil value will result in a warning, as creating new headlings is not
+supported with this function.
+
+Also note that the usual variables governing the behavior of
+`org-refile' do not have any effect here.  In particular,
+`org-refile-verify-target-function' is not (yet) considered."
+  (when new-nodes
+    (warn "Cannot create new nodes (yet) with consult interface for `org-refile'"))
+  (let ((pom (with-current-buffer (or default-buffer (current-buffer))
+               (db/org-get-location t nil (concat prompt " "))))) ; TODO: incorporate verify
+                                                                  ; function, use direct call to
+                                                                  ; consult--read for this and
+                                                                  ; replace the :predicate key?
+    (list (buffer-name (marker-buffer pom))
+          (buffer-file-name (marker-buffer pom))
+          ;; The third entry is some regexp matching the headline, apparently?
+          (format org-complex-heading-regexp-format (org-entry-get pom "ITEM"))
+          (marker-position pom))))
 
 
 ;;; Helper Functions for Clocking
@@ -1307,18 +1333,7 @@ Current Task: %s(replace-regexp-in-string \"%\" \"%%\" (or org-clock-current-tas
 "
   ("c" (db/org-clock-goto-first-open-checkbox nil)
        nil)
-  ("a" (with-current-buffer
-           ;; Make sure we are in some Org buffer, as `org-refile-get-location'
-           ;; might try to parse the current buffer in search for some Org
-           ;; headings, possibly producing errors along the way.
-           (->> (org-agenda-files :unrestricted)
-                cl-first
-                get-file-buffer)
-         ;; Show all possible items, i.e. exclude refile verification; since the
-         ;; cache includes only verified items, also disable it locally.
-         (let ((org-refile-use-cache nil)
-               (org-refile-target-verify-function nil))
-           (org-refile '(4))))
+  ("a" (consult-org-heading nil 'agenda)
        nil)
   ("s" (db/org-clock-goto-first-open-checkbox t)
        nil))
@@ -1873,35 +1888,25 @@ not."
                 (t (user-error "Neither ID nor CUSTOM_ID given")))))
     (org-search-view nil query)))
 
-(defun db/org-get-location (&optional use-all-org-files initial-input)
+(defun db/org-get-location (&optional use-all-org-files initial-input prompt)
   "Interactively query for location and return mark.
 
 Use INITIAL-INPUT as initial input when filtering available
-locations.
+locations.  Use PROMPT as prompt when given.
 
 When USE-ALL-ORG-FILES is nil, this functions by default searches
 through the current buffer if that one is an Org buffer and is
 associated with a file, and `db/org-default-org-file' otherwise.
-If the current buffer is associated with a file from the variable
-`org-agenda-files', though, the search is extended through all
-agenda files (the rationale being that Org agenda files are
+However, if the current buffer is associated with a file from the list
+returned by the function `org-agenda-files', the search is extended
+through all agenda files (the rationale being that Org agenda files are
 always considered to be one large data collection).
 
 When USE-ALL-ORG-FILES is non-nil, search through all files in
 the variables `org-agenda-files',
 `org-agenda-text-search-extra-files', and the current file or
-`db/org-default-org-file' as described above.
-
-Search is always conducted up to level 9.  If the selected
-location does not have an associated point or mark, error out.
-Disable refile cache and any active refile filter hooks to allow
-linking to any item."
-  (let ((org-refile-target-verify-function nil)
-        (org-refile-use-cache nil)
-        ;; If the current buffer is an Org buffer and is associated with a file,
-        ;; search through it; otherwise, use the default Org Mode file as
-        ;; default buffer
-        (default-buffer (if (and (buffer-file-name) (derived-mode-p 'org-mode))
+`db/org-default-org-file' as described above."
+  (let ((default-buffer (if (and (buffer-file-name) (derived-mode-p 'org-mode))
                             (current-buffer)
                           (find-file-noselect db/org-default-org-file))))
 
@@ -1912,67 +1917,37 @@ linking to any item."
                                                      (-any (-partial #'file-equal-p it)
                                                            org-agenda-files)))
 
-           ;; Default file(s) to search through; note that `default-buffer' is
-           ;; provided later to `org-refile-get-location' as additional argument
-           (org-refile-targets (append (if current-buffer-is-in-org-agenda-files?
-                                           '((org-agenda-files :maxlevel . 9))
-                                         '((nil :maxlevel . 9)))
+           (scope (cond (use-all-org-files
+                         (->> (append (unless current-buffer-is-in-org-agenda-files? ; avoid duplicate entries
+                                        (list (buffer-file-name default-buffer)))
+                                      (org-agenda-files)
+                                      (cl-remove-if-not #'stringp
+                                                        org-agenda-text-search-extra-files))
+                              (-map #'file-truename)
+                              (-uniq)))
+                        (current-buffer-is-in-org-agenda-files?
+                         (org-agenda-files))
+                        (t
+                         (list (buffer-file-name default-buffer)))))
 
-                                       ;; When USE-ALL-ORG-FILES is non-nil, add
-                                       ;; all agenda files, but only if not
-                                       ;; already done so.
-                                       (and use-all-org-files
-                                            (not current-buffer-is-in-org-agenda-files?)
-                                            '((org-agenda-files :maxlevel . 9)))
-
-                                       ;; When USE-ALL-ORG-FILES is non-nil, add
-                                       ;; extra file files to search though.
-                                       (and use-all-org-files
-                                            `((,(cl-remove-if-not #'stringp
-                                                                  org-agenda-text-search-extra-files)
-                                                :maxlevel . 9)))))
-
-           (target-pointer (let ((old-completing-read (symbol-function 'completing-read)))
-                             ;; We temporarily overwrite `completing-read' to
-                             ;; provide our initial input; this is necessary
-                             ;; because `org-refile-get-location' sets the
-                             ;; initial-input parameter of `completing-read' to
-                             ;; nil without any possibility for a custom string.
-                             (unwind-protect
-                                  (progn
-                                    (fset 'completing-read #'(lambda (prompt
-                                                                      table
-                                                                      &optional
-                                                                        predicate
-                                                                        require-match
-                                                                        _initial-input
-                                                                        hist
-                                                                        def
-                                                                        inherit-input-method)
-                                                               (funcall old-completing-read
-                                                                        prompt
-                                                                        table
-                                                                        predicate
-                                                                        require-match
-                                                                        initial-input
-                                                                        hist
-                                                                        def
-                                                                        inherit-input-method)))
-                                    (org-refile-get-location nil default-buffer))
-                               (fset 'completing-read old-completing-read))))
-           (pom (nth 3 target-pointer)))
-      (cond
-        ((markerp pom) pom)
-        ((integerp pom)
-         ;; Convert point to marker to ensure we are always in the correct
-         ;; buffer; the second element of `target-pointer' contains the path to
-         ;; the target file
-         (save-mark-and-excursion
-           (with-current-buffer (find-file-noselect (nth 1 target-pointer))
-             (org-with-wide-buffer
-               (goto-char pom)
-               (point-marker)))))
-        (t (user-error "Invalid location"))))))
+           (pom (with-current-buffer default-buffer
+                  (consult--read (consult--slow-operation "Collecting headings..."
+                                   (or (consult-org--headings t nil scope)
+                                       (user-error "No headings")))
+                                 :prompt (or prompt "Choose heading: ")
+                                 :category 'org-heading
+                                 :sort nil
+                                 :initial initial-input
+                                 :require-match t
+                                 :history '(:input consult-org--history)
+                                 :narrow (consult-org--narrow)
+                                 :annotate #'consult-org--annotate
+                                 :group #'consult-org--group
+                                 :lookup (apply-partially #'consult--lookup-prop 'org-marker)
+                                 :preview-key nil))))
+      (if (markerp pom)
+          pom
+        (user-error "Invalid location")))))
 
 (defun db/org-find-links-to-current-item (arg)
   "Find links to current item.
