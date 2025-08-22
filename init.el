@@ -1244,12 +1244,7 @@ accordingly."
                                  ((org-agenda-overriding-header "Things to do next (Task shortlist and WIP, TODO ∈ {CONT,ATTN}, not scheduled, no near deadline)")
                                   (org-agenda-todo-ignore-scheduled 'all)
                                   (org-agenda-todo-ignore-timestamp 0)
-                                  (org-agenda-todo-ignore-deadlines 'near)))
-                      (tags-todo "TODO<>\"CONT\"-HOLD-SOMEWHEN-DATE-WAIT-TEMPLATE"
-                                 ((org-agenda-overriding-header "Task Backlog (not WIP, not scheduled, no near deadline)")
-                                  (org-agenda-todo-ignore-scheduled 'all)
-                                  (org-agenda-todo-ignore-deadlines 'near)
-                                  (org-tags-match-list-sublevels t)))))
+                                  (org-agenda-todo-ignore-deadlines 'near)))))
 
                 ("B" "Backlog"
                      ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE"
