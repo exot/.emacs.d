@@ -1277,7 +1277,7 @@ accordingly."
                       (tags "TAGS={HOLD}-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED<>\"\""
                             ((org-agenda-overriding-header "Tasks on Hold")))))
 
-                ("S" "Somewhen (Do if nothing else to do, i.e., personal backlog)"
+                ("S" "Somewhen"
                      ((tags "TAGS={SOMEWHEN}+TODO=\"\"-NOP-TOPIC-PERIODIC-DATE-SCHEDULED>=\"<today>\""
                             ((org-agenda-overriding-header "Open Tasks to do SOMEWHEN (no TODO keyword, no PERIODIC, no DATE, no now or future SCHEDULED)")))
                       (tags-todo "SOMEWHEN-HOLD"
