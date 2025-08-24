@@ -1608,10 +1608,9 @@ Note that this workaround is incomplete, as explained in this comment."
                 git-link-open-in-browser t
                 git-link-use-commit t)
   :config (progn
-            (add-to-list 'git-link-remote-alist
-                         '("gitea\\.c3d2\\.de" git-link-gitea))
-            (add-to-list 'git-link-commit-remote-alist
-                         '("gitea\\.c3d2\\.de" git-link-commit-gitea))))
+            ;; Add default generic Gitea handler for URLs containing “gitea”.
+            (add-to-list 'git-link-remote-alist '("gitea" git-link-gitea) t)
+            (add-to-list 'git-link-commit-remote-alist '("gitea" git-link-commit-gitea) t)))
 
 (use-package highlight-indentation
   :commands highlight-indentation-mode)
