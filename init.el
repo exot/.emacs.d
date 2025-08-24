@@ -1213,14 +1213,13 @@ accordingly."
               org-agenda-clockreport-parameter-plist
               '(:link t :maxlevel 4 :compact t :narrow 60 :fileskip0 t)
 
-              ;; Note: projects scheduled in the future are not considered
-              ;; stuck, even though they are projects by itself; the rationale
-              ;; here is that projects that have an explicit SCHEDULED entry
-              ;; should not be considered before this date is due.
+              ;; Note: projects scheduled in the future are not considered stuck, even though they
+              ;; are projects by itself; the rationale here is that projects that have an explicit
+              ;; SCHEDULED entry should not be considered before this date is due.
               org-stuck-projects
               '("+TODO=\"\"-DATE-HOLD-NOTE-WAIT-NOP-TOPIC-SOMEWHEN-TEMPLATE-SCHEDULED>=\"<+0d>\""
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
-                ()
+                ("DATE")
                 "")
 
               org-agenda-prefix-format
