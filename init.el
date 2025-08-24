@@ -1601,6 +1601,18 @@ Note that this workaround is incomplete, as explained in this comment."
   :init (setq git-commit-style-convention-checks '(non-empty-second-line
                                                    overlong-summary-line)))
 
+(use-package git-link
+  :commands (git-link
+             git-link-dispatch)
+  :init (setopt git-link-consider-ssh-config t
+                git-link-open-in-browser t
+                git-link-use-commit t)
+  :config (progn
+            (add-to-list 'git-link-remote-alist
+                         '("gitea\\.c3d2\\.de" git-link-gitea))
+            (add-to-list 'git-link-commit-remote-alist
+                         '("gitea\\.c3d2\\.de" git-link-commit-gitea))))
+
 (use-package highlight-indentation
   :commands highlight-indentation-mode)
 
@@ -3068,6 +3080,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C-c c" #'org-capture)
   (bind-key "C-c d" #'define-word-at-point)
   (bind-key "C-c e" #'crux-eval-and-replace)
+  (bind-key "C-c g l" #'git-link)
   (bind-key "C-c h #" #'helm-emms)
   (bind-key "C-c h m" #'man)
   (bind-key "C-c h p" #'list-processes)
