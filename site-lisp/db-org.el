@@ -1258,6 +1258,7 @@ cache if that's in use."
       (let ((old-headline (org-entry-get (point) "ITEM")))
         ;; Update headline
         (org-edit-headline new-headline)
+        (org-align-tags)
 
         ;; Code to add note interactively taken from
         ;; https://sachachua.com/blog/2022/11/logging-sent-messages-to-org-mode-with-message-sent-hook/
