@@ -1603,6 +1603,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package git-link
   :commands (git-link
+             git-link-homepage
              git-link-dispatch)
   :init (setopt git-link-consider-ssh-config t
                 git-link-open-in-browser t
@@ -3080,6 +3081,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C-c d" #'define-word-at-point)
   (bind-key "C-c e" #'crux-eval-and-replace)
   (bind-key "C-c g l" #'git-link)
+  (bind-key "C-c g h" #'git-link-homepage)
   (bind-key "C-c h #" #'helm-emms)
   (bind-key "C-c h m" #'man)
   (bind-key "C-c h p" #'list-processes)
