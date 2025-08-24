@@ -1366,7 +1366,9 @@ accordingly."
                 ("d" "Date"
                      entry
                      (file db/org-default-refile-file)
-                     "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n%a%?"
+                     ,(concat "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n"
+                              "\nVia %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string))).\n"
+                              "%?")
                      :empty-lines-before 1
                      :empty-lines-after 1)
                 ("i" "Interruptions"
