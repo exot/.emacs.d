@@ -154,7 +154,8 @@
         help-enable-symbol-autoload t
         describe-bindings-outline t
         redisplay-skip-fontification-on-input t
-        async-shell-command-buffer 'new-buffer)
+        async-shell-command-buffer 'new-buffer
+        sort-fold-case t)
 
 (setq byte-compile-warnings '(not docstrings)) ; yields warning when used with setopt
 
