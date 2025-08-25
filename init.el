@@ -1611,7 +1611,8 @@ Note that this workaround is incomplete, as explained in this comment."
   :config (progn
             ;; Add default generic Gitea handler for URLs containing “gitea”.
             (add-to-list 'git-link-remote-alist '("gitea" git-link-gitea) t)
-            (add-to-list 'git-link-commit-remote-alist '("gitea" git-link-commit-gitea) t)))
+            (add-to-list 'git-link-commit-remote-alist '("gitea" git-link-commit-gitea) t)
+            (add-to-list 'git-link-homepage-remote-alist '("gitea" git-link-homepage-github) t)))
 
 (use-package highlight-indentation
   :commands highlight-indentation-mode)
