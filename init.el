@@ -388,12 +388,12 @@
   :init (setq url-configuration-directory (expand-file-name "url" emacs-d-userdata)))
 
 (use-package window
-  :init (setq switch-to-buffer-obey-display-actions t
-              switch-to-buffer-in-dedicated-window 'pop
-              recenter-positions '(top middle bottom)
-              display-buffer-base-action '(display-buffer-reuse-window)
-              split-height-threshold 50
-              split-width-threshold 140)
+  :init (setopt switch-to-buffer-obey-display-actions nil
+                switch-to-buffer-in-dedicated-window 'pop
+                recenter-positions '(top middle bottom)
+                display-buffer-base-action '(display-buffer-reuse-window)
+                split-height-threshold 50
+                split-width-threshold 140)
   :config (progn
             (add-to-list 'display-buffer-alist
                          '("^\\*Async Shell Command*"
@@ -409,10 +409,12 @@
             (add-to-list 'display-buffer-alist
                          '("^\\*Help\\*"
                            (display-buffer-reuse-window
+                            display-buffer-reuse-mode-window
                             display-buffer-pop-up-window)))
             (add-to-list 'display-buffer-alist
                          '("^\\*helpful"
                            (display-buffer-reuse-window
+                            display-buffer-reuse-mode-window
                             display-buffer-pop-up-window)))
 
             (add-to-list 'display-buffer-alist
