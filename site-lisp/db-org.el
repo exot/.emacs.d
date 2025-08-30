@@ -54,6 +54,9 @@ The special Org mode files are `db/org-default-org-file',
 (defun db/org-agenda-list-deadlines (&optional match)
   "Prepare agenda view that only lists upcoming deadlines.
 
+This is an adaption of `org-agenda-list' to only show deadline items and
+to not print a date – including the final newline.
+
 Ignores MATCH.  Date is always today, no forward or backward is
 supported.  Consequently, no date is shown.  Also does not
 support any of the usual key bindings, e.g., showing a
