@@ -1240,6 +1240,7 @@ accordingly."
                       (db/org-agenda-list-deadlines
                        ""
                        ((org-agenda-overriding-header "Deadlines")
+                        (org-deadline-past-days 0)
                         (org-agenda-sorting-strategy '(deadline-up priority-down))
                         (org-deadline-warning-days 30)))
                       (tags-todo "TODO={CONT\\|ATTN}-HOLD-SOMEWHEN"
