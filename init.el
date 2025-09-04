@@ -2421,7 +2421,24 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (vertico-mode)
   :autoload (vertico-sort-history-alpha
              vertico-sort-alpha)
-  :init (setq vertico-sort-function #'vertico-sort-history-alpha))
+  :init (setq vertico-sort-function #'vertico-sort-history-alpha)
+  :config (progn
+
+            ;; Mark current candiate with pointer, because highlighting might sometimes be hard to
+            ;; see; cf. https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow.
+            (cl-defmethod vertico--format-candidate :around
+              (cand prefix suffix index start &context ((not (bound-and-true-p vertico-flat-mode))
+                                                        (eql t)))
+              (setq cand (cl-call-next-method cand prefix suffix index start))
+              (if (bound-and-true-p vertico-grid-mode)
+                  (if (= vertico--index index)
+                      (concat #("▶" 0 1 (face vertico-current)) cand)
+                    (concat #("_" 0 1 (display " ")) cand))
+                (if (= vertico--index index)
+                    (concat
+                     #(" " 0 1 (display (left-fringe right-triangle vertico-current)))
+                     cand)
+                  cand)))))
 
 (use-package orderless
   :ensure t
