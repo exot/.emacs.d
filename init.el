@@ -2755,7 +2755,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package eshell
   :init (setopt eshell-cmpl-cycle-completions nil
-                eshell-scroll-to-bottom-on-input t
+                eshell-scroll-to-bottom-on-input 'this
                 eshell-prefer-lisp-functions nil
                 eshell-error-if-no-glob nil
                 eshell-hist-ignoredups t
