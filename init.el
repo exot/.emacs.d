@@ -2754,8 +2754,7 @@ Note that this workaround is incomplete, as explained in this comment."
              pcomplete/git))
 
 (use-package eshell
-  :init (progn
-          (setq eshell-cmpl-cycle-completions nil
+  :init (setopt eshell-cmpl-cycle-completions nil
                 eshell-scroll-to-bottom-on-input t
                 eshell-prefer-lisp-functions nil
                 eshell-error-if-no-glob nil
@@ -2768,7 +2767,8 @@ Note that this workaround is incomplete, as explained in this comment."
                 eshell-prompt-function #'eshell/default-prompt-function
                 eshell-highlight-prompt nil
                 eshell-cd-on-directory t
-                eshell-expand-input-functions '(eshell-expand-history-references)))
+                eshell-expand-input-functions '(eshell-expand-history-references)
+                eshell-plain-echo-behavior t)
 
   :bind (:map eshell-mode-map
          ("M-P" . eshell-previous-prompt)
