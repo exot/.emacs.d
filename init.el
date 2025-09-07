@@ -1250,8 +1250,8 @@ accordingly."
                                   (org-agenda-todo-ignore-deadlines 'near)))))
 
                 ("B" "Backlog"
-                     ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE"
-                                 ((org-agenda-overriding-header "Backlog: Actionable items (no periodic tasks; includes waiting-fors)")
+                     ((tags-todo "-HOLD-SOMEWHEN-DATE-PERIODIC-TEMPLATE-SCHEDULED<>\"\""
+                                 ((org-agenda-overriding-header "Backlog: Actionable items (not periodic, not scheduled)")
                                   (org-tags-match-list-sublevels t)))
                       (tags "TODO=\"\"-HOLD-SOMEWHEN-DATE-PERIODIC-NOTE-NOP-TOPIC-TEMPLATE"
                             ((org-agenda-overriding-header "Backlog: Complex tasks (i.e., goals)")
