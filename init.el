@@ -2866,6 +2866,7 @@ Note that this workaround is incomplete, as explained in this comment."
   :ensure t
   :commands (lispy-mode)
   :diminish lispy-mode
+  :init (setopt lispy-no-permanent-semantic t)
   :config (with-eval-after-load 'lispy-tags
             (require 'semantic)))
 
