@@ -2787,6 +2787,8 @@ Note that this workaround is incomplete, as explained in this comment."
               (require 'em-hist)
               (require 'em-glob))
 
+            (require 'db-eshell)
+
             (setenv "PAGER" "cat")
 
             (add-to-list 'eshell-command-completions-alist
@@ -2842,7 +2844,12 @@ Note that this workaround is incomplete, as explained in this comment."
                       #'(lambda ()
                           (setq-local pcomplete-termination-string "")))
 
-            (require 'db-eshell)))
+            ;; Use default completion functions to allow partial completion of candidates that can
+            ;; then be extended with wildcards and the like.  This is what I am used to in shells
+            ;; outside of Emacs.
+            (add-hook 'eshell-mode-hook
+                      #'(lambda ()
+                          (setq-local completion-in-region-function #'completion--in-region)))))
 
 (use-package em-prompt
   :commands (eshell-previous-prompt
