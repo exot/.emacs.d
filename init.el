@@ -2800,46 +2800,38 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'eshell-mode-hook
                       'with-editor-export-editor)
 
-            ;; Ignoring case when completing file names seems to have a
-            ;; bug: when a ~ is encountered, it is implicitly expaned by
-            ;; `pcomplete-insert-entry’, overwriting the prompt as a side
-            ;; effect.  Keeping the case as it is does not seem to have
-            ;; this issue.  This problem occurs by default only on Windows
-            ;; systems (in all flavors), because this is the only time
-            ;; `pcomplete-ignore-case’ is non-nil by default.
+            ;; Ignoring case when completing file names seems to have a bug: when a ~ is
+            ;; encountered, it is implicitly expaned by `pcomplete-insert-entry’, overwriting the
+            ;; prompt as a side effect.  Keeping the case as it is does not seem to have this issue.
+            ;; This problem occurs by default only on Windows systems (in all flavors), because this
+            ;; is the only time `pcomplete-ignore-case’ is non-nil by default.
             (when on-windows
               (add-to-list 'eshell-mode-hook
                            #'(lambda ()
                                (setq completion-ignore-case nil))))
 
-            ;; Sometimes, when completing path names and immediately
-            ;; hitting RET, `completion-in-region-mode' still seems to be
-            ;; active; this often happens when calling cd.  Then,
-            ;; `post-command-hook' still contains
-            ;; `completion-in-region--postch', which calls some `pcomplete'
-            ;; function to determine whether completion mode should exit.
-            ;; However, after RET (i.e., `eshell-send-input'), we only have
-            ;; an empty prompt, and `pcomplete' just computes all possible
-            ;; functions for completion (doesn't show it, though).  This
-            ;; introduces a noticeable amount of delay, which is annoying.
-            ;; Expliticly disabling `completion-in-region-mode' before
-            ;; sending input seems to alleviate the problem.
+            ;; Sometimes, when completing path names and immediately hitting RET,
+            ;; `completion-in-region-mode' still seems to be active; this often happens when calling
+            ;; cd.  Then, `post-command-hook' still contains `completion-in-region--postch', which
+            ;; calls some `pcomplete' function to determine whether completion mode should exit.
+            ;; However, after RET (i.e., `eshell-send-input'), we only have an empty prompt, and
+            ;; `pcomplete' just computes all possible functions for completion (doesn't show it,
+            ;; though).  This introduces a noticeable amount of delay, which is annoying.
+            ;; Expliticly disabling `completion-in-region-mode' before sending input seems to
+            ;; alleviate the problem.
             (advice-add 'eshell-send-input
                         :before #'(lambda (&rest _)
                                     "Disable completion-in-region-mode before sending input."
                                     (when completion-in-region-mode
                                       (completion-in-region-mode -1))))
 
-            ;; After completing partial inputs, pcomplete wants to add an
-            ;; extra character stored in `pcomplete-termination-string',
-            ;; which is a space by default.  When completing paths, this
-            ;; leads to spaces being inserted after every directory within
-            ;; the path, which is annoying.  We thus set the value of this
-            ;; variable locally to an empty string, thus silencing this
-            ;; bug.  A better way to handle this would be to correctly
-            ;; determine whether the completion is not done yet, by passing
-            ;; `exact' instead of `finished' to the handlers stored in
-            ;; `completion-extra-properties'.
+            ;; After completing partial inputs, pcomplete wants to add an extra character stored in
+            ;; `pcomplete-termination-string', which is a space by default.  When completing paths,
+            ;; this leads to spaces being inserted after every directory within the path, which is
+            ;; annoying.  We thus set the value of this variable locally to an empty string, thus
+            ;; silencing this bug.  A better way to handle this would be to correctly determine
+            ;; whether the completion is not done yet, by passing `exact' instead of `finished' to
+            ;; the handlers stored in `completion-extra-properties'.
             (add-hook 'eshell-mode-hook
                       #'(lambda ()
                           (setq-local pcomplete-termination-string "")))
