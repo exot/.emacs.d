@@ -743,7 +743,9 @@ split horizontally again, but this extra work should not matter much."
   :bind (:map org-mode-map
               ([remap org-return] . (lambda () (interactive) (org-return :indent)))
               ([remap org-clock-goto] . db/org-clock-goto-first-open-checkbox)
-              ([remap org-goto] . consult-org-heading))
+              ([remap org-goto] . consult-org-heading)
+              ("C-c ;" . nil)           ; Disable default binding for `org-toggle-comment'
+              )
   :autoload (org-get-todo-state
              org-entry-get)
   :commands (org-return)
