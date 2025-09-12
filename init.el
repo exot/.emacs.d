@@ -3229,3 +3229,7 @@ Note that this workaround is incomplete, as explained in this comment."
 (add-hook 'after-init-hook #'db/run-init)
 
 ;;; init.el ends here
+
+;; Local Variables:
+;; fill-column: 100
+;; End:
