@@ -318,7 +318,13 @@
 
 (use-package project
   :init (setopt project-list-file (expand-file-name "projects" emacs-d-userdata)
-                project-switch-commands 'project-eshell
+                project-switch-commands '((project-dired "Dired")
+                                          (project-find-file "Find file")
+                                          (project-find-regexp "Find regexp")
+                                          (project-find-dir "Find directory")
+                                          (project-vc-dir "VC-Dir")
+                                          (project-eshell "Eshell")
+                                          (project-any-command "Other"))
                 project-vc-merge-submodules nil
                 project-mode-line nil)
   :config (progn
