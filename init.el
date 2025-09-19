@@ -791,7 +791,7 @@ split horizontally again, but this extra work should not matter much."
                   org-attach-auto-tag nil
                   org-bookmark-names-plist nil
                   org-id-link-to-org-use-id t
-                  org-return-follows-link t
+                  org-return-follows-link nil
                   org-hide-emphasis-markers t
 
                   org-blank-before-new-entry '((heading . t)
