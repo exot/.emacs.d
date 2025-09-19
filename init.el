@@ -2407,7 +2407,7 @@ Note that this workaround is incomplete, as explained in this comment."
                                         (buffer (styles . (orderless)))
                                         (bookmark (styles . (orderless)))
                                         (imenu (styles . (basic substring orderless)))
-                                        (kill-ring (styles . (emacs22 orderless))))
+                                        (kill-ring (styles . (orderless))))
         completion-in-region-function #'consult-completion-in-region)
 
 (use-package helm
