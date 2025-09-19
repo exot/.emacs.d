@@ -2847,7 +2847,11 @@ Note that this workaround is incomplete, as explained in this comment."
             ;; outside of Emacs.
             (add-hook 'eshell-mode-hook
                       #'(lambda ()
-                          (setq-local completion-in-region-function #'completion--in-region)))))
+                          (setq-local completion-in-region-function #'completion--in-region)))
+
+            ;; Close window after eshell is gone
+            (advice-add 'eshell-life-is-too-much
+                        :after #'delete-window)))
 
 (use-package em-prompt
   :commands (eshell-previous-prompt
