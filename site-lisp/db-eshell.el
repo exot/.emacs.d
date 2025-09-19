@@ -16,50 +16,23 @@
 (require 'em-basic)
 (require 'em-dirs)
 (require 'em-hist)
+(require 'project)
 (autoload 'magit-status "magit")
 
 
 ;; Various
 
-(defun db/run-or-hide-eshell (arg)
-  "Opens an eshell buffer if not already in one.
+(defun db/run-or-hide-project-eshell ()
+  "Opens an eshell buffer in the current project if not already in one.
 
-Otherwise moves the cursor to the window where we have been before.
-
-The buffer's name has to start with “*eshell-side*” to be recognized by
-this function.  Otherwise the current buffer is not treated as an eshell
-buffer.
-
-When ARG is given, change to `default-directory' after switching to the
-eshell buffer."
-  (interactive "P")
-  (let ((current-dir (expand-file-name default-directory)))
-    (cl-flet ((in-eshell-buffer-p ()
-                (and (derived-mode-p 'eshell-mode)
-                     (string-match-p "^\\*eshell\\*" (buffer-name)))))
-
-      (if (and (not arg)
-               (in-eshell-buffer-p))
-          (progn
-            (bury-buffer)
-            (delete-window))
-
-        (unless (in-eshell-buffer-p)
-          (if-let ((eshell-window (cl-find-if (lambda (window)
-                                                (with-current-buffer (window-buffer window)
-                                                  (in-eshell-buffer-p)))
-                                              (window-list-1))))
-              (select-window eshell-window)
-            ;; No running eshell found, open new one.
-            (--if-let (display-buffer (let ((eshell-buffer-name "*eshell*")) (eshell)))
-                (select-window it)
-              (error "Could not start eshell (`display-buffer' returned nil)"))))
-
-        (when arg
-          (end-of-line)
-          (eshell-kill-input)
-          (insert (format "cd '%s'" current-dir))
-          (eshell-send-input))))))
+Otherwise moves the cursor to the window where we have been before.  The
+eshell instance is started via `project-eshell'."
+  (interactive)
+  (if (not (derived-mode-p 'eshell-mode))
+      (project-eshell)
+    (progn
+      (bury-buffer)
+      (delete-window))))
 
 (defun eshell-clear-buffer ()
   "Clear terminal."

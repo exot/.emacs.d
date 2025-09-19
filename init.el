@@ -2756,7 +2756,7 @@ Note that this workaround is incomplete, as explained in this comment."
             (add-hook 'shell-mode-hook 'with-editor-export-editor)))
 
 (use-package db-eshell
-  :commands (db/run-or-hide-eshell
+  :commands (db/run-or-hide-project-eshell
              eshell-clear-buffer
              eshell/default-prompt-function
              pcomplete/git))
@@ -3091,7 +3091,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
   (bind-key "<XF86Back>" #'winner-undo)
   (bind-key "<XF86Forward>" #'winner-redo)
-  (bind-key "<f1>" #'project-eshell)
+  (bind-key "<f1>" #'db/run-or-hide-project-eshell)
   (bind-key "<f2>" #'db/frequently-used-features-prefix)
   (bind-key "<f5>" #'project-find-regexp)
   (bind-key "<f6>" #'text-scale-adjust)
