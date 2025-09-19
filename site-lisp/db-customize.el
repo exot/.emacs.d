@@ -155,7 +155,7 @@ in the main agenda view."
     ("Main Org File" ?o db/find-default-org-file)
     ("EMMS" ?M emms)
     ("Shell" ?s project-shell)
-    ("EShell" ?e project-eshell)
+    ("EShell" ?e db/run-or-hide-eshell)
     ("Project" ?p project-switch-project)
     ("Refile File" ?r db/find-default-refile-file)
     ("Goto Currnet Clock" ?c db/org-clock-goto-first-open-checkbox)
