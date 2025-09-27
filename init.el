@@ -450,9 +450,6 @@ split horizontally again, but this extra work should not matter much."
               which-key-side-window-max-height 0.25)
   :config (which-key-setup-side-window-bottom))
 
-(use-package winner
-  :commands (winner-mode winner-undo winner-redo))
-
 
 ;;* Basic External Packages
 
@@ -3057,7 +3054,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (electric-pair-mode +1)
 
   (recentf-mode +1)
-  (winner-mode +1)
   (tab-bar-history-mode +1)
   (global-auto-revert-mode -1)
   (which-function-mode +1)
