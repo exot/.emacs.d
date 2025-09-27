@@ -2878,8 +2878,8 @@ Note that this workaround is incomplete, as explained in this comment."
   :commands (lispy-mode)
   :diminish lispy-mode
   :init (setopt lispy-no-permanent-semantic t)
-  :config (with-eval-after-load 'lispy-tags
-            (require 'semantic)))
+  :config (progn
+            (unbind-key "M-o" lispy-mode-map)))
 
 (use-package elisp-mode
   :config (add-hook 'emacs-lisp-mode-hook 'turn-on-flycheck-when-file))
@@ -3159,6 +3159,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "M-g g" #'avy-goto-line)
   (bind-key "M-g i" #'consult-imenu)
   (bind-key "M-j" #'(lambda () (interactive) (join-line -1)))
+  (bind-key "M-o" #'ace-window)
   (bind-key "M-z" #'zap-up-to-char)
 
   (bind-key [remap fill-paragraph] #'endless/fill-or-unfill)
