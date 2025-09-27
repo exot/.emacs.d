@@ -2497,6 +2497,7 @@ Note that this workaround is incomplete, as explained in this comment."
              ace-window-display-mode)
   :init (setopt aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
                 aw-background t
+                aw-dispatch-always nil
                 aw-scope 'frame))
 
 (use-package avy
