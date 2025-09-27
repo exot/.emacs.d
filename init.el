@@ -1575,7 +1575,7 @@ Note that this workaround is incomplete, as explained in this comment."
               ediff-window-setup-function 'ediff-setup-windows-plain
               ediff-split-window-function 'split-window-horizontally
               ediff-show-clashes-only t)
-  :config (add-hook 'ediff-after-quit-hook-internal 'winner-undo))
+  :config (add-hook 'ediff-after-quit-hook-internal 'tab-bar-history-back))
 
 (use-package eldoc
   :commands (global-eldoc-mode
@@ -3086,8 +3086,6 @@ Note that this workaround is incomplete, as explained in this comment."
   ;; Top-Level Keybindings
 
   (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
-  (bind-key "<XF86Back>" #'winner-undo)
-  (bind-key "<XF86Forward>" #'winner-redo)
   (bind-key "<f1>" #'db/run-or-hide-project-eshell)
   (bind-key "<f2>" #'db/frequently-used-features-prefix)
   (bind-key "<f5>" #'project-find-regexp)
