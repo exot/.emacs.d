@@ -2496,6 +2496,11 @@ Note that this workaround is incomplete, as explained in this comment."
 
 ;;* Navigation
 
+(setopt other-window-scroll-default #'(lambda ()
+                                        (or (get-mru-window nil nil 'not-this-one)
+                                            (next-window)
+                                            (next-window nil nil 'visible))))
+
 (use-package ace-window
   :ensure t
   :commands (ace-window
