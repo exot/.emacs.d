@@ -393,6 +393,11 @@
 (use-package url
   :init (setq url-configuration-directory (expand-file-name "url" emacs-d-userdata)))
 
+(use-package vundo
+  :pin "gnu"
+  :ensure t
+  :init (setopt vundo-glyph-alist vundo-unicode-symbols))
+
 (use-package window
   :init (setopt switch-to-buffer-obey-display-actions nil
                 switch-to-buffer-in-dedicated-window 'pop
@@ -3063,8 +3068,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
   ;; Activate modes (packages)
 
-  (dolist (mode '(global-undo-tree-mode
-                  minibuffer-depth-indicate-mode
+  (dolist (mode '(minibuffer-depth-indicate-mode
                   ace-window-display-mode
                   key-chord-mode
                   which-key-mode
@@ -3101,7 +3105,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key "C->" #'mc/mark-next-like-this)
   (bind-key "C-M-\\" #'crux-cleanup-buffer-or-region)
   (bind-key "C-S-c C-S-c" #'mc/edit-lines)
-  (bind-key "C-Z" #'undo-tree-redo)
   (bind-key "C-c C-<" #'mc/mark-all-like-this)
   (bind-key "C-c D" #'define-word)
   (bind-key "C-c J" #'avy-goto-word-or-subword-1)
@@ -3161,6 +3164,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
   (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
   (bind-key [remap open-line] #'crux-smart-open-line-above)
+  (bind-key [remap undo] #'vundo)
 
   (unbind-key "<insert>" global-map)
   (unbind-key "<kp-insert>" global-map)
