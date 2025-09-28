@@ -3164,7 +3164,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (bind-key [remap keyboard-quit] #'keyboard-quit-context+)
   (bind-key [remap kill-whole-line] #'crux-kill-whole-line)
   (bind-key [remap open-line] #'crux-smart-open-line-above)
-  (bind-key [remap undo] #'vundo)
 
   (unbind-key "<insert>" global-map)
   (unbind-key "<kp-insert>" global-map)
