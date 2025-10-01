@@ -2946,7 +2946,9 @@ Note that this workaround is incomplete, as explained in this comment."
                       'interactive-haskell-mode)))
 
 (use-package plantuml-mode
-  :load-path "site-lisp"
+  :vc (:url "https://github.com/exot/plantuml-mode"
+       :branch "add-file-export-shadow"
+       :rev :newest)
   :mode ("\\.plantuml\\'" . plantuml-mode)
   :commands (plantuml-mode)
   :init (setq plantuml-output-type "svg"
