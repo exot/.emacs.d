@@ -558,7 +558,8 @@ Errors out if there is no entry on the current line, unless
 NOERROR is non-nil; in that case, return nil when no text
 property could be found (note that this can also happen if point
 is outside of the current table)."
-  (unless (derived-mode-p 'timeline-tools-mode))
+  (unless (derived-mode-p 'timeline-tools-mode)
+    (user-error "Not in timeline-tools-mode"))
   (save-mark-and-excursion
     (if (not (org-at-table-p))
         (if noerror nil (user-error "Not in table"))
