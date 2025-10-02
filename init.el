@@ -1232,7 +1232,7 @@ accordingly."
               org-stuck-projects
               '("+TODO=\"\"-DATE-HOLD-NOTE-WAIT-NOP-TOPIC-SOMEWHEN-TEMPLATE-SCHEDULED>=\"<+0d>\""
                 ("CONT" "TODO" "READ" "WAIT" "GOTO" "DELG" "ATTN")
-                ("DATE")
+                nil
                 "")
 
               org-agenda-prefix-format
