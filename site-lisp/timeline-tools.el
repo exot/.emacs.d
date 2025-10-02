@@ -679,7 +679,7 @@ Updates category properties before constructing the new timeline."
   ;; current line by ourselves
 
   (if (timeline-tools--get-entry-from-point) ; barfs if there's no entry
-      (kill-line))
+      (kill-whole-line))
 
   (let ((linenum (line-number-at-pos (point))))
     (timeline-tools-redraw-timeline)
