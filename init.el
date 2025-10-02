@@ -322,11 +322,13 @@
                                           (project-find-file "Find file")
                                           (project-find-regexp "Find regexp")
                                           (project-find-dir "Find directory")
-                                          (project-vc-dir "VC-Dir")
+                                          (project-magit "Magit")
                                           (project-eshell "Eshell")
                                           (project-any-command "Other"))
                 project-vc-merge-submodules nil
                 project-mode-line nil)
+  :bind (:map project-prefix-map
+              (("m" . project-magit)))
   :config (progn
 
             ;; Sort known projects before persisting, to reduce committer noise
@@ -335,7 +337,12 @@
                                                         sort-before-writing)
               (setq project--list (cl-sort project--list
                                            #'string<
-                                           :key #'cl-first)))))
+                                           :key #'cl-first)))
+
+            (defun project-magit ()
+              "Run `magit' in project root"
+              (interactive)
+              (magit-status (project-root (project-current t))))))
 
 (use-package quail
   :init (setq default-input-method "TeX"))
