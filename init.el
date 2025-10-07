@@ -204,7 +204,8 @@
                                         (byte "8 * bit" "Byte")
                                         (bps "bit / s" "Bit per second"))
                 math-units-table nil
-                calc-kill-line-numbering nil))
+                calc-kill-line-numbering nil
+                calc-display-trail nil))
 
 (use-package calender
   :init (setq calendar-date-style 'iso
