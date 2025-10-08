@@ -37,7 +37,11 @@ Known to work well with the `solarized-dark’ theme.")
  '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.15))))
  '(markdown-header-face-4 ((t (:inherit markdown-header-face :height 1.1))))
  '(markdown-comment-face ((t (:forgeground "#586e75" :strike-through nil :slant italic))))
- '(variable-pitch ((t (:weight normal :height 1.3 :family "Bitstream Vera Serif")))))
+ '(variable-pitch ((t (:weight normal :height 1.3 :family "Bitstream Vera Serif"))))
+ '(mode-line ((((class color) (min-colors 89))
+               (:background "#073642" :foreground "#839496" :box (:line-width (1 . 1) :color "#657b83") :overline "#657b83" :underline (:color "#657b83" :style line :position t)))))
+ '(mode-line-inactive ((((class color) (min-colors 89))
+                        (:box (:line-width (1 . 1) :color "#586e75" :style nil) :background "#002b36" :foreground "#586e75" :underline (:color "#586e75" :style line :position nil) :overline "#586e75" :inverse-video unspecified)))))
 
 (message "Loaded db-dark theme.")
 
