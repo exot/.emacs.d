@@ -2193,8 +2193,7 @@ Note that this workaround is incomplete, as explained in this comment."
                                         (vc-mode vc-mode)
                                         " "
                                         mode-line-modes)
-                                    (list "%b "
-                                          "(" mode-name ")")))
+                                    '("%b (" mode-name ")")))
                            mode-line-format-right-align
                            (:eval (if (mode-line-window-selected-p)
                                       mode-line-misc-info))))
