@@ -642,6 +642,7 @@ split horizontally again, but this extra work should not matter much."
   :init (setq-default olivetti-body-width 0.618034))
 
 (use-package outline
+  :diminish outline-minor-mode
   :init (setopt outline-minor-mode-use-buttons 'in-margins))
 
 (use-package outline-indent
@@ -2174,29 +2175,29 @@ Note that this workaround is incomplete, as explained in this comment."
               cursor-in-non-selected-windows nil
               font-lock-maximum-decoration '((t . t)))
 
-(setopt mode-line-format '((ace-window-display-mode
+(setopt mode-line-percent-position nil
+        mode-line-format '((ace-window-display-mode
                             (:eval (window-parameter (selected-window) 'ace-window-path)))
                            "%e"
                            mode-line-front-space
-                           (""
-                            mode-line-mule-info
-                            mode-line-client
-                            mode-line-modified
-                            mode-line-remote
-                            mode-line-window-dedicated)
-                           mode-line-frame-identification
                            (:eval (if (mode-line-window-selected-p)
-                                      mode-line-buffer-identification
-                                    (list (propertize (car mode-line-buffer-identification)
-                                                      'face nil))))
-                           " "
-                           mode-line-position
-                           (project-mode-line project-mode-line-format)
-                           (vc-mode vc-mode)
-                           " "
-                           mode-line-modes
-                           mode-line-misc-info
-                           mode-line-end-spaces))
+                                      '(""
+                                        mode-line-mule-info
+                                        mode-line-modified
+                                        mode-line-remote
+                                        mode-line-window-dedicated
+                                        " "
+                                        (:propertize "%b" face mode-line-buffer-id)
+                                        "@(%l,%c)"
+                                        (project-mode-line project-mode-line-format)
+                                        (vc-mode vc-mode)
+                                        " "
+                                        mode-line-modes)
+                                    (list "%b "
+                                          "(" mode-name ")")))
+                           mode-line-format-right-align
+                           (:eval (if (mode-line-window-selected-p)
+                                      mode-line-misc-info))))
 
 (use-package solarized-theme
   :ensure t
@@ -3073,7 +3074,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (appt-activate +1)
   (savehist-mode +1)
 
-  (size-indication-mode +1)
   (display-battery-mode -1)
 
   (electric-pair-mode +1)
@@ -3081,7 +3081,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (recentf-mode +1)
   (tab-bar-history-mode +1)
   (global-auto-revert-mode -1)
-  (which-function-mode +1)
   (global-eldoc-mode +1)
   (global-visual-wrap-prefix-mode +1)
 
