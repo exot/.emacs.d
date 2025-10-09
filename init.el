@@ -615,14 +615,18 @@ split horizontally again, but this extra work should not matter much."
   :ensure t
   :pin "melpa-stable"
   :commands (markdown-mode)
-  :init (progn
-          (setq markdown-use-pandoc-style-yaml-metadata t
+  :init (setopt markdown-use-pandoc-style-yaml-metadata t
                 markdown-command "pandoc --standalone --toc"
-                markdown-fontify-code-blocks-natively t)
-          (fset 'markdown-output-standalone-p #'(lambda () t))
-          (add-hook 'markdown-mode-hook #'turn-off-auto-fill)
-          (add-hook 'markdown-mode-hook #'turn-on-visual-line-mode)
-          (add-hook 'markdown-mode-hook #'turn-on-visual-fill-column-mode)))
+                markdown-fontify-code-blocks-natively t
+                markdown-hide-urls t
+                markdown-asymmetric-header t
+                markdown-list-indent-width 2
+                markdown-special-ctrl-a/e t)
+  :config (progn
+            (fset 'markdown-output-standalone-p #'(lambda () t))
+            (add-hook 'markdown-mode-hook #'turn-off-auto-fill)
+            (add-hook 'markdown-mode-hook #'turn-on-visual-line-mode)
+            (add-hook 'markdown-mode-hook #'turn-on-visual-fill-column-mode)))
 
 (use-package multiple-cursors
   :pin "melpa-stable"
