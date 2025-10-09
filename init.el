@@ -2190,7 +2190,7 @@ Note that this workaround is incomplete, as explained in this comment."
                                         (:propertize "%b" face mode-line-buffer-id)
                                         "@(%l,%c)"
                                         (project-mode-line project-mode-line-format)
-                                        (vc-mode vc-mode)
+                                        (vc-mode (" " (:eval (moody-ribbon vc-mode))))
                                         " "
                                         mode-line-modes)
                                     '("%b (" mode-name ")")))
@@ -2207,8 +2207,8 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package moody
   :ensure t
-  :commands (moody-replace-mode-line-buffer-identification
-             moody-replace-vc-mode))
+  :init (setopt moody-mode-line-height 16)
+  :commands (moody-ribbon))
 
 (use-package smiley
   :init (setq smiley-style 'emoji))
