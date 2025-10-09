@@ -2175,8 +2175,7 @@ Note that this workaround is incomplete, as explained in this comment."
               cursor-in-non-selected-windows nil
               font-lock-maximum-decoration '((t . t)))
 
-(setopt mode-line-percent-position nil
-        mode-line-format '((ace-window-display-mode
+(setopt mode-line-format '((ace-window-display-mode
                             (:eval (window-parameter (selected-window) 'ace-window-path)))
                            "%e"
                            mode-line-front-space
