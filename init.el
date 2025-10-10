@@ -2795,7 +2795,8 @@ Note that this workaround is incomplete, as explained in this comment."
                 eshell-highlight-prompt nil
                 eshell-cd-on-directory t
                 eshell-expand-input-functions '(eshell-expand-history-references)
-                eshell-plain-echo-behavior t)
+                eshell-plain-echo-behavior t
+                eshell-status-in-mode-line nil)
 
   :bind (:map eshell-mode-map
          ("M-P" . eshell-previous-prompt)
