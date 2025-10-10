@@ -2189,7 +2189,7 @@ Note that this workaround is incomplete, as explained in this comment."
                                         (:propertize "%b" face mode-line-buffer-id)
                                         "@(%l,%c)"
                                         (project-mode-line project-mode-line-format)
-                                        (vc-mode (" " (:eval (moody-ribbon vc-mode))))
+                                        (vc-mode (" " (:eval (moody-ribbon (string-trim vc-mode)))))
                                         " "
                                         mode-line-modes)
                                     '("%b (" mode-name ")")))
