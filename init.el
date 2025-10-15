@@ -618,7 +618,7 @@ split horizontally again, but this extra work should not matter much."
   :init (setopt markdown-use-pandoc-style-yaml-metadata t
                 markdown-command "pandoc --standalone --toc"
                 markdown-fontify-code-blocks-natively t
-                markdown-hide-urls t
+                markdown-hide-urls nil
                 markdown-asymmetric-header t
                 markdown-list-indent-width 2
                 markdown-special-ctrl-a/e t)
