@@ -643,7 +643,7 @@ split horizontally again, but this extra work should not matter much."
 
 (use-package outline
   :diminish outline-minor-mode
-  :init (setopt outline-minor-mode-use-buttons 'in-margins))
+  :init (setopt outline-minor-mode-use-buttons nil))
 
 (use-package outline-indent
   :init (setopt outline-indent-ellipsis " ▼ "))
