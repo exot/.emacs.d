@@ -788,9 +788,7 @@ split horizontally again, but this extra work should not matter much."
                   org-log-done 'note
                   org-clone-delete-id t
                   org-fold-catch-invisible-edits 'show-and-error
-                  org-fold-show-context-detail '((default . lineage)) ; reveal more context by
-                                                                      ; default, to avoid
-                                                                      ; incompletly revealed items
+                  org-fold-show-context-detail '((default . lineage)) ; reveal more context by default, to avoid incompletely revealed items
                   org-M-RET-may-split-line '((default . nil))
                   org-highlight-latex-and-related '(latex)
                   org-use-sub-superscripts '{}
