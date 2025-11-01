@@ -298,7 +298,8 @@
                                              ("Files" (filename . ".*"))))))
 
 (use-package man
-  :init (setopt Man-switches "-a"))
+  :init (setopt Man-switches "-a"
+                Man-notify-method 'aggressive))
 
 (use-package minibuffer
   :bind (:map minibuffer-mode-map
