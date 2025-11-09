@@ -1858,7 +1858,10 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package nntp)
 (use-package nnml)
-(use-package message)
+
+(use-package message
+  :init (setopt message-fill-column 100))
+
 (use-package gnus-msg)
 (use-package gnus-async)
 
