@@ -2223,8 +2223,8 @@ Note that this workaround is incomplete, as explained in this comment."
 
 ;;* File Handling
 
-(setq large-file-warning-threshold 10000000
-      delete-by-moving-to-trash t)
+(setopt large-file-warning-threshold (* 50 1024 1024)
+        delete-by-moving-to-trash t)
 
 ;; Backups and Autosave
 (defvar backup-dir (expand-file-name "ebackup/" emacs-d))
