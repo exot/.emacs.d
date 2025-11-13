@@ -153,7 +153,6 @@
         next-error-message-highlight t
         help-enable-symbol-autoload t
         describe-bindings-outline t
-        redisplay-skip-fontification-on-input t
         async-shell-command-buffer 'new-buffer
         sort-fold-case t)
 
