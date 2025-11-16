@@ -414,20 +414,12 @@ history of the buffer."
     ;; Generate headline and store it somewhere
     (let* ((body (buffer-substring-no-properties (org-element-contents-begin last-seen-item)
                                                  (org-element-end last-seen-item)))
-           (indent-offset (- (org-element-begin last-seen-item)
-                             (org-element-contents-begin last-seen-item)))
            (first-line-of-body (seq-take-while #'(lambda (x) (not (= x ?\n))) body))
            (rest-of-body (string-trim (seq-drop-while #'(lambda (x) (not (= x ?\n))) body))))
 
       ;; Remove old entry first
       (delete-region (org-element-begin last-seen-item)
                      (org-element-end last-seen-item))
-
-      ;; Adjust indentation of `rest-of-body' by `indent-offset'
-      (with-temp-buffer
-        (insert rest-of-body)
-        (indent-region (point-min) (point-max) indent-offset)
-        (setq rest-of-body (buffer-string)))
 
       ;; Set up capture buffer
       (org-capture-put :key "")
@@ -449,7 +441,7 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
                                           ;; Quote % to prevent unintented expansion by
                                           ;; `org-capture-fill-template'.
                                           (replace-regexp-in-string "%" "\\\\%" first-line-of-body)
-                                          (replace-regexp-in-string "%" "\\\\%" rest-of-body))))
+                                          (replace-regexp-in-string "%" "\\\\%" (org-remove-indentation rest-of-body)))))
       (org-capture-set-target-location)
       (org-capture-place-template)
 
