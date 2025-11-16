@@ -731,6 +731,7 @@ split horizontally again, but this extra work should not matter much."
              db/find-parent-task
              db/ensure-running-clock
              db/save-current-org-task-to-file
+             db/goto-quick-notes
              db/org-remaining-effort-of-current-item
              db/org-cmp-remaining-effort
              org-dblock-write:db/org-workload-report
@@ -1405,6 +1406,12 @@ accordingly."
                               "%?")
                      :clock-in t
                      :clock-resume t
+                     :empty-lines-before 1
+                     :empty-lines-after 1)
+                ("q" "Quick note"
+                     plain
+                     (function db/goto-quick-notes)
+                     "- [ ] %?"
                      :empty-lines-before 1
                      :empty-lines-after 1))))
 

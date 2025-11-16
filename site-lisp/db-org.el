@@ -459,6 +459,23 @@ Via %%(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-
         (delete-char -1))
       (insert "\n\n"))))
 
+(defun db/goto-quick-notes ()
+  "Go to position where next quick note should be inserted.
+
+Quick notes are inserted into `db/org-default-refile-file', directly
+before the first page feed character.  Quick notes are expected to be
+inserted as list items."
+  (unless (file-writable-p db/org-default-refile-file)
+    (user-error "Default refile file «%s» not writable" db/org-default-refile-file))
+
+  (set-buffer (find-file db/org-default-refile-file))
+
+  (unless (search-forward-regexp "^\f" nil t)
+    (user-error "No page feed found in default refile file"))
+
+  (beginning-of-line)
+  (open-line 2))
+
 
 ;;; Refiling
 
