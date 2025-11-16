@@ -717,7 +717,6 @@ split horizontally again, but this extra work should not matter much."
              db/org-cleanup-continuous-clocks
              db/org-update-headline-log-note
              db/find-csv-in-org
-             db/export-diary
              db/org-insert-checklist
              db/org-copy-body-from-item-to-point
              db/org-find-links-to-current-item

@@ -1824,44 +1824,6 @@ clocked-in tasks to jump to."
       (user-error "Cannot display target buffer"))))
 
 
-;;; Calendar
-
-(defun db/export-diary ()
-  "Export diary.org as ics file to `org-icalendar-combined-agenda-file’.
-This is done only if the value of this variable is not null."
-  (interactive)
-  (cond
-   ((null org-icalendar-combined-agenda-file)
-    (message "`org-icalendar-combined-agenda-file’ not set, not exporting diary."))
-   ((not (file-name-absolute-p org-icalendar-combined-agenda-file))
-    (user-error "`org-icalendar-combined-agenda-file’ not an absolute path, aborting"))
-   (t
-    (progn
-      (org-save-all-org-buffers)
-      (let ((org-agenda-files (cl-remove-if #'null
-                                            (list db/org-default-org-file
-                                                  db/org-default-home-file
-                                                  db/org-default-work-file)))
-            (org-agenda-new-buffers nil))
-        ;; check whether we need to do something
-        (when (cl-some (lambda (org-file)
-                         (file-newer-than-file-p org-file
-                                                 org-icalendar-combined-agenda-file))
-                       org-agenda-files)
-          (message "Exporting diary ...")
-          ;; open files manually to avoid polluting `org-agenda-new-buffers’; we
-          ;; don’t want these buffers to be closed after exporting
-          (mapc #'find-file-noselect org-agenda-files)
-          ;; actual export; calls `org-release-buffers’ and may thus close
-          ;; buffers we want to keep around … which is why we set
-          ;; `org-agenda-new-buffers’ to nil
-          (when (file-exists-p org-icalendar-combined-agenda-file)
-            (delete-file org-icalendar-combined-agenda-file)
-            (sit-for 3))
-          (org-icalendar-combine-agenda-files)
-          (message "Exporting diary ... done.")))))))
-
-
 ;;; Find items by link to current headline
 
 (defun db/org-find-items-linking-by-id (id custom-id)
