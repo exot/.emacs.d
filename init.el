@@ -738,7 +738,6 @@ split horizontally again, but this extra work should not matter much."
              endless/org-ispell
              db/org-agenda-insert-active-filters
              db/org-agenda-insert-efforts
-             db/org-timestamp-difference
              db/org-capture-code-snippet
              db/org-onenote-open
              db/org-outlook-open

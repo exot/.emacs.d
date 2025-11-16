@@ -335,22 +335,6 @@ Add this function to `org-agenda-finalize-hook' to enable this."
 
 ;;; Capturing
 
-(defun db/org-timestamp-difference (stamp-1 stamp-2)
-  "Return time difference between two Org mode timestamps.
-STAMP-1 and STAMP-2 must be understood by
-`org-parse-time-string'."
-  ;; Things copied from `org-clock-update-time-maybe’
-  (let* ((s (-
-             (float-time
-              (apply #'encode-time (org-parse-time-string stamp-2 t)))
-             (float-time
-              (apply #'encode-time (org-parse-time-string stamp-1 t)))))
-         (neg (< s 0))
-         (s (abs s))
-         (h (floor (/ s 3600)))
-         (m (floor (/ (- s (* 3600 h)) 60))))
-    (format (if neg "-%d:%02d" "%2d:%02d") h m)))
-
 ;; Capture Code Snippets
 ;; from http://ul.io/nb/2018/04/30/better-code-snippets-with-org-capture/
 (defun db/org-capture-code-snippet (filename)
