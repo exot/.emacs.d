@@ -1406,14 +1406,6 @@ accordingly."
                      :clock-in t
                      :clock-resume t
                      :empty-lines-before 1
-                     :empty-lines-after 1)
-                ("r" "Respond"
-                     entry
-                     (file db/org-default-refile-file)
-                     ,(concat "* TODO [#B] Reply: %:subject (%:from) :EMAIL:\n"
-                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\n%a%?")
-                     :empty-lines-before 1
                      :empty-lines-after 1))))
 
 ;; Babel
