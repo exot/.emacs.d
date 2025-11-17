@@ -462,6 +462,7 @@ inserted as list items."
 
   (set-buffer (find-file db/org-default-refile-file))
 
+  (goto-char (point-min))
   (unless (search-forward-regexp "^\f" nil t)
     (user-error "No page feed found in default refile file"))
 
