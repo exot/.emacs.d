@@ -3084,6 +3084,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (global-auto-revert-mode -1)
   (global-eldoc-mode +1)
   (global-visual-wrap-prefix-mode +1)
+  (pixel-scroll-precision-mode +1)
 
   ;; Activate modes (packages)
 
