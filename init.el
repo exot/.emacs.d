@@ -720,8 +720,6 @@ split horizontally again, but this extra work should not matter much."
              db/org-insert-checklist
              db/org-copy-body-from-item-to-point
              db/org-find-links-to-current-item
-             db/org-add-link-to-other-item
-             db/org-add-link-to-current-clock
              hydra-org-linking/body
              db/org-clock-goto-first-open-checkbox)
   :autoload (db/check-special-org-files-in-agenda
@@ -1363,7 +1361,7 @@ accordingly."
                      (file db/org-default-refile-file)
                      ,(concat "* TODO [#B] %^{What}\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nVia %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))."
+                              "\nVia %K."
                               "%?")
                      :empty-lines-before 1
                      :empty-lines-after 1)
@@ -1392,7 +1390,7 @@ accordingly."
                      entry
                      (file db/org-default-refile-file)
                      ,(concat "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n"
-                              "\nVia %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string))).\n"
+                              "\nVia %K.\n"
                               "%?")
                      :empty-lines-before 1
                      :empty-lines-after 1)
@@ -1401,7 +1399,7 @@ accordingly."
                      (file db/org-default-refile-file)
                      ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
                               ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nInterrupted %(with-temp-buffer (db/org-add-link-to-current-clock) (string-trim (buffer-string)))."
+                              "\nInterrupted %K."
                               "%?")
                      :clock-in t
                      :clock-resume t
@@ -1410,7 +1408,7 @@ accordingly."
                 ("q" "Quick note"
                      plain
                      (function db/goto-quick-notes)
-                     "- [ ] %?"
+                     "- [ ] %?\n\n  Via %K"
                      :empty-lines-before 1
                      :empty-lines-after 1))))
 
