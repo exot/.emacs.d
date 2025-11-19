@@ -666,6 +666,10 @@ split horizontally again, but this extra work should not matter much."
             (add-hook 'textile-mode-hook #'turn-on-visual-line-mode)
             (add-hook 'textile-mode-hook #'turn-on-visual-fill-column-mode)))
 
+(use-package ultra-scroll
+  :ensure t
+  :commands (ultra-scroll-mode))
+
 (use-package visual-fill-column
   :ensure t
   :autoload (turn-on-visual-fill-column-mode
@@ -3082,7 +3086,6 @@ Note that this workaround is incomplete, as explained in this comment."
   (global-auto-revert-mode -1)
   (global-eldoc-mode +1)
   (global-visual-wrap-prefix-mode +1)
-  (pixel-scroll-precision-mode +1)
 
   ;; Activate modes (packages)
 
@@ -3094,7 +3097,8 @@ Note that this workaround is incomplete, as explained in this comment."
                   global-git-commit-mode
                   marginalia-mode
                   vertico-mode
-                  global-diff-hl-mode))
+                  global-diff-hl-mode
+                  ultra-scroll-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
