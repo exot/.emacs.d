@@ -1408,7 +1408,7 @@ accordingly."
                 ("q" "Quick note"
                      plain
                      (function db/goto-quick-notes)
-                     "- [ ] %?\n\n  Via %K"
+                     "- [ ] %?\n\n  On %U via %K."
                      :empty-lines-before 1
                      :empty-lines-after 1))))
 
