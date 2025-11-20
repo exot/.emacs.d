@@ -667,7 +667,6 @@ split horizontally again, but this extra work should not matter much."
             (add-hook 'textile-mode-hook #'turn-on-visual-fill-column-mode)))
 
 (use-package ultra-scroll
-  :ensure t
   :commands (ultra-scroll-mode))
 
 (use-package visual-fill-column
