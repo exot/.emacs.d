@@ -429,6 +429,8 @@ history of the buffer."
                      (org-element-end last-seen-item))
 
       ;; Set up capture buffer
+      (setq org-capture-plist nil)      ; initialize new capture process, as would otherwise be done
+                                        ; by `org-capture-set-plist'
       (org-capture-put :key "")
       (org-capture-put :description "")
       (org-capture-put :target '(file db/org-default-refile-file))
