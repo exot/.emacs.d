@@ -414,8 +414,15 @@ history of the buffer."
     ;; Generate headline and store it somewhere
     (let* ((body (buffer-substring-no-properties (org-element-contents-begin last-seen-item)
                                                  (org-element-end last-seen-item)))
-           (first-line-of-body (seq-take-while #'(lambda (x) (not (= x ?\n))) body))
-           (rest-of-body (string-trim (seq-drop-while #'(lambda (x) (not (= x ?\n))) body))))
+           first-line-of-body
+           rest-of-body)
+
+      (if-let ((first-linebreak (cl-position ?\n body)))
+          (setq first-line-of-body (substring body 0 first-linebreak)
+                rest-of-body (seq-drop-while #'(lambda (x) (= x ?\n))
+                                             (substring body (1+ first-linebreak))))
+        (setq first-line-of-body body
+              rest-of-body ""))
 
       ;; Remove old entry first
       (delete-region (org-element-begin last-seen-item)
