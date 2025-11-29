@@ -434,6 +434,7 @@ history of the buffer."
       (org-capture-put :key "")
       (org-capture-put :description "")
       (org-capture-put :target '(file db/org-default-refile-file))
+      (org-capture-put :type 'entry)
       (org-capture-put :empty-lines-before 1)
       (org-capture-put :empty-lines-after 1)
       (org-capture-put :template (org-capture-fill-template
