@@ -1392,9 +1392,11 @@ accordingly."
                 ("d" "Date"
                      entry
                      (file db/org-default-refile-file)
-                     ,(concat "* GOTO [#B] %^{What} :DATE:\n%^{When}t\n"
-                              "\nVia %K.\n"
-                              "%?")
+                     ,(concat "* GOTO [#B] %^{What} :DATE:"
+                              "\n:PROPERTIES:\n:CREATED: %U\n:END:"
+                              "\n%^{When}t"
+                              "\n\nVia %K."
+                              "\n\n%?")
                      :empty-lines-before 1
                      :empty-lines-after 1)
                 ("i" "Interruptions"
