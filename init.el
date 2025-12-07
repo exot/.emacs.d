@@ -1393,7 +1393,9 @@ accordingly."
                      plain
                      (file+olp+datetree db/org-default-pensieve-file
                                         "Journal")
-                     "\n\n%U\n\n%i%?\n")
+                     "\n\n%U\n\n%i%?\n"
+                     :empty-lines-before 1
+                     :empty-lines-after 1)
                 ("d" "Date"
                      entry
                      (file db/org-default-refile-file)
