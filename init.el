@@ -3108,8 +3108,7 @@ Note that this workaround is incomplete, as explained in this comment."
                   global-git-commit-mode
                   marginalia-mode
                   vertico-mode
-                  global-diff-hl-mode
-                  ultra-scroll-mode))
+                  global-diff-hl-mode))
     (with-demoted-errors "Cannot activate mode: %s"
       (funcall mode +1)))
 
