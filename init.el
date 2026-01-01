@@ -1151,16 +1151,11 @@ accordingly."
                   org-clock-clocked-in-display 'both
                   org-clock-report-include-clocking-task t
                   org-clock-in-switch-to-state #'(lambda (_)
-                                                   (when (not
-                                                          (and (boundp 'org-capture-mode)
-                                                               org-capture-mode))
-                                                     (cond
-                                                      ((member (org-get-todo-state)
-                                                               (list "TODO" "READ"))
-                                                       "CONT")
-                                                      ((member (org-get-todo-state)
-                                                               (list "GOTO"))
-                                                       "ATTN"))))
+                                                   (cond
+                                                    ((member (org-get-todo-state) (list "TODO" "READ"))
+                                                     "CONT")
+                                                    ((member (org-get-todo-state) (list "GOTO"))
+                                                     "ATTN")))
                   org-clock-persist t
                   org-clock-persist-file (expand-file-name "org-clock-save.el" emacs-d-userdata)
                   org-clock-persist-query-resume nil
