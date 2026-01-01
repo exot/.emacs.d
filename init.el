@@ -1140,32 +1140,32 @@ accordingly."
 (use-package org-clock
   :commands (org-clock-save)
   :init (progn
-          (setq org-clock-history-length 35
-                org-clock-in-resume t
-                org-clock-into-drawer t
-                org-clock-idle-time nil
-                org-clock-out-remove-zero-time-clocks t
-                org-clock-out-when-done '("DONE" "CANC" "MRGD" "WAIT" "HOLD")
-                org-clock-auto-clock-resolution 'when-no-clock-is-running
-                org-clock-mode-line-total 'auto
-                org-clock-clocked-in-display 'both
-                org-clock-report-include-clocking-task t
-                org-clock-in-switch-to-state #'(lambda (_)
-                                                 (when (not
-                                                        (and (boundp 'org-capture-mode)
-                                                             org-capture-mode))
-                                                   (cond
-                                                    ((member (org-get-todo-state)
-                                                             (list "TODO" "READ"))
-                                                     "CONT")
-                                                    ((member (org-get-todo-state)
-                                                             (list "GOTO"))
-                                                     "ATTN"))))
-                org-clock-persist t
-                org-clock-persist-file (expand-file-name "org-clock-save.el" emacs-d-userdata)
-                org-clock-persist-query-resume nil
-                org-clock-ask-before-exiting nil
-                org-time-stamp-rounding-minutes '(1 1))
+          (setopt org-clock-history-length 35
+                  org-clock-in-resume t
+                  org-clock-into-drawer t
+                  org-clock-idle-time nil
+                  org-clock-out-remove-zero-time-clocks nil
+                  org-clock-out-when-done '("DONE" "CANC" "MRGD" "WAIT" "HOLD")
+                  org-clock-auto-clock-resolution 'when-no-clock-is-running
+                  org-clock-mode-line-total 'auto
+                  org-clock-clocked-in-display 'both
+                  org-clock-report-include-clocking-task t
+                  org-clock-in-switch-to-state #'(lambda (_)
+                                                   (when (not
+                                                          (and (boundp 'org-capture-mode)
+                                                               org-capture-mode))
+                                                     (cond
+                                                      ((member (org-get-todo-state)
+                                                               (list "TODO" "READ"))
+                                                       "CONT")
+                                                      ((member (org-get-todo-state)
+                                                               (list "GOTO"))
+                                                       "ATTN"))))
+                  org-clock-persist t
+                  org-clock-persist-file (expand-file-name "org-clock-save.el" emacs-d-userdata)
+                  org-clock-persist-query-resume nil
+                  org-clock-ask-before-exiting nil
+                  org-time-stamp-rounding-minutes '(1 1))
 
           ;; On Windows, we don't have dbus to show notifications; default to
           ;; `message' instead
