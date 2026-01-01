@@ -1140,6 +1140,16 @@ accordingly."
 (use-package org-clock
   :commands (org-clock-save)
   :init (progn
+          ;; We do not put this function into db-org.el, as it deals with concrete states that are
+          ;; defined here in init.el.
+          (defun db/org-map-state-on-clock-in (state)
+            "Return followup state of STATE when starting a task."
+            (cond
+             ((member state (list "TODO" "READ"))
+              "CONT")
+             ((equal state "GOTO")
+              "ATTN")))
+
           (setopt org-clock-history-length 35
                   org-clock-in-resume t
                   org-clock-into-drawer t
@@ -1150,12 +1160,7 @@ accordingly."
                   org-clock-mode-line-total 'auto
                   org-clock-clocked-in-display 'both
                   org-clock-report-include-clocking-task t
-                  org-clock-in-switch-to-state #'(lambda (_)
-                                                   (cond
-                                                    ((member (org-get-todo-state) (list "TODO" "READ"))
-                                                     "CONT")
-                                                    ((member (org-get-todo-state) (list "GOTO"))
-                                                     "ATTN")))
+                  org-clock-in-switch-to-state 'db/org-map-state-on-clock-in
                   org-clock-persist t
                   org-clock-persist-file (expand-file-name "org-clock-save.el" emacs-d-userdata)
                   org-clock-persist-query-resume nil
