@@ -1392,7 +1392,7 @@ accordingly."
                      "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:%?"
                      :empty-lines-before 1
                      :empty-lines-after 1)
-                ("j" "journal entry"
+                ("j" "Journal entry"
                      plain
                      (file+olp+datetree db/org-default-pensieve-file
                                         "Journal")
