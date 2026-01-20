@@ -1270,8 +1270,8 @@ accordingly."
                                  ((org-agenda-overriding-header "Things to do next (tasks with high priority or already started)")
                                   (org-agenda-todo-ignore-scheduled 'all)
                                   (org-agenda-todo-ignore-timestamp 0)
-                                  (org-agenda-todo-ignore-deadlines 'near)))
-                      (tags "TOPIC+PRIORITY=\"A\"-TODO={DONE\\|MRGD\\|CANC}"
+                                  (org-agenda-todo-ignore-deadlines 'all)))
+                      (tags "TOPIC+PRIORITY=\"A\"-TODO={DONE\\|MRGD\\|CANC}-SCHEDULED<>\"\""
                             ((org-agenda-overriding-header "Important TOPICs")
                              (org-agenda-todo-ignore-scheduled 'all)))))
 
