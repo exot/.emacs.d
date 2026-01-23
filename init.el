@@ -1266,7 +1266,7 @@ accordingly."
                         (org-deadline-past-days 0)
                         (org-agenda-sorting-strategy '(deadline-up priority-down))
                         (org-deadline-warning-days 30)))
-                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-SOMEWHEN|PRIORITY=\"A\"+TODO<>\"\"-HOLD-SOMEWHEN"
+                      (tags-todo "TODO={CONT\\|ATTN}-HOLD-SOMEWHEN|PRIORITY=\"A\"+TODO<>\"\"-HOLD-SOMEWHEN-DATE"
                                  ((org-agenda-overriding-header "Things to do next (tasks with high priority or already started)")
                                   (org-agenda-todo-ignore-scheduled 'all)
                                   (org-agenda-todo-ignore-timestamp 0)
