@@ -1154,7 +1154,7 @@ accordingly."
                   org-clock-in-resume t
                   org-clock-into-drawer t
                   org-clock-idle-time nil
-                  org-clock-out-remove-zero-time-clocks nil
+                  org-clock-out-remove-zero-time-clocks t
                   org-clock-out-when-done '("DONE" "CANC" "MRGD" "WAIT" "HOLD")
                   org-clock-auto-clock-resolution 'when-no-clock-is-running
                   org-clock-mode-line-total 'auto
