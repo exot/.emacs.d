@@ -92,6 +92,7 @@
 (defun db/shortcuts ()
   "Open helm completion on common locations."
   (interactive)
+  (require 'consult)
   (let (sources)
     (push (list :name "Frequently Used"
                 :items (mapcar #'(lambda (entry)
@@ -101,7 +102,13 @@
                 :annotate #'(lambda (_) "")
                 :action #'call-interactively)
           sources)
-    (push 'consult--source-bookmark
+    (push (cond
+           ((boundp 'consult-source-bookmark)
+            'consult-source-bookmark)
+           ((boundp 'consult--source-bookmark)
+            'consult--source-bookmark)
+           (t
+            (error "No consult source for adding bookmarks")))
           sources)
     (when (file-directory-p db/important-documents-path)
       (let ((search-path (expand-file-name db/important-documents-path)))
