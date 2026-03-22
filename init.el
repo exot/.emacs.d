@@ -2275,37 +2275,37 @@ Note that this workaround is incomplete, as explained in this comment."
               ("<tab>" . dired-subtree-toggle)
               ("<C-tab>" . dired-subtree-cycle))
   :init (progn
-          (setq dired-dwim-target t
-                dired-listing-switches "-ahlvF"
-                dired-ls-F-marks-symlinks t
-                dired-hide-details-hide-information-lines nil
-                dired-hide-details-hide-symlink-targets nil
-                dired-recursive-copies 'top
-                dired-recursive-deletes 'top
-                dired-create-destination-dirs 'ask
-                dired-vc-rename-file t
-                dired-kill-when-opening-new-dired-buffer nil
-                dired-maybe-use-globstar t
-                dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$"
-                wdired-create-parent-directories t
-                wdired-allow-to-change-permissions t
-                dired-isearch-filenames 'dwim
-                dired-auto-revert-buffer t
-                dired-clean-confirm-killing-deleted-buffers t
-                dired-clean-up-buffers-too t
-                dired-movement-style 'bounded
-                dired-filename-display-length nil)
+          (setopt dired-dwim-target t
+                  dired-listing-switches "-ahlvF"
+                  dired-ls-F-marks-symlinks t
+                  dired-hide-details-hide-information-lines nil
+                  dired-hide-details-hide-symlink-targets nil
+                  dired-recursive-copies 'top
+                  dired-recursive-deletes 'top
+                  dired-create-destination-dirs 'ask
+                  dired-vc-rename-file t
+                  dired-kill-when-opening-new-dired-buffer nil
+                  dired-maybe-use-globstar t
+                  dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$"
+                  wdired-create-parent-directories t
+                  wdired-allow-to-change-permissions t
+                  dired-isearch-filenames 'dwim
+                  dired-auto-revert-buffer t
+                  dired-clean-confirm-killing-deleted-buffers t
+                  dired-clean-up-buffers-too t
+                  dired-movement-style 'bounded
+                  dired-filename-display-length nil)
 
-          (setq dired-guess-shell-alist-user
-                '(("\\.pdf\\'" "evince")
-                  ("\\.ps\\'" "evince")
-                  ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
-                  ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
-                  ("\\.\\(?:xcf\\)\\'" "gimp")
-                  ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
-                   "vlc")
-                  ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mplayer")
-                  ("\\.docx?\\'" "loffice"))))
+          (setopt dired-guess-shell-alist-user
+                  '(("\\.pdf\\'" "evince")
+                    ("\\.ps\\'" "evince")
+                    ("\\.\\(?:djvu\\|eps\\)\\'" "evince")
+                    ("\\.\\(?:jpg\\|jpeg\\|png\\|gif\\|xpm\\)\\'" "eog")
+                    ("\\.\\(?:xcf\\)\\'" "gimp")
+                    ("\\.\\(?:mp4\\|mkv\\|avi\\|flv\\|ogv\\|webm\\)\\(?:\\.part\\)?\\'"
+                     "vlc")
+                    ("\\.\\(?:mp3\\|flac\\|ogg\\)\\'" "mpv")
+                    ("\\.docx?\\'" "loffice"))))
   :config (progn
             (put 'dired-find-alternate-file 'disabled nil)
 
