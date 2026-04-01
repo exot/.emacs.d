@@ -2789,6 +2789,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package db-eshell
   :commands (db/run-or-hide-project-eshell
+             db/run-or-hide-project-eshell-here
              eshell-clear-buffer
              eshell/default-prompt-function
              pcomplete/git))
@@ -3122,7 +3123,7 @@ Note that this workaround is incomplete, as explained in this comment."
   ;; Top-Level Keybindings
 
   (bind-key "<Scroll_Lock>" 'scroll-lock-mode)
-  (bind-key "<f1>" #'db/run-or-hide-project-eshell)
+  (bind-key "<f1>" #'db/run-or-hide-project-eshell-here)
   (bind-key "<f2>" #'db/frequently-used-features-prefix)
   (bind-key "<f5>" #'project-find-regexp)
   (bind-key "<f6>" #'text-scale-adjust)

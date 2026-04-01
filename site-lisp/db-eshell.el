@@ -34,6 +34,35 @@ eshell instance is started via `project-eshell'."
       (bury-buffer)
       (delete-window))))
 
+(defun db/run-or-hide-project-eshell-here ()
+  "Opens an eshell buffer in the current directory.
+
+The current directory is determined by the file name associated with the
+current buffer, or `default-directory'.
+
+Switch to an existing eshell buffer open in the current directory.
+Create an eshell buffer otherwise."
+  (interactive)
+  (if (not (derived-mode-p 'eshell-mode))
+      (let* ((cwd (or (file-name-directory (buffer-file-name (current-buffer)))
+                      default-directory))
+             (eshell-buffer (--> (buffer-list)
+                                 (-filter #'(lambda (buf)
+                                              (with-current-buffer buf
+                                                (and (derived-mode-p 'eshell-mode)
+                                                     (file-equal-p cwd default-directory))))
+                                          it)
+                                 (sort it :key #'buffer-name))))
+        (if eshell-buffer
+            (--if-let (display-buffer (-first-item eshell-buffer))
+                (select-window it)
+              (error "Cannot display existing eshell buffer"))
+          (let ((default-directory cwd))
+            (eshell t))))
+    (progn
+      (bury-buffer)
+      (delete-window))))
+
 (defun eshell-clear-buffer ()
   "Clear terminal."
   (interactive)
