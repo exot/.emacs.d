@@ -44,7 +44,9 @@ Switch to an existing eshell buffer open in the current directory.
 Create an eshell buffer otherwise."
   (interactive)
   (if (not (derived-mode-p 'eshell-mode))
-      (let* ((cwd (or (file-name-directory (buffer-file-name (current-buffer)))
+      (let* ((cwd (or (-some->> (current-buffer)
+                        buffer-file-name
+                        file-name-directory)
                       default-directory))
              (eshell-buffer (--> (buffer-list)
                                  (-filter #'(lambda (buf)
