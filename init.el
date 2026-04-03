@@ -1359,73 +1359,73 @@ accordingly."
 
 (use-package org-capture
   :commands (org-capture)
-  :init (setq org-capture-use-agenda-date nil
-              org-bookmark-names-plist nil
-              org-capture-templates
-              `(("t" "Simple Task"
-                     entry
-                     (file db/org-default-refile-file)
-                     ,(concat "* TODO [#B] %^{What}\n"
-                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nVia %K."
-                              "%?")
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                ("g" "Record new goal"
-                     entry
-                     (file db/org-default-refile-file)
-                     ,(concat "* %^{Description} (%^{Ticket Number}) :GOAL:\n"
-                              ":PROPERTIES:\n:CREATED: %U\n:END:"
-                              "%?"))
-                ("h" "Headline (generic Org item)"
-                     entry
-                     (file db/org-default-refile-file)
-                     ,(concat "* [#B] %^{What}\n"
-                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "%a"
-                              "%?")
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                ("n" "Note"
-                     entry
-                     (file db/org-default-refile-file)
-                     "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:%?"
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                ("j" "Journal entry"
-                     plain
-                     (file+olp+datetree db/org-default-pensieve-file
-                                        "Journal")
-                     "\n\n%U\n\n%i%?\n"
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                ("d" "Date"
-                     entry
-                     (file db/org-default-refile-file)
-                     ,(concat "* GOTO [#B] %^{What} :DATE:"
-                              "\n:PROPERTIES:\n:CREATED: %U\n:END:"
-                              "\n%^{When}t"
-                              "\n\nVia %K."
-                              "\n\n%?")
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                ("i" "Interruptions"
-                     entry
-                     (file db/org-default-refile-file)
-                     ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
-                              ":PROPERTIES:\n:CREATED: %U\n:END:\n"
-                              "\nInterrupted %K."
-                              "%?")
-                     :clock-in t
-                     :clock-resume t
-                     :empty-lines-before 1
-                     :empty-lines-after 1)
-                ("q" "Quick note"
-                     plain
-                     (function db/goto-quick-notes)
-                     "- [ ] %?\n\n  On %U via %K."
-                     :empty-lines-before 1
-                     :empty-lines-after 1))))
+  :init (setopt org-capture-use-agenda-date nil
+                org-bookmark-names-plist nil
+                org-capture-templates
+                `(("t" "Simple Task"
+                   entry
+                   (file db/org-default-refile-file)
+                   ,(concat "* TODO [#B] %^{What}\n"
+                            ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                            "\nVia %K."
+                            "%?")
+                   :empty-lines-before 1
+                   :empty-lines-after 1)
+                  ("g" "Record new goal"
+                   entry
+                   (file db/org-default-refile-file)
+                   ,(concat "* %^{Description} :GOAL:\n"
+                            ":PROPERTIES:\n:CREATED: %U\n:END:"
+                            "%?"))
+                  ("h" "Headline (generic Org item)"
+                   entry
+                   (file db/org-default-refile-file)
+                   ,(concat "* [#B] %^{What}\n"
+                            ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                            "%a"
+                            "%?")
+                   :empty-lines-before 1
+                   :empty-lines-after 1)
+                  ("n" "Note"
+                   entry
+                   (file db/org-default-refile-file)
+                   "* Note: %^{About} :NOTE:\n:PROPERTIES:\n:CREATED: %U\n:END:%?"
+                   :empty-lines-before 1
+                   :empty-lines-after 1)
+                  ("j" "Journal entry"
+                   plain
+                   (file+olp+datetree db/org-default-pensieve-file
+                                      "Journal")
+                   "\n\n%U\n\n%i%?\n"
+                   :empty-lines-before 1
+                   :empty-lines-after 1)
+                  ("d" "Date"
+                   entry
+                   (file db/org-default-refile-file)
+                   ,(concat "* GOTO [#B] %^{What} :DATE:"
+                            "\n:PROPERTIES:\n:CREATED: %U\n:END:"
+                            "\n%^{When}t"
+                            "\n\nVia %K."
+                            "\n\n%?")
+                   :empty-lines-before 1
+                   :empty-lines-after 1)
+                  ("i" "Interruptions"
+                   entry
+                   (file db/org-default-refile-file)
+                   ,(concat "* DONE [#B] %^{What}\nCLOSED: %U\n"
+                            ":PROPERTIES:\n:CREATED: %U\n:END:\n"
+                            "\nInterrupted %K."
+                            "%?")
+                   :clock-in t
+                   :clock-resume t
+                   :empty-lines-before 1
+                   :empty-lines-after 1)
+                  ("q" "Quick note"
+                   plain
+                   #'db/goto-quick-notes
+                   "- [ ] %?\n\n  On %U via %K."
+                   :empty-lines-before 1
+                   :empty-lines-after 1))))
 
 ;; Babel
 
