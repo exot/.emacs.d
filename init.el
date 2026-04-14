@@ -1405,8 +1405,7 @@ accordingly."
                    ,(concat "* GOTO [#B] %^{What} :DATE:"
                             "\n:PROPERTIES:\n:CREATED: %U\n:END:"
                             "\n%^{When}t"
-                            "\n\nVia %K."
-                            "\n\n%?")
+                            "\n\nVia %K.%?")
                    :empty-lines-before 1
                    :empty-lines-after 1)
                   ("i" "Interruptions"
