@@ -2277,8 +2277,8 @@ Note that this workaround is incomplete, as explained in this comment."
           (setopt dired-dwim-target t
                   dired-listing-switches "-ahlvF"
                   dired-ls-F-marks-symlinks t
-                  dired-hide-details-hide-information-lines nil
-                  dired-hide-details-hide-symlink-targets nil
+                  dired-hide-details-hide-information-lines t
+                  dired-hide-details-hide-symlink-targets t
                   dired-recursive-copies 'top
                   dired-recursive-deletes 'top
                   dired-create-destination-dirs 'ask
