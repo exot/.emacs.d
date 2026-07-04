@@ -3204,6 +3204,7 @@ Note that this workaround is incomplete, as explained in this comment."
   (unbind-key "<kp-insert>" global-map)
   (unbind-key "C-x C-c" global-map)     ; Quit emacs by calling `save-buffers-kill-emacs' directly
   (unbind-key "M-o" global-map)
+  (unbind-key "M-`")                    ; Unbind `tmm-menubar'
 
   ;; Environment Variables
 
