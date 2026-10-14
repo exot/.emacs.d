@@ -329,7 +329,8 @@
                 project-vc-merge-submodules nil
                 project-mode-line nil
                 project-list-exclude '("^~/\\.minetest/mods/"
-                                       file-remote-p))
+                                       (lambda (root)
+                                         (and (stringp root) (file-remote-p root)))))
   :bind (:map project-prefix-map
               (("m" . project-magit)))
   :config (progn
