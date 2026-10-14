@@ -552,6 +552,7 @@ split horizontally again, but this extra work should not matter much."
 
 (use-package projectile
   :commands (projectile-mode)
+  :diminish projectile-mode
   :bind (:map projectile-mode-map ("C-c p" . projectile-command-map))
   :init (setq projectile-switch-project-action 'projectile-dired
               projectile-ignored-project-function #'file-remote-p
