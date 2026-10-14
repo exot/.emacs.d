@@ -327,7 +327,9 @@
                                           (project-eshell "Eshell")
                                           (project-any-command "Other"))
                 project-vc-merge-submodules nil
-                project-mode-line nil)
+                project-mode-line nil
+                project-list-exclude '("^~/\\.minetest/mods/"
+                                       file-remote-p))
   :bind (:map project-prefix-map
               (("m" . project-magit)))
   :config (progn
