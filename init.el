@@ -2282,7 +2282,7 @@ Note that this workaround is incomplete, as explained in this comment."
                   dired-ls-F-marks-symlinks t
                   dired-hide-details-hide-information-lines t
                   dired-hide-details-hide-symlink-targets t
-                  dired-recursive-copies 'top
+                  dired-recursive-copies 'always
                   dired-recursive-deletes 'top
                   dired-create-destination-dirs 'ask
                   dired-vc-rename-file t
@@ -2296,7 +2296,8 @@ Note that this workaround is incomplete, as explained in this comment."
                   dired-clean-confirm-killing-deleted-buffers t
                   dired-clean-up-buffers-too t
                   dired-movement-style 'bounded
-                  dired-filename-display-length nil)
+                  dired-filename-display-length nil
+                  dired-kill-when-opening-new-dired-buffer t)
 
           (setopt dired-guess-shell-alist-user
                   '(("\\.pdf\\'" "evince")
