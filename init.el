@@ -1300,8 +1300,8 @@ accordingly."
                 ("U" "Unsupervised (Waiting, Missed Appointments, Hold)"
                      ((tags "WAIT-TODO={DONE\\|CANC\\|MRGD}-HOLD-SOMEWHEN-SCHEDULED<>\"\"-DEADLINE<=\"<today>\""
                             ((org-agenda-overriding-header "Waiting For List")))
-                      (tags-todo "TAGS={DATE}-TIMESTAMP>=\"<today>\""
-                                 ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")))
+                      (tags "TAGS={DATE}-TIMESTAMP>=\"<today>\"-TODO={DONE\\|CANC\\|MRGD}" ; XXX: exclude items with any timestamp in the future, not just only the first …
+                            ((org-agenda-overriding-header "Missed appointments (DATEs with timestamp in the past)")))
                       (tags "TAGS={HOLD}-TODO={DONE\\|CANC\\|MRGD}-SOMEWHEN-SCHEDULED<>\"\""
                             ((org-agenda-overriding-header "Tasks on Hold")))))
 
