@@ -2800,6 +2800,7 @@ Note that this workaround is incomplete, as explained in this comment."
 
 (use-package eshell
   :init (setopt eshell-cmpl-cycle-completions nil
+                eshell-cmpl-use-paring nil
                 eshell-scroll-to-bottom-on-input 'this
                 eshell-prefer-lisp-functions nil
                 eshell-error-if-no-glob nil
